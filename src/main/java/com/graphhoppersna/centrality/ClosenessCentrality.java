@@ -25,6 +25,8 @@
 package com.graphhoppersna.centrality;
 
 import com.graphhopper.routing.AbstractRoutingAlgorithm;
+import com.graphhopper.routing.DijkstraBidirection;
+import com.graphhopper.routing.DijkstraBidirectionRef;
 import com.graphhopper.routing.DijkstraSimple;
 import com.graphhopper.routing.Path;
 import com.graphhopper.storage.Graph;
@@ -89,6 +91,30 @@ public class ClosenessCentrality {
      */
     public TIntDoubleHashMap calculateUsingDijkstraSimple() {
         DijkstraSimple ds = new DijkstraSimple(graph);
+        return calculate(ds);
+    }
+
+    /**
+     * Calculates closeness centrality by calculating, for each node, the
+     * shortest paths to every other node, using {@link DijkstraBidirection}.
+     *
+     * @return A map with the vertex as the key and the closeness centrality as
+     *         the value.
+     */
+    public TIntDoubleHashMap calculateUsingDijkstraBidirection() {
+        DijkstraBidirection ds = new DijkstraBidirection(graph);
+        return calculate(ds);
+    }
+
+    /**
+     * Calculates closeness centrality by calculating, for each node, the
+     * shortest paths to every other node, using {@link DijkstraBidirectionRef}.
+     *
+     * @return A map with the vertex as the key and the closeness centrality as
+     *         the value.
+     */
+    public TIntDoubleHashMap calculateUsingDijkstraBidirectionRef() {
+        DijkstraBidirectionRef ds = new DijkstraBidirectionRef(graph);
         return calculate(ds);
     }
 
