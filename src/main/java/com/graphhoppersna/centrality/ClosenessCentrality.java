@@ -24,13 +24,14 @@
  */
 package com.graphhoppersna.centrality;
 
+import com.graphhopper.routing.AbstractRoutingAlgorithm;
 import com.graphhopper.routing.DijkstraSimple;
 import com.graphhopper.routing.Path;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import gnu.trove.iterator.TIntIterator;
+import gnu.trove.map.hash.TIntDoubleHashMap;
+import gnu.trove.set.hash.TIntHashSet;
 import java.util.Set;
 
 /**
@@ -66,11 +67,9 @@ public class ClosenessCentrality {
      * @return a {@link Set} of nodes of this graph.
      */
     // TODO: Optimize this (by making use of the data structure). 
-    // TODO: Is there a better structure to use than a Set?
-    // TODO: Is there a way to avoid using Integers?
-    public Set<Integer> nodeSet() {
+    public TIntHashSet nodeSet() {
         // Initialize the Set.
-        Set<Integer> nodeSet = new HashSet<Integer>();
+        TIntHashSet nodeSet = new TIntHashSet();
         // Get all the edges.
         EdgeIterator iter = graph.getAllEdges();
         // Add each source and destination node to the set.
@@ -82,31 +81,51 @@ public class ClosenessCentrality {
     }
 
     /**
-     * Calculates closeness centrality naively by calculating, for each node,
-     * the shortest paths to every other node, using {@link DijkstraSimple}.
+     * Calculates closeness centrality by calculating, for each node, the
+     * shortest paths to every other node, using {@link DijkstraSimple}.
      *
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public Map<Integer, Double> calculateUsingDijkstraSimple() {
+    public TIntDoubleHashMap calculateUsingDijkstraSimple() {
+        DijkstraSimple ds = new DijkstraSimple(graph);
+        return calculate(ds);
+    }
+
+    /**
+     * Calculates closeness centrality by calculating, for each node, the
+     * shortest paths to every other node, using the given
+     * {@link AbstractRoutingAlgorithm}.
+     *
+     * @param algorithm The {@link AbstractRoutingAlgorithm} to use.
+     *
+     * @return A map with each vertex as key and each closeness centrality as
+     *         value.
+     */
+    public TIntDoubleHashMap calculate(AbstractRoutingAlgorithm algorithm) {
 
         // Initiate the result Map.
-        Map<Integer, Double> result = new HashMap<Integer, Double>();
+        TIntDoubleHashMap result = new TIntDoubleHashMap();
 
         // Recover the set of nodes.
-        Set<Integer> nodeSet = nodeSet();
+        TIntHashSet nodeSet = nodeSet();
 
         // For tracking progress.
         long start, stop;
         int size = nodeSet.size();
         System.out.println("There are " + size + " nodes.");
 
-        // Used for calculating the shortest paths.
-        DijkstraSimple ds = new DijkstraSimple(
-                graph);
+        // Get an iterator over the node set.
+        TIntIterator sourceIterator = nodeSet.iterator();
 
         // Fix a node.
-        for (Integer source : nodeSet) {
+        while (sourceIterator.hasNext()) {
+
+            // Recover the source node.
+            int source = sourceIterator.next();
+
+            // Get an iterator over the node set.
+            TIntIterator destinationIterator = nodeSet.iterator();
 
             // Start timing the calculation for the source node.
             start = System.currentTimeMillis();
@@ -116,7 +135,10 @@ public class ClosenessCentrality {
             double farness = 0.0;
 
             // Begin going through all the other nodes.
-            for (Integer destination : nodeSet) {
+            while (destinationIterator.hasNext()) {
+
+                // Recover the destination node.
+                int destination = destinationIterator.next();
 
                 // Skip reflexiveness. No need to calculate the distance
                 // of a node to itself.
@@ -126,13 +148,15 @@ public class ClosenessCentrality {
 
                 // Obtain (one of) the shortest path(s) from the source node
                 // to the destination node.
-                Path path = ds.clear().calcPath(source.intValue(), destination.
-                        intValue());
+                Path path = algorithm.clear().calcPath(source, destination);
+//                System.out.println("Source " + source
+//                        + ", Destination " + destination
+//                        + ", Path " + path.toDetailsString());
 
                 // Get the length of the path.
                 Double length = path.distance();
 
-                // If the DijkstraSimple finds no path from the source node
+                // If the algorithm finds no path from the source node
                 // to the destination node, it returns a length of 0.0. 
                 // But no path existing corresponds to the destination node
                 // being "infinitely" far away from the source node.
@@ -153,18 +177,20 @@ public class ClosenessCentrality {
 
             // Finish timing the calculation for the source node.
             stop = System.currentTimeMillis();
-            
+
+            // The value of closeness centrality for the source node.
+            double closeness = (nodeSet.size() - 1) / farness;
+
             // Print out the calculation time for this source node.
             System.out.
                     println(
-                    "Calculation for " + source + ": " 
-                    + (stop - start) + " ms (" 
-                    + (source / size) + "%).");
+                    "Calculation for " + source + ": "
+                    + (stop - start) + " ms. "
+                    + "Closeness: " + closeness);
 
             // Store the closeness centrality for this source node.
-            result.put(source, (nodeSet.size() - 1) / farness);
+            result.put(source, closeness);
         }
-        
         // Return the Map of closeness centrality results.
         return result;
     }
