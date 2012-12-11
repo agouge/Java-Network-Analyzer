@@ -24,11 +24,14 @@
  */
 package com.graphhoppersna.alg;
 
+import com.graphhopper.routing.DijkstraBidirection;
 import com.graphhopper.routing.DijkstraSimple;
 import com.graphhoppersna.centrality.ClosenessCentrality;
 import com.graphhoppersna.storage.GDMSGraphStorage;
+import gnu.trove.iterator.TIntDoubleIterator;
+import gnu.trove.map.hash.TIntDoubleHashMap;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
 import org.junit.Test;
 
 /**
@@ -38,6 +41,19 @@ import org.junit.Test;
  */
 public class ClosenessCentralityTest {
 
+//    /**
+//     * Prints the closeness centrality result.
+//     *
+//     * @param resultIterator The iterator over the r
+//     */
+//    public void printResult(TIntDoubleHashMap result) {
+//        TIntDoubleIterator resultIterator = result.iterator();
+//        while (resultIterator.hasNext()) {
+//            resultIterator.advance();
+//            System.out.println(resultIterator.key() + ", " + resultIterator.
+//                    value());
+//        }
+//    }
     /**
      * Tests the closeness centrality algorithm using a {@link DijkstraSimple}
      * on a 2D bidirectional graph loaded from a csv file.
@@ -47,24 +63,50 @@ public class ClosenessCentralityTest {
     @Test
     public void testClosenessCentralityGraph2DBidirectionalDijkstraSimple() throws IOException {
 
-        // Load the graph from the csv file.
         GDMSGraphStorage graph = GDMSGraphStorage.loadGDMSGraph(
                 "./target/Graph2D",
-                "./files/graph2D.edges.csv", "length", true);
+                "./files/graph2D.edges.csv",
+                "length",
+                true);
+        ClosenessCentrality cc = new ClosenessCentrality(graph);
+        TIntDoubleHashMap result = cc.calculateUsingDijkstraSimple();
+    }
 
-        // Print out the edges.
-        graph.printEdges();
+    /**
+     * Tests the closeness centrality algorithm using a
+     * {@link DijkstraBidirection} on a 2D bidirectional graph loaded from a csv
+     * file.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testClosenessCentralityGraph2DBidirectionalDijkstraBidirection() throws IOException {
 
-        // Create a new closeness centrality object.
-        ClosenessCentrality closenessAlgorithm = new ClosenessCentrality(graph);
+        GDMSGraphStorage graph = GDMSGraphStorage.loadGDMSGraph(
+                "./target/Graph2D",
+                "./files/graph2D.edges.csv",
+                "length",
+                true);
+        ClosenessCentrality cc = new ClosenessCentrality(graph);
+        TIntDoubleHashMap result = cc.calculateUsingDijkstraBidirection();
+    }
 
-        // Do the calculation.
-        Map<Integer, Double> result = closenessAlgorithm.
-                calculateUsingDijkstraSimple();
+    /**
+     * Tests the closeness centrality algorithm using a
+     * {@link DijkstraBidirectionRef} on a 2D bidirectional graph loaded from a
+     * csv file.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testClosenessCentralityGraph2DBidirectionalDijkstraBidirectionRef() throws IOException {
 
-        // Print out the result.
-        for (Map.Entry entry : result.entrySet()) {
-            System.out.println(entry.getKey() + ", " + entry.getValue());
-        }
+        GDMSGraphStorage graph = GDMSGraphStorage.loadGDMSGraph(
+                "./target/Graph2D",
+                "./files/graph2D.edges.csv",
+                "length",
+                true);
+        ClosenessCentrality cc = new ClosenessCentrality(graph);
+        TIntDoubleHashMap result = cc.calculateUsingDijkstraBidirectionRef();
     }
 }
