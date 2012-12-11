@@ -24,6 +24,7 @@
  */
 package com.graphhoppersna.storage;
 
+import com.graphhopper.routing.util.CarStreetType;
 import com.graphhopper.storage.Directory;
 import com.graphhopper.storage.LevelGraphStorage;
 import com.graphhopper.storage.RAMDirectory;
@@ -225,7 +226,8 @@ public class GDMSGraphStorage extends LevelGraphStorage {
             System.out.println("EdgeID: " + edgeIterator.edge()
                     + ", " + START_NODE + " " + edgeIterator.fromNode()
                     + ", " + END_NODE + " " + edgeIterator.node()
-                    + ", " + weightField + " " + edgeIterator.distance());
+                    + ", " + weightField + " " + edgeIterator.distance()
+                    + ", both directions: " + CarStreetType.isBoth(edgeIterator.flags()));
         }
     }
 }
