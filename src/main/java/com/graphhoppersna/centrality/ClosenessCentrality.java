@@ -92,6 +92,8 @@ public class ClosenessCentrality {
      */
     public TIntDoubleHashMap calculateUsingDijkstraSimple() {
         DijkstraSimple ds = new DijkstraSimple(graph);
+        System.out.println(
+                "Calculating closeness centrality using DijkstraSimple.");
         return calculate(ds);
     }
 
@@ -104,6 +106,8 @@ public class ClosenessCentrality {
      */
     public TIntDoubleHashMap calculateUsingDijkstraBidirection() {
         DijkstraBidirection db = new DijkstraBidirection(graph);
+        System.out.println(
+                "Calculating closeness centrality using DijkstraBidirection.");
         return calculate(db);
     }
 
@@ -116,6 +120,8 @@ public class ClosenessCentrality {
      */
     public TIntDoubleHashMap calculateUsingDijkstraBidirectionRef() {
         DijkstraBidirectionRef dbr = new DijkstraBidirectionRef(graph);
+        System.out.println(
+                "Calculating closeness centrality using DijkstraBidirectionRef.");
         return calculate(dbr);
     }
 
