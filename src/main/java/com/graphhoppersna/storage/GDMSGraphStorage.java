@@ -117,6 +117,8 @@ public class GDMSGraphStorage extends LevelGraphStorage {
         if (graph.loadExisting()) {
             System.out.println("Loaded a previously created graph. ");
         } else {
+            long start = System.currentTimeMillis();
+            
             System.out.println("Creating a graph from CSV. ");
 
             // Get a scanner on the csv file.
@@ -132,6 +134,9 @@ public class GDMSGraphStorage extends LevelGraphStorage {
             // Load the edges from the input file into the levelgraph.
             graph.loadEdges(scanner, bothDirections);
 
+            long stop = System.currentTimeMillis();
+            System.out.println("Created graph in " + (stop-start) + " ms.");
+            
             // Close the scanner.
             scanner.close();
         }
