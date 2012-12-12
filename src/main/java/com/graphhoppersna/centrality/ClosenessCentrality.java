@@ -24,6 +24,8 @@
  */
 package com.graphhoppersna.centrality;
 
+import com.graphhopper.routing.AStar;
+import com.graphhopper.routing.AStarBidirection;
 import com.graphhopper.routing.AbstractRoutingAlgorithm;
 import com.graphhopper.routing.DijkstraBidirection;
 import com.graphhopper.routing.DijkstraBidirectionRef;
@@ -34,7 +36,6 @@ import com.graphhopper.util.EdgeIterator;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.set.hash.TIntHashSet;
-import java.util.Set;
 
 /**
  * Implementation of Freeman's original closeness centrality.
@@ -62,11 +63,11 @@ public class ClosenessCentrality {
     }
 
     /**
-     * Returns a {@link Set} of nodes of this graph.
+     * Returns a {@link TIntHashSet} of nodes of this graph.
      *
      * Note: We have to cast each {@code int} node as an {@link Integer}.
      *
-     * @return a {@link Set} of nodes of this graph.
+     * @return a {@link TIntHashSet} of nodes of this graph.
      */
     // TODO: Optimize this (by making use of the data structure). 
     public TIntHashSet nodeSet() {
@@ -102,8 +103,8 @@ public class ClosenessCentrality {
      *         the value.
      */
     public TIntDoubleHashMap calculateUsingDijkstraBidirection() {
-        DijkstraBidirection ds = new DijkstraBidirection(graph);
-        return calculate(ds);
+        DijkstraBidirection db = new DijkstraBidirection(graph);
+        return calculate(db);
     }
 
     /**
@@ -114,8 +115,35 @@ public class ClosenessCentrality {
      *         the value.
      */
     public TIntDoubleHashMap calculateUsingDijkstraBidirectionRef() {
-        DijkstraBidirectionRef ds = new DijkstraBidirectionRef(graph);
-        return calculate(ds);
+        DijkstraBidirectionRef dbr = new DijkstraBidirectionRef(graph);
+        return calculate(dbr);
+    }
+
+    /**
+     * Calculates closeness centrality by calculating, for each node, the
+     * shortest paths to every other node, using {@link AStar}.
+     *
+     * @return A map with the vertex as the key and the closeness centrality as
+     *         the value.
+     */
+    public TIntDoubleHashMap calculateUsingAStar() {
+        AStar as = new AStar(graph);
+        System.out.println("Calculating closeness centrality using AStar.");
+        return calculate(as);
+    }
+
+    /**
+     * Calculates closeness centrality by calculating, for each node, the
+     * shortest paths to every other node, using {@link AStarBidirection}.
+     *
+     * @return A map with the vertex as the key and the closeness centrality as
+     *         the value.
+     */
+    public TIntDoubleHashMap calculateUsingAStarBidirection() {
+        AStarBidirection asb = new AStarBidirection(graph);
+        System.out.println(
+                "Calculating closeness centrality using AStarBidirection.");
+        return calculate(asb);
     }
 
     /**
