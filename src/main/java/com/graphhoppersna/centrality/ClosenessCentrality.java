@@ -64,9 +64,7 @@ public class ClosenessCentrality {
 
     /**
      * Returns a {@link TIntHashSet} of nodes of this graph.
-     *
-     * Note: We have to cast each {@code int} node as an {@link Integer}.
-     *
+     * 
      * @return a {@link TIntHashSet} of nodes of this graph.
      */
     // TODO: Optimize this (by making use of the data structure). 
@@ -77,8 +75,8 @@ public class ClosenessCentrality {
         EdgeIterator iter = graph.getAllEdges();
         // Add each source and destination node to the set.
         while (iter.next()) {
-            nodeSet.add(new Integer(iter.fromNode()));
-            nodeSet.add(new Integer(iter.node()));
+            nodeSet.add(iter.fromNode());
+            nodeSet.add(iter.node());
         }
         return nodeSet;
     }
