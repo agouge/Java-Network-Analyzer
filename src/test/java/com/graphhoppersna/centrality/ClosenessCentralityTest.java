@@ -52,7 +52,6 @@ public class ClosenessCentralityTest {
 //                    value());
 //        }
 //    }
-    
     /**
      * Loads a bidirectional 2D graph from storage.
      *
@@ -140,5 +139,19 @@ public class ClosenessCentralityTest {
         ClosenessCentrality cc = new ClosenessCentrality(
                 prepareGraph2DBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingAStarBidirection();
+    }
+
+    /**
+     * Tests the closeness centrality algorithm using contraction hierarchies on
+     * a 2D bidirectional graph loaded from a csv file.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testClosenessCentralityGraph2DBidirectionalUsingContractionHierarchies()
+            throws IOException {
+        ClosenessCentrality cc = new ClosenessCentrality(
+                prepareGraph2DBidirectional());
+        TIntDoubleHashMap result = cc.calculateUsingContractionHierarchies();
     }
 }

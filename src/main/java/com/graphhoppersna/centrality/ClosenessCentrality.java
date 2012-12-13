@@ -31,11 +31,15 @@ import com.graphhopper.routing.DijkstraBidirection;
 import com.graphhopper.routing.DijkstraBidirectionRef;
 import com.graphhopper.routing.DijkstraSimple;
 import com.graphhopper.routing.Path;
+import com.graphhopper.routing.ch.PrepareContractionHierarchies;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
+import gnu.trove.iterator.TIntDoubleIterator;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.set.hash.TIntHashSet;
+import java.io.File;
+import java.io.PrintWriter;
 
 /**
  * Implementation of Freeman's original closeness centrality.
@@ -64,7 +68,7 @@ public class ClosenessCentrality {
 
     /**
      * Returns a {@link TIntHashSet} of nodes of this graph.
-     * 
+     *
      * @return a {@link TIntHashSet} of nodes of this graph.
      */
     // TODO: Optimize this (by making use of the data structure). 
@@ -118,7 +122,8 @@ public class ClosenessCentrality {
      */
     public TIntDoubleHashMap calculateUsingDijkstraBidirectionRef() {
         DijkstraBidirectionRef dbr = new DijkstraBidirectionRef(graph);
-        System.out.println(
+        System.out.
+                println(
                 "Calculating closeness centrality using DijkstraBidirectionRef.");
         return calculate(dbr);
     }
@@ -148,6 +153,23 @@ public class ClosenessCentrality {
         System.out.println(
                 "Calculating closeness centrality using AStarBidirection.");
         return calculate(asb);
+    }
+
+    /**
+     * Calculates closeness centrality by calculating, for each node, the
+     * shortest paths to every other node, using contraction hierarchies.
+     *
+     * @return A map with the vertex as the key and the closeness centrality as
+     *         the value.
+     */
+    public TIntDoubleHashMap calculateUsingContractionHierarchies() {
+
+        PrepareContractionHierarchies prepare = 
+                new PrepareContractionHierarchies().
+                setGraph(graph);
+        prepare.doWork();
+        DijkstraBidirectionRef algo = prepare.createAlgo();
+        return calculate(algo);
     }
 
     /**
