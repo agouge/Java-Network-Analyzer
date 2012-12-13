@@ -22,12 +22,10 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhoppersna.alg;
+package com.graphhoppersna.centrality;
 
 import com.graphhopper.routing.DijkstraBidirection;
 import com.graphhopper.routing.DijkstraSimple;
-import com.graphhopper.storage.Graph;
-import com.graphhoppersna.centrality.ClosenessCentrality;
 import com.graphhoppersna.storage.GDMSGraphStorage;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import java.io.FileNotFoundException;
@@ -62,7 +60,7 @@ public class ClosenessCentralityTest {
      *
      * @throws FileNotFoundException
      */
-    public GDMSGraphStorage prepareGraph2DBidirectional() throws
+    public static GDMSGraphStorage prepareGraph2DBidirectional() throws
             FileNotFoundException {
         return GDMSGraphStorage.loadGDMSGraph(
                 "./target/Graph2D",
@@ -80,7 +78,8 @@ public class ClosenessCentralityTest {
     @Test
     public void testClosenessCentralityGraph2DBidirectionalUsingDijkstraSimple()
             throws FileNotFoundException {
-        ClosenessCentrality cc = new ClosenessCentrality(prepareGraph2DBidirectional());
+        ClosenessCentrality cc = new ClosenessCentrality(
+                prepareGraph2DBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingDijkstraSimple();
     }
 
@@ -94,7 +93,8 @@ public class ClosenessCentralityTest {
     @Test
     public void testClosenessCentralityGraph2DBidirectionalUsingDijkstraBidirection()
             throws IOException {
-        ClosenessCentrality cc = new ClosenessCentrality(prepareGraph2DBidirectional());
+        ClosenessCentrality cc = new ClosenessCentrality(
+                prepareGraph2DBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingDijkstraBidirection();
     }
 
@@ -108,7 +108,8 @@ public class ClosenessCentralityTest {
     @Test
     public void testClosenessCentralityGraph2DBidirectionalUsingDijkstraBidirectionRef()
             throws IOException {
-        ClosenessCentrality cc = new ClosenessCentrality(prepareGraph2DBidirectional());
+        ClosenessCentrality cc = new ClosenessCentrality(
+                prepareGraph2DBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingDijkstraBidirectionRef();
     }
 
@@ -121,7 +122,8 @@ public class ClosenessCentralityTest {
     @Test
     public void testClosenessCentralityGraph2DBidirectionalUsingAStar() throws
             IOException {
-        ClosenessCentrality cc = new ClosenessCentrality(prepareGraph2DBidirectional());
+        ClosenessCentrality cc = new ClosenessCentrality(
+                prepareGraph2DBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingAStar();
     }
 
@@ -135,7 +137,8 @@ public class ClosenessCentralityTest {
     @Test
     public void testClosenessCentralityGraph2DBidirectionalUsingAStarBidirection()
             throws IOException {
-        ClosenessCentrality cc = new ClosenessCentrality(prepareGraph2DBidirectional());
+        ClosenessCentrality cc = new ClosenessCentrality(
+                prepareGraph2DBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingAStarBidirection();
     }
 }
