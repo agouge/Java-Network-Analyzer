@@ -124,7 +124,7 @@ public class UndirectedGraphAnalyzer {
         roundingDigits = 8;
     }
 
-    public void computeAll() {
+    public TIntDoubleHashMap computeAll() {
 
         long time = System.currentTimeMillis();
 
@@ -249,6 +249,7 @@ public class UndirectedGraphAnalyzer {
         System.out.println("Network analysis took "
                 + (time / 1000)
                 + " seconds.");
+        return closenessCentrality;
     }
 
 //    /**
