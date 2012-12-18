@@ -41,14 +41,14 @@ public class UndirectedGraphAnalyzerTest {
         GDMSGraphStorage graph = ClosenessCentralityTest.
                 prepareGraph2DBidirectional();
         
-        graph.printEdges();
+//        graph.printEdges();
 
         UndirectedGraphAnalyzer analyzer =
                 new UndirectedGraphAnalyzer(graph);
         
-        analyzer.computeAll();
+        analyzer.computeClosenessAllWeightsOne();
 
-        graph.printEdges();
+//        graph.printEdges();
 
     }
 }

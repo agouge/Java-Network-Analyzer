@@ -124,7 +124,7 @@ public class UndirectedGraphAnalyzer {
         roundingDigits = 8;
     }
 
-    public TIntDoubleHashMap computeAll() {
+    public TIntDoubleHashMap computeClosenessAllWeightsOne() {
 
         long time = System.currentTimeMillis();
 
@@ -143,24 +143,24 @@ public class UndirectedGraphAnalyzer {
 //        // stress
 //        LogBinDistribution stressDist = new LogBinDistribution();
 
-        // Compute number of connected components
-        PrepareRoutingSubnetworks prepareSubnetworks =
-                new PrepareRoutingSubnetworks(graph);
-        // Delete singleton nodes.
-        int deletedNodes = prepareSubnetworks.deleteZeroDegreeNodes();
-        System.out.println("Deleted " + deletedNodes
-                + " 0-degree nodes.");
-        // Identify connected components.
-        Map<Integer, Integer> componentsMap = prepareSubnetworks.
-                findSubnetworks();
-        System.out.println("Number of connected components: " + componentsMap.
-                size());
-        // Print out this information.
-        for (Map.Entry entry : componentsMap.entrySet()) {
-            System.out.println("The component containing node " + entry.getKey()
-                    + " has a total of " + entry.getValue()
-                    + " nodes.");
-        }
+//        // Compute number of connected components
+//        PrepareRoutingSubnetworks prepareSubnetworks =
+//                new PrepareRoutingSubnetworks(graph);
+//        // Delete singleton nodes.
+//        int deletedNodes = prepareSubnetworks.deleteZeroDegreeNodes();
+//        System.out.println("Deleted " + deletedNodes
+//                + " 0-degree nodes.");
+//        // Identify connected components.
+//        Map<Integer, Integer> componentsMap = prepareSubnetworks.
+//                findSubnetworks();
+//        System.out.println("Number of connected components: " + componentsMap.
+//                size());
+//        // Print out this information.
+//        for (Map.Entry entry : componentsMap.entrySet()) {
+//            System.out.println("The component containing node " + entry.getKey()
+//                    + " has a total of " + entry.getValue()
+//                    + " nodes.");
+//        }
 
         // TODO: For the moment, we assume the graph has only one
         // connected component.
@@ -192,7 +192,7 @@ public class UndirectedGraphAnalyzer {
 
             // SHORTEST PATHS COMPUTATION
 //            System.out.println("Computing shortest paths for node " + node);
-            PathLengthData pathLengths = computeSPandSN(node);
+            PathLengthData pathLengths = computeShortestPathsAllWeightsOne(node);
 //            System.out.println("Number of shortest path lengths accumulated: " 
 //                    + pathLengths.getCount());
 
@@ -429,7 +429,8 @@ public class UndirectedGraphAnalyzer {
      * @return Data on the shortest path lengths from the current node to all
      *         other reachable nodes in the network.
      */
-    private PathLengthData computeSPandSN(int aNode) {
+    // TODO: For now, this is not taking the lengths into account. All weights are 1.
+    private PathLengthData computeShortestPathsAllWeightsOne(int aNode) {
 
         visited.clear();
         visited.add(aNode);

@@ -69,6 +69,22 @@ public class ClosenessCentralityTest {
     }
 
     /**
+     * Loads a bidirectional graph of Nantes from storage.
+     *
+     * @return The graph.
+     *
+     * @throws FileNotFoundException
+     */
+    public static GDMSGraphStorage prepareGraphNantes() throws
+            FileNotFoundException {
+        return GDMSGraphStorage.loadGDMSGraph(
+                "./target/GraphNantes",
+                "./files/nantes_1_edges.csv",
+                "weight",
+                true);
+    }
+    
+    /**
      * Tests the closeness centrality algorithm using a {@link DijkstraSimple}
      * on a 2D bidirectional graph loaded from a csv file.
      *
