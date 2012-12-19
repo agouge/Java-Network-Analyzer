@@ -497,7 +497,7 @@ public class UndirectedGraphAnalyzer {
         EdgeIterator outgoingIt = graph.getOutgoing(aNode);
 
         while (incomingIt.next()) {
-            neighbors.add(incomingIt.fromNode());
+            neighbors.add(incomingIt.baseNode());
         }
         while (outgoingIt.next()) {
             neighbors.add(outgoingIt.node());

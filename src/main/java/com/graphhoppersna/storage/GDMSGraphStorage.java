@@ -229,7 +229,7 @@ public class GDMSGraphStorage extends LevelGraphStorage {
         // Print them out.
         while (edgeIterator.next()) {
             System.out.println("EdgeID: " + edgeIterator.edge()
-                    + ", " + START_NODE + " " + edgeIterator.fromNode()
+                    + ", " + START_NODE + " " + edgeIterator.baseNode()
                     + ", " + END_NODE + " " + edgeIterator.node()
                     + ", " + weightField + " " + edgeIterator.distance()
                     + ", both directions: " + CarStreetType.isBoth(edgeIterator.flags()));

@@ -79,7 +79,7 @@ public class ClosenessCentrality {
         EdgeIterator iter = graph.getAllEdges();
         // Add each source and destination node to the set.
         while (iter.next()) {
-            nodeSet.add(iter.fromNode());
+            nodeSet.add(iter.baseNode());
             nodeSet.add(iter.node());
         }
         return nodeSet;
