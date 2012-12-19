@@ -24,26 +24,17 @@
  */
 package com.graphhoppersna.centrality;
 
-import com.graphhopper.routing.util.PrepareRoutingSubnetworks;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhoppersna.data.NodeBetweennessInfo;
 import com.graphhoppersna.data.PathLengthData;
-import gnu.trove.iterator.TIntDoubleIterator;
 import gnu.trove.iterator.TIntIterator;
-import gnu.trove.list.linked.TIntLinkedList;
 import gnu.trove.map.hash.TIntDoubleHashMap;
-import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.map.hash.TIntLongHashMap;
 import gnu.trove.set.hash.TIntHashSet;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -183,7 +174,7 @@ public class UndirectedGraphAnalyzer {
         // Re-initialize the iterator and begin network analysis.
         nodeIter = nodeSet.iterator();
         while (nodeIter.hasNext()) {
-            
+
             // Start timing for this node.
             long start = System.currentTimeMillis();
 
@@ -210,13 +201,13 @@ public class UndirectedGraphAnalyzer {
             final double closeness = (apl > 0.0) ? 1 / apl : 0.0;
             // Store it.
             closenessCentrality.put(node, closeness);
-            
+
             // Stop timing for this node.
             long stop = System.currentTimeMillis();
-            
+
             System.out.println("Node: " + node
                     + ", Closeness: " + closeness
-                    + ", Time: " + (stop-start)
+                    + ", Time: " + (stop - start)
                     + " ms.");
 
 //            // Node and edge betweenness calculation
@@ -234,7 +225,7 @@ public class UndirectedGraphAnalyzer {
 
         // TODO: Normalize and save node betweenness.
         // TODO: Save edge betweenness.
-        
+
 //        // Print out closeness centrality.
 //        TIntDoubleIterator ccIt = closenessCentrality.iterator();
 //        while (ccIt.hasNext()) {
@@ -432,51 +423,89 @@ public class UndirectedGraphAnalyzer {
     // TODO: For now, this is not taking the lengths into account. All weights are 1.
     private PathLengthData computeShortestPathsAllWeightsOne(int aNode) {
 
+        // Create the "queue" and add aNode to it.
+        // TODO: Replace by TIntLinkedList.
+        LinkedList<Integer> queue = new LinkedList<Integer>();
+        queue.add(aNode);
+        queue.add(null);
+
+        // Clear the set marked nodes and add aNode to it.
         visited.clear();
         visited.add(aNode);
 
+        // This will be the neighbors of the current node.
         TIntHashSet nbs = null;
 
-        // TODO: Replace by TIntLinkedList.
-        LinkedList<Integer> reachedNodes = new LinkedList<Integer>();
-        reachedNodes.add(aNode);
-        reachedNodes.add(null);
+        // For keeping track of which level in the BFS tree.
+        int currentDistance = 1;
 
-        int currentDist = 1;
-
+        // Initialize the result to be returned.
         PathLengthData result = new PathLengthData();
 
-        for (Integer currentNode = reachedNodes.removeFirst();
-                !reachedNodes.isEmpty();
-                currentNode = reachedNodes.removeFirst()
-                ) {
+        // While the queue is not empty, dequeue a node ...
+        for (Integer currentNode = queue.removeFirst();
+                !queue.isEmpty();
+                currentNode = queue.removeFirst()) {
             if (currentNode == null) {
                 // Next level of the BFS tree
-                currentDist++;
-                reachedNodes.add(null);
+                currentDistance++;
+                queue.add(null);
             } else {
-                // Traverse next reached node
-                final TIntHashSet neighbors = getNeighbors(currentNode.intValue());
+                // Get the neighbors of the current node.
+                final TIntHashSet neighbors =
+                        getNeighbors(currentNode.intValue());
                 if (nbs == null) {
                     nbs = neighbors;
                 }
-
+                // For every neighbor of the current node ...
                 TIntIterator it = neighbors.iterator();
                 while (it.hasNext()) {
                     final int neighbor = it.next();
+                    // If the neighbor is not marked, then mark it ...
+                    // (Note that add returns false if neighbor was
+                    // alread visited.)
                     if (visited.add(neighbor)) {
-                        final int snCount = (currentDist > 2)
+                        final int sharedNeighborsCount =
+                                (currentDistance > 2)
                                 ? 0
                                 : countNeighborsIn(nbs, neighbor);
-                        sharedNeighborsHist[snCount]++;
-                        sPathLengths[currentDist]++;
-                        result.addSPL(currentDist);
-                        reachedNodes.add(neighbor);
+                        sharedNeighborsHist[sharedNeighborsCount]++;
+                        sPathLengths[currentDistance]++;
+                        result.addSPL(currentDistance);
+                        // ... and enqueue it.
+                        queue.add(neighbor);
                     }
                 }
             }
         }
         return result;
+//        // BFS AS IMPLEMENTED IN GRAPHHOPPER
+//
+//        // Create the "queue" and add aNode to it.
+//        MyIntDeque queue = new MyIntDeque();
+//        queue.push(aNode);
+//        // Create the set of marked nodes and add aNode to it.
+//        MyBitSet marked = new MyBitSetImpl(graph.getNodes());
+//        marked.add(aNode);
+//        int current;
+//        // While the queue is not empty ...
+//        while (!queue.isEmpty()) {
+//            // Dequeue a node.
+//            current = queue.pop();
+//            // Get the outgoing edges of the current node.
+//            EdgeIterator iter = graph.getOutgoing(current);
+//            while (iter.next()) {
+//                // For every neighbor of the current node,
+//                // if the neighbor is not marked ...
+//                int neighbor = iter.node();
+//                if (!marked.contains(neighbor)) {
+//                    // ... then mark it.
+//                    marked.add(neighbor);
+//                    // ... and enqueue it.
+//                    queue.push(neighbor);
+//                }
+//            }
+//        }
     }
 
     /**
@@ -510,16 +539,14 @@ public class UndirectedGraphAnalyzer {
      * Counts the number of neighbors of the given node that occur in the given
      * set of nodes.
      *
-     * @param aSet Set of nodes to be searched in.
+     * @param aSet  Set of nodes to be searched in.
      * @param aNode Node whose neighbors will be searched in <code>aSet</code>.
      *
-     * @return Number of nodes in <code>aSet</code> that are neighbors
-     *         of <code>aNode</code>.
+     * @return Number of nodes in <code>aSet</code> that are neighbors * * of <code>aNode</code>.
      */
     private int countNeighborsIn(TIntHashSet aSet, int aNode) {
         TIntHashSet nbs = getNeighbors(aNode);
         nbs.retainAll(aSet);
         return nbs.size();
     }
-    
 }
