@@ -109,6 +109,11 @@ public class PathLengthData {
         if (count == 0) {
             throw new IllegalStateException();
         }
+//        // If the maximum length is "infinite", then return an infinite 
+//        // average path length.
+//        if (maxLength >= Integer.MAX_VALUE) {
+//            return Double.POSITIVE_INFINITY;
+//        }
         return ((double) totalLength) / count;
     }
 }

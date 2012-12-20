@@ -24,12 +24,18 @@
  */
 package com.graphhoppersna.centrality;
 
+import com.graphhopper.coll.MyBitSet;
+import com.graphhopper.coll.MyBitSetImpl;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.MyIntDeque;
 import com.graphhoppersna.data.NodeBetweennessInfo;
 import com.graphhoppersna.data.PathLengthData;
+import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.iterator.TIntIterator;
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntDoubleHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.map.hash.TIntLongHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 import java.util.HashMap;
@@ -58,13 +64,13 @@ public class UndirectedGraphAnalyzer {
      * <code>i</code> found so far. </p>
      */
     private long[] sPathLengths;
-    /**
-     * Histogram of pairs of nodes that share common neighbors.
-     *
-     * The i-th element of this array accumulates the number of node pairs that
-     * share i neighbors.
-     */
-    private long[] sharedNeighborsHist;
+//    /**
+//     * Histogram of pairs of nodes that share common neighbors.
+//     *
+//     * The i-th element of this array accumulates the number of node pairs that
+//     * share i neighbors.
+//     */
+//    private long[] sharedNeighborsHist;
     /**
      * Round doubles in attributes to
      * <code>roundingDigits</code> decimals after the point.
@@ -107,7 +113,7 @@ public class UndirectedGraphAnalyzer {
         this.graph = graph;
         nodeCount = graph.getNodes();
         sPathLengths = new long[nodeCount];
-        sharedNeighborsHist = new long[nodeCount];
+//        sharedNeighborsHist = new long[nodeCount];
         visited = new TIntHashSet(nodeCount);
         nodeBetweenness = new HashMap<Integer, NodeBetweennessInfo>();
         edgeBetweenness = new TIntDoubleHashMap();
@@ -183,12 +189,13 @@ public class UndirectedGraphAnalyzer {
 
             // SHORTEST PATHS COMPUTATION
 //            System.out.println("Computing shortest paths for node " + node);
-            PathLengthData pathLengths = computeShortestPathsAllWeightsOne(node);
+            PathLengthData pathLengths =
+                    computeShortestPathsAllWeightsOne(node);
 //            System.out.println("Number of shortest path lengths accumulated: " 
 //                    + pathLengths.getCount());
 
             // Recover the eccentricity for this node.
-            final int eccentricity = pathLengths.getMaxLength();
+            final double eccentricity = pathLengths.getMaxLength();
 
             // Get the average path length for this node and store it.
             final double apl =
@@ -238,8 +245,8 @@ public class UndirectedGraphAnalyzer {
 
         time = System.currentTimeMillis() - time;
         System.out.println("Network analysis took "
-                + (time / 1000)
-                + " seconds.");
+                + time
+                + " ms.");
         return closenessCentrality;
     }
 
@@ -398,7 +405,7 @@ public class UndirectedGraphAnalyzer {
      * Computes the shortest path lengths from the given node to all other nodes
      * in the network.
      *
-     * In addition, this method accumulates values in the
+     * // * In addition, this method accumulates values in the // *
      * {@link #sharedNeighborsHist} histogram.
      *
      * <p> This method stores the lengths found in the array
@@ -423,130 +430,131 @@ public class UndirectedGraphAnalyzer {
     // TODO: For now, this is not taking the lengths into account. All weights are 1.
     private PathLengthData computeShortestPathsAllWeightsOne(int aNode) {
 
+        // BFS AS IMPLEMENTED IN GRAPHHOPPER
+
         // Create the "queue" and add aNode to it.
-        // TODO: Replace by TIntLinkedList.
-        LinkedList<Integer> queue = new LinkedList<Integer>();
-        queue.add(aNode);
-        queue.add(null);
-
-        // Clear the set marked nodes and add aNode to it.
-        visited.clear();
-        visited.add(aNode);
-
-        // This will be the neighbors of the current node.
-        TIntHashSet nbs = null;
-
-        // For keeping track of which level in the BFS tree.
-        int currentDistance = 1;
+        MyIntDeque queue = new MyIntDeque();
+        queue.push(aNode);
+//        System.out.println("BFS started for node " + aNode + ".");
+        // Create the set of marked nodes and add aNode to it.
+        MyBitSet marked = new MyBitSetImpl(nodeCount);
+        marked.add(aNode);
+        // Initialize the distances.
+        TIntIntHashMap dist = new TIntIntHashMap();
+        TIntHashSet nodeSet = graph.nodeSet();
+        TIntIterator iterator = nodeSet.iterator();
 
         // Initialize the result to be returned.
         PathLengthData result = new PathLengthData();
 
-        // While the queue is not empty, dequeue a node ...
-        for (Integer currentNode = queue.removeFirst();
-                !queue.isEmpty();
-                currentNode = queue.removeFirst()) {
-            if (currentNode == null) {
-                // Next level of the BFS tree
-                currentDistance++;
-                queue.add(null);
-            } else {
-                // Get the neighbors of the current node.
-                final TIntHashSet neighbors =
-                        getNeighbors(currentNode.intValue());
-                if (nbs == null) {
-                    nbs = neighbors;
-                }
-                // For every neighbor of the current node ...
-                TIntIterator it = neighbors.iterator();
-                while (it.hasNext()) {
-                    final int neighbor = it.next();
-                    // If the neighbor is not marked, then mark it ...
-                    // (Note that add returns false if neighbor was
-                    // alread visited.)
-                    if (visited.add(neighbor)) {
-                        final int sharedNeighborsCount =
-                                (currentDistance > 2)
-                                ? 0
-                                : countNeighborsIn(nbs, neighbor);
-                        sharedNeighborsHist[sharedNeighborsCount]++;
-                        sPathLengths[currentDistance]++;
-                        result.addSPL(currentDistance);
-                        // ... and enqueue it.
-                        queue.add(neighbor);
-                    }
+        while (iterator.hasNext()) {
+            int next = iterator.next();
+//            System.out.println("Initializing the distance to " 
+//                    + next + " to " + Integer.MAX_VALUE);
+            dist.put(next, Integer.MAX_VALUE);
+        }
+//        System.out.println("Resetting the distance to "
+//                + aNode + " to be zero.");
+        dist.put(aNode, 0);
+//        printDistances(dist.iterator(), aNode);
+
+        int currentNode;
+        int currentDistance;
+        // While the queue is not empty ...
+        while (!queue.isEmpty()) {
+            // Dequeue a node.
+            currentNode = queue.pop();
+//            System.out.println("BFS for " + currentNode + " ");
+            // Get the outgoing edges of the current node.
+            EdgeIterator iter = graph.getOutgoing(currentNode);
+            while (iter.next()) {
+                // For every neighbor of the current node,
+                // if the neighbor is not marked ...
+                int neighbor = iter.node();
+                if (!marked.contains(neighbor)) {
+                    // ... then mark it.
+                    marked.add(neighbor);
+                    // ... and enqueue it.
+                    queue.push(neighbor);
+//                    System.out.println(neighbor + " (" 
+//                            + (dist.get(currentNode) + 1)
+//                            + ") ");
+                    // ... and set the distance.
+                    currentDistance = dist.get(currentNode) + 1;
+                    dist.put(neighbor, currentDistance);
+//                    System.out.println("Set ("
+//                            + currentNode + ", "
+//                            + neighbor + ") = "
+//                            + currentDistance);
+                    result.addSPL(currentDistance);
                 }
             }
+//            System.out.println();
         }
-        return result;
-//        // BFS AS IMPLEMENTED IN GRAPHHOPPER
-//
-//        // Create the "queue" and add aNode to it.
-//        MyIntDeque queue = new MyIntDeque();
-//        queue.push(aNode);
-//        // Create the set of marked nodes and add aNode to it.
-//        MyBitSet marked = new MyBitSetImpl(graph.getNodes());
-//        marked.add(aNode);
-//        int current;
-//        // While the queue is not empty ...
-//        while (!queue.isEmpty()) {
-//            // Dequeue a node.
-//            current = queue.pop();
-//            // Get the outgoing edges of the current node.
-//            EdgeIterator iter = graph.getOutgoing(current);
-//            while (iter.next()) {
-//                // For every neighbor of the current node,
-//                // if the neighbor is not marked ...
-//                int neighbor = iter.node();
-//                if (!marked.contains(neighbor)) {
-//                    // ... then mark it.
-//                    marked.add(neighbor);
-//                    // ... and enqueue it.
-//                    queue.push(neighbor);
-//                }
-//            }
+//        printDistances(dist.iterator(), aNode);
+        
+        // If a node is unreachable, then make the average path length
+        // infinite in order to make closeness centrality zero.
+//        if (dist.containsValue(Integer.MAX_VALUE)) {
+//            result.addSPL(Integer.MAX_VALUE);
 //        }
+        return result;
     }
 
-    /**
-     * Gets all the neighbors of the given node.
-     *
-     * @param aNode Node, whose neighbors are to be found.
-     *
-     * @return <code>Set</code> of <code>Node</code> instances, containing all
-     *         the neighbors of <code>aNode</code>; empty set if the node
-     *         specified is an isolated vertex.
-     *
-     * @see CyNetworkUtils#getNeighbors(CyNetwork, Node, int[])
-     */
-    private TIntHashSet getNeighbors(int aNode) {
-        TIntHashSet neighbors = new TIntHashSet();
+//    /**
+//     * Gets all the neighbors of the given node.
+//     *
+//     * @param aNode Node, whose neighbors are to be found.
+//     *
+//     * @return <code>Set</code> of <code>Node</code> instances, containing all
+//     *         the neighbors of <code>aNode</code>; empty set if the node
+//     *         specified is an isolated vertex.
+//     *
+//     * @see CyNetworkUtils#getNeighbors(CyNetwork, Node, int[])
+//     */
+//    private TIntHashSet getNeighbors(int aNode) {
+//        TIntHashSet neighbors = new TIntHashSet();
+//
+//        EdgeIterator incomingIt = graph.getIncoming(aNode);
+//        EdgeIterator outgoingIt = graph.getOutgoing(aNode);
+//
+//        while (incomingIt.next()) {
+//            neighbors.add(incomingIt.baseNode());
+//        }
+//        while (outgoingIt.next()) {
+//            neighbors.add(outgoingIt.node());
+//        }
+//
+//        return neighbors;
+//    }
 
-        EdgeIterator incomingIt = graph.getIncoming(aNode);
-        EdgeIterator outgoingIt = graph.getOutgoing(aNode);
+//    /**
+//     * Counts the number of neighbors of the given node that occur in the given
+//     * set of nodes.
+//     *
+//     * @param aSet  Set of nodes to be searched in.
+//     * @param aNode Node whose neighbors will be searched in <code>aSet</code>.
+//     *
+//     * @return Number of nodes in <code>aSet</code> that are neighbors * *
+//     *         of <code>aNode</code>.
+//     */
+//    private int countNeighborsIn(TIntHashSet aSet, int aNode) {
+//        TIntHashSet nbs = getNeighbors(aNode);
+//        nbs.retainAll(aSet);
+//        return nbs.size();
+//    }
 
-        while (incomingIt.next()) {
-            neighbors.add(incomingIt.baseNode());
+    private void printDistances(TIntIntIterator it, int aNode) {
+        while (it.hasNext()) {
+            it.advance();
+            System.out.print("Distance from " + aNode
+                    + " to " + it.key()
+                    + ": ");
+            if (it.value() == Integer.MAX_VALUE) {
+                System.out.println("---");
+            } else {
+                System.out.println(it.value());
+            }
         }
-        while (outgoingIt.next()) {
-            neighbors.add(outgoingIt.node());
-        }
-
-        return neighbors;
-    }
-
-    /**
-     * Counts the number of neighbors of the given node that occur in the given
-     * set of nodes.
-     *
-     * @param aSet  Set of nodes to be searched in.
-     * @param aNode Node whose neighbors will be searched in <code>aSet</code>.
-     *
-     * @return Number of nodes in <code>aSet</code> that are neighbors * * of <code>aNode</code>.
-     */
-    private int countNeighborsIn(TIntHashSet aSet, int aNode) {
-        TIntHashSet nbs = getNeighbors(aNode);
-        nbs.retainAll(aSet);
-        return nbs.size();
     }
 }
