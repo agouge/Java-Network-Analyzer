@@ -1,2 +1,4 @@
 /target
 files/nantes_1_edges.csv
+files/example.edges.csv
+src/test/java/com/graphhoppersna/centrality/NewClass.java.old
