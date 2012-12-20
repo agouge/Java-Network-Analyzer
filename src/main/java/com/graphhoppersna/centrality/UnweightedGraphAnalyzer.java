@@ -29,41 +29,35 @@ import com.graphhopper.coll.MyBitSetImpl;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.MyIntDeque;
-import com.graphhoppersna.data.NodeBetweennessInfo;
 import com.graphhoppersna.data.PathLengthData;
 import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.iterator.TIntIterator;
-import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.map.hash.TIntLongHashMap;
 import gnu.trove.set.hash.TIntHashSet;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 
 /**
  *
  * @author Adam Gouge
  */
-public class UndirectedGraphAnalyzer {
+public class UnweightedGraphAnalyzer {
 
     /**
-     * The (undirected) graph to be analyzed.
+     * The (unweighted) graph to be analyzed.
      */
     private final Graph graph;
 //    *************************************************************************
-    /**
-     * Histogram of shortest path lengths.
-     *
-     * <p><code>sPathLength[0]</code> stores the number of nodes processed so
-     * far.
-     *
-     * <p><code>sPathLength[i]</code> for
-     * <code>i > 0</code> stores the number of shortest paths of length
-     * <code>i</code> found so far. </p>
-     */
-    private long[] sPathLengths;
+//    /**
+//     * Histogram of shortest path lengths.
+//     *
+//     * <p><code>sPathLength[0]</code> stores the number of nodes processed so
+//     * far.
+//     *
+//     * <p><code>sPathLength[i]</code> for
+//     * <code>i > 0</code> stores the number of shortest paths of length
+//     * <code>i</code> found so far. </p>
+//     */
+//    private long[] sPathLengths;
 //    /**
 //     * Histogram of pairs of nodes that share common neighbors.
 //     *
@@ -71,33 +65,26 @@ public class UndirectedGraphAnalyzer {
 //     * share i neighbors.
 //     */
 //    private long[] sharedNeighborsHist;
-    /**
-     * Round doubles in attributes to
-     * <code>roundingDigits</code> decimals after the point.
-     */
-    private int roundingDigits;
-    /**
-     * Set of visited nodes.
-     *
-     * <p> This set is used exclusively by the method
-     * {@link #computeSPandSN(Node)}. </p>
-     */
-    private final TIntHashSet visited;
-    /**
-     * Map of all nodes with their respective node betweenness information,
-     * which stores information needed for the node betweenness calculation.
-     */
-    private Map<Integer, NodeBetweennessInfo> nodeBetweenness;
-    /**
-     * Map of all edges with their respective betweenness.
-     */
-    private TIntDoubleHashMap edgeBetweenness;
-    /**
-     * Map of all nodes with their respective stress.
-     *
-     * I.e., the number of shortest paths passing through a node.
-     */
-    private TIntLongHashMap stress;
+//    /**
+//     * Round doubles in attributes to
+//     * <code>roundingDigits</code> decimals after the point.
+//     */
+//    private int roundingDigits;
+//    /**
+//     * Map of all nodes with their respective node betweenness information,
+//     * which stores information needed for the node betweenness calculation.
+//     */
+//    private Map<Integer, NodeBetweennessInfo> nodeBetweenness;
+//    /**
+//     * Map of all edges with their respective betweenness.
+//     */
+//    private TIntDoubleHashMap edgeBetweenness;
+//    /**
+//     * Map of all nodes with their respective stress.
+//     *
+//     * I.e., the number of shortest paths passing through a node.
+//     */
+//    private TIntLongHashMap stress;
     /**
      * The number of nodes in this graph.
      */
@@ -108,17 +95,16 @@ public class UndirectedGraphAnalyzer {
      *
      * @param graph The graph to be analyzed.
      */
-    public UndirectedGraphAnalyzer(
+    public UnweightedGraphAnalyzer(
             Graph graph) {
         this.graph = graph;
         nodeCount = graph.getNodes();
-        sPathLengths = new long[nodeCount];
+//        sPathLengths = new long[nodeCount];
 //        sharedNeighborsHist = new long[nodeCount];
-        visited = new TIntHashSet(nodeCount);
-        nodeBetweenness = new HashMap<Integer, NodeBetweennessInfo>();
-        edgeBetweenness = new TIntDoubleHashMap();
-        stress = new TIntLongHashMap();
-        roundingDigits = 8;
+//        nodeBetweenness = new HashMap<Integer, NodeBetweennessInfo>();
+//        edgeBetweenness = new TIntDoubleHashMap();
+//        stress = new TIntLongHashMap();
+//        roundingDigits = 8;
     }
 
     public TIntDoubleHashMap computeClosenessAllWeightsOne() {
@@ -131,11 +117,11 @@ public class UndirectedGraphAnalyzer {
         // Closeness centrality
         TIntDoubleHashMap closenessCentrality = new TIntDoubleHashMap();
 
-        // node betweenness
-        TIntDoubleHashMap nodeBetweennessArray = new TIntDoubleHashMap();
+//        // node betweenness
+//        TIntDoubleHashMap nodeBetweennessArray = new TIntDoubleHashMap();
 
-        // average shortest path length
-        TIntDoubleHashMap aplMap = new TIntDoubleHashMap();
+//        // average shortest path length
+//        TIntDoubleHashMap aplMap = new TIntDoubleHashMap();
 
 //        // stress
 //        LogBinDistribution stressDist = new LogBinDistribution();
@@ -166,19 +152,19 @@ public class UndirectedGraphAnalyzer {
         TIntHashSet nodeSet = graph.nodeSet();
         TIntIterator nodeIter = nodeSet.iterator();
 
-        // Initialize the parameters for the betweenness calculation.
-        nodeBetweenness.clear();
-        edgeBetweenness.clear();
-        stress.clear();
-        aplMap.clear();
-        while (nodeIter.hasNext()) {
-            final int node = nodeIter.next();
-            nodeBetweenness.put(node, new NodeBetweennessInfo(0, -1, 0.0));
-            stress.put(node, Long.valueOf(0));
-        }
+//        // Initialize the parameters for the betweenness calculation.
+//        nodeBetweenness.clear();
+//        edgeBetweenness.clear();
+//        stress.clear();
+//        aplMap.clear();
+//        while (nodeIter.hasNext()) {
+//            final int node = nodeIter.next();
+//            nodeBetweenness.put(node, new NodeBetweennessInfo(0, -1, 0.0));
+//            stress.put(node, Long.valueOf(0));
+//        }
 
-        // Re-initialize the iterator and begin network analysis.
-        nodeIter = nodeSet.iterator();
+//        // Re-initialize the iterator and begin network analysis.
+//        nodeIter = nodeSet.iterator();
         while (nodeIter.hasNext()) {
 
             // Start timing for this node.
@@ -201,7 +187,7 @@ public class UndirectedGraphAnalyzer {
             final double apl =
                     (pathLengths.getCount() > 0)
                     ? pathLengths.getAverageLength() : 0.0;
-            aplMap.put(node, apl);
+//            aplMap.put(node, apl);
 
             // Once we have the average path length for this node, 
             // we have the closeness centrality for this node.
@@ -220,13 +206,13 @@ public class UndirectedGraphAnalyzer {
 //            // Node and edge betweenness calculation
 //            computeNBandEB(node);
 
-            // Reset everything except the betweenness value
-            TIntIterator nodeIterReset = nodeSet.iterator();
-            while (nodeIterReset.hasNext()) {
-                final int nodeToReset = nodeIterReset.next();
-                NodeBetweennessInfo nodeInfo = nodeBetweenness.get(nodeToReset);
-                nodeInfo.reset();
-            }
+//            // Reset everything except the betweenness value
+//            TIntIterator nodeIterReset = nodeSet.iterator();
+//            while (nodeIterReset.hasNext()) {
+//                final int nodeToReset = nodeIterReset.next();
+//                NodeBetweennessInfo nodeInfo = nodeBetweenness.get(nodeToReset);
+//                nodeInfo.reset();
+//            }
 
         } // End node iteration.
 
@@ -250,6 +236,155 @@ public class UndirectedGraphAnalyzer {
         return closenessCentrality;
     }
 
+    /**
+     * Computes the shortest path lengths from the given node to all other nodes
+     * in the network.
+     *
+     * This method uses a breadth-first traversal through the network, starting
+     * from the specified node, in order to find all reachable nodes and
+     * accumulate their distances. This only works if all edges are considered
+     * to have the same weight (1.0).
+     *
+     * @param aNode Starting node of the shortest paths to be found.
+     *
+     * @return Data on the shortest path lengths from the current node to all
+     * other reachable nodes in the network.
+     */
+    // TODO: For now, this is not taking the lengths into account. All weights are 1.
+    private PathLengthData computeShortestPathsAllWeightsOne(int aNode) {
+
+        // BFS AS IMPLEMENTED IN GRAPHHOPPER
+
+//        System.out.println("BFS started for node " + aNode + ".");
+
+        // Get an iterator on the node set.
+        TIntHashSet nodeSet = graph.nodeSet();
+        TIntIterator iterator = nodeSet.iterator();
+
+        // Create the "queue" and add aNode to it.
+        MyIntDeque queue = new MyIntDeque();
+        queue.push(aNode);
+
+        // Create the set of marked nodes and add aNode to it.
+        MyBitSet marked = new MyBitSetImpl(nodeCount);
+        marked.add(aNode);
+
+        // Initialize the distances.
+        TIntIntHashMap dist = new TIntIntHashMap();
+        while (iterator.hasNext()) {
+            int next = iterator.next();
+//            System.out.println("Initializing the distance to " 
+//                    + next + " to " + Integer.MAX_VALUE);
+            dist.put(next, Integer.MAX_VALUE);
+        }
+//        System.out.println("Resetting the distance to "
+//                + aNode + " to be zero.");
+        dist.put(aNode, 0);
+//        printDistances(dist.iterator(), aNode);
+
+        // Initialize the result to be returned.
+        PathLengthData result = new PathLengthData();
+        // The current child node to be considered.
+        int currentNode;
+        // The current distance from aNode.
+        int currentDistance;
+
+        // While the queue is not empty ...
+        while (!queue.isEmpty()) {
+
+            // ... dequeue a node.
+            currentNode = queue.pop();
+//            System.out.println("BFS for " + currentNode + " ");
+
+            // Get the outgoing edges of the current node.
+            EdgeIterator iter = graph.getOutgoing(currentNode);
+            while (iter.next()) {
+
+                // For every neighbor of the current node,
+                // if the neighbor is not marked ...
+                int neighbor = iter.node();
+                if (!marked.contains(neighbor)) {
+
+                    // ... then mark it,
+                    marked.add(neighbor);
+
+                    // ... enqueue it,
+                    queue.push(neighbor);
+
+                    // ... and set the distance.
+                    currentDistance = dist.get(currentNode) + 1;
+                    dist.put(neighbor, currentDistance);
+//                    System.out.println("Set ("
+//                            + currentNode + ", "
+//                            + neighbor + ") = "
+//                            + currentDistance);
+                    result.addSPL(currentDistance);
+                }
+            }
+        }
+
+        // TODO: If a node is unreachable, then make the average path length
+        // infinite in order to make closeness centrality zero.
+//        if (dist.containsValue(Integer.MAX_VALUE)) {
+//            result.addSPL(Integer.MAX_VALUE);
+//        }
+        return result;
+    }
+
+//    /**
+//     * Gets all the neighbors of the given node.
+//     *
+//     * @param aNode Node, whose neighbors are to be found.
+//     *
+//     * @return <code>Set</code> of <code>Node</code> instances, containing all
+//     *         the neighbors of <code>aNode</code>; empty set if the node
+//     *         specified is an isolated vertex.
+//     *
+//     * @see CyNetworkUtils#getNeighbors(CyNetwork, Node, int[])
+//     */
+//    private TIntHashSet getNeighbors(int aNode) {
+//        TIntHashSet neighbors = new TIntHashSet();
+//
+//        EdgeIterator incomingIt = graph.getIncoming(aNode);
+//        EdgeIterator outgoingIt = graph.getOutgoing(aNode);
+//
+//        while (incomingIt.next()) {
+//            neighbors.add(incomingIt.baseNode());
+//        }
+//        while (outgoingIt.next()) {
+//            neighbors.add(outgoingIt.node());
+//        }
+//
+//        return neighbors;
+//    }
+//    /**
+//     * Counts the number of neighbors of the given node that occur in the given
+//     * set of nodes.
+//     *
+//     * @param aSet  Set of nodes to be searched in.
+//     * @param aNode Node whose neighbors will be searched in <code>aSet</code>.
+//     *
+//     * @return Number of nodes in <code>aSet</code> that are neighbors * *
+//     *         of <code>aNode</code>.
+//     */
+//    private int countNeighborsIn(TIntHashSet aSet, int aNode) {
+//        TIntHashSet nbs = getNeighbors(aNode);
+//        nbs.retainAll(aSet);
+//        return nbs.size();
+//    }
+    private void printDistances(TIntIntIterator it, int aNode) {
+        while (it.hasNext()) {
+            it.advance();
+            System.out.print("Distance from " + aNode
+                    + " to " + it.key()
+                    + ": ");
+            if (it.value() == Integer.MAX_VALUE) {
+                System.out.println("---");
+            } else {
+                System.out.println(it.value());
+            }
+        }
+    }
 //    /**
 //     * Accumulates the node and edge betweenness of all nodes in a connected
 //     * component. The node betweenness is calculate using the algorithm of
@@ -401,160 +536,4 @@ public class UndirectedGraphAnalyzer {
 //            }
 //        }
 //    }
-    /**
-     * Computes the shortest path lengths from the given node to all other nodes
-     * in the network.
-     *
-     * // * In addition, this method accumulates values in the // *
-     * {@link #sharedNeighborsHist} histogram.
-     *
-     * <p> This method stores the lengths found in the array
-     * {@link #sPathLengths}.<br/>
-     * <code>sPathLengths[i] == 0</code> when i is the index of
-     * <code>aNode</code>.<br/>
-     * <code>sPathLengths[i] == Integer.MAX_VALUE</code> when node i and
-     * <code>aNode</code> are disconnected.<br/>
-     * <code>sPathLengths[i] == d &gt; 0</code> when every shortest path between
-     * node i and
-     * <code>aNode</code> contains
-     * <code>d</code> edges. </p> <p> This method uses a breadth-first traversal
-     * through the network, starting from the specified node, in order to find
-     * all reachable nodes and accumulate their distances to
-     * <code>aNode</code> in {@link #sPathLengths}. </p>
-     *
-     * @param aNode Starting node of the shortest paths to be found.
-     *
-     * @return Data on the shortest path lengths from the current node to all
-     *         other reachable nodes in the network.
-     */
-    // TODO: For now, this is not taking the lengths into account. All weights are 1.
-    private PathLengthData computeShortestPathsAllWeightsOne(int aNode) {
-
-        // BFS AS IMPLEMENTED IN GRAPHHOPPER
-
-        // Create the "queue" and add aNode to it.
-        MyIntDeque queue = new MyIntDeque();
-        queue.push(aNode);
-//        System.out.println("BFS started for node " + aNode + ".");
-        // Create the set of marked nodes and add aNode to it.
-        MyBitSet marked = new MyBitSetImpl(nodeCount);
-        marked.add(aNode);
-        // Initialize the distances.
-        TIntIntHashMap dist = new TIntIntHashMap();
-        TIntHashSet nodeSet = graph.nodeSet();
-        TIntIterator iterator = nodeSet.iterator();
-
-        // Initialize the result to be returned.
-        PathLengthData result = new PathLengthData();
-
-        while (iterator.hasNext()) {
-            int next = iterator.next();
-//            System.out.println("Initializing the distance to " 
-//                    + next + " to " + Integer.MAX_VALUE);
-            dist.put(next, Integer.MAX_VALUE);
-        }
-//        System.out.println("Resetting the distance to "
-//                + aNode + " to be zero.");
-        dist.put(aNode, 0);
-//        printDistances(dist.iterator(), aNode);
-
-        int currentNode;
-        int currentDistance;
-        // While the queue is not empty ...
-        while (!queue.isEmpty()) {
-            // Dequeue a node.
-            currentNode = queue.pop();
-//            System.out.println("BFS for " + currentNode + " ");
-            // Get the outgoing edges of the current node.
-            EdgeIterator iter = graph.getOutgoing(currentNode);
-            while (iter.next()) {
-                // For every neighbor of the current node,
-                // if the neighbor is not marked ...
-                int neighbor = iter.node();
-                if (!marked.contains(neighbor)) {
-                    // ... then mark it.
-                    marked.add(neighbor);
-                    // ... and enqueue it.
-                    queue.push(neighbor);
-//                    System.out.println(neighbor + " (" 
-//                            + (dist.get(currentNode) + 1)
-//                            + ") ");
-                    // ... and set the distance.
-                    currentDistance = dist.get(currentNode) + 1;
-                    dist.put(neighbor, currentDistance);
-//                    System.out.println("Set ("
-//                            + currentNode + ", "
-//                            + neighbor + ") = "
-//                            + currentDistance);
-                    result.addSPL(currentDistance);
-                }
-            }
-//            System.out.println();
-        }
-//        printDistances(dist.iterator(), aNode);
-        
-        // If a node is unreachable, then make the average path length
-        // infinite in order to make closeness centrality zero.
-//        if (dist.containsValue(Integer.MAX_VALUE)) {
-//            result.addSPL(Integer.MAX_VALUE);
-//        }
-        return result;
-    }
-
-//    /**
-//     * Gets all the neighbors of the given node.
-//     *
-//     * @param aNode Node, whose neighbors are to be found.
-//     *
-//     * @return <code>Set</code> of <code>Node</code> instances, containing all
-//     *         the neighbors of <code>aNode</code>; empty set if the node
-//     *         specified is an isolated vertex.
-//     *
-//     * @see CyNetworkUtils#getNeighbors(CyNetwork, Node, int[])
-//     */
-//    private TIntHashSet getNeighbors(int aNode) {
-//        TIntHashSet neighbors = new TIntHashSet();
-//
-//        EdgeIterator incomingIt = graph.getIncoming(aNode);
-//        EdgeIterator outgoingIt = graph.getOutgoing(aNode);
-//
-//        while (incomingIt.next()) {
-//            neighbors.add(incomingIt.baseNode());
-//        }
-//        while (outgoingIt.next()) {
-//            neighbors.add(outgoingIt.node());
-//        }
-//
-//        return neighbors;
-//    }
-
-//    /**
-//     * Counts the number of neighbors of the given node that occur in the given
-//     * set of nodes.
-//     *
-//     * @param aSet  Set of nodes to be searched in.
-//     * @param aNode Node whose neighbors will be searched in <code>aSet</code>.
-//     *
-//     * @return Number of nodes in <code>aSet</code> that are neighbors * *
-//     *         of <code>aNode</code>.
-//     */
-//    private int countNeighborsIn(TIntHashSet aSet, int aNode) {
-//        TIntHashSet nbs = getNeighbors(aNode);
-//        nbs.retainAll(aSet);
-//        return nbs.size();
-//    }
-
-    private void printDistances(TIntIntIterator it, int aNode) {
-        while (it.hasNext()) {
-            it.advance();
-            System.out.print("Distance from " + aNode
-                    + " to " + it.key()
-                    + ": ");
-            if (it.value() == Integer.MAX_VALUE) {
-                System.out.println("---");
-            } else {
-                System.out.println(it.value());
-            }
-        }
-    }
 }

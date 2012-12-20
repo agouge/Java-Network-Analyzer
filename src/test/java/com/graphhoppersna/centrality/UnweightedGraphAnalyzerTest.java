@@ -32,7 +32,7 @@ import org.junit.Test;
  *
  * @author Adam Gouge
  */
-public class UndirectedGraphAnalyzerTest {
+public class UnweightedGraphAnalyzerTest {
 
     @Test
     public void testUndirectedGraphAnalysis()
@@ -40,12 +40,12 @@ public class UndirectedGraphAnalyzerTest {
 
         GDMSGraphStorage graph = ClosenessCentralityTest.
                 prepareGraph2DBidirectional();
-        
+
 //        graph.printEdges();
 
-        UndirectedGraphAnalyzer analyzer =
-                new UndirectedGraphAnalyzer(graph);
-        
+        UnweightedGraphAnalyzer analyzer =
+                new UnweightedGraphAnalyzer(graph);
+
         analyzer.computeClosenessAllWeightsOne();
 
 //        graph.printEdges();
