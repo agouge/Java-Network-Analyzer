@@ -219,20 +219,4 @@ public class GDMSGraphStorage extends LevelGraphStorage {
         }
     }
 
-    /**
-     * Prints out the edges of this graph.
-     *
-     */
-    public void printEdges() {
-        // Get all the edges.
-        EdgeIterator edgeIterator = this.getAllEdges();
-        // Print them out.
-        while (edgeIterator.next()) {
-            System.out.println("EdgeID: " + edgeIterator.edge()
-                    + ", " + START_NODE + " " + edgeIterator.baseNode()
-                    + ", " + END_NODE + " " + edgeIterator.node()
-                    + ", " + weightField + " " + edgeIterator.distance()
-                    + ", both directions: " + CarStreetType.isBoth(edgeIterator.flags()));
-        }
-    }
 }
