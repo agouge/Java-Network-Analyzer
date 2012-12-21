@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhoppersna.data;
+package com.graphhopper.sna.data;
 
 import gnu.trove.list.linked.TIntLinkedList;
 import java.util.LinkedList;

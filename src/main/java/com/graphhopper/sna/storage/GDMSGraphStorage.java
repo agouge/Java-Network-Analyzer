@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhoppersna.storage;
+package com.graphhopper.sna.storage;
 
 import com.graphhopper.routing.util.CarStreetType;
 import com.graphhopper.storage.Directory;

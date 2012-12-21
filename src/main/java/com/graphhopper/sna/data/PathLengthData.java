@@ -23,7 +23,7 @@
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.graphhoppersna.data;
+package com.graphhopper.sna.data;
 
 /**
  * Stores information about the shortest path lengths from one node

@@ -22,9 +22,10 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhoppersna.centrality;
+package com.graphhopper.sna.centrality;
 
-import com.graphhoppersna.storage.GDMSGraphStorage;
+import com.graphhopper.sna.centrality.UnweightedGraphAnalyzer;
+import com.graphhopper.sna.storage.GDMSGraphStorage;
 import java.io.FileNotFoundException;
 import org.junit.Test;
 

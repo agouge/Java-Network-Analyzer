@@ -22,11 +22,12 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhoppersna.centrality;
+package com.graphhopper.sna.centrality;
 
+import com.graphhopper.sna.centrality.ClosenessCentrality;
 import com.graphhopper.routing.DijkstraBidirection;
 import com.graphhopper.routing.DijkstraSimple;
-import com.graphhoppersna.storage.GDMSGraphStorage;
+import com.graphhopper.sna.storage.GDMSGraphStorage;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import java.io.FileNotFoundException;
 import java.io.IOException;
