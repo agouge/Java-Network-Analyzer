@@ -26,8 +26,8 @@
 package com.graphhoppersna.data;
 
 /**
- * Data type storing information about the shortest path lengths from one node
- * to other nodes in the networks.
+ * Stores information about the shortest path lengths from one node
+ * to the other nodes in the network.
  *
  * @author Adam Gouge
  */
@@ -47,8 +47,7 @@ public class PathLengthData {
     private int maxLength;
 
     /**
-     * Initializes a new instance of
-     * <code>PathLengthData</code>.
+     * Initializes a new instance of {@link PathLengthData}.
      */
     public PathLengthData() {
         count = 0;
@@ -59,9 +58,9 @@ public class PathLengthData {
     /**
      * Accumulates a new shortest path length to this data instance.
      *
-     * @param aLength Length of shortest path to be accumulated.
+     * @param aLength Length of a new shortest path to be accumulated.
      */
-    public void addSPL(int aLength) {
+    public void addSPLength(int aLength) {
         count++;
         totalLength += aLength;
         if (maxLength < aLength) {

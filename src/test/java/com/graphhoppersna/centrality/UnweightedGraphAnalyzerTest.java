@@ -46,7 +46,7 @@ public class UnweightedGraphAnalyzerTest {
         UnweightedGraphAnalyzer analyzer =
                 new UnweightedGraphAnalyzer(graph);
 
-        analyzer.computeClosenessAllWeightsOne();
+        analyzer.computeCloseness();
 
 //        graph.printEdges();
 
