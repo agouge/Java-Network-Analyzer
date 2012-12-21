@@ -24,7 +24,6 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.storage.Graph;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 
@@ -44,32 +43,21 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
     public WeightedGraphAnalyzer(Graph graph) {
         super(graph);
     }
-    
+
     /**
-     * {@inheritDoc}
+     * Computes the closeness centrality indices of all vertices of the graph
+     * (assumed to be connected) and stores them in a hash map, where the keys
+     * are the vertices and the values are the closeness.
+     *
+     * <p> This method first computes contraction hierarchies on the given
+     * graph, which greatly reduces the shortest paths computation time.
+     *
+     * @return The closeness centrality hash map.
      */
     @Override
     public TIntDoubleHashMap computeCloseness() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /**
-     * Computes the shortest path lengths from the given node to all other nodes
-     * in the weighted graph and stores them in a
-     * {@link PathLengthData} object.
-     *
-     * <p> 
-     * 
-     * in order to find all reachable nodes
-     * and accumulate their distances.
-     *
-     * @param startNode Start node of the shortest paths to be found.
-     *
-     * @return Data on the shortest path lengths from the current node to all
-     *         other reachable nodes in the graph.
-     */
-    @Override
-    protected PathLengthData computeShortestPathsData(int startNode) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        ClosenessCentrality closenessCentrality =
+                new ClosenessCentrality(graph);
+        return closenessCentrality.calculateUsingContractionHierarchies();
     }
 }

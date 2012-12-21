@@ -132,7 +132,6 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
      * @return Data on the shortest path lengths from the current node to all
      *         other reachable nodes in the graph.
      */
-    @Override
     protected PathLengthData computeShortestPathsData(int startNode) {
 
 //        System.out.println("BFS started for node " + aNode + ".");

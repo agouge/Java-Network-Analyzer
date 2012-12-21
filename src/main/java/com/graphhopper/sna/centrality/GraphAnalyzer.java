@@ -24,7 +24,6 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
@@ -66,20 +65,9 @@ public abstract class GraphAnalyzer {
     public abstract TIntDoubleHashMap computeCloseness();
 
     /**
-     * Computes the shortest path lengths from the given node to all other nodes
-     * in the graph and stores them in a {@link PathLengthData} object.
+     * Returns a {@link TIntHashSet} of the nodes of this graph.
      *
-     * @param startNode Start node of the shortest paths to be found.
-     *
-     * @return Data on the shortest path lengths from the current node to all
-     *         other reachable nodes in the graph.
-     */
-    protected abstract PathLengthData computeShortestPathsData(int startNode);
-
-    /**
-     * Returns a {@link TIntHashSet} of nodes of this graph.
-     *
-     * @return a {@link TIntHashSet} of nodes of this graph.
+     * @return a {@link TIntHashSet} of the nodes of this graph.
      */
     protected TIntHashSet nodeSet() {
         // Initialize the Set.
