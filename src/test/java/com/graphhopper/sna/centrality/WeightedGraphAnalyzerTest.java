@@ -31,14 +31,15 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
- * Tests graph analysis on unweighted graphs.
+ * Tests graph analysis on weighted graphs.
  *
  * @author Adam Gouge
  */
-public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
+// TODO: Make up a better example where contraction hierarchies are actually used.
+public class WeightedGraphAnalyzerTest extends GraphSetupTest {
 
     /**
-     * Tests graph analysis on a 2D unweighted bidirectional graph.
+     * Tests graph analysis on a 2D weighted bidirectional graph.
      *
      * <p> For now, we just compute closeness centrality, but full graph
      * analysis will be available soon.
@@ -54,23 +55,23 @@ public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
         GDMSGraphStorage graph = prepareGraph2DBidirectional();
 
         // Prepare the unweighted graph analyzer.
-        UnweightedGraphAnalyzer analyzer =
-                new UnweightedGraphAnalyzer(graph);
+        WeightedGraphAnalyzer analyzer =
+                new WeightedGraphAnalyzer(graph);
 
         // Calculate closeness.
         TIntDoubleHashMap result = analyzer.computeCloseness();
 
         // Check values.
-        assertEquals(result.get(6), 0.625, TOLERANCE);
-        assertEquals(result.get(5), 0.4166666666666667, TOLERANCE);
-        assertEquals(result.get(4), 0.35714285714285715, TOLERANCE);
-        assertEquals(result.get(3), 0.625, TOLERANCE);
-        assertEquals(result.get(2), 0.4166666666666667, TOLERANCE);
-        assertEquals(result.get(1), 0.5, TOLERANCE);
+        assertEquals(result.get(6), 0.005575422644913597, TOLERANCE);
+        assertEquals(result.get(5), 0.0034950150600198938, TOLERANCE);
+        assertEquals(result.get(4), 0.0032353894664778064, TOLERANCE);
+        assertEquals(result.get(3), 0.005575422644913597, TOLERANCE);
+        assertEquals(result.get(2), 0.00353278744701702, TOLERANCE);
+        assertEquals(result.get(1), 0.0037875086449884817, TOLERANCE);
     }
 
     /**
-     * Tests graph analysis on a 2D unweighted directed graph.
+     * Tests graph analysis on a 2D weighted directed graph.
      *
      * <p> For now, we just compute closeness centrality, but full graph
      * analysis will be available soon.
@@ -87,18 +88,18 @@ public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
         GDMSGraphStorage graph = prepareGraph2DDirected();
 
         // Prepare the unweighted graph analyzer.
-        UnweightedGraphAnalyzer analyzer =
-                new UnweightedGraphAnalyzer(graph);
+        WeightedGraphAnalyzer analyzer =
+                new WeightedGraphAnalyzer(graph);
 
         // Calculate closeness.
         TIntDoubleHashMap result = analyzer.computeCloseness();
 
         // Check values.
-        assertEquals(result.get(6), 0.6666666666666666, TOLERANCE);
+        assertEquals(result.get(6), 0.0, TOLERANCE);
         assertEquals(result.get(5), 0.0, TOLERANCE);
         assertEquals(result.get(4), 0.0, TOLERANCE);
-        assertEquals(result.get(3), 0.5714285714285714, TOLERANCE);
-        assertEquals(result.get(2), 0.4166666666666667, TOLERANCE);
-        assertEquals(result.get(1), 1.0, TOLERANCE);
+        assertEquals(result.get(3), 0.0, TOLERANCE);
+        assertEquals(result.get(2), 0.00353278744701702, TOLERANCE);
+        assertEquals(result.get(1), 0.0, TOLERANCE);
     }
 }
