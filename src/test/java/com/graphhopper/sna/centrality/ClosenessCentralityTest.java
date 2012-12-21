@@ -24,10 +24,8 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.centrality.ClosenessCentrality;
 import com.graphhopper.routing.DijkstraBidirection;
 import com.graphhopper.routing.DijkstraSimple;
-import com.graphhopper.sna.storage.GDMSGraphStorage;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,53 +36,8 @@ import org.junit.Test;
  *
  * @author Adam Gouge
  */
-public class ClosenessCentralityTest {
+public class ClosenessCentralityTest extends GraphSetupTest {
 
-//    /**
-//     * Prints the closeness centrality result.
-//     *
-//     * @param resultIterator The iterator over the r
-//     */
-//    public void printResult(TIntDoubleHashMap result) {
-//        TIntDoubleIterator resultIterator = result.iterator();
-//        while (resultIterator.hasNext()) {
-//            resultIterator.advance();
-//            System.out.println(resultIterator.key() + ", " + resultIterator.
-//                    value());
-//        }
-//    }
-    /**
-     * Loads a bidirectional 2D graph from storage.
-     *
-     * @return The graph.
-     *
-     * @throws FileNotFoundException
-     */
-    public static GDMSGraphStorage prepareGraph2DBidirectional() throws
-            FileNotFoundException {
-        return GDMSGraphStorage.loadGDMSGraph(
-                "./target/Graph2D",
-                "./files/graph2D.edges.csv",
-                "length",
-                true);
-    }
-
-    /**
-     * Loads a bidirectional graph of Nantes from storage.
-     *
-     * @return The graph.
-     *
-     * @throws FileNotFoundException
-     */
-    public static GDMSGraphStorage prepareGraphNantes() throws
-            FileNotFoundException {
-        return GDMSGraphStorage.loadGDMSGraph(
-                "./target/GraphNantes",
-                "./files/nantes_1_edges.csv",
-                "weight",
-                true);
-    }
-    
     /**
      * Tests the closeness centrality algorithm using a {@link DijkstraSimple}
      * on a 2D bidirectional graph loaded from a csv file.
