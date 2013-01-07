@@ -26,7 +26,9 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
+import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 
 /**
@@ -80,5 +82,27 @@ public abstract class GraphAnalyzer {
             nodeSet.add(iter.node());
         }
         return nodeSet;
+    }
+
+    /**
+     * Print the distances of all nodes from the given node using the given
+     * distance hash map.
+     *
+     * @param distances The distance hash map.
+     * @param node      The given node.
+     */
+    protected void printDistancesFromNode(TIntIntHashMap distances, int node) {
+        TIntIntIterator distanceIter = distances.iterator();
+        while (distanceIter.hasNext()) {
+            distanceIter.advance();
+            System.out.print("Distance from " + node
+                    + " to " + distanceIter.key()
+                    + ": ");
+            if (distanceIter.value() == Integer.MAX_VALUE) {
+                System.out.println("---");
+            } else {
+                System.out.println(distanceIter.value());
+            }
+        }
     }
 }

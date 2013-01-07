@@ -26,11 +26,10 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.coll.MyBitSet;
 import com.graphhopper.coll.MyBitSetImpl;
+import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.MyIntDeque;
-import com.graphhopper.sna.data.PathLengthData;
-import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -157,9 +156,9 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             distances.put(next, Integer.MAX_VALUE);
         }
 //        System.out.println("Resetting the distance to "
-//                + aNode + " to be zero.");
+//                + startNode + " to be zero.");
         distances.put(startNode, 0);
-//        printDistances(distances.iterator(), aNode);
+//        printDistancesFromNode(distances, startNode);
 
         // Initialize the result to be returned.
         PathLengthData result = new PathLengthData();
@@ -209,27 +208,5 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
 //            result.addSPLength(Integer.MAX_VALUE);
 //        }
         return result;
-    }
-
-    /**
-     * Print the distances of all nodes from the given node using the given
-     * distance hash map.
-     *
-     * @param distances The distance hash map.
-     * @param node      The given node.
-     */
-    private void printDistances(TIntIntHashMap distances, int node) {
-        TIntIntIterator distanceIter = distances.iterator();
-        while (distanceIter.hasNext()) {
-            distanceIter.advance();
-            System.out.print("Distance from " + node
-                    + " to " + distanceIter.key()
-                    + ": ");
-            if (distanceIter.value() == Integer.MAX_VALUE) {
-                System.out.println("---");
-            } else {
-                System.out.println(distanceIter.value());
-            }
-        }
     }
 }
