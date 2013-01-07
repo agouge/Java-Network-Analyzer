@@ -70,10 +70,10 @@ public class GraphSetupTest {
 //     *
 //     * @throws FileNotFoundException
 //     */
-//    public static GDMSGraphStorage prepareGraphNantes() throws
+//    public static GDMSGraphStorage prepareGraphNantesBidirectional() throws
 //            FileNotFoundException {
 //        return GDMSGraphStorage.loadGDMSGraph(
-//                "./target/GraphNantes",
+//                "./target/GraphNantesBidirectional",
 //                "./files/nantes_1_edges.csv",
 //                "weight",
 //                true);

@@ -48,7 +48,7 @@ public class WeightedGraphAnalyzerTest extends GraphSetupTest {
      */
     // TODO: Test betweenness once implemented.
     @Test
-    public void testUnweightedGraph2DBidirectional() throws
+    public void testWeightedGraph2DBidirectional() throws
             FileNotFoundException {
 
         // Prepare the graph.
@@ -81,7 +81,7 @@ public class WeightedGraphAnalyzerTest extends GraphSetupTest {
     // TODO: Test betweenness once implemented.
     // TODO: Check closeness definition for directed graphs.
     @Test
-    public void testUnweightedGraph2DDirected() throws
+    public void testWeightedGraph2DDirected() throws
             FileNotFoundException {
 
         // Prepare the graph.
@@ -102,4 +102,28 @@ public class WeightedGraphAnalyzerTest extends GraphSetupTest {
         assertEquals(result.get(2), 0.00353278744701702, TOLERANCE);
         assertEquals(result.get(1), 0.0, TOLERANCE);
     }
+
+//    /**
+//     * Tests graph analysis on a weighted bidirectional graph of Nantes.
+//     *
+//     * <p> For now, we just compute closeness centrality, but full graph
+//     * analysis will be available soon.
+//     *
+//     * @throws FileNotFoundException
+//     */
+//    // TODO: Test betweenness once implemented.
+//    @Test
+//    public void testWeightedGraphNantesBidirectional() throws
+//            FileNotFoundException {
+//
+//        // Prepare the graph.
+//        GDMSGraphStorage graph = prepareGraphNantesBidirectional();
+//
+//        // Prepare the unweighted graph analyzer.
+//        WeightedGraphAnalyzer analyzer =
+//                new WeightedGraphAnalyzer(graph);
+//
+//        // Calculate closeness.
+//        TIntDoubleHashMap result = analyzer.computeCloseness();
+//    }
 }
