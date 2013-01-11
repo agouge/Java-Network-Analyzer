@@ -26,6 +26,7 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
+import gnu.trove.iterator.TIntDoubleIterator;
 import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -103,6 +104,20 @@ public abstract class GraphAnalyzer {
             } else {
                 System.out.println(distanceIter.value());
             }
+        }
+    }
+
+    /**
+     * Print the betweenness centrality using the given hash map.
+     *
+     * @param distances The betweenness hash map.
+     */
+    protected void printBetweenness(TIntDoubleHashMap betweenness) {
+        TIntDoubleIterator it = betweenness.iterator();
+        while (it.hasNext()) {
+            it.advance();
+            System.out.println("Betweenness of " + it.key()
+                    + " is " + it.value() + ".");
         }
     }
 }
