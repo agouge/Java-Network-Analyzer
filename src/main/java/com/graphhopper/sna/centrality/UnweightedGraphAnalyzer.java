@@ -215,10 +215,11 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
 
     public void computeBetweenness() {
 
-        // STAGE 0: GLOBAL INITIALIZATION
-        // A hashmap to store betweenness centrality, with all values
+        // ***** STAGE 0: GLOBAL INITIALIZATION ****
+        // Betweenness centrality will be stored in a hashmap with all values
         // initialized to 0.
         TIntDoubleHashMap betweenness = initBetweenness();
+        // ***** END STAGE 0 ***********************
 
         // Go through all the nodes:
         TIntIterator nodeSetIterator = nodeSet().iterator();
@@ -229,27 +230,47 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                     + " *****");
 
             // ***** STAGE 1: LOCAL INITIALIZATION *****
-            // Initialize a stack to be used for dependency accumulation.
-            // In Stage 3, stack will return vertices in order of
-            // non-increasing distance from startNode.
-            TIntArrayStack stack = new TIntArrayStack();
-            // Initialize a hash map of predecessor lists indexed by nodes.
-            // TODO: Use a TIntHashSet instead.
-            HashMap<Integer, TIntArrayList> predecessorsOf =
-                    new HashMap<Integer, TIntArrayList>();
-            // To keep track of the number of shortest paths from startNode.
-            TIntIntHashMap shortestPathsCount =
-                    initNumberShortestPathsFrom(startNode);
+
+            // *** Here we initialize data structures to contain the distance
+            // *** from startNode to every other vertex, the number of shortest
+            // *** paths from startNode to every other vertex, and the 
+            // *** predecessor list of every other vertex on shortest paths 
+            // *** from startNode. 
+
             // To keep track of the distances from startNode.
             TIntIntHashMap distancesFromStartNode =
                     initDistancesFrom(startNode);
 //            printDistancesFromNode(distances, startNode);
+            // To keep track of the number of shortest paths from startNode.
+            TIntIntHashMap shortestPathsCount =
+                    initNumberShortestPathsFrom(startNode);
+            // Initialize a hash map of predecessor lists indexed by nodes.
+            // TODO: Use a TIntHashSet instead.
+            HashMap<Integer, TIntArrayList> predecessorsOf =
+                    new HashMap<Integer, TIntArrayList>();
+
+            // *** We also initialize the necessary data structures for
+            // *** BFS traversal and for returning nodes ordered by
+            // *** NON-INCREASING distance from startNode.
+
             // Create the BFS traversal queue and enqueue startNode.
             MyIntDeque queue = new MyIntDeque();
             queue.push(startNode);
+            // In Stage 3, stack will return vertices in order of
+            // NON-INCREASING distance from startNode.
+            TIntArrayStack stack = new TIntArrayStack();
             // ***** END STAGE 1 ***********************
 
             // ***** STAGE 2: BFS TRAVERSAL ************
+            // *** At the end of Stage 2, we will have obtained the distance
+            // *** from startNode to every other vertex, the number of shortest
+            // *** paths from startNode to every other vertex, and the 
+            // *** predecessor list of every other vertex on shortest paths 
+            // *** from startNode. This information will be used in Stage 3
+            // *** to update dependency values and their corresponding 
+            // *** contributions to the betweenness centrality score of
+            // *** startNode.
+
             // The current node to be considered.
             int currentNode = -1;
             // While the queue is not empty ...
@@ -322,45 +343,62 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             } // ***** END STAGE 2 *********************
 
             // ***** STAGE 3: DEPENDENCY ACCUMULATION **
+
+            // *** Here we update 
+            // *** (A) the dependency of startNode on the other nodes.
+            // *** (B) the corresponding contributions to the betweenness 
+            // ***     centrality scores of the other nodes.
+
+            // The dependency of startNode on the given node.
             TIntIntHashMap dependency =
                     initDependenciesFrom(startNode);
+
+            // For each node w returned in NON-INCREASING distance from 
+            // startNode, do:
             while (stack.size() != 0) {
-                int node = stack.pop();
+                int w = stack.pop();
+
+                // For every predecessor v of w on shortest paths from
+                // startNode, do:
                 TIntArrayList predecessorList =
-                        predecessorsOf.get(node);
-                printPredecessorList(node, predecessorList);
+                        predecessorsOf.get(w);
+                printPredecessorList(w, predecessorList);
                 TIntIterator it =
                         predecessorList.iterator();
                 while (it.hasNext()) {
-                    int pred = it.next();
-                    int dep = dependency.get(pred)
-                            + (shortestPathsCount.get(pred)
-                            / shortestPathsCount.get(node))
-                            * (1 + dependency.get(node));
+                    int predecessor = it.next();
+
+                    // (A) Add the contribution of the dependency of startNode
+                    // on w to the dependency of startNode on v.
+                    int dep = dependency.get(predecessor)
+                            + (shortestPathsCount.get(predecessor)
+                            / shortestPathsCount.get(w))
+                            * (1 + dependency.get(w));
                     printDependencyContribution(
-                            pred, startNode, node, dependency,
+                            predecessor, startNode, w, dependency,
                             shortestPathsCount, dep);
                     dependency.put(
-                            pred,
+                            predecessor,
                             dep);
                 }
-                if (node != currentNode) {
-                    double updatedBetweenness = betweenness.get(node)
-                            + dependency.get(node);
-                    printBetweennessContribution(node, betweenness, dependency,
+                // (The betweenness of w cannot receive contributions from
+                // the dependency of w on w.)
+                if (w != startNode) {
+
+                    // (B) At this point, the dependency of startNode on w
+                    // has finished calculating, so we can add it to
+                    // the betweenness centrality of w.
+                    double updatedBetweenness = betweenness.get(w)
+                            + dependency.get(w);
+                    printBetweennessContribution(w, betweenness, dependency,
                                                  updatedBetweenness);
                     betweenness.put(
-                            node,
+                            w,
                             updatedBetweenness);
                 }
-            }
-            TIntIterator it = nodeSet().iterator();
-            while (it.hasNext()) {
-                int nd = it.next();
-                printDistAndSPCounts(
-                        startNode, nd, distancesFromStartNode,
-                        shortestPathsCount);
-            }
+            } // ***** END STAGE 3 *********************
+            printDistAndSPCounts(startNode, distancesFromStartNode,
+                                 shortestPathsCount);
         }
         printBetweenness(betweenness);
     }
@@ -444,12 +482,16 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                 + " = " + updatedBetweenness);
     }
 
-    private void printDistAndSPCounts(int startNode, int nd,
+    private void printDistAndSPCounts(int startNode,
                                       TIntIntHashMap distancesFromStartNode,
                                       TIntIntHashMap shortestPathsCount) {
-        System.out.println(
-                "(" + startNode + "," + nd + ") "
-                + ": d = " + distancesFromStartNode.get(nd)
-                + ", sp = " + shortestPathsCount.get(nd));
+        TIntIterator it = nodeSet().iterator();
+        while (it.hasNext()) {
+            int nd = it.next();
+            System.out.println(
+                    "(" + startNode + "," + nd + ") "
+                    + ": d = " + distancesFromStartNode.get(nd)
+                    + ", sp = " + shortestPathsCount.get(nd));
+        }
     }
 }
