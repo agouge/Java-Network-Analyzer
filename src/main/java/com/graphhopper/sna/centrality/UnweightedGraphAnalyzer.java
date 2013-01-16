@@ -328,46 +328,38 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                 int node = stack.pop();
                 TIntArrayList predecessorList =
                         predecessorsOf.get(node);
-                System.out.println("Preds of " + node
-                        + ": " + predecessorList.toString());
+                printPredecessorList(node, predecessorList);
                 TIntIterator it =
                         predecessorList.iterator();
                 while (it.hasNext()) {
                     int pred = it.next();
-
                     int dep = dependency.get(pred)
                             + (shortestPathsCount.get(pred)
                             / shortestPathsCount.get(node))
                             * (1 + dependency.get(node));
+                    printDependencyContribution(
+                            pred, startNode, node, dependency,
+                            shortestPathsCount, dep);
                     dependency.put(
                             pred,
                             dep);
-                    System.out.println(
-                            "dep(" + pred + ") "
-                            + "= dep(" + pred + ") + (sp(" + startNode
-                            + "," + pred
-                            + ")/sp(" + startNode + "," + node
-                            + ")(1 + dep(" + node
-                            + ")) = " + dependency.get(pred)
-                            + " + (" + shortestPathsCount.get(pred)
-                            + ")/(" + shortestPathsCount.get(node)
-                            + ")(1 + " + dependency.get(node)
-                            + ") = " + dep);
                 }
                 if (node != currentNode) {
+                    double updatedBetweenness = betweenness.get(node)
+                            + dependency.get(node);
+                    printBetweennessContribution(node, betweenness, dependency,
+                                                 updatedBetweenness);
                     betweenness.put(
                             node,
-                            betweenness.get(node)
-                            + dependency.get(node));
+                            updatedBetweenness);
                 }
-            } // ***** END STAGE 3 *********************
+            }
             TIntIterator it = nodeSet().iterator();
             while (it.hasNext()) {
                 int nd = it.next();
-                System.out.println(
-                        "(" + startNode + "," + nd + ") "
-                        + ": d = " + distancesFromStartNode.get(nd)
-                        + ", sp = " + shortestPathsCount.get(nd));
+                printDistAndSPCounts(
+                        startNode, nd, distancesFromStartNode,
+                        shortestPathsCount);
             }
         }
         printBetweenness(betweenness);
@@ -416,5 +408,48 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                     0.0);
         }
         return betweennessCentrality;
+    }
+
+    private void printDependencyContribution(int pred, int startNode, int node,
+                                             TIntIntHashMap dependency,
+                                             TIntIntHashMap shortestPathsCount,
+                                             int dep) {
+        System.out.println(
+                "dep(" + pred + ") "
+                + "= dep(" + pred + ") + (sp(" + startNode
+                + "," + pred
+                + ")/sp(" + startNode + "," + node
+                + ")(1 + dep(" + node
+                + ")) = " + dependency.get(pred)
+                + " + (" + shortestPathsCount.get(pred)
+                + ")/(" + shortestPathsCount.get(node)
+                + ")(1 + " + dependency.get(node)
+                + ") = " + dep);
+    }
+
+    private void printPredecessorList(int node, TIntArrayList predecessorList) {
+        System.out.println("Preds of " + node
+                + ": " + predecessorList.toString());
+    }
+
+    private void printBetweennessContribution(int node,
+                                              TIntDoubleHashMap betweenness,
+                                              TIntIntHashMap dependency,
+                                              double updatedBetweenness) {
+        System.out.println("C(" + node
+                + ") = C(" + node
+                + ") + dep(" + node
+                + ") = " + betweenness.get(node)
+                + " + " + dependency.get(node)
+                + " = " + updatedBetweenness);
+    }
+
+    private void printDistAndSPCounts(int startNode, int nd,
+                                      TIntIntHashMap distancesFromStartNode,
+                                      TIntIntHashMap shortestPathsCount) {
+        System.out.println(
+                "(" + startNode + "," + nd + ") "
+                + ": d = " + distancesFromStartNode.get(nd)
+                + ", sp = " + shortestPathsCount.get(nd));
     }
 }
