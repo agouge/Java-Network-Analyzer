@@ -60,4 +60,9 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
                 new ClosenessCentrality(graph);
         return closenessCentrality.calculateUsingContractionHierarchies();
     }
+
+    @Override
+    public NetworkAnalysisResult computeAll() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

@@ -38,40 +38,6 @@ import org.junit.Test;
 public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
 
     /**
-     * Tests graph analysis on a 2D unweighted bidirectional graph.
-     *
-     * <p> For now, we just compute closeness centrality, but full graph
-     * analysis will be available soon.
-     *
-     * @throws FileNotFoundException
-     */
-    // TODO: Test betweenness once implemented.
-    @Test
-    public void testUnweightedGraph2DBidirectional() throws
-            FileNotFoundException {
-
-        System.out.println("\n***** CLOSENESS 2D BIDIRECTIONAL *****");
-
-        // Prepare the graph.
-        GDMSGraphStorage graph = prepareGraph2DBidirectional();
-
-        // Prepare the unweighted graph analyzer.
-        UnweightedGraphAnalyzer analyzer =
-                new UnweightedGraphAnalyzer(graph);
-
-        // Calculate closeness.
-        TIntDoubleHashMap result = analyzer.computeCloseness();
-
-        // Check values.
-        assertEquals(result.get(6), 0.625, TOLERANCE);
-        assertEquals(result.get(5), 0.4166666666666667, TOLERANCE);
-        assertEquals(result.get(4), 0.35714285714285715, TOLERANCE);
-        assertEquals(result.get(3), 0.625, TOLERANCE);
-        assertEquals(result.get(2), 0.4166666666666667, TOLERANCE);
-        assertEquals(result.get(1), 0.5, TOLERANCE);
-    }
-
-    /**
      * Tests graph analysis on a 2D unweighted directed graph.
      *
      * <p> For now, we just compute closeness centrality, but full graph
@@ -107,16 +73,16 @@ public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
     }
 
     /**
-     * Tests betweenness analysis on a 2D unweighted bidirectional graph.
+     * Tests graph analysis on a 2D unweighted bidirectional graph.
      *
      * @throws FileNotFoundException
      */
-    // TODO: Test betweenness once implemented.
+    // TODO: Write a similar test for directed graphs.
     @Test
-    public void testBetweennessUnweightedGraph2DBidirectional() throws
+    public void testUnweightedGraphAnalysis2DBidirectional() throws
             FileNotFoundException {
 
-        System.out.println("\n***** BETWEENNESS 2D BIDIRECTIONAL *****");
+        System.out.println("\n***** UNWEIGHTED 2D BIDIRECTIONAL *****");
 
         // Prepare the graph.
         GDMSGraphStorage graph = prepareGraph2DBidirectional();
@@ -127,16 +93,33 @@ public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
 
         // Calculate betweenness.
         long start = System.currentTimeMillis();
-        TIntDoubleHashMap result = analyzer.computeAll();
+        NetworkAnalysisResult result = analyzer.computeAll();
         long stop = System.currentTimeMillis();
-        System.out.println("Betweenness took " + (stop - start)
+        System.out.println("Network analysis took " + (stop - start)
                 + " ms to compute.");
-
-        assertEquals(result.get(6), 0.45, TOLERANCE);
-        assertEquals(result.get(5), 0.0, TOLERANCE);
-        assertEquals(result.get(4), 0.0, TOLERANCE);
-        assertEquals(result.get(3), 0.6, TOLERANCE);
-        assertEquals(result.get(2), 0.0, TOLERANCE);
-        assertEquals(result.get(1), 0.3, TOLERANCE);
+        
+        TIntDoubleHashMap closeness = result.getCloseness();
+        TIntDoubleHashMap betweenness = result.getBetweenness();
+        
+        System.out.println("CLOSENESS");
+        GraphAnalyzer.printHashMap(closeness);
+        
+        // Check values.
+        assertEquals(closeness.get(6), 0.625, TOLERANCE);
+        assertEquals(closeness.get(5), 0.4166666666666667, TOLERANCE);
+        assertEquals(closeness.get(4), 0.35714285714285715, TOLERANCE);
+        assertEquals(closeness.get(3), 0.625, TOLERANCE);
+        assertEquals(closeness.get(2), 0.4166666666666667, TOLERANCE);
+        assertEquals(closeness.get(1), 0.5, TOLERANCE);
+        
+        System.out.println("BETWEENNESS");
+        GraphAnalyzer.printHashMap(betweenness);
+        
+        assertEquals(betweenness.get(6), 0.45, TOLERANCE);
+        assertEquals(betweenness.get(5), 0.0, TOLERANCE);
+        assertEquals(betweenness.get(4), 0.0, TOLERANCE);
+        assertEquals(betweenness.get(3), 0.6, TOLERANCE);
+        assertEquals(betweenness.get(2), 0.0, TOLERANCE);
+        assertEquals(betweenness.get(1), 0.3, TOLERANCE);
     }
 }

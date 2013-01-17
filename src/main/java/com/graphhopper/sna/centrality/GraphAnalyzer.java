@@ -66,6 +66,14 @@ public abstract class GraphAnalyzer {
      * @return The closeness centrality hash map.
      */
     public abstract TIntDoubleHashMap computeCloseness();
+    
+    /**
+     * Performs graph analysis and stores the results in a
+     * {@link NetworkAnalysisResult}.
+     *
+     * @return The results of the graph analysis.
+     */
+    public abstract NetworkAnalysisResult computeAll();
 
     /**
      * Returns a {@link TIntHashSet} of the nodes of this graph.
@@ -112,7 +120,7 @@ public abstract class GraphAnalyzer {
      *
      * @param hashmap The given {@link TIntDoubleHashMap}.
      */
-    protected void printHashMap(TIntDoubleHashMap hashmap) {
+    public static void printHashMap(TIntDoubleHashMap hashmap) {
         TIntDoubleIterator it = hashmap.iterator();
         while (it.hasNext()) {
             it.advance();

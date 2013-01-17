@@ -213,14 +213,16 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         return result;
     }
 
-    public TIntDoubleHashMap computeAll() {
+    public NetworkAnalysisResult computeAll() {
 
         // ***** STAGE 0: GLOBAL INITIALIZATION ****
+        // A data structure to hold all the results of the network analysis.
+        NetworkAnalysisResult finalResult = new NetworkAnalysisResult(this);
         // Betweenness centrality will be stored in a hashmap with all values
         // initialized to 0.0.
-        TIntDoubleHashMap betweenness = initBetweenness();
+        TIntDoubleHashMap betweenness = finalResult.getBetweenness();
         // Closeness centrality hash map.
-        TIntDoubleHashMap closenessCentrality = new TIntDoubleHashMap();
+        TIntDoubleHashMap closenessCentrality = finalResult.getCloseness();
         // ***** END STAGE 0 ***********************
 
         // Go through all the nodes:
@@ -411,10 +413,9 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                 }
             } // ***** END STAGE 3, Stack iteration  **************
         }
+        // Normalize the betweenness centrality values.
         normalize(betweenness);
-        printHashMap(closenessCentrality);
-//        printHashMap(betweenness);
-        return betweenness;
+        return finalResult;
     }
 
     private TIntIntHashMap initTIntIntHashMap(
@@ -548,7 +549,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             betweenness.put(node, normalizedBetweenness);
         }
         long stop = System.currentTimeMillis();
-        System.out.println("Normalization took "
+        System.out.println("Betweenness normalization took "
                 + (stop - start) + " ms.");
     }
 
