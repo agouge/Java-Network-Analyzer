@@ -24,6 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.sna.data.NetworkAnalysisResult;
 import com.graphhopper.storage.Graph;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 

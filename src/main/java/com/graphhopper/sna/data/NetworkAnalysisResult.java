@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.graphhopper.sna.centrality;
+package com.graphhopper.sna.data;
 
+import com.graphhopper.sna.centrality.GraphAnalyzer;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 

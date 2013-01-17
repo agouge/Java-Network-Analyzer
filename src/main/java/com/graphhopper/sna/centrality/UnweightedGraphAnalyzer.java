@@ -24,6 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.sna.data.NetworkAnalysisResult;
 import com.graphhopper.coll.MyBitSet;
 import com.graphhopper.coll.MyBitSetImpl;
 import com.graphhopper.sna.data.PathLengthData;

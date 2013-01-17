@@ -24,6 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.sna.data.NetworkAnalysisResult;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import gnu.trove.iterator.TIntDoubleIterator;
@@ -80,7 +81,7 @@ public abstract class GraphAnalyzer {
      *
      * @return a {@link TIntHashSet} of the nodes of this graph.
      */
-    protected TIntHashSet nodeSet() {
+    public TIntHashSet nodeSet() {
         // Initialize the Set.
         TIntHashSet nodeSet = new TIntHashSet();
         // Get all the edges.
