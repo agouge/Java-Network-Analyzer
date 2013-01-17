@@ -127,7 +127,7 @@ public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
 
         // Calculate betweenness.
         long start = System.currentTimeMillis();
-        TIntDoubleHashMap result = analyzer.computeBetweenness();
+        TIntDoubleHashMap result = analyzer.computeAll();
         long stop = System.currentTimeMillis();
         System.out.println("Betweenness took " + (stop - start)
                 + " ms to compute.");

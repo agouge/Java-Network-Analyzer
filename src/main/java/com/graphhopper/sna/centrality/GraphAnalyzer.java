@@ -108,16 +108,16 @@ public abstract class GraphAnalyzer {
     }
 
     /**
-     * Print the betweenness centrality using the given hash map.
+     * Prints the given {@link TIntDoubleHashMap}.
      *
-     * @param distances The betweenness hash map.
+     * @param hashmap The given {@link TIntDoubleHashMap}.
      */
-    protected void printBetweenness(TIntDoubleHashMap betweenness) {
-        TIntDoubleIterator it = betweenness.iterator();
+    protected void printHashMap(TIntDoubleHashMap hashmap) {
+        TIntDoubleIterator it = hashmap.iterator();
         while (it.hasNext()) {
             it.advance();
-            System.out.println("Betweenness of " + it.key()
-                    + " is " + it.value() + ".");
+            System.out.println("(" + it.key()
+                    + "," + it.value() + ")");
         }
     }
 }

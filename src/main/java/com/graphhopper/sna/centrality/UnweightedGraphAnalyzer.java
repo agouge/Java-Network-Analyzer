@@ -213,13 +213,16 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         return result;
     }
 
-    public TIntDoubleHashMap computeBetweenness() {
+    public TIntDoubleHashMap computeAll() {
 
         // ***** STAGE 0: GLOBAL INITIALIZATION ****
         // Betweenness centrality will be stored in a hashmap with all values
-        // initialized to 0.
+        // initialized to 0.0.
         TIntDoubleHashMap betweenness = initBetweenness();
+        // Closeness centrality hash map.
+        TIntDoubleHashMap closenessCentrality = new TIntDoubleHashMap();
         // ***** END STAGE 0 ***********************
+
         // Go through all the nodes:
         TIntHashSet nodeSet = nodeSet();
         TIntIterator nodeSetIterator = nodeSet.iterator();
@@ -250,6 +253,8 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             // TODO: Use a TIntHashSet instead.
             HashMap<Integer, TIntHashSet> predecessorsOf =
                     new HashMap<Integer, TIntHashSet>();
+            // This will be used for the closeness centrality calculation.
+            PathLengthData pathsFromStartNode = new PathLengthData();
 
             // *** We also initialize the necessary data structures for
             // *** BFS traversal and for returning nodes ordered by
@@ -303,9 +308,13 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
 //                                + startNode + "," + currentNode
 //                                + ") = "
 //                                + (distancesFromStartNode.get(currentNode) + 1));
+                        int updatedDistance = distancesFromStartNode.get(
+                                currentNode) + 1;
                         distancesFromStartNode.put(
                                 neighbor,
-                                distancesFromStartNode.get(currentNode) + 1);
+                                updatedDistance);
+                        // Add this to the path length data. (For closeness)
+                        pathsFromStartNode.addSPLength(updatedDistance);
                     }
 
                     // If this is a shortest path from startNode to currentNode
@@ -343,6 +352,8 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             } // ***** END STAGE 2, Queue iteration *************
 //            printDistAndSPCounts(startNode, distancesFromStartNode,
 //                                 shortestPathsCount, predecessorsOf);
+            calculateClosenessForStartNode(closenessCentrality, startNode,
+                                           pathsFromStartNode);
 
             // ***** STAGE 3: DEPENDENCY ACCUMULATION **
 
@@ -399,9 +410,10 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                             updatedBetweenness);
                 }
             } // ***** END STAGE 3, Stack iteration  **************
-        } // ***** End outside node iteration.
+        }
         normalize(betweenness);
-//        printBetweenness(betweenness);
+        printHashMap(closenessCentrality);
+//        printHashMap(betweenness);
         return betweenness;
     }
 
@@ -538,5 +550,25 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         long stop = System.currentTimeMillis();
         System.out.println("Normalization took "
                 + (stop - start) + " ms.");
+    }
+
+    private void calculateClosenessForStartNode(
+            TIntDoubleHashMap closenessCentrality,
+            int startNode,
+            PathLengthData pathLengthData) {
+        // ***** STAGE 4: Closeness Centrality Calculation ****
+        // *** TODO: For now, we assume the graph is connected.
+
+        // Get the average path length for the startNode.
+        final double avgPathLength =
+                (pathLengthData.getCount() > 0)
+                ? pathLengthData.getAverageLength() : 0.0;
+        // Once we have the average path length for this node, 
+        // we have the closeness centrality for this node.
+        final double startNodeCloseness = (avgPathLength > 0.0)
+                ? 1 / avgPathLength
+                : 0.0;
+        // Store it.
+        closenessCentrality.put(startNode, startNodeCloseness);
     }
 }
