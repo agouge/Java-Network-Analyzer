@@ -340,7 +340,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
 //                        }
                     }
                 }
-            } // ***** END STAGE 2 *********************
+            } // ***** END STAGE 2, Queue iteration *************
 //            printDistAndSPCounts(startNode, distancesFromStartNode,
 //                                 shortestPathsCount, predecessorsOf);
 
@@ -398,11 +398,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                             w,
                             updatedBetweenness);
                 }
-            } // ***** END STAGE 3 *********************
-            // Stop timing for this node.
-//            long stop = System.currentTimeMillis();
-//            System.out.println("Node " + startNode
-//                    + " took " + (stop - start) + " ms to process.");
+            } // ***** END STAGE 3, Stack iteration  **************
         } // ***** End outside node iteration.
         normalize(betweenness);
 //        printBetweenness(betweenness);
