@@ -213,6 +213,10 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         return result;
     }
 
+    /*
+     * {@inheritDoc}
+     */
+    @Override
     public NetworkAnalysisResult computeAll() {
 
         // ***** STAGE 0: GLOBAL INITIALIZATION ****
