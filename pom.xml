@@ -26,7 +26,7 @@
       <groupId>com.graphhopper</groupId>
       <artifactId>graphhopper</artifactId>
       <version>0.1-SNAPSHOT</version>
-      <type>jar</type>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
