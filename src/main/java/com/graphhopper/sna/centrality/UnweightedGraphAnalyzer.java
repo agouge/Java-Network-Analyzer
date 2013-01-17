@@ -213,21 +213,23 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         return result;
     }
 
-    public void computeBetweenness() {
+    public TIntDoubleHashMap computeBetweenness() {
 
         // ***** STAGE 0: GLOBAL INITIALIZATION ****
         // Betweenness centrality will be stored in a hashmap with all values
         // initialized to 0.
         TIntDoubleHashMap betweenness = initBetweenness();
         // ***** END STAGE 0 ***********************
-
         // Go through all the nodes:
-        TIntIterator nodeSetIterator = nodeSet().iterator();
+        TIntHashSet nodeSet = nodeSet();
+        TIntIterator nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             // Get a node.
             int startNode = nodeSetIterator.next();
-            System.out.println("***** STARTED BFS FOR " + startNode
-                    + " *****");
+//            // Start timing for this node.
+//            long start = System.currentTimeMillis();
+//            System.out.println("***** STARTED BFS FOR " + startNode
+//                    + " *****");
 
             // ***** STAGE 1: LOCAL INITIALIZATION *****
 
@@ -246,8 +248,8 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                     initNumberShortestPathsFrom(startNode);
             // Initialize a hash map of predecessor lists indexed by nodes.
             // TODO: Use a TIntHashSet instead.
-            HashMap<Integer, TIntArrayList> predecessorsOf =
-                    new HashMap<Integer, TIntArrayList>();
+            HashMap<Integer, TIntHashSet> predecessorsOf =
+                    new HashMap<Integer, TIntHashSet>();
 
             // *** We also initialize the necessary data structures for
             // *** BFS traversal and for returning nodes ordered by
@@ -271,15 +273,13 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             // *** contributions to the betweenness centrality score of
             // *** startNode.
 
-            // The current node to be considered.
-            int currentNode = -1;
             // While the queue is not empty ...
             while (!queue.isEmpty()) {
                 // ... dequeue a node
-                currentNode = queue.pop();
+                int currentNode = queue.pop();
                 // and push this node to the stack.
                 stack.push(currentNode);
-                System.out.println("     BFS for " + currentNode + " ");
+//                System.out.println("     BFS for " + currentNode + " ");
 
                 // Get the outgoing edges of the current node.
                 EdgeIterator edgesOfCurrentNode = graph.getOutgoing(currentNode);
@@ -288,7 +288,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                     int neighbor = edgesOfCurrentNode.node();
                     // Initialize the list of predecessors of neighbor.
                     if (!predecessorsOf.containsKey(neighbor)) {
-                        predecessorsOf.put(neighbor, new TIntArrayList());
+                        predecessorsOf.put(neighbor, new TIntHashSet());
 //                        System.out.println("-- (Init pred list for "
 //                                + neighbor + ") --");
                     }
@@ -328,7 +328,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                                 + shortestPathsCount.get(currentNode));
                         // and append currentNode to the list of predecessors
                         // of neighbor.
-                        TIntArrayList predsOfNeighbor =
+                        TIntHashSet predsOfNeighbor =
                                 predecessorsOf.get(neighbor);
                         // TODO: Do we need to check if the pred list already
                         // contains currentNode?
@@ -341,6 +341,8 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                     }
                 }
             } // ***** END STAGE 2 *********************
+//            printDistAndSPCounts(startNode, distancesFromStartNode,
+//                                 shortestPathsCount, predecessorsOf);
 
             // ***** STAGE 3: DEPENDENCY ACCUMULATION **
 
@@ -350,7 +352,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             // ***     centrality scores of the other nodes.
 
             // The dependency of startNode on the given node.
-            TIntIntHashMap dependency =
+            TIntDoubleHashMap dependency =
                     initDependenciesFrom(startNode);
 
             // For each node w returned in NON-INCREASING distance from 
@@ -360,9 +362,9 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
 
                 // For every predecessor v of w on shortest paths from
                 // startNode, do:
-                TIntArrayList predecessorList =
+                TIntHashSet predecessorList =
                         predecessorsOf.get(w);
-                printPredecessorList(w, predecessorList);
+//                printPredecessorList(w, predecessorList);
                 TIntIterator it =
                         predecessorList.iterator();
                 while (it.hasNext()) {
@@ -370,13 +372,13 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
 
                     // (A) Add the contribution of the dependency of startNode
                     // on w to the dependency of startNode on v.
-                    int dep = dependency.get(predecessor)
-                            + (shortestPathsCount.get(predecessor)
+                    double dep = dependency.get(predecessor)
+                            + ((double) shortestPathsCount.get(predecessor)
                             / shortestPathsCount.get(w))
                             * (1 + dependency.get(w));
-                    printDependencyContribution(
-                            predecessor, startNode, w, dependency,
-                            shortestPathsCount, dep);
+//                    printDependencyContribution(
+//                            predecessor, startNode, w, dependency,
+//                            shortestPathsCount, dep);
                     dependency.put(
                             predecessor,
                             dep);
@@ -390,17 +392,21 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                     // the betweenness centrality of w.
                     double updatedBetweenness = betweenness.get(w)
                             + dependency.get(w);
-                    printBetweennessContribution(w, betweenness, dependency,
-                                                 updatedBetweenness);
+//                    printBetweennessContribution(w, betweenness, dependency,
+//                                                 updatedBetweenness);
                     betweenness.put(
                             w,
                             updatedBetweenness);
                 }
             } // ***** END STAGE 3 *********************
-            printDistAndSPCounts(startNode, distancesFromStartNode,
-                                 shortestPathsCount);
-        }
-        printBetweenness(betweenness);
+            // Stop timing for this node.
+//            long stop = System.currentTimeMillis();
+//            System.out.println("Node " + startNode
+//                    + " took " + (stop - start) + " ms to process.");
+        } // ***** End outside node iteration.
+        normalize(betweenness);
+//        printBetweenness(betweenness);
+        return betweenness;
     }
 
     private TIntIntHashMap initTIntIntHashMap(
@@ -408,6 +414,22 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             int startNode,
             int startNodeValue) {
         TIntIntHashMap hashMap = new TIntIntHashMap();
+        // TODO: Maybe a TIntArrayList would be better?
+        TIntIterator it = nodeSet().iterator();
+        while (it.hasNext()) {
+            hashMap.put(
+                    it.next(),
+                    defaultValue);
+        }
+        hashMap.put(startNode, startNodeValue);
+        return hashMap;
+    }
+
+    private TIntDoubleHashMap initTIntDoubleHashMap(
+            double defaultValue,
+            int startNode,
+            double startNodeValue) {
+        TIntDoubleHashMap hashMap = new TIntDoubleHashMap();
         // TODO: Maybe a TIntArrayList would be better?
         TIntIterator it = nodeSet().iterator();
         while (it.hasNext()) {
@@ -431,10 +453,9 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         return initTIntIntHashMap(-1, startNode, 0);
     }
 
-    private TIntIntHashMap initDependenciesFrom(int startNode) {
-        // Initialize distance from startNode to itself to 0
-        // and all other distances to -1.
-        return initTIntIntHashMap(0, startNode, 0);
+    private TIntDoubleHashMap initDependenciesFrom(int startNode) {
+        // Initialize all dependencies to 0.0.
+        return initTIntDoubleHashMap(0.0, startNode, 0.0);
     }
 
     private TIntDoubleHashMap initBetweenness() {
@@ -449,15 +470,15 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
     }
 
     private void printDependencyContribution(int pred, int startNode, int node,
-                                             TIntIntHashMap dependency,
+                                             TIntDoubleHashMap dependency,
                                              TIntIntHashMap shortestPathsCount,
-                                             int dep) {
+                                             double dep) {
         System.out.println(
                 "dep(" + pred + ") "
                 + "= dep(" + pred + ") + (sp(" + startNode
                 + "," + pred
                 + ")/sp(" + startNode + "," + node
-                + ")(1 + dep(" + node
+                + "))(1 + dep(" + node
                 + ")) = " + dependency.get(pred)
                 + " + (" + shortestPathsCount.get(pred)
                 + ")/(" + shortestPathsCount.get(node)
@@ -472,7 +493,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
 
     private void printBetweennessContribution(int node,
                                               TIntDoubleHashMap betweenness,
-                                              TIntIntHashMap dependency,
+                                              TIntDoubleHashMap dependency,
                                               double updatedBetweenness) {
         System.out.println("C(" + node
                 + ") = C(" + node
@@ -480,18 +501,46 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                 + ") = " + betweenness.get(node)
                 + " + " + dependency.get(node)
                 + " = " + updatedBetweenness);
+        System.out.println("");
     }
 
     private void printDistAndSPCounts(int startNode,
                                       TIntIntHashMap distancesFromStartNode,
-                                      TIntIntHashMap shortestPathsCount) {
+                                      TIntIntHashMap shortestPathsCount,
+                                      HashMap<Integer, TIntHashSet> predecessorsOf) {
         TIntIterator it = nodeSet().iterator();
         while (it.hasNext()) {
             int nd = it.next();
             System.out.println(
                     "(" + startNode + "," + nd + ") "
                     + ": d = " + distancesFromStartNode.get(nd)
-                    + ", sp = " + shortestPathsCount.get(nd));
+                    + ", sp = " + shortestPathsCount.get(nd)
+                    + ", pred: " + predecessorsOf.get(nd).toString());
         }
+    }
+
+    /**
+     * Normalizes betweenness.
+     *
+     * @param nodeSet
+     * @param betweenness
+     */
+    private void normalize(TIntDoubleHashMap betweenness) {
+        // ***** STAGE 4: Normalization ************
+        // *** We normalize to make all values lie between 0 and 1.
+        long start = System.currentTimeMillis();
+        TIntHashSet nodeSet = nodeSet();
+        int N = nodeSet.size();
+        TIntIterator nodeSetIterator = nodeSet.iterator();
+        while (nodeSetIterator.hasNext()) {
+            int node = nodeSetIterator.next();
+            double normalizationFactor = (N - 1) * (N - 2);
+            double normalizedBetweenness =
+                    betweenness.get(node) / normalizationFactor;
+            betweenness.put(node, normalizedBetweenness);
+        }
+        long stop = System.currentTimeMillis();
+        System.out.println("Normalization took "
+                + (stop - start) + " ms.");
     }
 }
