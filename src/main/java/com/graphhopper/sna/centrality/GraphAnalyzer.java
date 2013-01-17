@@ -72,7 +72,7 @@ public abstract class GraphAnalyzer {
      *
      * @return a {@link TIntHashSet} of the nodes of this graph.
      */
-    protected TIntHashSet nodeSet() {
+    public TIntHashSet nodeSet() {
         // Initialize the Set.
         TIntHashSet nodeSet = new TIntHashSet();
         // Get all the edges.

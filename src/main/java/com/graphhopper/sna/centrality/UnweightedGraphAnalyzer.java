@@ -37,6 +37,7 @@ import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.HashMap;
+import com.graphhopper.sna.data.NodeData;
 
 /**
  * Calculates various centrality measures on an unweighted graph (i.e., a graph
@@ -220,6 +221,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         // initialized to 0.
         TIntDoubleHashMap betweenness = initBetweenness();
         // ***** END STAGE 0 ***********************
+
         // Go through all the nodes:
         TIntHashSet nodeSet = nodeSet();
         TIntIterator nodeSetIterator = nodeSet.iterator();
@@ -239,15 +241,17 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             // *** predecessor list of every other vertex on shortest paths 
             // *** from startNode. 
 
+            // A data structure to hold information about this node
+            // relative to all the other nodes in the network during
+            // this calculation.
+            NodeData nodeData = new NodeData(startNode, this);
             // To keep track of the distances from startNode.
-            TIntIntHashMap distancesFromStartNode =
-                    initDistancesFrom(startNode);
+            TIntIntHashMap distancesFromStartNode = nodeData.getDistances();
 //            printDistancesFromNode(distances, startNode);
             // To keep track of the number of shortest paths from startNode.
             TIntIntHashMap shortestPathsCount =
-                    initNumberShortestPathsFrom(startNode);
+                    nodeData.getShortestPathsCount();
             // Initialize a hash map of predecessor lists indexed by nodes.
-            // TODO: Use a TIntHashSet instead.
             HashMap<Integer, TIntHashSet> predecessorsOf =
                     new HashMap<Integer, TIntHashSet>();
 
@@ -352,8 +356,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             // ***     centrality scores of the other nodes.
 
             // The dependency of startNode on the given node.
-            TIntDoubleHashMap dependency =
-                    initDependenciesFrom(startNode);
+            TIntDoubleHashMap dependency = nodeData.getDependency();
 
             // For each node w returned in NON-INCREASING distance from 
             // startNode, do:
@@ -401,57 +404,8 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             } // ***** END STAGE 3, Stack iteration  **************
         } // ***** End outside node iteration.
         normalize(betweenness);
-//        printBetweenness(betweenness);
+        printBetweenness(betweenness);
         return betweenness;
-    }
-
-    private TIntIntHashMap initTIntIntHashMap(
-            int defaultValue,
-            int startNode,
-            int startNodeValue) {
-        TIntIntHashMap hashMap = new TIntIntHashMap();
-        // TODO: Maybe a TIntArrayList would be better?
-        TIntIterator it = nodeSet().iterator();
-        while (it.hasNext()) {
-            hashMap.put(
-                    it.next(),
-                    defaultValue);
-        }
-        hashMap.put(startNode, startNodeValue);
-        return hashMap;
-    }
-
-    private TIntDoubleHashMap initTIntDoubleHashMap(
-            double defaultValue,
-            int startNode,
-            double startNodeValue) {
-        TIntDoubleHashMap hashMap = new TIntDoubleHashMap();
-        // TODO: Maybe a TIntArrayList would be better?
-        TIntIterator it = nodeSet().iterator();
-        while (it.hasNext()) {
-            hashMap.put(
-                    it.next(),
-                    defaultValue);
-        }
-        hashMap.put(startNode, startNodeValue);
-        return hashMap;
-    }
-
-    private TIntIntHashMap initNumberShortestPathsFrom(int startNode) {
-        // Initialize the number of shortest paths from the start node
-        // to itself to be 1, and all other to be 0.
-        return initTIntIntHashMap(0, startNode, 1);
-    }
-
-    private TIntIntHashMap initDistancesFrom(int startNode) {
-        // Initialize distance from startNode to itself to 0
-        // and all other distances to -1.
-        return initTIntIntHashMap(-1, startNode, 0);
-    }
-
-    private TIntDoubleHashMap initDependenciesFrom(int startNode) {
-        // Initialize all dependencies to 0.0.
-        return initTIntDoubleHashMap(0.0, startNode, 0.0);
     }
 
     private TIntDoubleHashMap initBetweenness() {
