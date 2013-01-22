@@ -33,13 +33,10 @@ import com.graphhopper.routing.DijkstraSimple;
 import com.graphhopper.routing.Path;
 import com.graphhopper.routing.ch.PrepareContractionHierarchies;
 import com.graphhopper.storage.Graph;
-import com.graphhopper.util.EdgeIterator;
-import gnu.trove.iterator.TIntDoubleIterator;
+import com.graphhopper.util.RawEdgeIterator;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.set.hash.TIntHashSet;
-import java.io.File;
-import java.io.PrintWriter;
 
 /**
  * Implementation of Freeman's original closeness centrality.
@@ -76,11 +73,11 @@ public class ClosenessCentrality {
         // Initialize the Set.
         TIntHashSet nodeSet = new TIntHashSet();
         // Get all the edges.
-        EdgeIterator iter = graph.getAllEdges();
+        RawEdgeIterator iter = graph.allEdges();
         // Add each source and destination node to the set.
         while (iter.next()) {
-            nodeSet.add(iter.baseNode());
-            nodeSet.add(iter.node());
+            nodeSet.add(iter.nodeA());
+            nodeSet.add(iter.nodeB());
         }
         return nodeSet;
     }
@@ -164,9 +161,9 @@ public class ClosenessCentrality {
      */
     public TIntDoubleHashMap calculateUsingContractionHierarchies() {
 
-        PrepareContractionHierarchies prepare = 
+        PrepareContractionHierarchies prepare =
                 new PrepareContractionHierarchies().
-                setGraph(graph);
+                graph(graph);
         prepare.doWork();
         DijkstraBidirectionRef algo = prepare.createAlgo();
         return calculate(algo);

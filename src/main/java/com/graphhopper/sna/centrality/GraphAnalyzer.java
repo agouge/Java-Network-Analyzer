@@ -26,7 +26,7 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NetworkAnalysisResult;
 import com.graphhopper.storage.Graph;
-import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.RawEdgeIterator;
 import gnu.trove.iterator.TIntDoubleIterator;
 import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
@@ -56,7 +56,7 @@ public abstract class GraphAnalyzer {
      */
     public GraphAnalyzer(Graph graph) {
         this.graph = graph;
-        this.nodeCount = graph.getNodes();
+        this.nodeCount = graph.nodes();
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class GraphAnalyzer {
      * @return The closeness centrality hash map.
      */
     public abstract TIntDoubleHashMap computeCloseness();
-    
+
     /**
      * Performs graph analysis and stores the results in a
      * {@link NetworkAnalysisResult}.
@@ -85,11 +85,11 @@ public abstract class GraphAnalyzer {
         // Initialize the Set.
         TIntHashSet nodeSet = new TIntHashSet();
         // Get all the edges.
-        EdgeIterator iter = graph.getAllEdges();
+        RawEdgeIterator iter = graph.allEdges();
         // Add each source and destination node to the set.
         while (iter.next()) {
-            nodeSet.add(iter.baseNode());
-            nodeSet.add(iter.node());
+            nodeSet.add(iter.nodeA());
+            nodeSet.add(iter.nodeB());
         }
         return nodeSet;
     }

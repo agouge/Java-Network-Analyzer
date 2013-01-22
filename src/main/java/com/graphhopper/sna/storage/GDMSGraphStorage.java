@@ -14,9 +14,9 @@
  * Software Foundation, either version 3 of the License, or (at your option) any
  * later version.
  *
- * GraphHopper-SNA is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * GraphHopper-SNA is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  *
  * You should have received a copy of the GNU General Public License along with
@@ -24,18 +24,14 @@
  */
 package com.graphhopper.sna.storage;
 
-import com.graphhopper.routing.util.CarStreetType;
 import com.graphhopper.storage.Directory;
 import com.graphhopper.storage.LevelGraphStorage;
 import com.graphhopper.storage.RAMDirectory;
-import com.graphhopper.util.EdgeIterator;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
 
 /**
  * A {@link LevelGraphStorage} created from an {@code output.edges} table (csv
@@ -104,8 +100,10 @@ public class GDMSGraphStorage extends LevelGraphStorage {
      * @throws FileNotFoundException
      */
     public static GDMSGraphStorage loadGDMSGraph(String graphDirectory,
-            String csvFile,
-            String weightField, boolean bothDirections) throws FileNotFoundException {
+                                                 String csvFile,
+                                                 String weightField,
+                                                 boolean bothDirections) throws
+            FileNotFoundException {
 
         // Initiate a graph object using RAMDirectory storage.
         GDMSGraphStorage graph =
@@ -118,7 +116,7 @@ public class GDMSGraphStorage extends LevelGraphStorage {
             System.out.println("Loaded a previously created graph. ");
         } else {
             long start = System.currentTimeMillis();
-            
+
             System.out.println("Creating a graph from CSV. ");
 
             // Get a scanner on the csv file.
@@ -129,14 +127,14 @@ public class GDMSGraphStorage extends LevelGraphStorage {
 
             // Create the LevelGraph. 
             // TODO: Is this a good way to allocate space for the graph?
-            graph.createNew(graph.getNodes()); // TODO: Returns a GraphStorage!
+            graph.createNew(graph.nodes()); // TODO: Returns a GraphStorage!
 
             // Load the edges from the input file into the levelgraph.
             graph.loadEdges(scanner, bothDirections);
 
             long stop = System.currentTimeMillis();
-            System.out.println("Created graph in " + (stop-start) + " ms.");
-            
+            System.out.println("Created graph in " + (stop - start) + " ms.");
+
             // Close the scanner.
             scanner.close();
         }
@@ -180,13 +178,13 @@ public class GDMSGraphStorage extends LevelGraphStorage {
             // TODO: Make sure all indices are loaded correctly.
             // Note: We have to get rid of the quotation marks.
             if (parts[i].replace("\"",
-                    "").equals(START_NODE)) {
+                                 "").equals(START_NODE)) {
                 startNodeIndex = i;
             } else if (parts[i].replace("\"",
-                    "").equals(END_NODE)) {
+                                        "").equals(END_NODE)) {
                 endNodeIndex = i;
             } else if (parts[i].replace("\"",
-                    "").equals(weightField)) {
+                                        "").equals(weightField)) {
                 weightFieldIndex = i;
             }
         }
@@ -200,7 +198,7 @@ public class GDMSGraphStorage extends LevelGraphStorage {
      *                       bidirectional.
      */
     public void loadEdges(Scanner scanner,
-            boolean bothDirections) {
+                          boolean bothDirections) {
         // The variables we will need to recover an edge:
         int startNode, endNode;
         double length;
@@ -218,5 +216,4 @@ public class GDMSGraphStorage extends LevelGraphStorage {
             this.edge(startNode, endNode, length, bothDirections);
         }
     }
-
 }
