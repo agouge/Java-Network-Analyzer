@@ -236,7 +236,12 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         TIntIterator nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             // Calculate betweenness and closeness for each node.
+//            long start = System.currentTimeMillis();
+            int node = nodeSetIterator.next();
             calculateCentralityMeasures(nodeSetIterator.next());
+//            long stop = System.currentTimeMillis();
+//            System.out.println(node + ": "
+//                    + (stop - start) + " ms.");
             // Reset the node betweenness (except the betweenness and
             // closeness) for every node.
             TIntIterator it = nodeSet.iterator();
