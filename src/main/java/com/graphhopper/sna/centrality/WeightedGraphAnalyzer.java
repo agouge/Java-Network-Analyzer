@@ -24,9 +24,11 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NetworkAnalysisResult;
+import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import gnu.trove.map.hash.TIntDoubleHashMap;
+import gnu.trove.set.hash.TIntHashSet;
+import java.util.HashMap;
 
 /**
  * Calculates various centrality measures on a weighted graph.
@@ -66,7 +68,7 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
      * {@inheritDoc}
      */
     @Override
-    public NetworkAnalysisResult computeAll() {
+    public HashMap<Integer, NodeBetweennessInfo> computeAll() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -24,10 +24,13 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NetworkAnalysisResult;
+import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.storage.GDMSGraphStorage;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -94,33 +97,48 @@ public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
 
         // Calculate betweenness.
         long start = System.currentTimeMillis();
-        NetworkAnalysisResult result = analyzer.computeAll();
+        HashMap<Integer, NodeBetweennessInfo> result = analyzer.computeAll();
         long stop = System.currentTimeMillis();
         System.out.println("Network analysis took " + (stop - start)
                 + " ms to compute.");
-        
-        TIntDoubleHashMap closeness = result.getCloseness();
-        TIntDoubleHashMap betweenness = result.getBetweenness();
-        
-        System.out.println("CLOSENESS");
-        GraphAnalyzer.printHashMap(closeness);
-        
+
         // Check values.
-        assertEquals(closeness.get(6), 0.625, TOLERANCE);
-        assertEquals(closeness.get(5), 0.4166666666666667, TOLERANCE);
-        assertEquals(closeness.get(4), 0.35714285714285715, TOLERANCE);
-        assertEquals(closeness.get(3), 0.625, TOLERANCE);
-        assertEquals(closeness.get(2), 0.4166666666666667, TOLERANCE);
-        assertEquals(closeness.get(1), 0.5, TOLERANCE);
-        
-        System.out.println("BETWEENNESS");
-        GraphAnalyzer.printHashMap(betweenness);
-        
-        assertEquals(betweenness.get(6), 0.45, TOLERANCE);
-        assertEquals(betweenness.get(5), 0.0, TOLERANCE);
-        assertEquals(betweenness.get(4), 0.0, TOLERANCE);
-        assertEquals(betweenness.get(3), 0.6, TOLERANCE);
-        assertEquals(betweenness.get(2), 0.0, TOLERANCE);
-        assertEquals(betweenness.get(1), 0.3, TOLERANCE);
+        assertEquals(result.get(6).getCloseness(),
+                     0.625, TOLERANCE);
+        assertEquals(result.get(5).getCloseness(),
+                     0.4166666666666667, TOLERANCE);
+        assertEquals(result.get(4).getCloseness(),
+                     0.35714285714285715, TOLERANCE);
+        assertEquals(result.get(3).getCloseness(),
+                     0.625, TOLERANCE);
+        assertEquals(result.get(2).getCloseness(),
+                     0.4166666666666667, TOLERANCE);
+        assertEquals(result.get(1).getCloseness(),
+                     0.5, TOLERANCE);
+        assertEquals(result.get(6).getBetweenness(),
+                     0.45, TOLERANCE);
+        assertEquals(result.get(5).getBetweenness(),
+                     0.0, TOLERANCE);
+        assertEquals(result.get(4).getBetweenness(),
+                     0.0, TOLERANCE);
+        assertEquals(result.get(3).getBetweenness(),
+                     0.6, TOLERANCE);
+        assertEquals(result.get(2).getBetweenness(),
+                     0.0, TOLERANCE);
+        assertEquals(result.get(1).getBetweenness(),
+                     0.3, TOLERANCE);
+
+        // Print results.
+        Iterator<Map.Entry<Integer, NodeBetweennessInfo>> iterator =
+                result.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, NodeBetweennessInfo> next = iterator.next();
+            final Integer id = next.getKey();
+            final NodeBetweennessInfo info = next.getValue();
+            System.out.println(
+                    next.getKey()
+                    + ": betweenness = " + info.getBetweenness()
+                    + ", closeness = " + info.getCloseness());
+        }
     }
 }

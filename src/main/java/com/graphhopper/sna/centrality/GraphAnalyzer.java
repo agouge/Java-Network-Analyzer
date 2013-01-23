@@ -24,7 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NetworkAnalysisResult;
+import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.RawEdgeIterator;
 import gnu.trove.iterator.TIntDoubleIterator;
@@ -32,6 +32,7 @@ import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.set.hash.TIntHashSet;
+import java.util.HashMap;
 
 /**
  * Calculates various centrality measures on the given graph.
@@ -45,6 +46,10 @@ public abstract class GraphAnalyzer {
      */
     protected final Graph graph;
     /**
+     * The set of nodes of this graph.
+     */
+    protected final TIntHashSet nodeSet;
+    /**
      * The number of nodes in this graph.
      */
     protected final int nodeCount;
@@ -56,7 +61,8 @@ public abstract class GraphAnalyzer {
      */
     public GraphAnalyzer(Graph graph) {
         this.graph = graph;
-        this.nodeCount = graph.nodes();
+        this.nodeSet = nodeSet();
+        this.nodeCount = this.nodeSet.size();
     }
 
     /**
@@ -69,29 +75,29 @@ public abstract class GraphAnalyzer {
     public abstract TIntDoubleHashMap computeCloseness();
 
     /**
-     * Performs graph analysis and stores the results in a
-     * {@link NetworkAnalysisResult}.
+     * Performs graph analysis and stores the results in a hash map mapping each
+     * node to a data structure holding the results of the analysis.
      *
      * @return The results of the graph analysis.
      */
-    public abstract NetworkAnalysisResult computeAll();
+    public abstract HashMap<Integer, NodeBetweennessInfo> computeAll();
 
     /**
      * Returns a {@link TIntHashSet} of the nodes of this graph.
      *
      * @return a {@link TIntHashSet} of the nodes of this graph.
      */
-    public TIntHashSet nodeSet() {
+    private TIntHashSet nodeSet() {
         // Initialize the Set.
-        TIntHashSet nodeSet = new TIntHashSet();
+        TIntHashSet set = new TIntHashSet();
         // Get all the edges.
         RawEdgeIterator iter = graph.allEdges();
         // Add each source and destination node to the set.
         while (iter.next()) {
-            nodeSet.add(iter.nodeA());
-            nodeSet.add(iter.nodeB());
+            set.add(iter.nodeA());
+            set.add(iter.nodeB());
         }
-        return nodeSet;
+        return set;
     }
 
     /**

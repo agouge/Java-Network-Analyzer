@@ -24,9 +24,7 @@
  */
 package com.graphhopper.sna.data;
 
-import gnu.trove.list.linked.TIntLinkedList;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
+import gnu.trove.set.hash.TIntHashSet;
 
 /**
  * Storage class for information needed by node betweenness calculation. <p> An
@@ -42,11 +40,11 @@ public class NodeBetweennessInfo {
      *
      * I.e., the nodes lying on the shortest path to this node
      */
-    private TIntLinkedList predecessors;
-    /**
-     * List of outgoing edges of this node visited by exploring the network.
-     */
-    private TIntLinkedList outedges;
+    private TIntHashSet predecessors;
+//    /**
+//     * List of outgoing edges of this node visited by exploring the network.
+//     */
+//    private TIntLinkedList outedges;
     /**
      * Number of shortest paths leading to this node starting from a certain
      * source.
@@ -56,7 +54,7 @@ public class NodeBetweennessInfo {
      * Length of shortest path starting from certain source and leading to this
      * node.
      */
-    private int spLength;
+    private int distance;
     /**
      * Dependency of this node on any other vertex.
      */
@@ -65,25 +63,26 @@ public class NodeBetweennessInfo {
      * Betweenness value of this node.
      */
     private double betweenness;
+    /**
+     * Closeness value of this node.
+     */
+    private double closeness;
 
     /**
-     * Initializes a new instance of {@link NodeBetweennessInfo}.
-     *
-     * @param initCount       Number of shortest paths to this node. Default
-     *                        value is usually <code>0</code>.
-     * @param initLength      Length of a shortest path to this node Default
-     *                        value is usually <code>-1</code>.
-     * @param initBetweenness Node betweenness value of this node. Default value
-     *                        is usually <code>0</code>.
+     * Initializes a new instance of {@link NodeBetweennessInfo}, setting the
+     * predecessor list to be empty; the shortest paths count, dependency,
+     * betweenness and closeness to 0, and the distance to -1.
      */
-    public NodeBetweennessInfo(long initCount, int initLength,
-            double initBetweenness) {
-        spCount = initCount;
-        spLength = initLength;
+    public NodeBetweennessInfo() {
+//        outedges = new TIntLinkedList();
+        predecessors = new TIntHashSet();
+
+        spCount = 0;
+        distance = -1;
+        betweenness = 0.0;
+
         dependency = 0.0;
-        betweenness = initBetweenness;
-        predecessors = new TIntLinkedList();
-        outedges = new TIntLinkedList();
+        closeness = 0.0;
     }
 
     /**
@@ -91,8 +90,8 @@ public class NodeBetweennessInfo {
      *
      * @return spLength Shortest path length to this node
      */
-    public int getSPLength() {
-        return spLength;
+    public int getDistance() {
+        return distance;
     }
 
     /**
@@ -122,67 +121,65 @@ public class NodeBetweennessInfo {
         return betweenness;
     }
 
-    /**
-     * Retrieves the next predecessor of this node.
-     *
-     * @return predecessor First one of the predecessors of this node. The
-     *         returned element is removed from the list of precedecessors.
-     *
-     * @throws NoSuchElementException If this node does not have predecessors.
-     */
-    public int pullPredecessor() {
-//        return predecessors.removeFirst();
-        return predecessors.removeAt(0);
-    }
-
-    /**
-     * Gets the list of outgoing edges of this node visited by exploring the
-     * network
-     *
-     * @return outedges List of outgoing edges of this node visited by exploring
-     *         the network
-     */
-    public TIntLinkedList getOutEdges() {
-        return outedges;
-    }
-
-    /**
-     * Checks if the predecessor list is empty
-     *
-     * @return true if the list is empty, false otherwise
-     */
-    public boolean isEmptyPredecessors() {
-        if (predecessors.isEmpty()) {
-            return true;
-        }
-        return false;
-    }
-
+//    /**
+//     * Retrieves the next predecessor of this node.
+//     *
+//     * @return predecessor First one of the predecessors of this node. The
+//     *         returned element is removed from the list of predecessors.
+//     *
+//     * @throws NoSuchElementException If this node does not have predecessors.
+//     */
+//    public int pullPredecessor() {
+////        return predecessors.removeFirst();
+//        return predecessors.removeAt(0);
+//    }
+//    /**
+//     * Gets the list of outgoing edges of this node visited by exploring the
+//     * network
+//     *
+//     * @return outedges List of outgoing edges of this node visited by exploring
+//     *         the network
+//     */
+//    public TIntLinkedList getOutEdges() {
+//        return outedges;
+//    }
+//    /**
+//     * Checks if the predecessor list is empty
+//     *
+//     * @return true if the list is empty, false otherwise
+//     */
+//    public boolean isEmptyPredecessors() {
+//        if (predecessors.isEmpty()) {
+//            return true;
+//        }
+//        return false;
+//    }
     /**
      * Sets the new length of the shortest path to this node from a source node
      *
-     * @param newLength Length of the shortest path to this node
+     * @param newDistance Length of the shortest path to this node
      */
-    public void setSPLength(int newLength) {
-        spLength = newLength;
+    public void setDistance(int newDistance) {
+        distance = newDistance;
     }
 
     /**
      * Accumulates the number of shortest paths leading to this node
      *
-     * @param newSPCount Number of further shortest paths leading to this node
+     * @param additionalSPCount Number of further shortest paths leading to this
+     *                          node
      */
-    public void addSPCount(long newSPCount) {
-        spCount += newSPCount;
+    public void accumulateSPCount(long additionalSPCount) {
+        spCount += additionalSPCount;
     }
 
     /**
      * Accumulates the dependency of this node
      *
-     * @param newDependency New dependency to be added
+     * @param additionalDependency New dependency to be added
      */
-    public void addDependency(double newDependency) {
-        dependency += newDependency;
+    public void accumulateDependency(double additionalDependency) {
+        dependency += additionalDependency;
     }
 
     /**
@@ -191,27 +188,26 @@ public class NodeBetweennessInfo {
      * @param pred Node to be added since it is a predecessor of this node
      */
     public void addPredecessor(int pred) {
-        predecessors.add(pred);
+        getPredecessors().add(pred);
     }
 
-    /**
-     * Adds a further visited outgoing edge for this node
-     *
-     * @param outedge Visited outgoing edge of this node
-     */
-    public void addOutedge(int outedge) {
-        outedges.add(outedge);
-    }
-
+//    /**
+//     * Adds a further visited outgoing edge for this node
+//     *
+//     * @param outedge Visited outgoing edge of this node
+//     */
+//    public void addOutedge(int outedge) {
+//        outedges.add(outedge);
+//    }
     /**
      * Accumulates the betweenness value in each run by adding the new
      * betweenness value to the old
      *
-     * @param newBetweenness betweenness value from a run starting at certain
-     *                       source node
+     * @param additionalBetweenness betweenness value from a run starting at
+     *                              certain source node
      */
-    public void addBetweenness(double newBetweenness) {
-        betweenness += newBetweenness;
+    public void accumulateBetweenness(double additionalBetweenness) {
+        setBetweenness(getBetweenness() + additionalBetweenness);
     }
 
     /**
@@ -220,10 +216,10 @@ public class NodeBetweennessInfo {
      */
     public void reset() {
         spCount = 0;
-        spLength = -1;
+        distance = -1;
         dependency = 0.0;
-        predecessors = new TIntLinkedList();
-        outedges = new TIntLinkedList();
+        predecessors = new TIntHashSet();
+//        outedges = new TIntLinkedList();
     }
 
     /**
@@ -232,9 +228,37 @@ public class NodeBetweennessInfo {
      */
     public void setSource() {
         spCount = 1;
-        spLength = 0;
+        distance = 0;
         dependency = 0.0;
-        predecessors = new TIntLinkedList();
-        outedges = new TIntLinkedList();
+        predecessors = new TIntHashSet();
+//        outedges = new TIntLinkedList();
+    }
+
+    /**
+     * @return the predecessors
+     */
+    public TIntHashSet getPredecessors() {
+        return predecessors;
+    }
+
+    /**
+     * @param closeness the closeness to set
+     */
+    public void setCloseness(double closeness) {
+        this.closeness = closeness;
+    }
+
+    /**
+     * @return the closeness
+     */
+    public double getCloseness() {
+        return closeness;
+    }
+
+    /**
+     * @param betweenness the betweenness to set
+     */
+    public void setBetweenness(double betweenness) {
+        this.betweenness = betweenness;
     }
 }
