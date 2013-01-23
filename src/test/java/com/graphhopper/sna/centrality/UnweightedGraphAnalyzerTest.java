@@ -102,7 +102,29 @@ public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
         System.out.println("Network analysis took " + (stop - start)
                 + " ms to compute.");
 
-        // Check values.
+        checkResults2DBidirectional(result);
+
+        // Print results.
+        Iterator<Map.Entry<Integer, NodeBetweennessInfo>> iterator =
+                result.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, NodeBetweennessInfo> next = iterator.next();
+            final Integer id = next.getKey();
+            final NodeBetweennessInfo info = next.getValue();
+            System.out.println(
+                    next.getKey()
+                    + ": betweenness = " + info.getBetweenness()
+                    + ", closeness = " + info.getCloseness());
+        }
+    }
+
+    /**
+     * Checks the computations for the 2D bidirectional graph.
+     *
+     * @param result Result to check.
+     */
+    private void checkResults2DBidirectional(
+            HashMap<Integer, NodeBetweennessInfo> result) {
         assertEquals(result.get(6).getCloseness(),
                      0.625, TOLERANCE);
         assertEquals(result.get(5).getCloseness(),
@@ -127,18 +149,5 @@ public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
                      0.0, TOLERANCE);
         assertEquals(result.get(1).getBetweenness(),
                      0.3, TOLERANCE);
-
-        // Print results.
-        Iterator<Map.Entry<Integer, NodeBetweennessInfo>> iterator =
-                result.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, NodeBetweennessInfo> next = iterator.next();
-            final Integer id = next.getKey();
-            final NodeBetweennessInfo info = next.getValue();
-            System.out.println(
-                    next.getKey()
-                    + ": betweenness = " + info.getBetweenness()
-                    + ", closeness = " + info.getCloseness());
-        }
     }
 }
