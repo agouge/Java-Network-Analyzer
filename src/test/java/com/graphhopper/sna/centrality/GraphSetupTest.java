@@ -78,4 +78,21 @@ public class GraphSetupTest {
 //                "weight",
 //                true);
 //    }
+//    /**
+//     * Loads a bidirectional graph of the Pays de la Loire department from
+//     * storage.
+//     *
+//     * @return The graph.
+//     *
+//     * @throws FileNotFoundException
+//     */
+//    public static GDMSGraphStorage prepareGraphPaysDeLaLoireBidirectional()
+//            throws
+//            FileNotFoundException {
+//        return GDMSGraphStorage.loadGDMSGraph(
+//                "./target/GraphPaysDeLaLoireBidirectional",
+//                "./files/pays_de_la_loire.edges.csv",
+//                "weight",
+//                true);
+//    }
 }
