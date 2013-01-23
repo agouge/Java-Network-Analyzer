@@ -2,3 +2,5 @@
 files/nantes_1_edges.csv
 files/example.edges.csv
 src/test/java/com/graphhoppersna/centrality/NewClass.java.old
+nb-configuration.xml
+files/pays_de_la_loire.edges.csv
