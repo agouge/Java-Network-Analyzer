@@ -71,6 +71,21 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
     protected void calculateShortestPathsFromNode(int startNode,
                                                   PathLengthData pathsFromStartNode,
                                                   TIntArrayStack stack) {
+        // Need to compute all shortest paths from s=startNode.
+        //
+        // Once a SP from s to a node "current"=w is found, we need to
+        // (in the NodeBetweennessInfo of w):
+        //     1. Increment appropriately the sPCount of w.
+        //     2. Store d(s,w) in the distance of w.
+        //     3. Append the predecessor v of w on the SP s->...->v->w.
+        //
+        // We also need to push s to the stack and push all the other nodes
+        // to the stack in order of non-decreasing distance from s (so that
+        // when we pop from the stack in the dependency calculation
+        // {@link GraphAnalyzer.accumulateDependencies(int, TIntArrayStack)},
+        // the nodes are popped in order of non-increasing distance from s.
+        // This is IMPORTANT.
+        // NOTE: This sorting operation might be very inefficient.
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
