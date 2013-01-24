@@ -24,15 +24,15 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.storage.Graph;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.stack.array.TIntArrayStack;
-import java.util.HashMap;
 
 /**
- * Calculates various centrality measures on a weighted graph.
+ * Calculates various centrality measures on weighted graphs which are
+ *
+ * <b>assumed to be connected</b>.
  *
  * @author Adam Gouge
  */

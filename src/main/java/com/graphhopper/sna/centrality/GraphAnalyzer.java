@@ -28,17 +28,15 @@ import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.RawEdgeIterator;
-import gnu.trove.iterator.TIntDoubleIterator;
-import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
-import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.HashMap;
 
 /**
- * Calculates various centrality measures on the given graph.
+ * Calculates various centrality measures on the given graph, <b>assumed to be
+ * connected</b>.
  *
  * @author Adam Gouge
  */
@@ -57,8 +55,8 @@ public abstract class GraphAnalyzer {
      */
     protected final int nodeCount;
     /**
-     * Map of all nodes with their respective node betweenness information,
-     * which stores information needed for the node betweenness calculation.
+     * Map of all nodes with their respective {@link NodeBetweennessInfo}, which
+     * stores information needed for the node betweenness calculation.
      */
     protected HashMap<Integer, NodeBetweennessInfo> nodeBetweenness;
 
@@ -69,7 +67,7 @@ public abstract class GraphAnalyzer {
      */
     public GraphAnalyzer(Graph graph) {
         this.graph = graph;
-        this.nodeSet = nodeSet();
+        this.nodeSet = nodeSet(this.graph);
         this.nodeCount = this.nodeSet.size();
         this.nodeBetweenness = new HashMap<Integer, NodeBetweennessInfo>();
     }
@@ -84,11 +82,12 @@ public abstract class GraphAnalyzer {
     public abstract TIntDoubleHashMap computeCloseness();
 
     /**
-     * Returns a {@link TIntHashSet} of the nodes of this graph.
+     * Returns a {@link TIntHashSet} of the nodes of the given graph.
      *
-     * @return a {@link TIntHashSet} of the nodes of this graph.
+     * @return a {@link TIntHashSet} of the nodes of the given graph.
      */
-    private TIntHashSet nodeSet() {
+    // TODO: Optimize this (by making use of the data structure).
+    protected static TIntHashSet nodeSet(Graph graph) {
         // Initialize the Set.
         TIntHashSet set = new TIntHashSet();
         // Get all the edges.
@@ -102,8 +101,8 @@ public abstract class GraphAnalyzer {
     }
 
     /**
-     * Performs graph analysis and stores the results in a hash map mapping each
-     * node to a data structure holding the results of the analysis.
+     * Performs graph analysis and stores the results in a hash map, mapping
+     * each node to a data structure holding the results of the analysis.
      *
      * @return The results of the graph analysis.
      */
@@ -187,16 +186,16 @@ public abstract class GraphAnalyzer {
     }
 
     /**
-     * Calculates the number of shortest paths from startNode to every other
-     * node and the lengths of these paths using a suitable algorithm, storing
-     * them in the appropriate {@link NodeBetweennessInfo} of
-     * {@link #nodeBetweenness}; also updates the predecessor sets.
+     * Stores number of shortest paths and the length of these paths from
+     * startNode to every other node in the {@link NodeBetweennessInfo} of every
+     * other node; also updates the predecessor sets.
      *
      * @param startNode          The start node.
      * @param stack              The stack which will return nodes ordered by
      *                           non-increasing distance from startNode.
      * @param pathsFromStartNode Holds information about shortest path lengths
-     *                           from startNode to the other nodes in the network
+     *                           from startNode to all the other nodes in the
+     *                           network
      */
     protected abstract void calculateShortestPathsFromNode(
             int startNode,
@@ -316,40 +315,17 @@ public abstract class GraphAnalyzer {
         System.out.println("Betweenness normalization took "
                 + (stop - start) + " ms.");
     }
-
-    /**
-     * Print the distances of all nodes from the given node using the given
-     * distance hash map.
-     *
-     * @param distances The distance hash map.
-     * @param node      The given node.
-     */
-    protected void printDistancesFromNode(TIntIntHashMap distances, int node) {
-        TIntIntIterator distanceIter = distances.iterator();
-        while (distanceIter.hasNext()) {
-            distanceIter.advance();
-            System.out.print("Distance from " + node
-                    + " to " + distanceIter.key()
-                    + ": ");
-            if (distanceIter.value() == Integer.MAX_VALUE) {
-                System.out.println("---");
-            } else {
-                System.out.println(distanceIter.value());
-            }
-        }
-    }
-
-    /**
-     * Prints the given {@link TIntDoubleHashMap}.
-     *
-     * @param hashmap The given {@link TIntDoubleHashMap}.
-     */
-    public static void printHashMap(TIntDoubleHashMap hashmap) {
-        TIntDoubleIterator it = hashmap.iterator();
-        while (it.hasNext()) {
-            it.advance();
-            System.out.println("(" + it.key()
-                    + "," + it.value() + ")");
-        }
-    }
+//    /**
+//     * Prints the given {@link TIntDoubleHashMap}.
+//     *
+//     * @param hashmap The given {@link TIntDoubleHashMap}.
+//     */
+//    public static void printHashMap(TIntDoubleHashMap hashmap) {
+//        TIntDoubleIterator it = hashmap.iterator();
+//        while (it.hasNext()) {
+//            it.advance();
+//            System.out.println("(" + it.key()
+//                    + "," + it.value() + ")");
+//        }
+//    }
 }

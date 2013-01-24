@@ -24,6 +24,8 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.coll.MyBitSet;
+import com.graphhopper.coll.MyBitSetImpl;
 import com.graphhopper.routing.AStar;
 import com.graphhopper.routing.AStarBidirection;
 import com.graphhopper.routing.AbstractRoutingAlgorithm;
@@ -32,17 +34,30 @@ import com.graphhopper.routing.DijkstraBidirectionRef;
 import com.graphhopper.routing.DijkstraSimple;
 import com.graphhopper.routing.Path;
 import com.graphhopper.routing.ch.PrepareContractionHierarchies;
+import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.storage.Graph;
-import com.graphhopper.util.RawEdgeIterator;
+import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.MyIntDeque;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 
 /**
- * Implementation of Freeman's original closeness centrality.
+ * Implementation of Freeman's original closeness centrality using several
+ * different shortest path algorithms (BFS, Dijkstra, A*, Contraction
+ * hierarchies, etc.). We use the GraphHopper implementations of all algorithms
+ * except BFS.
  *
- * <p> Freeman, Linton, A set of measures of centrality based upon betweenness,
- * Sociometry 40: 35–41, 1977. </p>
+ * <p> The user choses the appropriate shortest path algorithm to use. Each
+ * <code>calculate</code> method stores the results in a hash map, where the
+ * keys are the vertices and the values are the closeness.
+ *
+ * <p> <i>Note</i>: For now, the {@link Graph} is <b>assumed to be
+ * connected</b>.
+ *
+ * <p> Freeman, Linton, "A set of measures of centrality based upon
+ * betweenness." <i>Sociometry</i> 40: 35–41, 1977. </p>
  *
  * @author Adam Gouge
  */
@@ -64,27 +79,167 @@ public class ClosenessCentrality {
     }
 
     /**
-     * Returns a {@link TIntHashSet} of nodes of this graph.
+     * Computes the closeness centrality indices of all vertices of an
+     * <b>unweighted</b> graph by using a Breadth-First Search (BFS).
      *
-     * @return a {@link TIntHashSet} of nodes of this graph.
+     * @return A map with the vertex as the key and the closeness centrality as
+     *         the value.
      */
-    // TODO: Optimize this (by making use of the data structure). 
-    public TIntHashSet nodeSet() {
-        // Initialize the Set.
-        TIntHashSet nodeSet = new TIntHashSet();
-        // Get all the edges.
-        RawEdgeIterator iter = graph.allEdges();
-        // Add each source and destination node to the set.
-        while (iter.next()) {
-            nodeSet.add(iter.nodeA());
-            nodeSet.add(iter.nodeB());
-        }
-        return nodeSet;
+    public TIntDoubleHashMap calculateUsingBFS() {
+
+        System.out.println(
+                "Calculating closeness centrality using BFS.");
+
+        long time = System.currentTimeMillis();
+
+        // Closeness centrality
+        TIntDoubleHashMap closenessCentrality = new TIntDoubleHashMap();
+        // Recover the node set and an iterator on it.
+        TIntHashSet nodeSet = GraphAnalyzer.nodeSet(graph);
+        TIntIterator nodeIter = nodeSet.iterator();
+
+        // Begin graph analysis.
+        while (nodeIter.hasNext()) {
+
+            // Start timing for this node.
+            long start = System.currentTimeMillis();
+
+            // Get the next node. (final so this node stays fixed)
+            final int node = nodeIter.next();
+
+            // SHORTEST PATHS COMPUTATION
+//            System.out.println("Computing shortest paths for node " + node);
+            PathLengthData pathLengthsData =
+                    computeShortestPathsData(node, nodeSet);
+//            System.out.println("Number of shortest path lengths accumulated: "
+//                    + pathLengths.getCount());
+
+            // Recover the eccentricity for this node.
+            final double eccentricity = pathLengthsData.getMaxLength();
+
+            // Get the average path length for this node and store it.
+            final double apl =
+                    (pathLengthsData.getCount() > 0)
+                    ? pathLengthsData.getAverageLength() : 0.0;
+
+            // Once we have the average path length for this node,
+            // we have the closeness centrality for this node.
+            final double closeness = (apl > 0.0) ? 1 / apl : 0.0;
+            // Store it.
+            closenessCentrality.put(node, closeness);
+
+            // Stop timing for this node.
+            long stop = System.currentTimeMillis();
+
+            System.out.println("Node: " + node
+                    + ", Closeness: " + closeness
+                    + ", Time: " + (stop - start)
+                    + " ms.");
+        } // End node iteration.
+
+        time = System.currentTimeMillis() - time;
+        System.out.println("Closeness centrality computation (BFS) took "
+                + time + " ms.");
+        return closenessCentrality;
     }
 
     /**
-     * Calculates closeness centrality by calculating, for each node, the
-     * shortest paths to every other node, using {@link DijkstraSimple}.
+     * Computes the shortest path lengths from the given node to all other nodes
+     * in the unweighted graph and stores them in a {@link PathLengthData}
+     * object.
+     *
+     * <p> This method uses a breadth-first traversal (BFS) through the graph,
+     * starting from the specified node, in order to find all reachable nodes
+     * and accumulate their distances. This only works if all edges are of
+     * weight 1.
+     *
+     * @param startNode Start node of the shortest paths to be found.
+     *
+     * @return Data on the shortest path lengths from the current node to all
+     *         other reachable nodes in the graph.
+     */
+    private PathLengthData computeShortestPathsData(
+            int startNode,
+            TIntHashSet nodeSet) {
+
+//        System.out.println("BFS started for node " + aNode + ".");
+
+        // Get an iterator on the node set.
+        TIntIterator iterator = nodeSet.iterator();
+
+        // Create the "queue" and add aNode to it.
+        MyIntDeque queue = new MyIntDeque();
+        queue.push(startNode);
+
+        // Create the set of marked nodes and add startNode to it.
+        MyBitSet marked = new MyBitSetImpl(nodeSet.size());
+        marked.add(startNode);
+
+        // Initialize the distances.
+        TIntIntHashMap distances = new TIntIntHashMap();
+        while (iterator.hasNext()) {
+            int next = iterator.next();
+//            System.out.println("Initializing the distance to "
+//                    + next + " to " + Integer.MAX_VALUE);
+            distances.put(next, Integer.MAX_VALUE);
+        }
+//        System.out.println("Resetting the distance to "
+//                + startNode + " to be zero.");
+        distances.put(startNode, 0);
+//        printDistancesFromNode(distances, startNode);
+
+        // Initialize the result to be returned.
+        PathLengthData result = new PathLengthData();
+
+        // The current child node to be considered.
+        int currentNode;
+        // The current distance from startNode.
+        int currentDistance;
+
+        // While the queue is not empty ...
+        while (!queue.isEmpty()) {
+
+            // ... dequeue a node.
+            currentNode = queue.pop();
+//            System.out.println("BFS for " + currentNode + " ");
+
+            // Get the outgoing edges of the current node.
+            EdgeIterator iter = graph.getOutgoing(currentNode);
+            while (iter.next()) {
+
+                // For every neighbor of the current node,
+                // if the neighbor is not marked ...
+                int neighbor = iter.node();
+                if (!marked.contains(neighbor)) {
+
+                    // ... then mark it,
+                    marked.add(neighbor);
+
+                    // ... enqueue it,
+                    queue.push(neighbor);
+
+                    // ... and set the distance.
+                    currentDistance = distances.get(currentNode) + 1;
+                    distances.put(neighbor, currentDistance);
+//                    System.out.println("Set ("
+//                            + currentNode + ", "
+//                            + neighbor + ") = "
+//                            + currentDistance);
+                    result.addSPLength(currentDistance);
+                }
+            }
+        }
+
+        // TODO: If a node is unreachable, then make the average path length
+        // infinite in order to make closeness centrality zero.
+//        if (dist.containsValue(Integer.MAX_VALUE)) {
+//            result.addSPLength(Integer.MAX_VALUE);
+//        }
+        return result;
+    }
+
+    /**
+     * Calculates closeness centrality using {@link DijkstraSimple}.
      *
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
@@ -97,8 +252,7 @@ public class ClosenessCentrality {
     }
 
     /**
-     * Calculates closeness centrality by calculating, for each node, the
-     * shortest paths to every other node, using {@link DijkstraBidirection}.
+     * Calculates closeness centrality using {@link DijkstraBidirection}.
      *
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
@@ -111,8 +265,7 @@ public class ClosenessCentrality {
     }
 
     /**
-     * Calculates closeness centrality by calculating, for each node, the
-     * shortest paths to every other node, using {@link DijkstraBidirectionRef}.
+     * Calculates closeness centrality using {@link DijkstraBidirectionRef}.
      *
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
@@ -126,8 +279,7 @@ public class ClosenessCentrality {
     }
 
     /**
-     * Calculates closeness centrality by calculating, for each node, the
-     * shortest paths to every other node, using {@link AStar}.
+     * Calculates closeness centrality using {@link AStar}.
      *
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
@@ -139,8 +291,7 @@ public class ClosenessCentrality {
     }
 
     /**
-     * Calculates closeness centrality by calculating, for each node, the
-     * shortest paths to every other node, using {@link AStarBidirection}.
+     * Calculates closeness centrality using {@link AStarBidirection}.
      *
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
@@ -153,8 +304,7 @@ public class ClosenessCentrality {
     }
 
     /**
-     * Calculates closeness centrality by calculating, for each node, the
-     * shortest paths to every other node, using contraction hierarchies.
+     * Calculates closeness centrality using contraction hierarchies.
      *
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
@@ -170,22 +320,25 @@ public class ClosenessCentrality {
     }
 
     /**
-     * Calculates closeness centrality by calculating, for each node, the
-     * shortest paths to every other node, using the given
-     * {@link AbstractRoutingAlgorithm}.
+     * Calculates closeness centrality indices of all vertices by calculating,
+     * for each vertex, the shortest paths to every other vertex, using the
+     * given {@link AbstractRoutingAlgorithm}; stores the results in a hash map,
+     * where the keys are the vertices and the values are the closeness.
      *
      * @param algorithm The {@link AbstractRoutingAlgorithm} to use.
      *
      * @return A map with each vertex as key and each closeness centrality as
      *         value.
      */
-    public TIntDoubleHashMap calculate(AbstractRoutingAlgorithm algorithm) {
+    private TIntDoubleHashMap calculate(AbstractRoutingAlgorithm algorithm) {
+
+        long time = System.currentTimeMillis();
 
         // Initiate the result Map.
         TIntDoubleHashMap result = new TIntDoubleHashMap();
 
         // Recover the set of nodes.
-        TIntHashSet nodeSet = nodeSet();
+        TIntHashSet nodeSet = GraphAnalyzer.nodeSet(graph);
 
         // For tracking progress.
         long start, stop;
@@ -261,14 +414,38 @@ public class ClosenessCentrality {
             // Print out the calculation time for this source node.
             System.out.
                     println(
-                    "Calculation for " + source + ": "
+                    "Closeness for " + source + ": "
                     + (stop - start) + " ms. "
                     + "Closeness: " + closeness);
 
             // Store the closeness centrality for this source node.
             result.put(source, closeness);
         }
+        time = System.currentTimeMillis() - time;
+        System.out.println("Closeness centrality computation took "
+                + time + " ms.");
         // Return the Map of closeness centrality results.
         return result;
     }
+//    /**
+//     * Print the distances of all nodes from the given node using the given
+//     * distance hash map.
+//     *
+//     * @param distances The distance hash map.
+//     * @param node      The given node.
+//     */
+//    protected void printDistancesFromNode(TIntIntHashMap distances, int node) {
+//        TIntIntIterator distanceIter = distances.iterator();
+//        while (distanceIter.hasNext()) {
+//            distanceIter.advance();
+//            System.out.print("Distance from " + node
+//                    + " to " + distanceIter.key()
+//                    + ": ");
+//            if (distanceIter.value() == Integer.MAX_VALUE) {
+//                System.out.println("---");
+//            } else {
+//                System.out.println(distanceIter.value());
+//            }
+//        }
+//    }
 }
