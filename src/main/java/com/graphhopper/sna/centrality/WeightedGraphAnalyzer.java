@@ -25,9 +25,10 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.storage.Graph;
 import gnu.trove.map.hash.TIntDoubleHashMap;
-import gnu.trove.set.hash.TIntHashSet;
+import gnu.trove.stack.array.TIntArrayStack;
 import java.util.HashMap;
 
 /**
@@ -68,7 +69,9 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
      * {@inheritDoc}
      */
     @Override
-    public HashMap<Integer, NodeBetweennessInfo> computeAll() {
+    protected void calculateShortestPathsFromNode(int startNode,
+                                                  PathLengthData pathsFromStartNode,
+                                                  TIntArrayStack stack) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -32,12 +32,9 @@ import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.MyIntDeque;
 import gnu.trove.iterator.TIntIterator;
-import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
-import java.util.HashMap;
 
 /**
  * Calculates various centrality measures on an unweighted graph (i.e., a graph
@@ -48,19 +45,12 @@ import java.util.HashMap;
 public class UnweightedGraphAnalyzer extends GraphAnalyzer {
 
     /**
-     * Map of all nodes with their respective node betweenness information,
-     * which stores information needed for the node betweenness calculation.
-     */
-    private HashMap<Integer, NodeBetweennessInfo> nodeBetweenness;
-
-    /**
      * Initializes a new instance of an unweighted graph analyzer.
      *
      * @param graph The graph to be analyzed.
      */
     public UnweightedGraphAnalyzer(Graph graph) {
         super(graph);
-        this.nodeBetweenness = new HashMap<Integer, NodeBetweennessInfo>();
     }
 
     /**
@@ -223,94 +213,12 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         return result;
     }
 
-    /*
-     * {@inheritDoc}
-     */
-    @Override
-    public HashMap<Integer, NodeBetweennessInfo> computeAll() {
-
-        // ***** GLOBAL INITIALIZATION *************************
-        init();
-
-        // ***** CENTRALITY CONTRIBUTION FROM EACH NODE ********
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            // Calculate betweenness and closeness for each node.
-//            long start = System.currentTimeMillis();
-            int source = nodeSetIterator.next();
-            calculateCentralityContributionFromNode(source);
-//            long stop = System.currentTimeMillis();
-//            System.out.println(node + ": "
-//                    + (stop - start) + " ms.");
-            // Reset the node betweenness (except the betweenness and
-            // closeness) for every node.
-            TIntIterator it = nodeSet.iterator();
-            while (it.hasNext()) {
-                nodeBetweenness.get(it.next()).reset();
-            }
-        }
-        // ***** END CENTRALITY CONTRIBUTION FROM EACH NODE *****
-
-        // ***** NORMALIZATION **********************************
-        normalizeBetweenness();
-
-        return nodeBetweenness;
-    }
-
     /**
-     * Clears and initializes the data structure that will hold all the results
-     * of the network analysis.
-     */
-    private void init() {
-        nodeBetweenness.clear();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            nodeBetweenness.put(nodeSetIterator.next(),
-                                new NodeBetweennessInfo());
-        }
-    }
-
-    /**
-     * Calculates the contribution of the given node to the betweenness and
-     * closeness values of all the other nodes.
      *
-     * @param startNode The given node.
-     */
-    // TODO: For now, we assume the graph is connected.
-    private void calculateCentralityContributionFromNode(int startNode) {
-
-        // ***** LOCAL INITIALIZATION *************************
-        // A data structure to hold information about startNode
-        // relative to all the other nodes in the network during
-        // this calculation.
-        final NodeBetweennessInfo startNBInfo =
-                nodeBetweenness.get(startNode);
-        // Set this as the source node.
-        startNBInfo.setSource();
-        // When accumulating dependencies, this stack will return vertices 
-        // in order of non-increasing distance from startNode.
-        TIntArrayStack stack = new TIntArrayStack();
-        // This will be used for the closeness centrality calculation.
-        PathLengthData pathsFromStartNode = new PathLengthData();
-        // ***** END LOCAL INITIALIZATION *********************
-
-        // ***** CENTRALITY CONTRIBUTION CALCULATION **********
-        // Calculate all the shortest paths from startNode.
-        calculateShortestPathsFromNode(startNode, pathsFromStartNode, stack);
-        // At this point, we have all information required to calculate
-        // closeness for startNode.
-        calculateClosenessForNode(startNode, pathsFromStartNode);
-        // Use the recursion formula to calculate update the dependency
-        // values and their contributions to betweenness values.
-        accumulateDependencies(startNode, stack);
-        // ***** END CENTRALITY CONTRIBUTION CALCULATION ******
-    }
-
-    /**
      * Calculates the number of shortest paths from startNode to every other
      * node and the lengths of these paths using a Breadth-First Search (BFS),
      * storing them in the appropriate {@link NodeBetweennessInfo} of
-     * {@link #nodeBetweenness}. Also updates the predecessor sets.
+     * {@link #nodeBetweenness}; also updates the predecessor sets.
      *
      * @param startNode          The start node.
      * @param stack              The stack which will return nodes ordered by
@@ -318,7 +226,8 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
      * @param pathsFromStartNode Holds information about shortest path lengths
      *                           from startNode to the other nodes in the network
      */
-    private void calculateShortestPathsFromNode(
+    @Override
+    protected void calculateShortestPathsFromNode(
             int startNode,
             PathLengthData pathsFromStartNode,
             TIntArrayStack stack) {
@@ -388,120 +297,6 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         }
 //        TODO: printDistAndSPCounts(startNode, distancesFromStartNode,
 //                             shortestPathsCount, predecessorsOf);
-    }
-
-    /**
-     * Given a node and its {@link PathLengthData} calculated in
-     * {@link #calculateCentralityMeasures(int)}, this method calculates
-     * closeness centrality for the given node.
-     *
-     * @param startNode          The given node.
-     * @param pathsFromStartNode Its path length data.
-     */
-    private void calculateClosenessForNode(
-            int startNode,
-            PathLengthData pathsFromStartNode) {
-        // ***** STAGE 4: Closeness Centrality Calculation ****
-        // Get the average path length for the startNode.
-        final double avgPathLength =
-                (pathsFromStartNode.getCount() > 0)
-                ? pathsFromStartNode.getAverageLength() : 0.0;
-        // Once we have the average path length for this node,
-        // we have the closeness centrality for this node.
-        final double startNodeCloseness = (avgPathLength > 0.0)
-                ? 1 / avgPathLength
-                : 0.0;
-        // Store it.
-        final NodeBetweennessInfo startNodeInfo =
-                nodeBetweenness.get(startNode);
-        startNodeInfo.setCloseness(startNodeCloseness);
-    }
-
-    /**
-     * Uses the recursion formula to calculate update the dependency values of
-     * startNode on every node and their contributions to the betweenness values
-     * of every node except startNode. Node that all these values are contained
-     * in the appropriate {@link NodeBetweennessInfo} of
-     * {@link #nodeBetweenness}.
-     *
-     * @param startNode The start node.
-     * @param stack     The stack that returns nodes ordered by non-increasing
-     *                  distance from startNode.
-     */
-    private void accumulateDependencies(int startNode, TIntArrayStack stack) {
-
-        // *** Here we update
-        // *** (A) the dependency of startNode on the other nodes.
-        // *** (B) the corresponding contributions to the betweenness
-        // ***     centrality scores of the other nodes.
-
-        // For each node w returned in NON-INCREASING distance from
-        // startNode, do:
-        while (stack.size() != 0) {
-            int w = stack.pop();
-            final NodeBetweennessInfo wNBInfo = nodeBetweenness.get(w);
-
-            // For every predecessor v of w on shortest paths from
-            // startNode, do:
-            TIntHashSet predecessorSet = wNBInfo.getPredecessors();
-//                printPredecessorList(w, predecessorList);
-            TIntIterator it = predecessorSet.iterator();
-            while (it.hasNext()) {
-                int predecessor = it.next();
-                final NodeBetweennessInfo predecessorNBInfo = nodeBetweenness.
-                        get(predecessor);
-
-                // (A) Add the contribution of the dependency of startNode
-                // on w to the dependency of startNode on v.
-                double depContribution =
-                        ((double) predecessorNBInfo.getSPCount()
-                        / wNBInfo.getSPCount())
-                        * (1 + wNBInfo.getDependency());
-//                    printDependencyContribution(
-//                            predecessor, startNode, w, dependency,
-//                            shortestPathsCount, dep);
-                predecessorNBInfo.accumulateDependency(depContribution);
-            }
-            // (The betweenness of w cannot receive contributions from
-            // the dependency of w on w, by the definition of dependency.)
-            if (w != startNode) {
-
-                // (B) At this point, the dependency of startNode on w
-                // has finished calculating, so we can add it to
-                // the betweenness centrality of w.
-                wNBInfo.accumulateBetweenness(
-                        wNBInfo.getDependency());
-//                    printBetweennessContribution(w, betweenness, dependency,
-//                                                 updatedBetweenness);
-            }
-        } // ***** END STAGE 3, Stack iteration  **************
-
-//        long stop = System.currentTimeMillis();
-//        System.out.println(startNode + " analysis took "
-//                + (stop - start) + " ms.");
-    }
-
-    /**
-     * Normalizes betweenness to make all values lie between 0 and 1.
-     */
-    private void normalizeBetweenness() {
-        long start = System.currentTimeMillis();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            int node = nodeSetIterator.next();
-            final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
-            // If there are 2 or less nodes, the normalization factor is 1.
-            double normalizationFactor =
-                    (nodeCount > 2)
-                    ? (1.0 / ((nodeCount - 1) * (nodeCount - 2)))
-                    : 1.0;
-            double normalizedBetweenness =
-                    nodeNBInfo.getBetweenness() * normalizationFactor;
-            nodeNBInfo.setBetweenness(normalizedBetweenness);
-        }
-        long stop = System.currentTimeMillis();
-        System.out.println("Betweenness normalization took "
-                + (stop - start) + " ms.");
     }
 //    private void printDependencyContribution(
 //            int pred,
