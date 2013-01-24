@@ -31,7 +31,6 @@ import gnu.trove.stack.array.TIntArrayStack;
 
 /**
  * Calculates various centrality measures on weighted graphs which are
- *
  * <b>assumed to be connected</b>.
  *
  * @author Adam Gouge
