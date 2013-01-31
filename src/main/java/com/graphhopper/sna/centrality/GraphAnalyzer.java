@@ -58,7 +58,7 @@ public abstract class GraphAnalyzer {
      * Map of all nodes with their respective {@link NodeBetweennessInfo}, which
      * stores information needed for the node betweenness calculation.
      */
-    protected HashMap<Integer, NodeBetweennessInfo> nodeBetweenness;
+    protected final HashMap<Integer, NodeBetweennessInfo> nodeBetweenness;
 
     /**
      * Initializes a new instance of a graph analyzer.
