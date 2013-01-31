@@ -56,6 +56,11 @@ public class NodeBetweennessInfo {
      */
     private int distance;
     /**
+     * Length of shortest path starting from certain source and leading to this
+     * node, double value.
+     */
+    private double distanceDouble;
+    /**
      * Dependency of this node on any other vertex.
      */
     private double dependency;
@@ -79,6 +84,7 @@ public class NodeBetweennessInfo {
 
         spCount = 0;
         distance = -1;
+        distanceDouble = Double.POSITIVE_INFINITY;
         betweenness = 0.0;
 
         dependency = 0.0;
@@ -92,6 +98,15 @@ public class NodeBetweennessInfo {
      */
     public int getDistance() {
         return distance;
+    }
+
+    /**
+     * Gets the length of the shortest path from a source node to this node
+     *
+     * @return spLength Shortest path length to this node
+     */
+    public double getDistanceDouble() {
+        return distanceDouble;
     }
 
     /**
@@ -164,6 +179,15 @@ public class NodeBetweennessInfo {
     }
 
     /**
+     * Sets the new length of the shortest path to this node from a source node
+     *
+     * @param newDistance Length of the shortest path to this node
+     */
+    public void setDistanceDouble(double newDistance) {
+        distanceDouble = newDistance;
+    }
+
+    /**
      * Accumulates the number of shortest paths leading to this node
      *
      * @param additionalSPCount Number of further shortest paths leading to this
@@ -171,6 +195,15 @@ public class NodeBetweennessInfo {
      */
     public void accumulateSPCount(long additionalSPCount) {
         spCount += additionalSPCount;
+    }
+
+    /**
+     * Resets the number of shortest paths leading to this node
+     *
+     * @param newSPCount New number shortest paths leading to this node
+     */
+    public void setSPCount(long newSPCount) {
+        spCount = newSPCount;
     }
 
     /**
@@ -217,6 +250,7 @@ public class NodeBetweennessInfo {
     public void reset() {
         spCount = 0;
         distance = -1;
+        distanceDouble = Double.POSITIVE_INFINITY;
         dependency = 0.0;
         predecessors = new TIntHashSet();
 //        outedges = new TIntLinkedList();
@@ -229,8 +263,9 @@ public class NodeBetweennessInfo {
     public void setSource() {
         spCount = 1;
         distance = 0;
+        distanceDouble = 0.0;
         dependency = 0.0;
-        predecessors = new TIntHashSet();
+//        predecessors = new TIntHashSet(); // already done.
 //        outedges = new TIntLinkedList();
     }
 
