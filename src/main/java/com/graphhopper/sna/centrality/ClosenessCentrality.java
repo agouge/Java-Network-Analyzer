@@ -131,10 +131,10 @@ public class ClosenessCentrality {
             // Stop timing for this node.
             long stop = System.currentTimeMillis();
 
-            System.out.println("Node: " + node
-                    + ", Closeness: " + closeness
-                    + ", Time: " + (stop - start)
-                    + " ms.");
+//            System.out.println("Node: " + node
+//                    + ", Closeness: " + closeness
+//                    + ", Time: " + (stop - start)
+//                    + " ms.");
         } // End node iteration.
 
         time = System.currentTimeMillis() - time;
@@ -412,11 +412,11 @@ public class ClosenessCentrality {
             double closeness = (nodeSet.size() - 1) / farness;
 
             // Print out the calculation time for this source node.
-            System.out.
-                    println(
-                    "Closeness for " + source + ": "
-                    + (stop - start) + " ms. "
-                    + "Closeness: " + closeness);
+//            System.out.
+//                    println(
+//                    "Closeness for " + source + ": "
+//                    + (stop - start) + " ms. "
+//                    + "Closeness: " + closeness);
 
             // Store the closeness centrality for this source node.
             result.put(source, closeness);
