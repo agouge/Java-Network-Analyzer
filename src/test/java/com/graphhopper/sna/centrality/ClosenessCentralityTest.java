@@ -38,7 +38,7 @@ import org.junit.Test;
  *
  * @author Adam Gouge
  */
-public class ClosenessCentralityTest extends GraphSetupTest {
+public class ClosenessCentralityTest extends CentralityTest {
 
     /**
      * Tests closeness on a 2D weighted bidirectional graph.
@@ -51,7 +51,7 @@ public class ClosenessCentralityTest extends GraphSetupTest {
             FileNotFoundException {
 
         // Prepare the graph.
-        GDMSGraphStorage graph = prepareGraph2DBidirectional();
+        GDMSGraphStorage graph = Graphs.graph2DWeightedBidirectional();
 
         // Prepare the unweighted graph analyzer.
         WeightedGraphAnalyzer analyzer =
@@ -83,10 +83,12 @@ public class ClosenessCentralityTest extends GraphSetupTest {
     public void testUnweightedGraph2DDirected() throws
             FileNotFoundException {
 
-        System.out.println("\n***** CLOSENESS 2D DIRECTED *****");
+        // TODO: Fix title.
+//        printTitle(Graphs.GRAPH2D);
 
+        // TODO: Prepare the right graph.
         // Prepare the graph.
-        GDMSGraphStorage graph = prepareGraph2DDirected();
+        GDMSGraphStorage graph = Graphs.graph2DWeightedDirected();
 
         // Prepare the unweighted graph analyzer.
         UnweightedGraphAnalyzer analyzer =
@@ -115,7 +117,7 @@ public class ClosenessCentralityTest extends GraphSetupTest {
             FileNotFoundException {
 
         // Prepare the graph.
-        GDMSGraphStorage graph = prepareGraph2DDirected();
+        GDMSGraphStorage graph = Graphs.graph2DWeightedDirected();
 
         // Prepare the unweighted graph analyzer.
         WeightedGraphAnalyzer analyzer =
@@ -143,7 +145,7 @@ public class ClosenessCentralityTest extends GraphSetupTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingDijkstraSimple()
             throws FileNotFoundException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                prepareGraph2DBidirectional());
+                Graphs.graph2DWeightedBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingDijkstraSimple();
     }
 
@@ -158,7 +160,7 @@ public class ClosenessCentralityTest extends GraphSetupTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingDijkstraBidirection()
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                prepareGraph2DBidirectional());
+                Graphs.graph2DWeightedBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingDijkstraBidirection();
     }
 
@@ -173,7 +175,7 @@ public class ClosenessCentralityTest extends GraphSetupTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingDijkstraBidirectionRef()
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                prepareGraph2DBidirectional());
+                Graphs.graph2DWeightedBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingDijkstraBidirectionRef();
     }
 
@@ -187,7 +189,7 @@ public class ClosenessCentralityTest extends GraphSetupTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingAStar() throws
             IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                prepareGraph2DBidirectional());
+                Graphs.graph2DWeightedBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingAStar();
     }
 
@@ -202,7 +204,7 @@ public class ClosenessCentralityTest extends GraphSetupTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingAStarBidirection()
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                prepareGraph2DBidirectional());
+                Graphs.graph2DWeightedBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingAStarBidirection();
     }
 
@@ -216,7 +218,16 @@ public class ClosenessCentralityTest extends GraphSetupTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingContractionHierarchies()
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                prepareGraph2DBidirectional());
+                Graphs.graph2DWeightedBidirectional());
         TIntDoubleHashMap result = cc.calculateUsingContractionHierarchies();
+        printResults(result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getName() {
+        return Graphs.CLOSENESS_CENTRALITY;
     }
 }

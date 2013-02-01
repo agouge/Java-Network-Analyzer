@@ -51,6 +51,10 @@ public class GDMSGraphStorage extends LevelGraphStorage {
      */
     private static final String END_NODE = "end_node";
     /**
+     * For unweighted graphs.
+     */
+    private static final double ALL_WEIGHTS_ONE = 1.0;
+    /**
      * Weight column name.
      */
     private String weightField;
@@ -142,6 +146,71 @@ public class GDMSGraphStorage extends LevelGraphStorage {
     }
 
     /**
+     * Returns a new <i>unweighted</i> {@link GDMSGraphStorage} from a csv file
+     * produced in OrbisGIS as the {@code output.edges} table given by
+     * {@code ST_Graph}.
+     *
+     * If the graph was already constructed, we simply load the data. The
+     * boolean {@code bothDirections} is true iff every edge is to be considered
+     * bidirectional.
+     *
+     * @param graphDirectory The directory in which the graph will be or already
+     *                       was stored.
+     * @param csvFile        The file from which the graph is to be constructed.
+     * @param weightField    The name of the weight column.
+     * @param bothDirections {@code true} iff every edge is to be considered
+     *                       bidirectional.
+     *
+     * @return The {@link GDMSGraphStorage} that was either newly generated or
+     *         loaded from storage.
+     *
+     * @throws FileNotFoundException
+     */
+    public static GDMSGraphStorage loadUnweightedGDMSGraph(String graphDirectory,
+                                                           String csvFile,
+                                                           String weightField,
+                                                           boolean bothDirections)
+            throws
+            FileNotFoundException {
+
+        // Initiate a graph object using RAMDirectory storage.
+        GDMSGraphStorage graph =
+                new GDMSGraphStorage(
+                new RAMDirectory(
+                graphDirectory,
+                true), // true that we can write the graph to disk.
+                weightField);
+        if (graph.loadExisting()) {
+            System.out.println("Loaded a previously created graph. ");
+        } else {
+            long start = System.currentTimeMillis();
+
+            System.out.println("Creating a graph from CSV. ");
+
+            // Get a scanner on the csv file.
+            Scanner scanner = graph.getScannerOnCSVFile(csvFile);
+
+            // Initialize the indices of the start_node, end_node, and length.
+            graph.initializeIndices(scanner);
+
+            // Create the LevelGraph. 
+            // TODO: Is this a good way to allocate space for the graph?
+            graph.createNew(graph.nodes()); // TODO: Returns a GraphStorage!
+
+            // Load the edges from the input file into the levelgraph.
+            graph.loadUnweightedEdges(scanner, bothDirections);
+
+            long stop = System.currentTimeMillis();
+            System.out.println(
+                    "Created unweighted graph in " + (stop - start) + " ms.");
+
+            // Close the scanner.
+            scanner.close();
+        }
+        return graph;
+    }
+
+    /**
      * Gets a {@link Scanner} on the given csv file that will be used to parse
      * the file.
      *
@@ -214,6 +283,30 @@ public class GDMSGraphStorage extends LevelGraphStorage {
                     replace("\"", ""));
             // Add the edge to the graph.
             this.edge(startNode, endNode, length, bothDirections);
+        }
+    }
+
+    /**
+     * Loads the edges from the csv file into the given <i>unweighted</i> graph.
+     *
+     * @param scanner        The scanner that will parse the csv file.
+     * @param bothDirections {@code true} iff every edge is to be considered
+     *                       bidirectional.
+     */
+    public void loadUnweightedEdges(Scanner scanner,
+                                    boolean bothDirections) {
+        // The variables we will need to recover an edge:
+        int startNode, endNode;
+        // Go through the file and add each edge.
+        while (scanner.hasNextLine()) {
+            // The csv produced by OrbisGIS uses a semicolon delimiter.
+            String[] parts = scanner.nextLine().split(";");
+            // Note: We have to get rid of the quotation marks.
+            startNode = Integer.
+                    parseInt(parts[startNodeIndex].replace("\"", ""));
+            endNode = Integer.parseInt(parts[endNodeIndex].replace("\"", ""));
+            // Add the edge to the graph.
+            this.edge(startNode, endNode, ALL_WEIGHTS_ONE, bothDirections);
         }
     }
 }

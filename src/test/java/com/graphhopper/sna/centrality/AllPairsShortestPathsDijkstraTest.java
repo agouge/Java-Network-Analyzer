@@ -67,7 +67,7 @@ public class AllPairsShortestPathsDijkstraTest extends DijkstraTest {
         }
         long stop = System.currentTimeMillis();
 
-        System.out.println(GraphSetupTest.TIME
+        System.out.println(TIME
                 + (stop - start) + " ms - All pairs shortest paths: "
                 + testName);
         System.out.println("");
@@ -79,8 +79,8 @@ public class AllPairsShortestPathsDijkstraTest extends DijkstraTest {
      */
     @Test
     public void testAllPairsSP1() {
-        testAllPairsShortestPaths(GraphSetupTest.EXAMPLE_GRAPH_1,
-                                  exampleGraph1());
+        testAllPairsShortestPaths(Graphs.CORMEN_GRAPH,
+                                  Graphs.graphCormenWeightedDirected());
     }
 
     /**
@@ -89,7 +89,7 @@ public class AllPairsShortestPathsDijkstraTest extends DijkstraTest {
      */
     @Test
     public void testAllPairsSP2() {
-        testAllPairsShortestPaths(GraphSetupTest.EXAMPLE_GRAPH_2,
-                                  exampleGraph2());
+        testAllPairsShortestPaths(Graphs.EXAMPLE_GRAPH_2,
+                                  Graphs.weightedDirected());
     }
 }

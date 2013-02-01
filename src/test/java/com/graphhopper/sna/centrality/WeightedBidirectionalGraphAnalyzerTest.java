@@ -25,28 +25,46 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
-import com.graphhopper.storage.Graph;
+import com.graphhopper.sna.storage.GDMSGraphStorage;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
+import org.junit.Test;
 
 /**
+ * Tests graph analysis on weighted bidirectional graphs.
  *
  * @author Adam Gouge
  */
-public abstract class WeightedGraphAnalyzerTest extends GraphAnalyzerTest {
+// TODO: Make up a better example where contraction hierarchies are actually used.
+public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyzerTest {
+
+    /**
+     * Tests graph analysis on a 2D weighted bidirectional graph.
+     *
+     * @throws FileNotFoundException
+     */
+    @Test
+    public void test2DGraph() throws FileNotFoundException {
+
+        printTitle(Graphs.GRAPH2D);
+
+        // Prepare the graph.
+        GDMSGraphStorage graph = Graphs.graph2DWeightedBidirectional();
+
+        // Prepare the unweighted graph analyzer.
+        WeightedGraphAnalyzer analyzer =
+                new WeightedGraphAnalyzer(graph);
+
+        // Do analysis.
+        HashMap<Integer, NodeBetweennessInfo> results = analyzer.computeAll();
+        printResults(results);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(Graph graph) {
-        // Prepare the unweighted graph analyzer.
-        WeightedGraphAnalyzer analyzer =
-                new WeightedGraphAnalyzer(graph);
-        // Do network analysis.
-        long start = System.currentTimeMillis();
-        HashMap<Integer, NodeBetweennessInfo> result = analyzer.computeAll();
-        long stop = System.currentTimeMillis();
-        printTime(stop - start);
-        return result;
+    protected String getName() {
+        return Graphs.WEIGHTED + " " + Graphs.BIDIRECTIONAL;
     }
 }

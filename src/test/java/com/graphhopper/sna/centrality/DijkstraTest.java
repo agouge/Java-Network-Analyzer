@@ -40,7 +40,15 @@ import org.junit.Test;
  *
  * @author Adam Gouge
  */
-public class DijkstraTest extends GraphSetupTest {
+public class DijkstraTest extends CentralityTest {
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getName() {
+        return Graphs.DIJKSTRA;
+    }
 
     /**
      * Calculates the distance and number of shortest paths from the given
@@ -99,8 +107,7 @@ public class DijkstraTest extends GraphSetupTest {
 //            }
         }
         long stop = System.currentTimeMillis();
-        System.out.println(GraphSetupTest.TIME
-                + (stop - start) + " ms - Initialization.");
+        System.out.println(TIME + (stop - start) + " ms - Initialization.");
         return nodeBetweenness;
     }
 
@@ -142,7 +149,7 @@ public class DijkstraTest extends GraphSetupTest {
                 initDijkstra(graph, nodeSet);
         dijkstra(graph, nodeBetweenness, source);
         long stop = System.currentTimeMillis();
-        System.out.println(GraphSetupTest.TIME
+        System.out.println(TIME
                 + (stop - start) + " ms - Dijkstra: "
                 + testName + ". Source: " + source);
         System.out.println("");
@@ -156,8 +163,8 @@ public class DijkstraTest extends GraphSetupTest {
     @Test
     public void testDijkstra1() {
         HashMap<Integer, NodeBetweennessInfo> nodeBetweenness =
-                testDijkstra(GraphSetupTest.EXAMPLE_GRAPH_1,
-                             exampleGraph1(),
+                testDijkstra(Graphs.CORMEN_GRAPH,
+                             Graphs.graphCormenWeightedDirected(),
                              1);
         // Check distances.
         assertEquals(nodeBetweenness.get(1).getDistance(), 0.0, TOLERANCE);
@@ -190,8 +197,8 @@ public class DijkstraTest extends GraphSetupTest {
     @Test
     public void testDijkstra2() {
         HashMap<Integer, NodeBetweennessInfo> nodeBetweenness =
-                testDijkstra(GraphSetupTest.EXAMPLE_GRAPH_2,
-                             exampleGraph2(),
+                testDijkstra(Graphs.EXAMPLE_GRAPH_2,
+                             Graphs.weightedDirected(),
                              1);
         // Check distances.
         assertEquals(nodeBetweenness.get(1).getDistance(), 0.0, TOLERANCE);
