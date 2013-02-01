@@ -22,12 +22,11 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.graphhopper.sna.data;
 
 /**
- * Stores information about the shortest path lengths from one node
- * to the other nodes in the network.
+ * Stores information about the shortest path lengths from one node to the other
+ * nodes in the network.
  *
  * @author Adam Gouge
  */
@@ -38,21 +37,44 @@ public class PathLengthData {
      */
     private int count;
     /**
+     * Sum of all shortest path steps accumulated in this instance.
+     */
+    private long totalSteps;
+    /**
+     * Maximum shortest path step number accumulated in this instance.
+     */
+    private int maxSteps;
+    /**
      * Sum of all shortest path lengths accumulated in this instance.
      */
-    private long totalLength;
+    private double totalLength;
     /**
      * Maximum length of a shortest path accumulated in this instance.
      */
-    private int maxLength;
+    private double maxLength;
 
     /**
      * Initializes a new instance of {@link PathLengthData}.
      */
     public PathLengthData() {
         count = 0;
-        totalLength = 0;
-        maxLength = 0;
+        totalSteps = 0;
+        maxSteps = 0;
+        totalLength = 0.0;
+        maxLength = 0.0;
+    }
+
+    /**
+     * Accumulates a new shortest path step to this data instance.
+     *
+     * @param aStep New shortest path step to be accumulated.
+     */
+    public void addSPStep(int aStep) {
+        count++;
+        totalSteps += aStep;
+        if (maxSteps < aStep) {
+            maxSteps = aStep;
+        }
     }
 
     /**
@@ -60,7 +82,7 @@ public class PathLengthData {
      *
      * @param aLength Length of a new shortest path to be accumulated.
      */
-    public void addSPLength(int aLength) {
+    public void addSPLength(double aLength) {
         count++;
         totalLength += aLength;
         if (maxLength < aLength) {
@@ -78,12 +100,31 @@ public class PathLengthData {
     }
 
     /**
+     * Gets the total number of shortest path steps.
+     *
+     * @return Sum of all shortest path length steps accumulated in this
+     *         instance.
+     */
+    public long getTotalSteps() {
+        return totalSteps;
+    }
+
+    /**
      * Gets the total length of shortest paths.
      *
      * @return Sum of all shortest path lengths accumulated in this instance.
      */
-    public long getTotalLength() {
+    public double getTotalLength() {
         return totalLength;
+    }
+
+    /**
+     * Longest among the shortest path steps added to this data instance.
+     *
+     * @return Maximum shortest path steps accumulated in this instance.
+     */
+    public int getMaxSteps() {
+        return maxSteps;
     }
 
     /**
@@ -91,8 +132,29 @@ public class PathLengthData {
      *
      * @return Maximum length of a shortest path accumulated in this instance.
      */
-    public int getMaxLength() {
+    public double getMaxLength() {
         return maxLength;
+    }
+
+    /**
+     * Average shortest path steps.
+     *
+     * @return Average shortest path steps accumulated in this instance.
+     *
+     * @throws IllegalStateException If no SPLs were accumulated in this
+     *                               instance
+     *                               ({@link #getCount()}<code> == 0</code>).
+     */
+    public double getAverageSteps() {
+        if (count == 0) {
+            throw new IllegalStateException();
+        }
+//        // If the maximum length is "infinite", then return an infinite 
+//        // average path length.
+//        if (maxLength >= Integer.MAX_VALUE) {
+//            return Double.POSITIVE_INFINITY;
+//        }
+        return ((double) totalSteps) / count;
     }
 
     /**

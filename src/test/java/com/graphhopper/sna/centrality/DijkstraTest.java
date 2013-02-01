@@ -25,6 +25,7 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
@@ -89,7 +90,7 @@ public class DijkstraTest extends GraphSetupTest {
 //        int count = 0;
         while (it.hasNext()) {
 //            count++;
-            nodeBetweenness.put(it.next(), new NodeBetweennessInfo());
+            nodeBetweenness.put(it.next(), new WeightedNodeBetweennessInfo());
 //            if ((count % 1000) == 0) {
 //                stop2 = System.currentTimeMillis();
 //                System.out.println((stop2 - start2)
@@ -159,11 +160,11 @@ public class DijkstraTest extends GraphSetupTest {
                              exampleGraph1(),
                              1);
         // Check distances.
-        assertEquals(nodeBetweenness.get(1).getDistanceDouble(), 0.0, TOLERANCE);
-        assertEquals(nodeBetweenness.get(4).getDistanceDouble(), 5.0, TOLERANCE);
-        assertEquals(nodeBetweenness.get(5).getDistanceDouble(), 7.0, TOLERANCE);
-        assertEquals(nodeBetweenness.get(2).getDistanceDouble(), 8.0, TOLERANCE);
-        assertEquals(nodeBetweenness.get(3).getDistanceDouble(), 9.0, TOLERANCE);
+        assertEquals(nodeBetweenness.get(1).getDistance(), 0.0, TOLERANCE);
+        assertEquals(nodeBetweenness.get(4).getDistance(), 5.0, TOLERANCE);
+        assertEquals(nodeBetweenness.get(5).getDistance(), 7.0, TOLERANCE);
+        assertEquals(nodeBetweenness.get(2).getDistance(), 8.0, TOLERANCE);
+        assertEquals(nodeBetweenness.get(3).getDistance(), 9.0, TOLERANCE);
         // Check shortest path counts.
         assertEquals(nodeBetweenness.get(1).getSPCount(), 1);
         assertEquals(nodeBetweenness.get(4).getSPCount(), 1);
@@ -193,11 +194,11 @@ public class DijkstraTest extends GraphSetupTest {
                              exampleGraph2(),
                              1);
         // Check distances.
-        assertEquals(nodeBetweenness.get(1).getDistanceDouble(), 0.0, TOLERANCE);
-        assertEquals(nodeBetweenness.get(3).getDistanceDouble(), 0.8, TOLERANCE);
-        assertEquals(nodeBetweenness.get(5).getDistanceDouble(), 1.0, TOLERANCE);
-        assertEquals(nodeBetweenness.get(2).getDistanceDouble(), 1.2, TOLERANCE);
-        assertEquals(nodeBetweenness.get(4).getDistanceDouble(), 2.1, TOLERANCE);
+        assertEquals(nodeBetweenness.get(1).getDistance(), 0.0, TOLERANCE);
+        assertEquals(nodeBetweenness.get(3).getDistance(), 0.8, TOLERANCE);
+        assertEquals(nodeBetweenness.get(5).getDistance(), 1.0, TOLERANCE);
+        assertEquals(nodeBetweenness.get(2).getDistance(), 1.2, TOLERANCE);
+        assertEquals(nodeBetweenness.get(4).getDistance(), 2.1, TOLERANCE);
         // Check shortest path counts.
         assertEquals(nodeBetweenness.get(1).getSPCount(), 1);
         assertEquals(nodeBetweenness.get(3).getSPCount(), 1);

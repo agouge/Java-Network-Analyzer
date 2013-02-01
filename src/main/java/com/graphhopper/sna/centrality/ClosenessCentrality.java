@@ -115,12 +115,12 @@ public class ClosenessCentrality {
 //                    + pathLengths.getCount());
 
             // Recover the eccentricity for this node.
-            final double eccentricity = pathLengthsData.getMaxLength();
+            final double eccentricity = pathLengthsData.getMaxSteps();
 
             // Get the average path length for this node and store it.
             final double apl =
                     (pathLengthsData.getCount() > 0)
-                    ? pathLengthsData.getAverageLength() : 0.0;
+                    ? pathLengthsData.getAverageSteps() : 0.0;
 
             // Once we have the average path length for this node,
             // we have the closeness centrality for this node.
@@ -225,7 +225,7 @@ public class ClosenessCentrality {
 //                            + currentNode + ", "
 //                            + neighbor + ") = "
 //                            + currentDistance);
-                    result.addSPLength(currentDistance);
+                    result.addSPStep(currentDistance);
                 }
             }
         }
@@ -233,7 +233,7 @@ public class ClosenessCentrality {
         // TODO: If a node is unreachable, then make the average path length
         // infinite in order to make closeness centrality zero.
 //        if (dist.containsValue(Integer.MAX_VALUE)) {
-//            result.addSPLength(Integer.MAX_VALUE);
+//            result.addSPStep(Integer.MAX_VALUE);
 //        }
         return result;
     }

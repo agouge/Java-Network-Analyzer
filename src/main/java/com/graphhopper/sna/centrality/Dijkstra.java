@@ -61,7 +61,7 @@ public class Dijkstra {
      * Tolerance to be used when determining if two potential shortest paths
      * have the same length.
      */
-    private static final double TOLERANCE = 0.000000001;
+    protected static final double TOLERANCE = 0.000000001;
 
     /**
      * Constructs a new {@link Dijkstra} object.
@@ -95,8 +95,8 @@ public class Dijkstra {
                     @Override
                     public int compare(Integer v1, Integer v2) {
                         return Double.compare(
-                                nodeBetweenness.get(v1).getDistanceDouble(),
-                                nodeBetweenness.get(v2).getDistanceDouble());
+                                nodeBetweenness.get(v1).getDistance(),
+                                nodeBetweenness.get(v2).getDistance());
                     }
                 });
 
@@ -134,7 +134,7 @@ public class Dijkstra {
      * @param graph     The graph.
      * @param startNode The start node.
      */
-    private void initializeSingleSource(
+    protected void initializeSingleSource(
             Graph graph,
             int startNode) {
         nodeBetweenness.get(startNode).setSource();
@@ -148,7 +148,7 @@ public class Dijkstra {
      * @param uvWeight The weight of the edge (u,v).
      * @param queue    The queue.
      */
-    private void relax(int u,
+    protected void relax(int u,
                        int v,
                        double uvWeight,
                        PriorityQueue<Integer> queue) {
@@ -163,16 +163,16 @@ public class Dijkstra {
 //                + " = " + (vNBInfo.getDistanceDouble()
 //                - uNBInfo.getDistanceDouble()
 //                - uvWeight));
-        if (vNBInfo.getDistanceDouble()
-                - uNBInfo.getDistanceDouble()
+        if (vNBInfo.getDistance()
+                - uNBInfo.getDistance()
                 - uvWeight > 0.0) {
 
             // TODO: Is this the right thing to do?
 
 
             // This is one of several shortest paths to v.
-            if (Math.abs(vNBInfo.getDistanceDouble()
-                    - uNBInfo.getDistanceDouble()
+            if (Math.abs(vNBInfo.getDistance()
+                    - uNBInfo.getDistance()
                     - uvWeight) < TOLERANCE) {
 //                System.out.println(
 //                        "     !!! multiple shortest paths to "
@@ -197,8 +197,8 @@ public class Dijkstra {
 //                    + " --> ("
 //                    + uNBInfo.getDistanceDouble() + " + " + uvWeight
 //                    + ") = " + (uNBInfo.getDistanceDouble() + uvWeight));
-            vNBInfo.setDistanceDouble(
-                    uNBInfo.getDistanceDouble()
+            vNBInfo.setDistance(
+                    uNBInfo.getDistance()
                     + uvWeight);
             queue.remove(v);
             queue.add(v);

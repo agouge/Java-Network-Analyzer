@@ -140,14 +140,7 @@ public abstract class GraphAnalyzer {
      * Clears and initializes the data structure that will hold all the results
      * of the network analysis.
      */
-    private void init() {
-        nodeBetweenness.clear();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            nodeBetweenness.put(nodeSetIterator.next(),
-                                new NodeBetweennessInfo());
-        }
-    }
+    protected abstract void init();
 
     /**
      * Calculates the contribution of the given node to the betweenness and
@@ -210,14 +203,14 @@ public abstract class GraphAnalyzer {
      * @param startNode          The given node.
      * @param pathsFromStartNode Its path length data.
      */
-    private void calculateClosenessForNode(
+    protected void calculateClosenessForNode(
             int startNode,
             PathLengthData pathsFromStartNode) {
         // ***** STAGE 4: Closeness Centrality Calculation ****
         // Get the average path length for the startNode.
         final double avgPathLength =
                 (pathsFromStartNode.getCount() > 0)
-                ? pathsFromStartNode.getAverageLength() : 0.0;
+                ? pathsFromStartNode.getAverageSteps() : 0.0;
         // Once we have the average path length for this node,
         // we have the closeness centrality for this node.
         final double startNodeCloseness = (avgPathLength > 0.0)

@@ -25,7 +25,9 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.PathLengthData;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
+import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.stack.array.TIntArrayStack;
 
@@ -45,6 +47,19 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
      */
     public WeightedGraphAnalyzer(Graph graph) {
         super(graph);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void init() {
+        nodeBetweenness.clear();
+        TIntIterator nodeSetIterator = nodeSet.iterator();
+        while (nodeSetIterator.hasNext()) {
+            nodeBetweenness.put(nodeSetIterator.next(),
+                                new WeightedNodeBetweennessInfo());
+        }
     }
 
     /**

@@ -33,37 +33,33 @@ import gnu.trove.set.hash.TIntHashSet;
  *
  * @author Adam Gouge
  */
-public class NodeBetweennessInfo {
+public abstract class NodeBetweennessInfo {
 
     /**
      * List of the predecessors of this node.
      *
      * I.e., the nodes lying on the shortest path to this node
      */
-    private TIntHashSet predecessors;
-//    /**
-//     * List of outgoing edges of this node visited by exploring the network.
-//     */
-//    private TIntLinkedList outedges;
+    protected TIntHashSet predecessors;
     /**
      * Number of shortest paths leading to this node starting from a certain
      * source.
      */
-    private long spCount;
+    protected long spCount;
     /**
-     * Length of shortest path starting from certain source and leading to this
-     * node.
+     * Number of steps on a shortest path from a certain source leading to this
+     * node (BFS).
      */
-    private int distance;
+    private int steps;
     /**
-     * Length of shortest path starting from certain source and leading to this
-     * node, double value.
+     * Length of a shortest path starting from a certain source leading to this
+     * node (Dijkstra).
      */
-    private double distanceDouble;
+    private double distance;
     /**
      * Dependency of this node on any other vertex.
      */
-    private double dependency;
+    protected double dependency;
     /**
      * Betweenness value of this node.
      */
@@ -76,37 +72,18 @@ public class NodeBetweennessInfo {
     /**
      * Initializes a new instance of {@link NodeBetweennessInfo}, setting the
      * predecessor list to be empty; the shortest paths count, dependency,
-     * betweenness and closeness to 0, and the distance to -1.
+     * betweenness and closeness to 0; the distance variable is initialized in
+     * the appropriate subclass.
      */
     public NodeBetweennessInfo() {
 //        outedges = new TIntLinkedList();
         predecessors = new TIntHashSet();
-
+        steps = -1;
+        distance = Double.POSITIVE_INFINITY;
         spCount = 0;
-        distance = -1;
-        distanceDouble = Double.POSITIVE_INFINITY;
         betweenness = 0.0;
-
         dependency = 0.0;
         closeness = 0.0;
-    }
-
-    /**
-     * Gets the length of the shortest path from a source node to this node
-     *
-     * @return spLength Shortest path length to this node
-     */
-    public int getDistance() {
-        return distance;
-    }
-
-    /**
-     * Gets the length of the shortest path from a source node to this node
-     *
-     * @return spLength Shortest path length to this node
-     */
-    public double getDistanceDouble() {
-        return distanceDouble;
     }
 
     /**
@@ -128,63 +105,32 @@ public class NodeBetweennessInfo {
     }
 
     /**
-     * Gets the betweenness value for this node
+     * Returns the length of the shortest path from a source node to this node.
      *
-     * @return betweenness Betweenness value of this node
+     * @return The length of the shortest path from a source node to this node.
+     */
+    public double getDistance() {
+        return distance;
+    }
+
+    /**
+     * Returns the number of steps from a source node to this node on a shortest
+     * path (BFS).
+     *
+     * @return The number of steps from a source node to this node on a shortest
+     *         path (BFS).
+     */
+    public int getSteps() {
+        return steps;
+    }
+
+    /**
+     * Gets the betweenness value for this node.
+     *
+     * @return The betweenness value of this node.
      */
     public double getBetweenness() {
         return betweenness;
-    }
-
-//    /**
-//     * Retrieves the next predecessor of this node.
-//     *
-//     * @return predecessor First one of the predecessors of this node. The
-//     *         returned element is removed from the list of predecessors.
-//     *
-//     * @throws NoSuchElementException If this node does not have predecessors.
-//     */
-//    public int pullPredecessor() {
-////        return predecessors.removeFirst();
-//        return predecessors.removeAt(0);
-//    }
-//    /**
-//     * Gets the list of outgoing edges of this node visited by exploring the
-//     * network
-//     *
-//     * @return outedges List of outgoing edges of this node visited by exploring
-//     *         the network
-//     */
-//    public TIntLinkedList getOutEdges() {
-//        return outedges;
-//    }
-//    /**
-//     * Checks if the predecessor list is empty
-//     *
-//     * @return true if the list is empty, false otherwise
-//     */
-//    public boolean isEmptyPredecessors() {
-//        if (predecessors.isEmpty()) {
-//            return true;
-//        }
-//        return false;
-//    }
-    /**
-     * Sets the new length of the shortest path to this node from a source node
-     *
-     * @param newDistance Length of the shortest path to this node
-     */
-    public void setDistance(int newDistance) {
-        distance = newDistance;
-    }
-
-    /**
-     * Sets the new length of the shortest path to this node from a source node
-     *
-     * @param newDistance Length of the shortest path to this node
-     */
-    public void setDistanceDouble(double newDistance) {
-        distanceDouble = newDistance;
     }
 
     /**
@@ -224,14 +170,6 @@ public class NodeBetweennessInfo {
         getPredecessors().add(pred);
     }
 
-//    /**
-//     * Adds a further visited outgoing edge for this node
-//     *
-//     * @param outedge Visited outgoing edge of this node
-//     */
-//    public void addOutedge(int outedge) {
-//        outedges.add(outedge);
-//    }
     /**
      * Accumulates the betweenness value in each run by adding the new
      * betweenness value to the old
@@ -245,55 +183,78 @@ public class NodeBetweennessInfo {
 
     /**
      * Resets all variables for the calculation of edge and node betweenness to
-     * their default values except the node betweenness.
+     * their default values except the betweenness and closeness.
      */
     public void reset() {
         spCount = 0;
-        distance = -1;
-        distanceDouble = Double.POSITIVE_INFINITY;
+        steps = -1;
+        distance = Double.POSITIVE_INFINITY;
         dependency = 0.0;
         predecessors = new TIntHashSet();
-//        outedges = new TIntLinkedList();
     }
 
     /**
-     * Changes the shortest path count and length for the source node of this
-     * run if BFS
+     * Sets this node as the source node during initialization.
      */
     public void setSource() {
         spCount = 1;
-        distance = 0;
-        distanceDouble = 0.0;
+        steps = 0;
+        distance = 0.0;
         dependency = 0.0;
-//        predecessors = new TIntHashSet(); // already done.
-//        outedges = new TIntLinkedList();
     }
 
     /**
-     * @return the predecessors
+     * Returns the predecessors.
+     *
+     * @return The predecessors.
      */
     public TIntHashSet getPredecessors() {
         return predecessors;
     }
 
     /**
-     * @param closeness the closeness to set
+     * Sets the closeness.
+     *
+     * @param closeness The closeness to set.
      */
     public void setCloseness(double closeness) {
         this.closeness = closeness;
     }
 
     /**
-     * @return the closeness
+     * Returns the closeness.
+     *
+     * @return The closeness.
      */
     public double getCloseness() {
         return closeness;
     }
 
     /**
-     * @param betweenness the betweenness to set
+     * Sets the betweenness.
+     *
+     * @param betweenness The betweenness to set.
      */
     public void setBetweenness(double betweenness) {
         this.betweenness = betweenness;
+    }
+
+    /**
+     * Sets the new length of a shortest path to this node from a source node.
+     *
+     * @param newDistance Length of a shortest path to this node.
+     */
+    public void setDistance(double newDistance) {
+        distance = newDistance;
+    }
+
+    /**
+     * Sets the number of steps on a shortest path from a certain source leading
+     * to this node.
+     *
+     * @param newSteps Number of steps to this node.
+     */
+    public void setSteps(int newSteps) {
+        steps = newSteps;
     }
 }

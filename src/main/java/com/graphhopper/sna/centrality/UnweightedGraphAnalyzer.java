@@ -26,9 +26,12 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
+import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.MyIntDeque;
+import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.stack.array.TIntArrayStack;
 
@@ -48,6 +51,19 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
      */
     public UnweightedGraphAnalyzer(Graph graph) {
         super(graph);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void init() {
+        nodeBetweenness.clear();
+        TIntIterator nodeSetIterator = nodeSet.iterator();
+        while (nodeSetIterator.hasNext()) {
+            nodeBetweenness.put(nodeSetIterator.next(),
+                                new UnweightedNodeBetweennessInfo());
+        }
     }
 
     /**
@@ -104,7 +120,6 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                     nodeBetweenness.get(current);
             // and push this node to the stack.
             stack.push(current);
-//                System.out.println("     BFS for " + currentNode + " ");
 
             // Get the outgoing edges of the current node.
             EdgeIterator edgesOfCurrentNode = graph.getOutgoing(current);
@@ -116,88 +131,31 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                         nodeBetweenness.get(neighbor);
 
                 // If this neighbor is found for the first time ...
-                if (neighborNBInfo.getDistance() < 0) {
+                if (neighborNBInfo.getSteps() < 0) {
                     // then enqueue it
                     queue.push(neighbor);
                     // and update the distance.
-//                        System.out.println("d(" + startNode
-//                                + "," + neighbor + ") = 1 + d("
-//                                + startNode + "," + currentNode
-//                                + ") = "
-//                                + (distancesFromStartNode.get(currentNode) + 1));
-                    int updatedDistance = currentNBInfo.getDistance() + 1;
-                    neighborNBInfo.setDistance(updatedDistance);
+                    int updatedSteps = currentNBInfo.getSteps() + 1;
+                    neighborNBInfo.setSteps(updatedSteps);
                     // Add this to the path length data. (For closeness)
-                    pathsFromStartNode.addSPLength(updatedDistance);
+                    pathsFromStartNode.addSPStep(updatedSteps);
                 }
 
                 // If this is a shortest path from startNode to currentNode
                 // via neighbor ...
-                if (neighborNBInfo.getDistance()
-                        == currentNBInfo.getDistance() + 1) {
+                if (neighborNBInfo.getSteps()
+                        == currentNBInfo.getSteps() + 1) {
                     // then update the number of shortest paths,
-//                    System.out.println(
-//                            "sp(" + startNode + "," + neighbor + ") "
-//                            + "= sp(" + startNode + "," + neighbor + ") "
-//                            + "+ sp(" + startNode + "," + currentNode + ") "
-//                            + "= " + shortestPathsCount.get(neighbor)
-//                            + " + " + shortestPathsCount.get(currentNode)
-//                            + " = "
-//                            + (shortestPathsCount.get(neighbor)
-//                            + shortestPathsCount.get(currentNode)));
                     neighborNBInfo.accumulateSPCount(currentNBInfo.getSPCount());
                     // and add currentNode to the set of predecessors
                     // of neighbor.
                     neighborNBInfo.addPredecessor(current);
-//                    System.out.println("Added " + currentNode
-//                            + " to the pred list of "
-//                            + neighbor);
                 }
             }
         }
 //        TODO: printDistAndSPCounts(startNode, distancesFromStartNode,
 //                             shortestPathsCount, predecessorsOf);
     }
-//    private void printDependencyContribution(
-//            int pred,
-//            int startNode,
-//            int node,
-//            TIntDoubleHashMap dependency,
-//            TIntIntHashMap shortestPathsCount,
-//            double dep) {
-//        System.out.println(
-//                "dep(" + pred + ") "
-//                + "= dep(" + pred + ") + (sp(" + startNode
-//                + "," + pred
-//                + ")/sp(" + startNode + "," + node
-//                + "))(1 + dep(" + node
-//                + ")) = " + dependency.get(pred)
-//                + " + (" + shortestPathsCount.get(pred)
-//                + ")/(" + shortestPathsCount.get(node)
-//                + ")(1 + " + dependency.get(node)
-//                + ") = " + dep);
-//    }
-//
-//    private void printPredecessorList(
-//            int node,
-//            TIntArrayList predecessorList) {
-//        System.out.println("Preds of " + node
-//                + ": " + predecessorList.toString());
-//    }
-//
-//    private void printBetweennessContribution(
-//            int node,
-//            TIntDoubleHashMap betweenness,
-//            TIntDoubleHashMap dependency,
-//            double updatedBetweenness) {
-//        System.out.println("C(" + node
-//                + ") = C(" + node
-//                + ") + dep(" + node
-//                + ") = " + betweenness.get(node)
-//                + " + " + dependency.get(node)
-//                + " = " + updatedBetweenness);
-//        System.out.println("");
-//    }
 //
 //    private void printDistAndSPCounts(
 //            int startNode,
