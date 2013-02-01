@@ -24,7 +24,6 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
@@ -103,6 +102,14 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
         // the nodes are popped in order of non-increasing distance from s.
         // This is IMPORTANT.
         // NOTE: This sorting operation might be very inefficient.
+
+        DijkstraForCentrality algorithm =
+                new DijkstraForCentrality(graph,
+                                          nodeBetweenness,
+                                          startNode,
+                                          pathsFromStartNode,
+                                          stack);
+        algorithm.calculate();
     }
 
     /**
