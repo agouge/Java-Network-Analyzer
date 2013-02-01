@@ -93,9 +93,8 @@ public class Dijkstra {
 
         while (!queue.isEmpty()) {
             // Extract the minimum element.
-//            System.out.println(queue.toString());
             int u = queue.poll();
-//            printExtractedNode(u);
+//            printSettledNode(u);
             // Relax every neighbor of u.
             EdgeIterator outgoingEdges = graph.getOutgoing(u);
             while (outgoingEdges.next()) {
@@ -103,10 +102,7 @@ public class Dijkstra {
                 double uvWeight = outgoingEdges.distance();
                 relax(u, v, uvWeight, queue);
             }
-//            System.out.println("");
         }
-
-
     }
 
     /**
@@ -133,89 +129,51 @@ public class Dijkstra {
      * @param queue    The queue.
      */
     protected void relax(int u,
-                       int v,
-                       double uvWeight,
-                       PriorityQueue<Integer> queue) {
+                         int v,
+                         double uvWeight,
+                         PriorityQueue<Integer> queue) {
         final NodeBetweennessInfo uNBInfo = nodeBetweenness.get(u);
         final NodeBetweennessInfo vNBInfo = nodeBetweenness.get(v);
-//        System.out.println("-----(dist to " + v
-//                + ") - (dist to " + u
-//                + ") - w(" + u + "," + v + ") = "
-//                + vNBInfo.getDistanceDouble()
-//                + " - " + uNBInfo.getDistanceDouble()
-//                + " - " + uvWeight
-//                + " = " + (vNBInfo.getDistanceDouble()
-//                - uNBInfo.getDistanceDouble()
-//                - uvWeight));
-        if (vNBInfo.getDistance()
-                - uNBInfo.getDistance()
-                - uvWeight > 0.0) {
-
+        if (vNBInfo.getDistance() - uNBInfo.getDistance() - uvWeight > 0.0) {
             // TODO: Is this the right thing to do?
-
-
             // This is one of several shortest paths to v.
             if (Math.abs(vNBInfo.getDistance()
                     - uNBInfo.getDistance()
                     - uvWeight) < TOLERANCE) {
-//                System.out.println(
-//                        "     !!! multiple shortest paths to "
+//                System.out.println("     !!! multiple shortest paths to "
 //                        + v + " !!!");
                 vNBInfo.accumulateSPCount(uNBInfo.getSPCount());
                 vNBInfo.addPredecessor(u);
             } // This is the unique shortest path to v we've found.
             else {
-//                System.out.println("--- one shortest path to " + v + " ---");
-                // This is the first shortest path to v we've found.
-//                if (!(vNBInfo.getSPCount() == 0)) {
-//                    System.out.println("_______ OH NO _______");
-//                }
                 vNBInfo.setSPCount(uNBInfo.getSPCount());
                 vNBInfo.getPredecessors().clear();
                 vNBInfo.addPredecessor(u);
             }
-
-//            System.out.println("dist to "
-//                    + v + ": "
-//                    + vNBInfo.getDistanceDouble()
-//                    + " --> ("
-//                    + uNBInfo.getDistanceDouble() + " + " + uvWeight
-//                    + ") = " + (uNBInfo.getDistanceDouble() + uvWeight));
-            vNBInfo.setDistance(
-                    uNBInfo.getDistance()
-                    + uvWeight);
+            vNBInfo.setDistance(uNBInfo.getDistance() + uvWeight);
             queue.remove(v);
             queue.add(v);
-
-//            System.out.println("*****(dist to " + v
-//                    + ") - (dist to " + u
-//                    + ") - w(" + u + "," + v + ") = "
-//                    + vNBInfo.getDistanceDouble()
-//                    + " - " + uNBInfo.getDistanceDouble()
-//                    + " - " + uvWeight
-//                    + " = " + (vNBInfo.getDistanceDouble()
-//                    - uNBInfo.getDistanceDouble()
-//                    - uvWeight));
-
-//            System.out.println("  " + v
-//                    + " pred: " + vNBInfo.getPredecessors().toString()
-//                    + ", sp-count: " + vNBInfo.getSPCount());
         }
     }
 
-//    /**
-//     * Prints the given node as it is settled in {@link Dijkstra#calculate()}.
-//     *
-//     * @param node The node.
-//     */
-//    private void printSettledNode(int node) {
-//        System.out.println("Settled " + node + ", final dist = "
-//                + nodeBetweenness.get(node).getDistanceDouble()
-//                + ", pred: "
-//                + nodeBetweenness.get(node).getPredecessors().toString()
-//                + ", sp-count: " + nodeBetweenness.get(node).getSPCount());
-//    }
+    /**
+     * Prints the given node as it is settled in {@link Dijkstra#calculate()}.
+     *
+     * @param node The node.
+     */
+    private void printSettledNode(int node) {
+        System.out.println("Settled " + node + ", final dist = "
+                + nodeBetweenness.get(node).getDistance()
+                + ", pred: "
+                + nodeBetweenness.get(node).getPredecessors().toString()
+                + ", sp-count: " + nodeBetweenness.get(node).getSPCount());
+    }
 
+    /**
+     * Creates the {@link PriorityQueue} used in {@link Dijkstra}'s algorithm.
+     *
+     * @return The {@link PriorityQueue} used in {@link Dijkstra}'s algorithm.
+     */
     protected PriorityQueue<Integer> createPriorityQueue() {
         return new PriorityQueue<Integer>(
                 nodeSet.size(),
