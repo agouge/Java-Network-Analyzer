@@ -26,9 +26,11 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.routing.DijkstraBidirection;
 import com.graphhopper.routing.DijkstraSimple;
+import com.graphhopper.sna.storage.GDMSGraphStorage;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -37,6 +39,99 @@ import org.junit.Test;
  * @author Adam Gouge
  */
 public class ClosenessCentralityTest extends GraphSetupTest {
+
+    /**
+     * Tests closeness on a 2D weighted bidirectional graph.
+     *
+     * @throws FileNotFoundException
+     */
+    // TODO: Test betweenness once implemented.
+    @Test
+    public void testCCWeightedGraph2DBidirectional() throws
+            FileNotFoundException {
+
+        // Prepare the graph.
+        GDMSGraphStorage graph = prepareGraph2DBidirectional();
+
+        // Prepare the unweighted graph analyzer.
+        WeightedGraphAnalyzer analyzer =
+                new WeightedGraphAnalyzer(graph);
+
+        // Calculate closeness.
+        TIntDoubleHashMap result = analyzer.computeCloseness();
+
+        // Check values.
+        assertEquals(result.get(1), 0.0037875086449884817, TOLERANCE);
+        assertEquals(result.get(2), 0.00353278744701702, TOLERANCE);
+        assertEquals(result.get(3), 0.005575422644913597, TOLERANCE);
+        assertEquals(result.get(4), 0.0032353894664778064, TOLERANCE);
+        assertEquals(result.get(5), 0.0034950150600198938, TOLERANCE);
+        assertEquals(result.get(6), 0.005575422644913597, TOLERANCE);
+    }
+
+    /**
+     * Tests graph analysis on a 2D unweighted directed graph.
+     *
+     * <p> For now, we just compute closeness centrality, but full graph
+     * analysis will be available soon.
+     *
+     * @throws FileNotFoundException
+     */
+    // TODO: Test betweenness once implemented.
+    // TODO: Check closeness definition for directed graphs.
+    @Test
+    public void testUnweightedGraph2DDirected() throws
+            FileNotFoundException {
+
+        System.out.println("\n***** CLOSENESS 2D DIRECTED *****");
+
+        // Prepare the graph.
+        GDMSGraphStorage graph = prepareGraph2DDirected();
+
+        // Prepare the unweighted graph analyzer.
+        UnweightedGraphAnalyzer analyzer =
+                new UnweightedGraphAnalyzer(graph);
+
+        // Calculate closeness.
+        TIntDoubleHashMap result = analyzer.computeCloseness();
+
+        // Check values.
+        assertEquals(result.get(6), 0.6666666666666666, TOLERANCE);
+        assertEquals(result.get(5), 0.0, TOLERANCE);
+        assertEquals(result.get(4), 0.0, TOLERANCE);
+        assertEquals(result.get(3), 0.5714285714285714, TOLERANCE);
+        assertEquals(result.get(2), 0.4166666666666667, TOLERANCE);
+        assertEquals(result.get(1), 1.0, TOLERANCE);
+    }
+
+    /**
+     * Tests closeness on a 2D weighted directed graph.
+     *
+     * @throws FileNotFoundException
+     */
+    // TODO: Check closeness definition for directed graphs.
+    @Test
+    public void testCCWeightedGraph2DDirected() throws
+            FileNotFoundException {
+
+        // Prepare the graph.
+        GDMSGraphStorage graph = prepareGraph2DDirected();
+
+        // Prepare the unweighted graph analyzer.
+        WeightedGraphAnalyzer analyzer =
+                new WeightedGraphAnalyzer(graph);
+
+        // Calculate closeness.
+        TIntDoubleHashMap result = analyzer.computeCloseness();
+
+        // Check values.
+        assertEquals(result.get(6), 0.0, TOLERANCE);
+        assertEquals(result.get(5), 0.0, TOLERANCE);
+        assertEquals(result.get(4), 0.0, TOLERANCE);
+        assertEquals(result.get(3), 0.0, TOLERANCE);
+        assertEquals(result.get(2), 0.00353278744701702, TOLERANCE);
+        assertEquals(result.get(1), 0.0, TOLERANCE);
+    }
 
     /**
      * Tests the closeness centrality algorithm using a {@link DijkstraSimple}

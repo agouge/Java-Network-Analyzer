@@ -40,41 +40,6 @@ import org.junit.Test;
 public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
 
     /**
-     * Tests graph analysis on a 2D unweighted directed graph.
-     *
-     * <p> For now, we just compute closeness centrality, but full graph
-     * analysis will be available soon.
-     *
-     * @throws FileNotFoundException
-     */
-    // TODO: Test betweenness once implemented.
-    // TODO: Check closeness definition for directed graphs.
-    @Test
-    public void testUnweightedGraph2DDirected() throws
-            FileNotFoundException {
-
-        System.out.println("\n***** CLOSENESS 2D DIRECTED *****");
-
-        // Prepare the graph.
-        GDMSGraphStorage graph = prepareGraph2DDirected();
-
-        // Prepare the unweighted graph analyzer.
-        UnweightedGraphAnalyzer analyzer =
-                new UnweightedGraphAnalyzer(graph);
-
-        // Calculate closeness.
-        TIntDoubleHashMap result = analyzer.computeCloseness();
-
-        // Check values.
-        assertEquals(result.get(6), 0.6666666666666666, TOLERANCE);
-        assertEquals(result.get(5), 0.0, TOLERANCE);
-        assertEquals(result.get(4), 0.0, TOLERANCE);
-        assertEquals(result.get(3), 0.5714285714285714, TOLERANCE);
-        assertEquals(result.get(2), 0.4166666666666667, TOLERANCE);
-        assertEquals(result.get(1), 1.0, TOLERANCE);
-    }
-
-    /**
      * Tests graph analysis on a 2D unweighted bidirectional graph.
      *
      * @throws FileNotFoundException
