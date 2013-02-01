@@ -88,23 +88,7 @@ public class Dijkstra {
 
         initializeSingleSource(graph, startNode);
 
-        PriorityQueue<Integer> queue =
-                new PriorityQueue<Integer>(
-                nodeSet.size(),
-                new Comparator<Integer>() {
-                    @Override
-                    public int compare(Integer v1, Integer v2) {
-                        return Double.compare(
-                                nodeBetweenness.get(v1).getDistance(),
-                                nodeBetweenness.get(v2).getDistance());
-                    }
-                });
-
-//        TIntIterator iterator = nodeSet.iterator();
-//        while (iterator.hasNext()) {
-//            queue.add(iterator.next());
-//        }
-
+        PriorityQueue<Integer> queue = createPriorityQueue();
         queue.add(startNode);
 
         while (!queue.isEmpty()) {
@@ -231,4 +215,17 @@ public class Dijkstra {
 //                + nodeBetweenness.get(node).getPredecessors().toString()
 //                + ", sp-count: " + nodeBetweenness.get(node).getSPCount());
 //    }
+
+    protected PriorityQueue<Integer> createPriorityQueue() {
+        return new PriorityQueue<Integer>(
+                nodeSet.size(),
+                new Comparator<Integer>() {
+                    @Override
+                    public int compare(Integer v1, Integer v2) {
+                        return Double.compare(
+                                nodeBetweenness.get(v1).getDistance(),
+                                nodeBetweenness.get(v2).getDistance());
+                    }
+                });
+    }
 }
