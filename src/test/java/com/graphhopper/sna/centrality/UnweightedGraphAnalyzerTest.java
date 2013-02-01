@@ -29,8 +29,6 @@ import com.graphhopper.sna.storage.GDMSGraphStorage;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -103,19 +101,7 @@ public class UnweightedGraphAnalyzerTest extends GraphSetupTest {
                 + " ms to compute.");
 
         checkResults2DBidirectional(result);
-
-        // Print results.
-        Iterator<Map.Entry<Integer, NodeBetweennessInfo>> iterator =
-                result.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, NodeBetweennessInfo> next = iterator.next();
-            final Integer id = next.getKey();
-            final NodeBetweennessInfo info = next.getValue();
-            System.out.println(
-                    next.getKey()
-                    + ": betweenness = " + info.getBetweenness()
-                    + ", closeness = " + info.getCloseness());
-        }
+        printResults(result);
     }
 
     /**

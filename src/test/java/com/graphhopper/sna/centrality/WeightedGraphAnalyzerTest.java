@@ -24,9 +24,11 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.storage.GDMSGraphStorage;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -60,6 +62,8 @@ public class WeightedGraphAnalyzerTest extends GraphSetupTest {
 
         // Calculate closeness.
         TIntDoubleHashMap result = analyzer.computeCloseness();
+
+        printResults(result);
 
         // Check values.
         assertEquals(result.get(6), 0.005575422644913597, TOLERANCE);
@@ -102,7 +106,6 @@ public class WeightedGraphAnalyzerTest extends GraphSetupTest {
         assertEquals(result.get(2), 0.00353278744701702, TOLERANCE);
         assertEquals(result.get(1), 0.0, TOLERANCE);
     }
-
 //    /**
 //     * Tests graph analysis on a weighted bidirectional graph of Nantes.
 //     *

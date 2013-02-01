@@ -4,11 +4,17 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.storage.GDMSGraphStorage;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.storage.GraphStorage;
 import com.graphhopper.storage.RAMDirectory;
+import gnu.trove.iterator.TIntDoubleIterator;
+import gnu.trove.map.hash.TIntDoubleHashMap;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Loads {@link GDMSGraphStorage} graphs from csv files.
@@ -138,6 +144,46 @@ public class GraphSetupTest {
                 "./files/graph2D.edges.csv",
                 "length",
                 false);
+    }
+
+    protected void printResults(HashMap<Integer, NodeBetweennessInfo> result) {
+        // Print results.
+        System.out.format("%-3s%-12s%-12s",
+                          "v",
+                          "Betweenness",
+                          "Closeness");
+        System.out.println("");
+        Iterator<Map.Entry<Integer, NodeBetweennessInfo>> iterator =
+                result.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, NodeBetweennessInfo> next = iterator.next();
+            final Integer id = next.getKey();
+            final NodeBetweennessInfo info = next.getValue();
+//            System.out.println(
+//                    next.getKey()
+//                    + ": betweenness = " + info.getBetweenness()
+//                    + ", closeness = " + info.getCloseness());
+            System.out.format("%-3d%-12f%-12f",
+                              next.getKey(),
+                              info.getBetweenness(),
+                              info.getCloseness());
+            System.out.println("");
+        }
+    }
+
+    protected void printResults(TIntDoubleHashMap result) {
+        // Print results.
+        System.out.format("%-3s%-12s",
+                          "v",
+                          "Closeness");
+        System.out.println("");
+        TIntDoubleIterator iterator = result.iterator();
+        while (iterator.hasNext()) {
+            iterator.advance();
+            final int id = iterator.key();
+            final double closeness = iterator.value();
+            System.out.println(id + ",  " + closeness);
+        }
     }
 //    /**
 //     * Prints the closeness centrality result.
