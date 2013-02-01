@@ -206,11 +206,8 @@ public abstract class GraphAnalyzer {
     protected void calculateClosenessForNode(
             int startNode,
             PathLengthData pathsFromStartNode) {
-        // ***** STAGE 4: Closeness Centrality Calculation ****
         // Get the average path length for the startNode.
-        final double avgPathLength =
-                (pathsFromStartNode.getCount() > 0)
-                ? pathsFromStartNode.getAverageSteps() : 0.0;
+        final double avgPathLength = getAveragePathLength(pathsFromStartNode);
         // Once we have the average path length for this node,
         // we have the closeness centrality for this node.
         final double startNodeCloseness = (avgPathLength > 0.0)
@@ -221,6 +218,16 @@ public abstract class GraphAnalyzer {
                 nodeBetweenness.get(startNode);
         startNodeInfo.setCloseness(startNodeCloseness);
     }
+
+    /**
+     * Returns the average path length from the given {@link PathLengthData}.
+     *
+     * @param pathsFromStartNode The {@link PathLengthData}.
+     *
+     * @return The average path length.
+     */
+    protected abstract double getAveragePathLength(
+            PathLengthData pathsFromStartNode);
 
     /**
      * Uses the recursion formula to calculate update the dependency values of

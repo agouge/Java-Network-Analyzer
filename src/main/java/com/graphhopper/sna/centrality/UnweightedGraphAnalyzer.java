@@ -27,7 +27,6 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
-import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.MyIntDeque;
@@ -155,6 +154,17 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         }
 //        TODO: printDistAndSPCounts(startNode, distancesFromStartNode,
 //                             shortestPathsCount, predecessorsOf);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected double getAveragePathLength(
+            PathLengthData pathsFromStartNode) {
+        return (pathsFromStartNode.getCount() > 0)
+                ? pathsFromStartNode.getAverageSteps()
+                : 0.0;
     }
 //
 //    private void printDistAndSPCounts(

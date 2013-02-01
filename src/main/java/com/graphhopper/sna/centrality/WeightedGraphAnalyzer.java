@@ -24,6 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
@@ -83,9 +84,10 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
      * {@inheritDoc}
      */
     @Override
-    protected void calculateShortestPathsFromNode(int startNode,
-                                                  PathLengthData pathsFromStartNode,
-                                                  TIntArrayStack stack) {
+    protected void calculateShortestPathsFromNode(
+            int startNode,
+            PathLengthData pathsFromStartNode,
+            TIntArrayStack stack) {
         // Need to compute all shortest paths from s=startNode.
         //
         // Once a SP from s to a node "current"=w is found, we need to
@@ -101,6 +103,16 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
         // the nodes are popped in order of non-increasing distance from s.
         // This is IMPORTANT.
         // NOTE: This sorting operation might be very inefficient.
-        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected double getAveragePathLength(
+            PathLengthData pathsFromStartNode) {
+        return (pathsFromStartNode.getCount() > 0)
+                ? pathsFromStartNode.getAverageLength()
+                : 0.0;
     }
 }
