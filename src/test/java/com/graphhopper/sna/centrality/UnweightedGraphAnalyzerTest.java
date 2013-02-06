@@ -29,6 +29,7 @@ import com.graphhopper.storage.Graph;
 import java.util.HashMap;
 
 /**
+ * Contains a method for doing (possibly verbose) unweighted graph analysis.
  *
  * @author Adam Gouge
  */
@@ -38,10 +39,12 @@ public abstract class UnweightedGraphAnalyzerTest extends GraphAnalyzerTest {
      * {@inheritDoc}
      */
     @Override
-    protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(Graph graph) {
+    protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(Graph graph,
+                                                               boolean verbose) {
         // Prepare the unweighted graph analyzer.
-        UnweightedGraphAnalyzer analyzer =
-                new UnweightedGraphAnalyzer(graph);
+        UnweightedGraphAnalyzer analyzer = verbose
+                ? new UnweightedGraphAnalyzerVerbose(graph)
+                : new UnweightedGraphAnalyzer(graph);
         // Do network analysis.
         long start = System.currentTimeMillis();
         HashMap<Integer, NodeBetweennessInfo> result = analyzer.computeAll();

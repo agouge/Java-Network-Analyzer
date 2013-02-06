@@ -25,7 +25,6 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
-import com.graphhopper.sna.storage.GDMSGraphStorage;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import org.junit.Test;
@@ -48,15 +47,10 @@ public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyze
 
         printTitle(Graphs.GRAPH2D);
 
-        // Prepare the graph.
-        GDMSGraphStorage graph = Graphs.graph2DWeightedBidirectional();
-
-        // Prepare the unweighted graph analyzer.
-        WeightedGraphAnalyzer analyzer =
-                new WeightedGraphAnalyzer(graph);
-
         // Do analysis.
-        HashMap<Integer, NodeBetweennessInfo> results = analyzer.computeAll();
+        HashMap<Integer, NodeBetweennessInfo> results =
+                doAnalysis(Graphs.graph2DWeightedBidirectional(), false);
+
         printResults(results);
     }
 

@@ -27,8 +27,6 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Parent class for {@link GraphAnalyzer} tests.
@@ -40,9 +38,11 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
     protected final static String GRAPH_ANALYSIS = "Graph analysis";
 
     /**
-     * Does the analysis on the given graph.
+     * Does the analysis on the given graph, printing out debugging information
+     * if the boolean {@code verbose} is {@code true}.
      *
-     * @param graph The graph.
+     * @param graph   The graph.
+     * @param verbose {@code true} iff verbose output is desired.
      *
      * @return The result.
      */

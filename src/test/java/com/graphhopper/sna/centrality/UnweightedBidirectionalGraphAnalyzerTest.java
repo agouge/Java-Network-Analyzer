@@ -57,7 +57,7 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
         printTitle(Graphs.GRAPH2D);
 
         HashMap<Integer, NodeBetweennessInfo> result =
-                doAnalysis(Graphs.graph2DUnweightedBidirectional());
+                doAnalysis(Graphs.graph2DUnweightedBidirectional(), false);
 
         check2DGraphResults(result);
         printResults(result);
@@ -72,7 +72,7 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
         printTitle(Graphs.CORMEN_GRAPH);
 
         HashMap<Integer, NodeBetweennessInfo> result =
-                doAnalysis(Graphs.graphCormenUnweightedBidirectional());
+                doAnalysis(Graphs.graphCormenUnweightedBidirectional(), false);
 
         // TODO: Check results.
         printResults(result);
