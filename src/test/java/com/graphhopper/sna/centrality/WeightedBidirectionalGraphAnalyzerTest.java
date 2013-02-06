@@ -37,6 +37,17 @@ import org.junit.Test;
 // TODO: Make up a better example where contraction hierarchies are actually used.
 public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyzerTest {
 
+    private final static String name =
+            Graphs.WEIGHTED + " " + Graphs.BIDIRECTIONAL;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getName() {
+        return name;
+    }
+
     /**
      * Tests graph analysis on a 2D weighted bidirectional graph.
      *
@@ -52,13 +63,5 @@ public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyze
                 doAnalysis(Graphs.graph2DWeightedBidirectional(), false);
 
         printResults(results);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getName() {
-        return Graphs.WEIGHTED + " " + Graphs.BIDIRECTIONAL;
     }
 }

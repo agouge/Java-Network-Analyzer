@@ -37,12 +37,15 @@ import org.junit.Test;
  */
 public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAnalyzerTest {
 
+    private final static String name =
+            Graphs.UNWEIGHTED + " " + Graphs.BIDIRECTIONAL;
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected String getName() {
-        return Graphs.UNWEIGHTED + " " + Graphs.BIDIRECTIONAL;
+        return name;
     }
 
     /**
