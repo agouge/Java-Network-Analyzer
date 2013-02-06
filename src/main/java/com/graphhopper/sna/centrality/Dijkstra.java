@@ -136,10 +136,12 @@ public class Dijkstra {
         final NodeBetweennessInfo uNBInfo = nodeBetweenness.get(u);
         final NodeBetweennessInfo vNBInfo = nodeBetweenness.get(v);
         // If the length of this path to v through u is less than
+        // OR EQUAL TO (this corresponds to multiple shortest paths)
         // the current distance estimate on v, then update the
-        // shortest path information of v.
+        // shortest path information of v. The TOLERANCE takes care
+        // of the "or equal to" part.
         if (vNBInfo.getDistance() - uNBInfo.getDistance() - uvWeight
-                > 0) {
+                > -TOLERANCE) {
             updateSPCount(u, v, uNBInfo, vNBInfo, uvWeight);
             vNBInfo.addPredecessor(u);
             vNBInfo.setDistance(uNBInfo.getDistance() + uvWeight);
