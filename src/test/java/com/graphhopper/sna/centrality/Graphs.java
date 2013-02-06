@@ -31,6 +31,7 @@ import com.graphhopper.storage.RAMDirectory;
 import java.io.FileNotFoundException;
 
 /**
+ * A class of example graphs.
  *
  * @author Adam Gouge
  */
@@ -68,7 +69,7 @@ public class Graphs {
         //       \   | |  /     7\  | |
         //       5\  | / /        \ | /
         //         \ v| /          \v|
-        //          > 4 ------------ 5
+        //          > 4 -----------> 5
         //                   2
         GraphStorage graph = new GraphStorage(new RAMDirectory());
         graph.createNew(10);
