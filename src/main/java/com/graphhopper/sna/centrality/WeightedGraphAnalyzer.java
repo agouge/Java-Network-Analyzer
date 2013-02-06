@@ -24,6 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
@@ -37,7 +38,6 @@ import gnu.trove.stack.array.TIntArrayStack;
  *
  * @author Adam Gouge
  */
-// TODO: Implement betweenness centrality.
 public class WeightedGraphAnalyzer extends GraphAnalyzer {
 
     /**
@@ -101,8 +101,6 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
         // {@link GraphAnalyzer.accumulateDependencies(int, TIntArrayStack)},
         // the nodes are popped in order of non-increasing distance from s.
         // This is IMPORTANT.
-        // NOTE: This sorting operation might be very inefficient.
-
         DijkstraForCentrality algorithm =
                 new DijkstraForCentrality(graph,
                                           nodeBetweenness,
@@ -121,5 +119,25 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
         return (pathsFromStartNode.getCount() > 0)
                 ? pathsFromStartNode.getAverageLength()
                 : 0.0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void printSPInfo(
+            int startNode) {
+        System.out.println("       d           SP pred");
+        TIntIterator it = nodeSet.iterator();
+        while (it.hasNext()) {
+            int node = it.next();
+            final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
+            System.out.print("(" + startNode + "," + node + ")  ");
+            System.out.format("%-12f%-3d%-12s",
+                              nodeNBInfo.getDistance(),
+                              nodeNBInfo.getSPCount(),
+                              nodeNBInfo.getPredecessors().toString());
+            System.out.println("");
+        }
     }
 }

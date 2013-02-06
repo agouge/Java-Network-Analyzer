@@ -152,8 +152,6 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                 }
             }
         }
-//        TODO: printDistAndSPCounts(startNode, distancesFromStartNode,
-//                             shortestPathsCount, predecessorsOf);
     }
 
     /**
@@ -166,20 +164,23 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                 ? pathsFromStartNode.getAverageSteps()
                 : 0.0;
     }
-//
-//    private void printDistAndSPCounts(
-//            int startNode,
-//            TIntIntHashMap distancesFromStartNode,
-//            TIntIntHashMap shortestPathsCount,
-//            HashMap<Integer, TIntHashSet> predecessorsOf) {
-//        TIntIterator it = nodeSet.iterator();
-//        while (it.hasNext()) {
-//            int nd = it.next();
-//            System.out.println(
-//                    "(" + startNode + "," + nd + ") "
-//                    + ": d = " + distancesFromStartNode.get(nd)
-//                    + ", sp = " + shortestPathsCount.get(nd)
-//                    + ", pred: " + predecessorsOf.get(nd).toString());
-//        }
-//    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void printSPInfo(int startNode) {
+        System.out.println("       d  SP pred");
+        TIntIterator it = nodeSet.iterator();
+        while (it.hasNext()) {
+            int node = it.next();
+            final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
+            System.out.print("(" + startNode + "," + node + ")  ");
+            System.out.format("%-3d%-3d%-12s",
+                              nodeNBInfo.getSteps(),
+                              nodeNBInfo.getSPCount(),
+                              nodeNBInfo.getPredecessors().toString());
+            System.out.println("");
+        }
+    }
 }

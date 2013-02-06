@@ -315,6 +315,14 @@ public abstract class GraphAnalyzer {
         System.out.println("Betweenness normalization took "
                 + (stop - start) + " ms.");
     }
+
+    /**
+     * Prints shortest path information from the given start node to all other
+     * nodes.
+     *
+     * @param startNode The start node.
+     */
+    protected abstract void printSPInfo(int startNode);
 //    /**
 //     * Prints the given {@link TIntDoubleHashMap}.
 //     *
