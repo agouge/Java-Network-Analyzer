@@ -62,7 +62,7 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
     public void test2DGraph() throws FileNotFoundException {
         printTitle(Graphs.GRAPH2D);
         Graph graph = Graphs.graph2DUnweightedBidirectional();
-        doAnalysis(graph, false, false);
+        doAnalysis(graph, false);
     }
 
     /**
@@ -74,7 +74,7 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
     public void testCormen() throws FileNotFoundException {
         printTitle(Graphs.CORMEN_GRAPH);
         Graph graph = Graphs.graphCormenUnweightedBidirectional();
-        doAnalysis(graph, false, false);
+        doAnalysis(graph, false);
     }
 
     /**
@@ -105,6 +105,7 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
     protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(
             Graph graph,
             boolean verbose) {
+        // Don't print the results.
         return doAnalysis(graph, verbose, false);
     }
 
