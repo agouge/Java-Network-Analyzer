@@ -30,7 +30,6 @@ import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import java.util.HashMap;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -180,14 +179,14 @@ public class DijkstraTest extends CentralityTest {
         assertEquals(nodeBetweenness.get(3).getSPCount(), 1);
         // Check predecessors.
         assertTrue(nodeBetweenness.get(1).getPredecessors().isEmpty());
-        assertArrayEquals(nodeBetweenness.get(4).getPredecessors().toArray(),
-                          new int[]{1});
-        assertArrayEquals(nodeBetweenness.get(5).getPredecessors().toArray(),
-                          new int[]{4});
-        assertArrayEquals(nodeBetweenness.get(2).getPredecessors().toArray(),
-                          new int[]{4});
-        assertArrayEquals(nodeBetweenness.get(3).getPredecessors().toArray(),
-                          new int[]{2});
+        assertEquals(nodeBetweenness.get(4).getPredecessors(),
+                     new TIntHashSet(new int[]{1}));
+        assertEquals(nodeBetweenness.get(5).getPredecessors(),
+                     new TIntHashSet(new int[]{4}));
+        assertEquals(nodeBetweenness.get(2).getPredecessors(),
+                     new TIntHashSet(new int[]{4, 1}));
+        assertEquals(nodeBetweenness.get(3).getPredecessors(),
+                     new TIntHashSet(new int[]{2, 4, 5}));
     }
 
     /**
@@ -214,12 +213,12 @@ public class DijkstraTest extends CentralityTest {
         assertEquals(nodeBetweenness.get(4).getSPCount(), 2);
         // Check predecessors.
         assertTrue(nodeBetweenness.get(1).getPredecessors().isEmpty());
-        assertArrayEquals(nodeBetweenness.get(3).getPredecessors().toArray(),
-                          new int[]{1});
-        assertArrayEquals(nodeBetweenness.get(5).getPredecessors().toArray(),
-                          new int[]{1});
-        assertArrayEquals(nodeBetweenness.get(2).getPredecessors().toArray(),
-                          new int[]{1});
+        assertEquals(nodeBetweenness.get(3).getPredecessors(),
+                     new TIntHashSet(new int[]{1}));
+        assertEquals(nodeBetweenness.get(5).getPredecessors(),
+                     new TIntHashSet(new int[]{1}));
+        assertEquals(nodeBetweenness.get(2).getPredecessors(),
+                     new TIntHashSet(new int[]{1}));
         assertEquals(nodeBetweenness.get(4).getPredecessors(),
                      new TIntHashSet(new int[]{2, 3}));
     }
