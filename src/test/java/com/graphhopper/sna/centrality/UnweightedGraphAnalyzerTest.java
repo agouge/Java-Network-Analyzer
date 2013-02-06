@@ -41,12 +41,12 @@ public abstract class UnweightedGraphAnalyzerTest extends GraphAnalyzerTest {
     @Override
     protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(Graph graph,
                                                                boolean verbose) {
+        long start = System.currentTimeMillis();
         // Prepare the unweighted graph analyzer.
         UnweightedGraphAnalyzer analyzer = verbose
                 ? new UnweightedGraphAnalyzerVerbose(graph)
                 : new UnweightedGraphAnalyzer(graph);
         // Do network analysis.
-        long start = System.currentTimeMillis();
         HashMap<Integer, NodeBetweennessInfo> result = analyzer.computeAll();
         long stop = System.currentTimeMillis();
         printTime(stop - start);
