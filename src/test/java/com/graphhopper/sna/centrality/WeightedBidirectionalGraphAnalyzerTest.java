@@ -64,4 +64,21 @@ public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyze
 
         printResults(results);
     }
+
+    /**
+     * Tests graph analysis on the weighted bidirectional Cormen graph.
+     *
+     * @throws FileNotFoundException
+     */
+    @Test
+    public void testCormenGraph() throws FileNotFoundException {
+
+        printTitle(Graphs.CORMEN_GRAPH);
+
+        // Do weighted analysis.
+        HashMap<Integer, NodeBetweennessInfo> weightedResults =
+                doAnalysis(Graphs.graphCormenUnweightedBidirectional(), false);
+
+        printResults(weightedResults);
+    }
 }
