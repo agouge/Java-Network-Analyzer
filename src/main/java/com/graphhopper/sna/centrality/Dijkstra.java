@@ -132,24 +132,16 @@ public class Dijkstra {
                          int v,
                          double uvWeight,
                          PriorityQueue<Integer> queue) {
+        // Get the node betweenness info objects.
         final NodeBetweennessInfo uNBInfo = nodeBetweenness.get(u);
         final NodeBetweennessInfo vNBInfo = nodeBetweenness.get(v);
-        if (vNBInfo.getDistance() - uNBInfo.getDistance() - uvWeight > 0.0) {
-            // TODO: Is this the right thing to do?
-            // This is one of several shortest paths to v.
-            if (Math.abs(vNBInfo.getDistance()
-                    - uNBInfo.getDistance()
-                    - uvWeight) < TOLERANCE) {
-//                System.out.println("     !!! multiple shortest paths to "
-//                        + v + " !!!");
-                vNBInfo.accumulateSPCount(uNBInfo.getSPCount());
-                vNBInfo.addPredecessor(u);
-            } // This is the unique shortest path to v we've found.
-            else {
-                vNBInfo.setSPCount(uNBInfo.getSPCount());
-                vNBInfo.getPredecessors().clear();
-                vNBInfo.addPredecessor(u);
-            }
+        // If the length of this path to v through u is less than
+        // the current distance estimate on v, then update the
+        // shortest path information of v.
+        if (vNBInfo.getDistance() - uNBInfo.getDistance() - uvWeight
+                > 0) {
+            updateSPCount(u, v, uNBInfo, vNBInfo, uvWeight);
+            vNBInfo.addPredecessor(u);
             vNBInfo.setDistance(uNBInfo.getDistance() + uvWeight);
             queue.remove(v);
             queue.add(v);
@@ -157,16 +149,35 @@ public class Dijkstra {
     }
 
     /**
-     * Prints the given node as it is settled in {@link Dijkstra#calculate()}.
+     * Updates the number of shortest paths leading to v when relaxing the edge
+     * (u,v).
      *
-     * @param node The node.
+     * @param u        Node u.
+     * @param v        Node v.
+     * @param uNBInfo  {@link NodeBetweennessInfo} for u.
+     * @param vNBInfo  {@link NodeBetweennessInfo} for v.
+     * @param uvWeight w(u,v).
      */
-    private void printSettledNode(int node) {
-        System.out.println("Settled " + node + ", final dist = "
-                + nodeBetweenness.get(node).getDistance()
-                + ", pred: "
-                + nodeBetweenness.get(node).getPredecessors().toString()
-                + ", sp-count: " + nodeBetweenness.get(node).getSPCount());
+    protected void updateSPCount(
+            int u,
+            int v,
+            final NodeBetweennessInfo uNBInfo,
+            final NodeBetweennessInfo vNBInfo,
+            double uvWeight) {
+        // If the difference between the distance to v on the one hand
+        // and the distance to u plus w(u,v) on the other hand is less
+        // than the defined tolerance (think EQUAL), then this
+        // is one of multiple shortest paths. As such, we add the number
+        // of shortest paths to u.
+        if (Math.abs(vNBInfo.getDistance()
+                - uNBInfo.getDistance()
+                - uvWeight) < TOLERANCE) {
+            vNBInfo.accumulateSPCount(uNBInfo.getSPCount());
+        } // Otherwise this is the first shortest path found to v so far,
+        // so we set the number of shortest paths to that of u.
+        else {
+            vNBInfo.setSPCount(uNBInfo.getSPCount());
+        }
     }
 
     /**
