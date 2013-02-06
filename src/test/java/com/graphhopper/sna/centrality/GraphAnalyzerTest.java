@@ -31,10 +31,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
+ * Parent class for {@link GraphAnalyzer} tests.
  *
  * @author Adam Gouge
  */
 public abstract class GraphAnalyzerTest extends CentralityTest {
+
+    protected final static String GRAPH_ANALYSIS = "Graph analysis";
 
     /**
      * Does the analysis on the given graph.
@@ -44,7 +47,8 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      * @return The result.
      */
     protected abstract HashMap<Integer, NodeBetweennessInfo> doAnalysis(
-            Graph graph);
+            Graph graph,
+            boolean verbose);
 
     /**
      * Prints the amount of time graph analysis took.
@@ -52,32 +56,7 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      * @param time
      */
     protected void printTime(double time) {
-        System.out.println(TIME + time + " ms: Graph analysis");
-    }
-
-    /**
-     * Prints the results of graph analysis.
-     *
-     * @param result The result.
-     */
-    protected void printResults(HashMap<Integer, NodeBetweennessInfo> result) {
-        // Print results.
-        System.out.format("%-3s%-12s%-12s",
-                          "v",
-                          "Betweenness",
-                          "Closeness");
-        System.out.println("");
-        Iterator<Map.Entry<Integer, NodeBetweennessInfo>> iterator =
-                result.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, NodeBetweennessInfo> next = iterator.next();
-            final Integer id = next.getKey();
-            final NodeBetweennessInfo info = next.getValue();
-            System.out.format("%-3d%-12f%-12f",
-                              next.getKey(),
-                              info.getBetweenness(),
-                              info.getCloseness());
-            System.out.println("");
-        }
+        System.out.println(TIME + time + " ms: "
+                + getName() + " " + GRAPH_ANALYSIS);
     }
 }

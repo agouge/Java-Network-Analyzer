@@ -24,10 +24,15 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.sna.data.NodeBetweennessInfo;
 import gnu.trove.iterator.TIntDoubleIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
+ * Parent class in the centrality tests hierarchy.
  *
  * @author Adam Gouge
  */
@@ -58,6 +63,32 @@ public abstract class CentralityTest {
      * @return The name of this type of test.
      */
     protected abstract String getName();
+
+    /**
+     * Prints the results of graph analysis.
+     *
+     * @param result The result.
+     */
+    protected void printResults(HashMap<Integer, NodeBetweennessInfo> result) {
+        // Print results.
+        System.out.format("%-3s%-12s%-12s",
+                          "v",
+                          "Betweenness",
+                          "Closeness");
+        System.out.println("");
+        Iterator<Map.Entry<Integer, NodeBetweennessInfo>> iterator =
+                result.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, NodeBetweennessInfo> next = iterator.next();
+            final Integer id = next.getKey();
+            final NodeBetweennessInfo info = next.getValue();
+            System.out.format("%-3d%-12f%-12f",
+                              next.getKey(),
+                              info.getBetweenness(),
+                              info.getCloseness());
+            System.out.println("");
+        }
+    }
 
     /**
      * Prints the results of a closeness computation.
