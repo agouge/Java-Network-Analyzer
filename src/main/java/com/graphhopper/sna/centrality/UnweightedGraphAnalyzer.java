@@ -140,8 +140,8 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                     pathsFromStartNode.addSPStep(updatedSteps);
                 }
 
-                // If this is a shortest path from startNode to currentNode
-                // via neighbor ...
+                // If this is a shortest path from startNode to neighbor
+                // via current ...
                 if (neighborNBInfo.getSteps()
                         == currentNBInfo.getSteps() + 1) {
                     // then update the number of shortest paths,
