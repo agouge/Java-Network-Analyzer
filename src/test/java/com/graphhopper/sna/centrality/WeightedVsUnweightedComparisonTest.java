@@ -40,7 +40,7 @@ import org.junit.Test;
  *
  * @author Adam Gouge
  */
-public class WeightedVsUnweightedComparisonTest extends WeightedGraphAnalyzerTest {
+public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
 
     private static final String name =
             Graphs.WEIGHTED + " vs " + Graphs.UNWEIGHTED + " comparison test";
@@ -99,6 +99,16 @@ public class WeightedVsUnweightedComparisonTest extends WeightedGraphAnalyzerTes
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(
+            Graph graph,
+            boolean verbose) {
+        return doAnalysis(graph, verbose, false);
+    }
+
+    /**
      * Do weighted analysis (with all weights one) and unweighted analysis on
      * the given graph.
      *
@@ -106,7 +116,10 @@ public class WeightedVsUnweightedComparisonTest extends WeightedGraphAnalyzerTes
      * @param verbose      Print verbose output?
      * @param printResults Print results?
      */
-    private void doAnalysis(Graph graph, boolean verbose, boolean printResults) {
+    private HashMap<Integer, NodeBetweennessInfo> doAnalysis(
+            Graph graph,
+            boolean verbose,
+            boolean printResults) {
 
         // Do Unweighted analysis.
         UnweightedBidirectionalGraphAnalyzerTest unweightedTest =
@@ -128,5 +141,10 @@ public class WeightedVsUnweightedComparisonTest extends WeightedGraphAnalyzerTes
 
         // Check the results.
         checkResults(graph, weightedResults, unweightedResults);
+
+        // If the above test failed, then the weighted and unweighted
+        // results are exactly the same, so chose one set of results
+        // and return it.
+        return weightedResults;
     }
 }
