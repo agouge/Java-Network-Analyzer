@@ -92,7 +92,10 @@ public class DijkstraForCentrality extends Dijkstra {
                         "Cannot push node " + u + " to the stack.");
             }
             // Record this shortest path length (for closeness).
-            pathsFromStartNode.addSPLength(nodeBetweenness.get(u).getDistance());
+            if (u != startNode) {
+                pathsFromStartNode.addSPLength(
+                        nodeBetweenness.get(u).getDistance());
+            }
             // Relax every neighbor of u.
             EdgeIterator outgoingEdges = graph.getOutgoing(u);
             while (outgoingEdges.next()) {
