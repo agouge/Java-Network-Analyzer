@@ -44,10 +44,6 @@ public class Dijkstra {
      */
     protected final Graph graph;
     /**
-     * The set of nodes of this graph.
-     */
-    protected final TIntHashSet nodeSet;
-    /**
      * Map of all nodes with their respective {@link NodeBetweennessInfo}, which
      * stores information calculated during the execution of Dijkstra's
      * algorithm in {@link Dijkstra#calculate()}.
@@ -74,7 +70,6 @@ public class Dijkstra {
                     final HashMap<Integer, NodeBetweennessInfo> nodeBetweenness,
                     int startNode) {
         this.graph = graph;
-        this.nodeSet = GraphAnalyzer.nodeSet(graph);
         this.nodeBetweenness = nodeBetweenness;
         this.startNode = startNode;
     }
@@ -189,7 +184,7 @@ public class Dijkstra {
      */
     protected PriorityQueue<Integer> createPriorityQueue() {
         return new PriorityQueue<Integer>(
-                nodeSet.size(),
+                graph.nodes(),
                 new Comparator<Integer>() {
                     @Override
                     public int compare(Integer v1, Integer v2) {
