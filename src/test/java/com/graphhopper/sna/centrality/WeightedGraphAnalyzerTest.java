@@ -39,17 +39,15 @@ public abstract class WeightedGraphAnalyzerTest extends GraphAnalyzerTest {
      * {@inheritDoc}
      */
     @Override
-    protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(Graph graph,
-                                                               boolean verbose) {
-        long start = System.currentTimeMillis();
+    protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(
+            Graph graph,
+            boolean verbose,
+            boolean printResults) {
         // Prepare the unweighted graph analyzer.
         WeightedGraphAnalyzer analyzer = verbose
                 ? new WeightedGraphAnalyzerVerbose(graph)
                 : new WeightedGraphAnalyzer(graph);
         // Do network analysis.
-        HashMap<Integer, NodeBetweennessInfo> result = analyzer.computeAll();
-        long stop = System.currentTimeMillis();
-        printTime(stop - start);
-        return result;
+        return computeAll(analyzer, printResults);
     }
 }

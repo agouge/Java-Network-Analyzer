@@ -60,7 +60,7 @@ public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyze
 
         // Do analysis.
         HashMap<Integer, NodeBetweennessInfo> results =
-                doAnalysis(Graphs.graph2DWeightedBidirectional(), false);
+                doAnalysis(Graphs.graph2DWeightedBidirectional());
 
         printResults(results);
     }
@@ -77,7 +77,7 @@ public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyze
 
         // Do weighted analysis.
         HashMap<Integer, NodeBetweennessInfo> weightedResults =
-                doAnalysis(Graphs.graphCormenUnweightedBidirectional(), false);
+                doAnalysis(Graphs.graphCormenUnweightedBidirectional());
 
         printResults(weightedResults);
     }

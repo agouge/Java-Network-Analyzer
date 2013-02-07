@@ -25,6 +25,7 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.storage.Graph;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
@@ -60,7 +61,7 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
         printTitle(Graphs.GRAPH2D);
 
         HashMap<Integer, NodeBetweennessInfo> result =
-                doAnalysis(Graphs.graph2DUnweightedBidirectional(), false);
+                doAnalysis(Graphs.graph2DUnweightedBidirectional());
 
         check2DGraphResults(result);
         printResults(result);
@@ -75,12 +76,26 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
         printTitle(Graphs.CORMEN_GRAPH);
 
         HashMap<Integer, NodeBetweennessInfo> result =
-                doAnalysis(Graphs.graphCormenUnweightedBidirectional(), false);
+                doAnalysis(Graphs.graphCormenUnweightedBidirectional());
 
         // TODO: Check results.
         printResults(result);
     }
 
+//    /**
+//     * Tests graph analysis on the Nantes graph.
+//     */
+//    @Test
+//    public void testNantesGraph() throws FileNotFoundException {
+//
+//        printTitle("Nantes");
+//
+//        HashMap<Integer, NodeBetweennessInfo> result =
+//                doAnalysis(Graphs.graphNantesWeightedBidirectional(), false);
+//
+//        // TODO: Check results.
+//        printResults(result);
+//    }
     /**
      * Checks the computations for the 2D bidirectional graph.
      *

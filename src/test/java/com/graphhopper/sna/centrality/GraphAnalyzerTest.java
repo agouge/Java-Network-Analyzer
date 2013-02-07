@@ -39,16 +39,79 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
 
     /**
      * Does the analysis on the given graph, printing out debugging information
-     * if the boolean {@code verbose} is {@code true}.
+     * if the boolean {@code verbose} is {@code true}; prints the results if
+     * {@code printResults} is {@code true}.
      *
-     * @param graph   The graph.
-     * @param verbose {@code true} iff verbose output is desired.
+     * @param graph        The graph.
+     * @param verbose      {@code true} iff verbose output is desired.
+     * @param printResults {@code true} iff the results are to be printed.
      *
      * @return The result.
      */
     protected abstract HashMap<Integer, NodeBetweennessInfo> doAnalysis(
             Graph graph,
-            boolean verbose);
+            boolean verbose,
+            boolean printResults);
+
+    /**
+     * Does the analysis on the given graph, suppressing all output.
+     *
+     * @param graph The graph.
+     *
+     * @return The result.
+     */
+    protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(Graph graph) {
+        return doAnalysis(graph, false, false);
+    }
+
+    /**
+     * Does the analysis on the given graph, printing debugging information and
+     * results.
+     *
+     * @param graph The graph.
+     *
+     * @return The result.
+     */
+    protected HashMap<Integer, NodeBetweennessInfo> doVerboseAnalysis(
+            Graph graph) {
+        return doAnalysis(graph, true, true);
+    }
+
+    /**
+     * Does the analysis on the given graph, printing results but no debugging
+     * information.
+     *
+     * @param graph The graph.
+     *
+     * @return The result.
+     */
+    protected HashMap<Integer, NodeBetweennessInfo> doAnalysisPrintResults(
+            Graph graph) {
+        return doAnalysis(graph, false, true);
+    }
+
+    /**
+     * Executes {@link GraphAnalyzer#computeAll()} and prints the results if
+     * requested.
+     *
+     * @param analyzer     The {@link GraphAnalyzer}.
+     * @param printResults {@code true} iff the results are to be printed.
+     *
+     * @return The results.
+     */
+    protected HashMap<Integer, NodeBetweennessInfo> computeAll(
+            GraphAnalyzer analyzer,
+            boolean printResults) {
+        // Do network analysis.
+        long start = System.currentTimeMillis();
+        HashMap<Integer, NodeBetweennessInfo> result = analyzer.computeAll();
+        long stop = System.currentTimeMillis();
+        printTime(stop - start);
+        if (printResults) {
+            printResults(result);
+        }
+        return result;
+    }
 
     /**
      * Prints the amount of time graph analysis took.

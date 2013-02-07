@@ -62,7 +62,7 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
     public void test2DGraph() throws FileNotFoundException {
         printTitle(Graphs.GRAPH2D);
         Graph graph = Graphs.graph2DUnweightedBidirectional();
-        doAnalysis(graph, false);
+        doAnalysis(graph);
     }
 
     /**
@@ -74,7 +74,7 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
     public void testCormen() throws FileNotFoundException {
         printTitle(Graphs.CORMEN_GRAPH);
         Graph graph = Graphs.graphCormenUnweightedBidirectional();
-        doAnalysis(graph, false);
+        doAnalysis(graph);
     }
 
     /**
@@ -99,17 +99,6 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(
-            Graph graph,
-            boolean verbose) {
-        // Don't print the results.
-        return doAnalysis(graph, verbose, false);
-    }
-
-    /**
      * Do weighted analysis (with all weights one) and unweighted analysis on
      * the given graph.
      *
@@ -117,7 +106,8 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
      * @param verbose      Print verbose output?
      * @param printResults Print results?
      */
-    private HashMap<Integer, NodeBetweennessInfo> doAnalysis(
+    @Override
+    protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(
             Graph graph,
             boolean verbose,
             boolean printResults) {
@@ -126,19 +116,21 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
         UnweightedBidirectionalGraphAnalyzerTest unweightedTest =
                 new UnweightedBidirectionalGraphAnalyzerTest();
         HashMap<Integer, NodeBetweennessInfo> unweightedResults =
-                unweightedTest.doAnalysis(graph, verbose);
-        if (printResults) {
-            printResults(unweightedResults);
-        }
+                verbose
+                ? unweightedTest.doVerboseAnalysis(graph)
+                : printResults
+                ? unweightedTest.doAnalysisPrintResults(graph)
+                : unweightedTest.doAnalysis(graph);
 
         // Do weighted analysis.
         WeightedBidirectionalGraphAnalyzerTest weightedTest =
                 new WeightedBidirectionalGraphAnalyzerTest();
         HashMap<Integer, NodeBetweennessInfo> weightedResults =
-                weightedTest.doAnalysis(graph, verbose);
-        if (printResults) {
-            printResults(weightedResults);
-        }
+                verbose
+                ? weightedTest.doVerboseAnalysis(graph)
+                : printResults
+                ? weightedTest.doAnalysisPrintResults(graph)
+                : weightedTest.doAnalysis(graph);
 
         // Check the results.
         checkResults(graph, weightedResults, unweightedResults);
