@@ -94,6 +94,8 @@ public abstract class GraphAnalyzer {
     /**
      * Returns a {@link TIntHashSet} of the nodes of the given graph.
      *
+     * @param graph The graph.
+     *
      * @return a {@link TIntHashSet} of the nodes of the given graph.
      */
     // TODO: Optimize this (by making use of the data structure).

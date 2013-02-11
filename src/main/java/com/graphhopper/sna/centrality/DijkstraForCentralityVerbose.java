@@ -50,11 +50,12 @@ public class DijkstraForCentralityVerbose extends DijkstraForCentrality {
     /**
      * Constructs a new {@link DijkstraForCentralityVerbose} object.
      *
-     * @param graph           The graph.
-     * @param nodeBetweenness The hash map.
-     * @param startNode       The start node.
-     * @param stack           The stack which will return nodes ordered by
-     *                        non-increasing distance from startNode.
+     * @param graph              The graph.
+     * @param nodeBetweenness    The hash map.
+     * @param startNode          The start node.
+     * @param pathsFromStartNode Information for calculating closeness.
+     * @param stack              The stack which will return nodes ordered by
+     *                           non-increasing distance from startNode.
      */
     public DijkstraForCentralityVerbose(
             Graph graph,
