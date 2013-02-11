@@ -139,7 +139,7 @@ public class ClosenessCentralityTest extends CentralityTest {
      * Tests the closeness centrality algorithm using a {@link DijkstraSimple}
      * on a 2D bidirectional graph loaded from a csv file.
      *
-     * @throws IOException
+     * @throws FileNotFoundException
      */
     @Test
     public void testClosenessCentralityGraph2DBidirectionalUsingDijkstraSimple()
