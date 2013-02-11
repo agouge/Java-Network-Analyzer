@@ -59,6 +59,14 @@ public abstract class GraphAnalyzer {
      * stores information needed for the node betweenness calculation.
      */
     protected final HashMap<Integer, NodeBetweennessInfo> nodeBetweenness;
+    /**
+     * The maximum betweenness centrality value.
+     */
+    private double maxBetweenness;
+    /**
+     * The minimum betweenness centrality value.
+     */
+    private double minBetweenness;
 
     /**
      * Initializes a new instance of a graph analyzer.
@@ -70,6 +78,8 @@ public abstract class GraphAnalyzer {
         this.nodeSet = nodeSet(this.graph);
         this.nodeCount = this.nodeSet.size();
         this.nodeBetweenness = new HashMap<Integer, NodeBetweennessInfo>();
+        this.maxBetweenness = Double.NEGATIVE_INFINITY;
+        this.minBetweenness = Double.POSITIVE_INFINITY;
     }
 
     /**
@@ -294,25 +304,48 @@ public abstract class GraphAnalyzer {
     }
 
     /**
-     * Normalizes betweenness to make all values lie between 0 and 1.
+     * Normalizes betweenness to make all values lie in the range [0,1] with the
+     * minimum betweenness value set to 0.0 and the maximum betweenness value
+     * set to 1.0.
      */
     private void normalizeBetweenness() {
+        findExtremeBetweennessValues();
+
+        long start = System.currentTimeMillis();
+        final double denominator = maxBetweenness - minBetweenness;
+        TIntIterator nodeSetIterator = nodeSet.iterator();
+        while (nodeSetIterator.hasNext()) {
+            final int node = nodeSetIterator.next();
+            final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
+            final double betweenness = nodeNBInfo.getBetweenness();
+            final double normalizedBetweenness =
+                    (betweenness - minBetweenness) / denominator;
+            nodeNBInfo.setBetweenness(normalizedBetweenness);
+        }
+        long stop = System.currentTimeMillis();
+        System.out.println("Betweenness normalization took "
+                + (stop - start) + " ms.");
+    }
+
+    /**
+     * Finds the maximum and minimum betweenness values.
+     */
+    private void findExtremeBetweennessValues() {
         long start = System.currentTimeMillis();
         TIntIterator nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             int node = nodeSetIterator.next();
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
-            // If there are 2 or less nodes, the normalization factor is 1.
-            double normalizationFactor =
-                    (nodeCount > 2)
-                    ? (1.0 / ((nodeCount - 1) * (nodeCount - 2)))
-                    : 1.0;
-            double normalizedBetweenness =
-                    nodeNBInfo.getBetweenness() * normalizationFactor;
-            nodeNBInfo.setBetweenness(normalizedBetweenness);
+            final double betweenness = nodeNBInfo.getBetweenness();
+            if (betweenness > maxBetweenness) {
+                maxBetweenness = betweenness;
+            }
+            if (betweenness < minBetweenness) {
+                minBetweenness = betweenness;
+            }
         }
         long stop = System.currentTimeMillis();
-        System.out.println("Betweenness normalization took "
+        System.out.println("Found extreme values in "
                 + (stop - start) + " ms.");
     }
 
