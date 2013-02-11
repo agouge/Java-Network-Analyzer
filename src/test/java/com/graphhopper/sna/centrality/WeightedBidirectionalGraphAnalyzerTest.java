@@ -24,9 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import org.junit.Test;
 
 /**
@@ -55,14 +53,8 @@ public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyze
      */
     @Test
     public void test2DGraph() throws FileNotFoundException {
-
         printTitle(Graphs.GRAPH2D);
-
-        // Do analysis.
-        HashMap<Integer, NodeBetweennessInfo> results =
-                doAnalysis(Graphs.graph2DWeightedBidirectional());
-
-        printResults(results);
+        doAnalysis(Graphs.graph2DWeightedBidirectional());
     }
 
     /**
@@ -72,13 +64,7 @@ public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyze
      */
     @Test
     public void testCormenGraph() throws FileNotFoundException {
-
         printTitle(Graphs.CORMEN_GRAPH);
-
-        // Do weighted analysis.
-        HashMap<Integer, NodeBetweennessInfo> weightedResults =
-                doAnalysis(Graphs.graphCormenUnweightedBidirectional());
-
-        printResults(weightedResults);
+        doAnalysis(Graphs.graphCormenWeightedBidirectional());
     }
 }
