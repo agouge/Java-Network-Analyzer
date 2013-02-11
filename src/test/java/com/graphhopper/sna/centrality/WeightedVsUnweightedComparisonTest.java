@@ -77,6 +77,16 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
         doAnalysis(graph);
     }
 
+//    /**
+//     * Tests the Nantes graph.
+//     *
+//     * @throws FileNotFoundException
+//     */
+//    @Test
+//    public void testNantes() throws FileNotFoundException {
+//        printTitle("Nantes");
+//        doAnalysis(Graphs.graphNantesUnweightedBidirectional());
+//    }
     /**
      * Make sure the graph analysis results from a weighted analysis (with all
      * weights one) and an unweighted analysis are equal.

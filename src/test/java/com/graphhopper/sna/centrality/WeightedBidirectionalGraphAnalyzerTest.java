@@ -67,4 +67,14 @@ public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyze
         printTitle(Graphs.CORMEN_GRAPH);
         doAnalysis(Graphs.graphCormenWeightedBidirectional());
     }
+//    /**
+//     * Tests the Nantes graph.
+//     *
+//     * @throws FileNotFoundException
+//     */
+//    @Test
+//    public void testNantes() throws FileNotFoundException {
+//        printTitle("Nantes " + Graphs.WEIGHTED);
+//        doAnalysisPrintResults(Graphs.graphNantesWeightedBidirectional());
+//    }
 }
