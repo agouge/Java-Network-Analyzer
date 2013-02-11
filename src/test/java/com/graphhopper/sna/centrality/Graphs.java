@@ -307,6 +307,22 @@ public class Graphs {
             FileNotFoundException {
         return GDMSGraphStorage.loadGDMSGraph(
                 "./target/GraphNantesBidirectional",
+                "./files/nantes_1_edges_weighted.csv",
+                "length",
+                true);
+    }
+
+    /**
+     * Loads an unweighted bidirectional graph of Nantes from storage.
+     *
+     * @return The graph.
+     *
+     * @throws FileNotFoundException
+     */
+    public static GDMSGraphStorage graphNantesUnweightedBidirectional() throws
+            FileNotFoundException {
+        return GDMSGraphStorage.loadUnweightedGDMSGraph(
+                "./target/GraphNantesBidirectional",
                 "./files/nantes_1_edges.csv",
                 "weight",
                 true);

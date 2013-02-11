@@ -1,5 +1,7 @@
 /target
 files/nantes_1_edges.csv
+files/nantes_1_edges_weighted.csv
+files/nantes.csv
 files/example.edges.csv
 src/test/java/com/graphhoppersna/centrality/NewClass.java.old
 nb-configuration.xml
