@@ -25,7 +25,6 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
-import com.graphhopper.storage.Graph;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
