@@ -71,7 +71,7 @@ public abstract class CentralityTest {
      */
     protected void printResults(HashMap<Integer, NodeBetweennessInfo> result) {
         // Print results.
-        System.out.format("%-3s%-12s%-12s",
+        System.out.format("%-12s%-12s%-12s",
                           "v",
                           "Betweenness",
                           "Closeness");
@@ -82,7 +82,7 @@ public abstract class CentralityTest {
             Map.Entry<Integer, NodeBetweennessInfo> next = iterator.next();
             final Integer id = next.getKey();
             final NodeBetweennessInfo info = next.getValue();
-            System.out.format("%-3d%-12f%-12f",
+            System.out.format("%-12d%-12f%-12f",
                               next.getKey(),
                               info.getBetweenness(),
                               info.getCloseness());
