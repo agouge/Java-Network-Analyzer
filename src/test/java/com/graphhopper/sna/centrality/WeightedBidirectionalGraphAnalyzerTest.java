@@ -47,7 +47,7 @@ public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyze
     }
 
     /**
-     * Tests graph analysis on a 2D weighted bidirectional graph.
+     * Tests the 2D graph.
      *
      * @throws FileNotFoundException
      */
@@ -58,7 +58,7 @@ public class WeightedBidirectionalGraphAnalyzerTest extends WeightedGraphAnalyze
     }
 
     /**
-     * Tests graph analysis on the weighted bidirectional Cormen graph.
+     * Tests the Cormen graph.
      *
      * @throws FileNotFoundException
      */

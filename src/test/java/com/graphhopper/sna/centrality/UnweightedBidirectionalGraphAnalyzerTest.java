@@ -49,7 +49,7 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
     }
 
     /**
-     * Tests graph analysis on a 2D unweighted bidirectional graph.
+     * Tests the 2D graph.
      *
      * @throws FileNotFoundException
      */
@@ -67,7 +67,7 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
     }
 
     /**
-     * Tests graph analysis on the Cormen graph.
+     * Tests the Cormen graph.
      */
     @Test
     public void testCormenGraph() {
