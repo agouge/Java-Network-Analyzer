@@ -176,7 +176,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             int node = it.next();
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
             System.out.print("(" + startNode + "," + node + ")  ");
-            System.out.format("%-3d%-3d%-12s",
+            System.out.format("%-8d%-3d%-12s",
                               nodeNBInfo.getSteps(),
                               nodeNBInfo.getSPCount(),
                               nodeNBInfo.getPredecessors().toString());
