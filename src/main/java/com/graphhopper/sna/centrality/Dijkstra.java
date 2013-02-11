@@ -89,7 +89,6 @@ public class Dijkstra {
         while (!queue.isEmpty()) {
             // Extract the minimum element.
             int u = queue.poll();
-//            printSettledNode(u);
             // Relax every neighbor of u.
             EdgeIterator outgoingEdges = graph.getOutgoing(u);
             while (outgoingEdges.next()) {
