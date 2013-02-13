@@ -115,16 +115,16 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
         assertEquals(result.get(1).getCloseness(),
                      0.5, TOLERANCE);
         assertEquals(result.get(6).getBetweenness(),
-                     0.45, TOLERANCE);
+                     0.75, TOLERANCE);
         assertEquals(result.get(5).getBetweenness(),
                      0.0, TOLERANCE);
         assertEquals(result.get(4).getBetweenness(),
                      0.0, TOLERANCE);
         assertEquals(result.get(3).getBetweenness(),
-                     0.6, TOLERANCE);
+                     1.0, TOLERANCE);
         assertEquals(result.get(2).getBetweenness(),
                      0.0, TOLERANCE);
         assertEquals(result.get(1).getBetweenness(),
-                     0.3, TOLERANCE);
+                     0.5, TOLERANCE);
     }
 }
