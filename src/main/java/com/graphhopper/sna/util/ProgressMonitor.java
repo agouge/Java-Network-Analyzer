@@ -53,9 +53,16 @@ public interface ProgressMonitor {
     boolean isCancelled();
 
     /**
-     * Sets the progress of the last added task.
+     * Sets the progress.
      *
      * @param progress
      */
     void setProgress(long progress);
+
+    /**
+     * Returns the progress.
+     *
+     * @param progress
+     */
+    int getProgress();
 }
