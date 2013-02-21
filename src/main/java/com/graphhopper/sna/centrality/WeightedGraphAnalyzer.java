@@ -27,6 +27,7 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
+import com.graphhopper.sna.util.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
@@ -41,7 +42,19 @@ import gnu.trove.stack.array.TIntArrayStack;
 public class WeightedGraphAnalyzer extends GraphAnalyzer {
 
     /**
-     * Initializes a new instance of a weighted graph analyzer.
+     * Initializes a new instance of a weighted graph analyzer with the given
+     * {@link ProgressMonitor}.
+     *
+     * @param graph The graph to be analyzed.
+     * @param pm    The {@link ProgressMonitor} to be used.
+     */
+    public WeightedGraphAnalyzer(Graph graph, ProgressMonitor pm) {
+        super(graph, pm);
+    }
+
+    /**
+     * Initializes a new instance of a weighted graph analyzer that doesn't keep
+     * track of progress.
      *
      * @param graph The graph to be analyzed.
      */

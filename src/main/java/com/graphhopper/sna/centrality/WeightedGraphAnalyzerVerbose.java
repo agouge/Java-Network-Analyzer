@@ -25,6 +25,7 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.PathLengthData;
+import com.graphhopper.sna.util.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import gnu.trove.stack.array.TIntArrayStack;
 
@@ -42,7 +43,19 @@ import gnu.trove.stack.array.TIntArrayStack;
 public class WeightedGraphAnalyzerVerbose extends WeightedGraphAnalyzer {
 
     /**
-     * Initializes a new instance of a weighted graph analyzer.
+     * Initializes a new instance of a verbose weighted graph analyzer with the
+     * given {@link ProgressMonitor}.
+     *
+     * @param graph The graph to be analyzed.
+     * @param pm    The {@link ProgressMonitor} to be used.
+     */
+    public WeightedGraphAnalyzerVerbose(Graph graph, ProgressMonitor pm) {
+        super(graph, pm);
+    }
+
+    /**
+     * Initializes a new instance of a verbose weighted graph analyzer that
+     * doesn't keep track of progress.
      *
      * @param graph The graph to be analyzed.
      */

@@ -27,6 +27,7 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
+import com.graphhopper.sna.util.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.MyIntDeque;
@@ -44,7 +45,19 @@ import gnu.trove.stack.array.TIntArrayStack;
 public class UnweightedGraphAnalyzer extends GraphAnalyzer {
 
     /**
-     * Initializes a new instance of an unweighted graph analyzer.
+     * Initializes a new instance of an unweighted graph analyzer with the given
+     * {@link ProgressMonitor}.
+     *
+     * @param graph The graph to be analyzed.
+     * @param pm    The {@link ProgressMonitor} to be used.
+     */
+    public UnweightedGraphAnalyzer(Graph graph, ProgressMonitor pm) {
+        super(graph, pm);
+    }
+
+    /**
+     * Initializes a new instance of an unweighted graph analyzer that doesn't
+     * keep track of progress.
      *
      * @param graph The graph to be analyzed.
      */

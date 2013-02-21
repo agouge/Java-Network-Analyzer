@@ -26,6 +26,8 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
+import com.graphhopper.sna.util.NullProgressMonitor;
+import com.graphhopper.sna.util.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.RawEdgeIterator;
 import gnu.trove.iterator.TIntIterator;
@@ -67,19 +69,33 @@ public abstract class GraphAnalyzer {
      * The minimum betweenness centrality value.
      */
     private double minBetweenness;
+    private ProgressMonitor pm;
 
     /**
-     * Initializes a new instance of a graph analyzer.
+     * Initializes a new instance of a graph analyzer with the given
+     * {@link ProgressMonitor}.
      *
      * @param graph The graph to be analyzed.
+     * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public GraphAnalyzer(Graph graph) {
+    public GraphAnalyzer(Graph graph, ProgressMonitor pm) {
         this.graph = graph;
         this.nodeSet = nodeSet(this.graph);
         this.nodeCount = this.nodeSet.size();
         this.nodeBetweenness = new HashMap<Integer, NodeBetweennessInfo>();
         this.maxBetweenness = Double.NEGATIVE_INFINITY;
         this.minBetweenness = Double.POSITIVE_INFINITY;
+        this.pm = pm;
+    }
+
+    /**
+     * Initializes a new instance of a graph analyzer that doesn't keep track of
+     * progress.
+     *
+     * @param graph The graph to be analyzed.
+     */
+    public GraphAnalyzer(Graph graph) {
+        this(graph, new NullProgressMonitor());
     }
 
     /**
@@ -120,12 +136,25 @@ public abstract class GraphAnalyzer {
      */
     public HashMap<Integer, NodeBetweennessInfo> computeAll() {
 
+        pm.startTask("Graph analysis", 100);
+
         // ***** GLOBAL INITIALIZATION *************************
+        int count = 0;
         init();
 
         // ***** CENTRALITY CONTRIBUTION FROM EACH NODE ********
         TIntIterator nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
+
+            count++;
+            // See if the task has been cancelled.
+            if ((count >= 100)
+                    && (count % 100 == 0)) {
+                if (pm.isCancelled()) {
+                    return new HashMap<Integer, NodeBetweennessInfo>();
+                }
+            }
+
             // Calculate betweenness and closeness for each node.
 //            long start = System.currentTimeMillis();
             int source = nodeSetIterator.next();
@@ -139,11 +168,15 @@ public abstract class GraphAnalyzer {
             while (it.hasNext()) {
                 nodeBetweenness.get(it.next()).reset();
             }
+
+            pm.setProgress((int) (count * 100) / nodeCount);
         }
         // ***** END CENTRALITY CONTRIBUTION FROM EACH NODE *****
 
         // ***** NORMALIZATION **********************************
         normalizeBetweenness();
+
+        pm.endTask();
 
         return nodeBetweenness;
     }
