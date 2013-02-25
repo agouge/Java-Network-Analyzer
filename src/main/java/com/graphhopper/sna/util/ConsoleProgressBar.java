@@ -78,34 +78,40 @@ public class ConsoleProgressBar {
         // Get the current progress.
         int percentageComplete = pm.getPercentageComplete();
 
-        // Print at 0%
+        // (1) Print at 0%
         if (count == 0) {
             progressBar += bar(0, width);
             progressBar += percentage(0);
             // Carriage return.
             progressBar += "\r";
-        } // Print the progress at regular intervals.
-        else if (count != pm.getEnd()) {
-            // Get mod value. This updates the progress bar every
-            // numberOfSeconds.
+        } else {
+            // Get the elapsed time.
             long elapsed = (System.currentTimeMillis() - startTime);
+            // Get mod value. This is used to update the progress bar at the
+            // given frequency.
             long mod = (elapsed > 0)
                     ? (long) (1000 * count * frequency) / elapsed
                     : 1;
-            if ((count % mod) == 0) {
-                progressBar += bar(percentageComplete, width);
-                progressBar += percentage(percentageComplete);
+            // (2) Print the progress at the given frequency.
+            if (count != pm.getEnd()) {
+                // See if we should update the progress bar.
+                if ((count % mod) == 0) {
+                    progressBar += bar(percentageComplete, width);
+                    progressBar += percentage(percentageComplete);
+                    progressBar += time(count, elapsed);
+                    // Carriage return.
+                    progressBar += "\r";
+                }
+            } // (3) Print at 100%.
+            else {
+                progressBar += bar(100, width);
+                progressBar += percentage(100);
                 progressBar += time(count, elapsed);
-                // Carriage return.
-                progressBar += "\r";
+                // When done, print a new line.
+                progressBar += "\n";
             }
-        } // When done, print a new line.
-        else {
-            progressBar += bar(percentageComplete, width);
-            progressBar += percentage(percentageComplete);
-            progressBar += time(count, startTime);
-            progressBar += "\n";
         }
+
         // Return the progress bar String.
         return progressBar;
     }
@@ -236,8 +242,8 @@ public class ConsoleProgressBar {
     }
 
     /**
-     * Returns a {@link String} consisting of just the given number (if it is >=
-     * 10) or of the number prefixed by 0 (if it is < 10).
+     * Returns a {@link String} consisting of just the given number (if greater
+     * than or equal to 10) or of the number prefixed by 0 (if less than 10).
      *
      * @param number The number.
      *
