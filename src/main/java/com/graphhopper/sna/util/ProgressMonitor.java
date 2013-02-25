@@ -53,16 +53,35 @@ public interface ProgressMonitor {
     boolean isCancelled();
 
     /**
-     * Sets the progress.
+     * Sets the progress and returns the percentage complete.
      *
      * @param progress
+     *
+     * @return The percentage complete.
      */
-    void setProgress(long progress);
+    int setProgress(long progress);
 
     /**
-     * Returns the progress.
-     *
-     * @param progress
+     * Returns the percentage complete.
      */
-    int getProgress();
+    int getPercentageComplete();
+
+    /**
+     * Gets the end value of the current task.
+     *
+     * @return The end value of the current task.
+     */
+    long getEnd();
+
+    /**
+     * Sets the progress, keeping track of the start time, and returns the
+     * percentage complete.
+     *
+     * @param count     A counter to keep track of which iteration in a loop.
+     * @param startTime The System time in milliseconds when this task was
+     *                  started.
+     *
+     * @return The percentage complete.
+     */
+    int setProgress(long count, long startTime);
 }

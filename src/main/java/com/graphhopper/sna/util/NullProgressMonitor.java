@@ -57,14 +57,31 @@ public class NullProgressMonitor implements ProgressMonitor {
      * {@inheritDoc}
      */
     @Override
-    public void setProgress(long progress) {
+    public int setProgress(long count) {
+        return -1;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public int getProgress() {
+    public int setProgress(long count, long startTime) {
+        return setProgress(startTime);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPercentageComplete() {
         return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getEnd() {
+        return -1;
     }
 }

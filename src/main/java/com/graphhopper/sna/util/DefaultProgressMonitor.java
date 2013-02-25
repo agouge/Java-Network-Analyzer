@@ -12,11 +12,11 @@ package com.graphhopper.sna.util;
 public class DefaultProgressMonitor implements ProgressMonitor {
 
     private boolean cancelled = false;
-    private int percentage = 0;
-    private int end = 100;
+    private int percentageComplete = 0;
+    private long end;
 
     /**
-     * Does nothing.
+     * Sets the end.
      *
      * @see ProgressMonitor#startTask(java.lang.String, long).
      */
@@ -24,6 +24,7 @@ public class DefaultProgressMonitor implements ProgressMonitor {
     public void startTask(String taskName, long end) {
         System.out.println("STARTING TASK \"" + taskName
                 + "\"");
+        this.end = end;
     }
 
     /**
@@ -48,15 +49,34 @@ public class DefaultProgressMonitor implements ProgressMonitor {
      * {@inheritDoc}
      */
     @Override
-    public void setProgress(long progress) {
-        percentage = (int) ((progress * 100) / end);
+    public int setProgress(long count) {
+        percentageComplete = (int) ((count * 100) / end);
+        return percentageComplete;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public int getProgress() {
-        return percentage;
+    public int getPercentageComplete() {
+        return percentageComplete;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getEnd() {
+        return end;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int setProgress(long count, long startTime) {
+
+        // Update the progress.
+        return setProgress(count);
     }
 }
