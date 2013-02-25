@@ -24,8 +24,6 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.routing.DijkstraBidirection;
-import com.graphhopper.routing.DijkstraSimple;
 import com.graphhopper.sna.storage.GDMSGraphStorage;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import java.io.FileNotFoundException;

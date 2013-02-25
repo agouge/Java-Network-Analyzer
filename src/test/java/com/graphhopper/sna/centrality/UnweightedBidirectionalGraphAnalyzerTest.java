@@ -63,22 +63,20 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
                 doAnalysis(Graphs.graph2DUnweightedBidirectional());
 
         check2DGraphResults(result);
-        printResults(result);
     }
 
     /**
      * Tests the Cormen graph.
      */
+    // TODO: Check results.
     @Test
     public void testCormenGraph() {
 
         printTitle(Graphs.CORMEN_GRAPH);
 
         HashMap<Integer, NodeBetweennessInfo> result =
-                doAnalysis(Graphs.graphCormenUnweightedBidirectional());
-
-        // TODO: Check results.
-        printResults(result);
+                doAnalysisPrintResults(
+                Graphs.graphCormenUnweightedBidirectional());
     }
 
 //    /**
@@ -90,11 +88,10 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
 //        printTitle("Nantes");
 //
 //        HashMap<Integer, NodeBetweennessInfo> result =
-//                doAnalysis(Graphs.graphNantesWeightedBidirectional(), false);
-//
-//        // TODO: Check results.
-//        printResults(result);
+//                doAnalysisPrintResults(
+//                Graphs.graphNantesWeightedBidirectional());
 //    }
+
     /**
      * Checks the computations for the 2D bidirectional graph.
      *
