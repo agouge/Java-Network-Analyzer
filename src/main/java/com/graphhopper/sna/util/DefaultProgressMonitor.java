@@ -1,11 +1,32 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * GraphHopper-SNA implements a collection of social network analysis
+ * algorithms. It is based on the <a
+ * href="http://graphhopper.com/">GraphHopper</a> library.
+ *
+ * GraphHopper-SNA is distributed under the GPL 3 license. It is produced by the
+ * "Atelier SIG" team of the <a href="http://www.irstv.fr">IRSTV Institute</a>,
+ * CNRS FR 2488.
+ *
+ * Copyright 2012 IRSTV (CNRS FR 2488)
+ *
+ * GraphHopper-SNA is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * GraphHopper-SNA is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.graphhopper.sna.util;
 
 /**
- * Default implementation of a progress monitor.
+ * Default implementation of a progress monitor that prints a progress bar to
+ * the console.
  *
  * @author Adam Gouge
  */
@@ -14,9 +35,10 @@ public class DefaultProgressMonitor implements ProgressMonitor {
     private boolean cancelled = false;
     private int percentageComplete = 0;
     private long end;
+    private ConsoleProgressBar consoleProgressBar;
 
     /**
-     * Sets the end.
+     * Sets the end and instantiates a {@link ConsoleProgressBar} for this task.
      *
      * @see ProgressMonitor#startTask(java.lang.String, long).
      */
@@ -25,6 +47,9 @@ public class DefaultProgressMonitor implements ProgressMonitor {
         System.out.println("STARTING TASK \"" + taskName
                 + "\"");
         this.end = end;
+        // The console progress bar will have a width of 40 characters
+        // and will update every second.
+        this.consoleProgressBar = new ConsoleProgressBar(this, 40, 1);
     }
 
     /**
@@ -76,7 +101,10 @@ public class DefaultProgressMonitor implements ProgressMonitor {
     @Override
     public int setProgress(long count, long startTime) {
 
-        // Update the progress.
+        // Print the progress to the console.
+        System.out.print(consoleProgressBar.progressBar(count, startTime));
+
+        // Return the updated percentage complete.
         return setProgress(count);
     }
 }
