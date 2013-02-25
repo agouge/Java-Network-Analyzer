@@ -136,40 +136,32 @@ public abstract class GraphAnalyzer {
      */
     public HashMap<Integer, NodeBetweennessInfo> computeAll() {
 
-        pm.startTask("Graph analysis", 100);
+        long startTime = System.currentTimeMillis();
+
+        pm.startTask("Graph analysis", nodeCount);
 
         // ***** GLOBAL INITIALIZATION *************************
-        int count = 0;
+        long count = 0;
+        long progress = 0;
         init();
+        pm.setProgress(0, startTime);
 
         // ***** CENTRALITY CONTRIBUTION FROM EACH NODE ********
         TIntIterator nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
-
+            // Update the count.
             count++;
+
             // See if the task has been cancelled.
-            if ((count >= 100)
-                    && (count % 100 == 0)) {
-                if (pm.isCancelled()) {
-                    return new HashMap<Integer, NodeBetweennessInfo>();
-                }
+            if (pm.isCancelled()) {
+                return new HashMap<Integer, NodeBetweennessInfo>();
             }
 
             // Calculate betweenness and closeness for each node.
-//            long start = System.currentTimeMillis();
-            int source = nodeSetIterator.next();
-            calculateCentralityContributionFromNode(source);
-//            long stop = System.currentTimeMillis();
-//            System.out.println(node + ": "
-//                    + (stop - start) + " ms.");
-            // Reset the node betweenness (except the betweenness and
-            // closeness) for every node.
-            TIntIterator it = nodeSet.iterator();
-            while (it.hasNext()) {
-                nodeBetweenness.get(it.next()).reset();
-            }
+            calculateCentralityContributionFromNode(nodeSetIterator.next());
 
-            pm.setProgress((int) (count * 100) / nodeCount);
+            // Update and print the progress.
+            progress = pm.setProgress(count, startTime);
         }
         // ***** END CENTRALITY CONTRIBUTION FROM EACH NODE *****
 
@@ -186,6 +178,17 @@ public abstract class GraphAnalyzer {
      * of the network analysis.
      */
     protected abstract void init();
+
+    /**
+     * Resets the node betweenness hash map (except for betweenness and
+     * closeness) of every node.
+     */
+    private void resetBetweenness() {
+        TIntIterator it = nodeSet.iterator();
+        while (it.hasNext()) {
+            nodeBetweenness.get(it.next()).reset();
+        }
+    }
 
     /**
      * Calculates the contribution of the given node to the betweenness and
@@ -221,6 +224,11 @@ public abstract class GraphAnalyzer {
         // values and their contributions to betweenness values.
         accumulateDependencies(startNode, stack);
         // ***** END CENTRALITY CONTRIBUTION CALCULATION ******
+
+        // ***** RESET HASH MAP VALUES IN PREPARATION FOR *****
+        // *****          THE NEXT CALCULATION            *****
+        resetBetweenness();
+        // ***** END RESET ************************************
     }
 
     /**
