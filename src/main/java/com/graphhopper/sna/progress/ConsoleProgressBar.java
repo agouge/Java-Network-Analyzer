@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhopper.sna.util;
+package com.graphhopper.sna.progress;
 
 import java.util.concurrent.TimeUnit;
 

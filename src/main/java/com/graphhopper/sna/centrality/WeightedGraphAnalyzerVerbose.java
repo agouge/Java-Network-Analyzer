@@ -25,7 +25,7 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.PathLengthData;
-import com.graphhopper.sna.util.ProgressMonitor;
+import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import gnu.trove.stack.array.TIntArrayStack;
 

@@ -26,8 +26,8 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
-import com.graphhopper.sna.util.NullProgressMonitor;
-import com.graphhopper.sna.util.ProgressMonitor;
+import com.graphhopper.sna.progress.NullProgressMonitor;
+import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.RawEdgeIterator;
 import gnu.trove.iterator.TIntIterator;

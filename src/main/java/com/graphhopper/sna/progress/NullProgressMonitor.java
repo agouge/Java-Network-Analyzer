@@ -22,44 +22,27 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhopper.sna.util;
+package com.graphhopper.sna.progress;
 
 /**
- * Default implementation of a progress monitor that prints a progress bar to
- * the console.
+ * A {@link ProgressMonitor} which does nothing.
  *
  * @author Adam Gouge
  */
-public class DefaultProgressMonitor implements ProgressMonitor {
-
-    private boolean cancelled = false;
-    private int percentageComplete = 0;
-    private long end;
-    private ConsoleProgressBar consoleProgressBar;
+public class NullProgressMonitor implements ProgressMonitor {
 
     /**
-     * Sets the end and instantiates a {@link ConsoleProgressBar} for this task.
-     *
-     * @see ProgressMonitor#startTask(java.lang.String, long).
+     * {@inheritDoc}
      */
     @Override
     public void startTask(String taskName, long end) {
-        System.out.println("STARTING TASK \"" + taskName
-                + "\"");
-        this.end = end;
-        // The console progress bar will have a width of 40 characters
-        // and will update every second.
-        this.consoleProgressBar = new ConsoleProgressBar(this, 40, 1);
     }
 
     /**
-     * Does nothing.
-     *
-     * @see ProgressMonitor#endTask().
+     * {@inheritDoc}
      */
     @Override
     public void endTask() {
-        System.out.println("TASK FINISHED");
     }
 
     /**
@@ -67,7 +50,7 @@ public class DefaultProgressMonitor implements ProgressMonitor {
      */
     @Override
     public boolean isCancelled() {
-        return cancelled;
+        return false;
     }
 
     /**
@@ -75,24 +58,7 @@ public class DefaultProgressMonitor implements ProgressMonitor {
      */
     @Override
     public int setProgress(long count) {
-        percentageComplete = (int) ((count * 100) / end);
-        return percentageComplete;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getPercentageComplete() {
-        return percentageComplete;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long getEnd() {
-        return end;
+        return -1;
     }
 
     /**
@@ -100,11 +66,22 @@ public class DefaultProgressMonitor implements ProgressMonitor {
      */
     @Override
     public int setProgress(long count, long startTime) {
+        return setProgress(startTime);
+    }
 
-        // Print the progress to the console.
-        System.out.print(consoleProgressBar.progressBar(count, startTime));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPercentageComplete() {
+        return 0;
+    }
 
-        // Return the updated percentage complete.
-        return setProgress(count);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getEnd() {
+        return -1;
     }
 }
