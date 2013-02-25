@@ -55,11 +55,11 @@ public interface ProgressMonitor {
     /**
      * Sets the progress and returns the percentage complete.
      *
-     * @param progress
+     * @param count The count.
      *
      * @return The percentage complete.
      */
-    int setProgress(long progress);
+    int setProgress(long count);
 
     /**
      * Returns the percentage complete.
