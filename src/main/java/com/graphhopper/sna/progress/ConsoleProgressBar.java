@@ -192,14 +192,13 @@ public class ConsoleProgressBar {
         String time = "";
 
         long[] elapsedHMS = millisecondsToHoursMinutesSeconds(elapsed);
-        time += "Time: "
-                + formatHMSString(elapsedHMS[0], elapsedHMS[1], elapsedHMS[2]);
+        time += formatHMSString(elapsedHMS[0], elapsedHMS[1], elapsedHMS[2]);
 
         long remaining = (elapsed / count) * (pm.getEnd() - count);
         long[] remainingHMS = millisecondsToHoursMinutesSeconds(remaining);
-        time += " Rem: "
-                + formatHMSString(remainingHMS[0], remainingHMS[1],
-                                  remainingHMS[2]);
+        time += " (" + formatHMSString(remainingHMS[0],
+                                       remainingHMS[1],
+                                       remainingHMS[2]) + ")";
 
         return time;
     }
@@ -235,9 +234,9 @@ public class ConsoleProgressBar {
      */
     private String formatHMSString(long hours, long minutes, long seconds) {
         String formattedTime = "";
-        formattedTime += addZeroIfLessThanTen(hours) + "h"
-                + addZeroIfLessThanTen(minutes) + "m"
-                + addZeroIfLessThanTen(seconds) + "s";
+        formattedTime += addZeroIfLessThanTen(hours)
+                + ":" + addZeroIfLessThanTen(minutes)
+                + ":" + addZeroIfLessThanTen(seconds);
         return formattedTime;
     }
 
