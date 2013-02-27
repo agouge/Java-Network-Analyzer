@@ -105,7 +105,7 @@ public abstract class GraphAnalyzer {
      *
      * @return The closeness centrality hash map.
      */
-    public abstract TIntDoubleHashMap computeCloseness();
+    public abstract HashMap<Integer, Double> computeCloseness();
 
     /**
      * Returns a {@link TIntHashSet} of the nodes of the given graph.

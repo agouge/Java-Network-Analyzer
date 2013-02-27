@@ -28,6 +28,7 @@ import com.graphhopper.sna.storage.GDMSGraphStorage;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -56,7 +57,7 @@ public class ClosenessCentralityTest extends CentralityTest {
                 new WeightedGraphAnalyzer(graph);
 
         // Calculate closeness.
-        TIntDoubleHashMap result = analyzer.computeCloseness();
+        HashMap<Integer, Double> result = analyzer.computeCloseness();
 
         // Check values.
         assertEquals(result.get(1), 0.0037875086449884817, TOLERANCE);
@@ -93,7 +94,7 @@ public class ClosenessCentralityTest extends CentralityTest {
                 new UnweightedGraphAnalyzer(graph);
 
         // Calculate closeness.
-        TIntDoubleHashMap result = analyzer.computeCloseness();
+        HashMap<Integer, Double> result = analyzer.computeCloseness();
 
         // Check values.
         assertEquals(result.get(6), 0.6666666666666666, TOLERANCE);
@@ -122,7 +123,7 @@ public class ClosenessCentralityTest extends CentralityTest {
                 new WeightedGraphAnalyzer(graph);
 
         // Calculate closeness.
-        TIntDoubleHashMap result = analyzer.computeCloseness();
+        HashMap<Integer, Double> result = analyzer.computeCloseness();
 
         // Check values.
         assertEquals(result.get(6), 0.0, TOLERANCE);
@@ -144,7 +145,7 @@ public class ClosenessCentralityTest extends CentralityTest {
             throws FileNotFoundException {
         ClosenessCentrality cc = new ClosenessCentrality(
                 Graphs.graph2DWeightedBidirectional());
-        TIntDoubleHashMap result = cc.calculateUsingDijkstraSimple();
+        HashMap<Integer, Double> result = cc.calculateUsingDijkstraSimple();
     }
 
     /**
@@ -159,7 +160,7 @@ public class ClosenessCentralityTest extends CentralityTest {
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
                 Graphs.graph2DWeightedBidirectional());
-        TIntDoubleHashMap result = cc.calculateUsingDijkstraBidirection();
+        HashMap<Integer, Double> result = cc.calculateUsingDijkstraBidirection();
     }
 
     /**
@@ -174,7 +175,7 @@ public class ClosenessCentralityTest extends CentralityTest {
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
                 Graphs.graph2DWeightedBidirectional());
-        TIntDoubleHashMap result = cc.calculateUsingDijkstraBidirectionRef();
+        HashMap<Integer, Double> result = cc.calculateUsingDijkstraBidirectionRef();
     }
 
     /**
@@ -188,7 +189,7 @@ public class ClosenessCentralityTest extends CentralityTest {
             IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
                 Graphs.graph2DWeightedBidirectional());
-        TIntDoubleHashMap result = cc.calculateUsingAStar();
+        HashMap<Integer, Double> result = cc.calculateUsingAStar();
     }
 
     /**
@@ -203,7 +204,7 @@ public class ClosenessCentralityTest extends CentralityTest {
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
                 Graphs.graph2DWeightedBidirectional());
-        TIntDoubleHashMap result = cc.calculateUsingAStarBidirection();
+        HashMap<Integer, Double> result = cc.calculateUsingAStarBidirection();
     }
 
     /**
@@ -217,8 +218,7 @@ public class ClosenessCentralityTest extends CentralityTest {
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
                 Graphs.graph2DWeightedBidirectional());
-        TIntDoubleHashMap result = cc.calculateUsingContractionHierarchies();
-        printResults(result);
+        HashMap<Integer, Double> result = cc.calculateUsingContractionHierarchies();
     }
 
     /**

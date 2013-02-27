@@ -34,6 +34,7 @@ import com.graphhopper.util.MyIntDeque;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.stack.array.TIntArrayStack;
+import java.util.HashMap;
 
 /**
  * Calculates various centrality measures on unweighted graphs <b>assumed to be
@@ -95,7 +96,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
     // cost of computing just closeness vs. computing closeness along
     // with betweenness.
     @Override
-    public TIntDoubleHashMap computeCloseness() {
+    public HashMap<Integer, Double> computeCloseness() {
         ClosenessCentrality closenessCentrality =
                 new ClosenessCentrality(graph);
         return closenessCentrality.calculateUsingBFS();

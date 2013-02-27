@@ -42,6 +42,7 @@ import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.set.hash.TIntHashSet;
+import java.util.HashMap;
 
 /**
  * Implementation of Freeman's original closeness centrality using several
@@ -85,7 +86,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public TIntDoubleHashMap calculateUsingBFS() {
+    public HashMap<Integer, Double> calculateUsingBFS() {
 
         System.out.println(
                 "Calculating closeness centrality using BFS.");
@@ -93,7 +94,8 @@ public class ClosenessCentrality {
         long time = System.currentTimeMillis();
 
         // Closeness centrality
-        TIntDoubleHashMap closenessCentrality = new TIntDoubleHashMap();
+        HashMap<Integer, Double> closenessCentrality =
+                new HashMap<Integer, Double>();
         // Recover the node set and an iterator on it.
         TIntHashSet nodeSet = GraphAnalyzer.nodeSet(graph);
         TIntIterator nodeIter = nodeSet.iterator();
@@ -244,7 +246,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public TIntDoubleHashMap calculateUsingDijkstraSimple() {
+    public HashMap<Integer, Double> calculateUsingDijkstraSimple() {
         DijkstraSimple ds = new DijkstraSimple(graph);
         System.out.println(
                 "Calculating closeness centrality using DijkstraSimple.");
@@ -257,7 +259,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public TIntDoubleHashMap calculateUsingDijkstraBidirection() {
+    public HashMap<Integer, Double> calculateUsingDijkstraBidirection() {
         DijkstraBidirection db = new DijkstraBidirection(graph);
         System.out.println(
                 "Calculating closeness centrality using DijkstraBidirection.");
@@ -270,7 +272,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public TIntDoubleHashMap calculateUsingDijkstraBidirectionRef() {
+    public HashMap<Integer, Double> calculateUsingDijkstraBidirectionRef() {
         DijkstraBidirectionRef dbr = new DijkstraBidirectionRef(graph);
         System.out.
                 println(
@@ -284,7 +286,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public TIntDoubleHashMap calculateUsingAStar() {
+    public HashMap<Integer, Double> calculateUsingAStar() {
         AStar as = new AStar(graph);
         System.out.println("Calculating closeness centrality using AStar.");
         return calculate(as);
@@ -296,7 +298,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public TIntDoubleHashMap calculateUsingAStarBidirection() {
+    public HashMap<Integer, Double> calculateUsingAStarBidirection() {
         AStarBidirection asb = new AStarBidirection(graph);
         System.out.println(
                 "Calculating closeness centrality using AStarBidirection.");
@@ -309,7 +311,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public TIntDoubleHashMap calculateUsingContractionHierarchies() {
+    public HashMap<Integer, Double> calculateUsingContractionHierarchies() {
 
         PrepareContractionHierarchies prepare =
                 new PrepareContractionHierarchies().
@@ -330,12 +332,12 @@ public class ClosenessCentrality {
      * @return A map with each vertex as key and each closeness centrality as
      *         value.
      */
-    private TIntDoubleHashMap calculate(AbstractRoutingAlgorithm algorithm) {
+    private HashMap<Integer, Double> calculate(AbstractRoutingAlgorithm algorithm) {
 
         long time = System.currentTimeMillis();
 
         // Initiate the result Map.
-        TIntDoubleHashMap result = new TIntDoubleHashMap();
+        HashMap<Integer, Double> result = new HashMap<Integer, Double>();
 
         // Recover the set of nodes.
         TIntHashSet nodeSet = GraphAnalyzer.nodeSet(graph);

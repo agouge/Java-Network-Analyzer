@@ -25,6 +25,7 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.progress.DefaultProgressMonitor;
 import com.graphhopper.storage.Graph;
 import java.util.HashMap;
 
@@ -45,8 +46,8 @@ public abstract class UnweightedGraphAnalyzerTest extends GraphAnalyzerTest {
             boolean printResults) {
         // Prepare the unweighted graph analyzer.
         UnweightedGraphAnalyzer analyzer = verbose
-                ? new UnweightedGraphAnalyzerVerbose(graph)
-                : new UnweightedGraphAnalyzer(graph);
+                ? new UnweightedGraphAnalyzerVerbose(graph, new DefaultProgressMonitor())
+                : new UnweightedGraphAnalyzer(graph, new DefaultProgressMonitor());
         // Do network analysis.
         return computeAll(analyzer, printResults);
     }
