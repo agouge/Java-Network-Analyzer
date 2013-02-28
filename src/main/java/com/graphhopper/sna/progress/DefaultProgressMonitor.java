@@ -74,9 +74,8 @@ public class DefaultProgressMonitor implements ProgressMonitor {
      * {@inheritDoc}
      */
     @Override
-    public int setProgress(long count) {
+    public void setProgress(long count) {
         percentageComplete = (int) ((count * 100) / end);
-        return percentageComplete;
     }
 
     /**
@@ -99,12 +98,12 @@ public class DefaultProgressMonitor implements ProgressMonitor {
      * {@inheritDoc}
      */
     @Override
-    public int setProgress(long count, long startTime) {
+    public void setProgress(long count, long startTime) {
 
         // Print the progress to the console.
         System.out.print(consoleProgressBar.progressBar(count, startTime));
 
-        // Return the updated percentage complete.
-        return setProgress(count);
+        // Update the percentage complete.
+        setProgress(count);
     }
 }

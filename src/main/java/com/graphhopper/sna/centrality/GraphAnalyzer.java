@@ -31,7 +31,6 @@ import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.RawEdgeIterator;
 import gnu.trove.iterator.TIntIterator;
-import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.HashMap;
@@ -69,7 +68,10 @@ public abstract class GraphAnalyzer {
      * The minimum betweenness centrality value.
      */
     private double minBetweenness;
-    private ProgressMonitor pm;
+    /**
+     * Progress monitor.
+     */
+    protected ProgressMonitor pm;
 
     /**
      * Initializes a new instance of a graph analyzer with the given
@@ -142,9 +144,8 @@ public abstract class GraphAnalyzer {
 
         // ***** GLOBAL INITIALIZATION *************************
         long count = 0;
-        long progress = 0;
         init();
-        pm.setProgress(0, startTime);
+        pm.setProgress(count, startTime);
 
         // ***** CENTRALITY CONTRIBUTION FROM EACH NODE ********
         TIntIterator nodeSetIterator = nodeSet.iterator();
@@ -161,7 +162,7 @@ public abstract class GraphAnalyzer {
             calculateCentralityContributionFromNode(nodeSetIterator.next());
 
             // Update and print the progress.
-            progress = pm.setProgress(count, startTime);
+            pm.setProgress(count, startTime);
         }
         // ***** END CENTRALITY CONTRIBUTION FROM EACH NODE *****
 

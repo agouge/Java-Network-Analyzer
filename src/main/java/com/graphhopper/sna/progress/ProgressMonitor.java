@@ -59,7 +59,7 @@ public interface ProgressMonitor {
      *
      * @return The percentage complete.
      */
-    int setProgress(long count);
+    void setProgress(long count);
 
     /**
      * Returns the percentage complete.
@@ -83,5 +83,5 @@ public interface ProgressMonitor {
      *
      * @return The percentage complete.
      */
-    int setProgress(long count, long startTime);
+    void setProgress(long count, long startTime);
 }
