@@ -213,10 +213,15 @@ public class ConsoleProgressBar {
      * @return The hours, minutes and seconds.
      */
     private long[] millisecondsToHoursMinutesSeconds(long time) {
+        // Convert the total time to milliseconds.
         long hours = TimeUnit.MILLISECONDS.toHours(time);
+        // Convert the total time to minutes and subtract the hours in minutes.
         long minutes = TimeUnit.MILLISECONDS.toMinutes(time)
                 - TimeUnit.HOURS.toMinutes(hours);
+        // Convert the total time to seconds and subtract the hours
+        // and minutes in seconds.
         long seconds = TimeUnit.MILLISECONDS.toSeconds(time)
+                - TimeUnit.HOURS.toSeconds(hours)
                 - TimeUnit.MINUTES.toSeconds(minutes);
         long[] result = {hours, minutes, seconds};
         return result;
