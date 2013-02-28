@@ -229,6 +229,22 @@ public class ClosenessCentralityTest extends CentralityTest {
                 calculateUsingContractionHierarchies();
     }
 
+//    @Test
+//    public void testNantes() throws
+//            FileNotFoundException {
+//
+//        // Prepare the graph.
+//        GDMSGraphStorage graph = Graphs.graphNantesWeightedBidirectional();
+//
+//        // Prepare the unweighted graph analyzer.
+//        WeightedGraphAnalyzer analyzer =
+//                new WeightedGraphAnalyzer(graph,
+//                                          new DefaultProgressMonitor());
+//
+//        // Calculate closeness.
+//        HashMap<Integer, Double> result = analyzer.computeCloseness();
+//    }
+
     /**
      * {@inheritDoc}
      */

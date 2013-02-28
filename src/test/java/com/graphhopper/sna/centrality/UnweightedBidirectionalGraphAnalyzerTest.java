@@ -87,9 +87,12 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
 //
 //        printTitle("Nantes");
 //
+//        long start = System.currentTimeMillis();
 //        HashMap<Integer, NodeBetweennessInfo> result =
-//                doAnalysisPrintResults(
+//                doAnalysis(
 //                Graphs.graphNantesWeightedBidirectional());
+//        System.out.println("NANTES in "
+//                + (System.currentTimeMillis() - start));
 //    }
 
     /**
