@@ -88,10 +88,15 @@ public class ConsoleProgressBar {
             // Get the elapsed time.
             long elapsed = (System.currentTimeMillis() - startTime);
             // Get mod value. This is used to update the progress bar at the
-            // given frequency.
+            // given frequency. We make sure the elapsed time is positive
+            // and set the default mod value to 1.
             long mod = (elapsed > 0)
                     ? (long) (1000 * count * frequency) / elapsed
                     : 1;
+            // If the calculation progresses too slowly, the mod value will
+            // be zero, so we need to set it to one to make the progress
+            // bar print at least once during each loop iteration.
+            mod = (mod == 0) ? 1 : mod;
             // (2) Print the progress at the given frequency.
             if (count != pm.getEnd()) {
                 // See if we should update the progress bar.
