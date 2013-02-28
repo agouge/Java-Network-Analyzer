@@ -197,8 +197,12 @@ public class ConsoleProgressBar {
         String time = "";
 
         long[] elapsedHMS = millisecondsToHoursMinutesSeconds(elapsed);
-        time += formatHMSString(elapsedHMS[0], elapsedHMS[1], elapsedHMS[2]);
+        time += formatHMSString(elapsedHMS[0],
+                                elapsedHMS[1],
+                                elapsedHMS[2]);
 
+        // The remaining time is the average time per count multiplied by
+        // the number of counts remaining.
         long remaining = (elapsed / count) * (pm.getEnd() - count);
         long[] remainingHMS = millisecondsToHoursMinutesSeconds(remaining);
         time += " (" + formatHMSString(remainingHMS[0],
