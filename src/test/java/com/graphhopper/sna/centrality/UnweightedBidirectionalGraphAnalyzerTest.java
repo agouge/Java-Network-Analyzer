@@ -26,7 +26,7 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -59,7 +59,7 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
 
         printTitle(Graphs.GRAPH2D);
 
-        HashMap<Integer, NodeBetweennessInfo> result =
+        Map<Integer, NodeBetweennessInfo> result =
                 doAnalysis(Graphs.graph2DUnweightedBidirectional());
 
         check2DGraphResults(result);
@@ -74,7 +74,7 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
 
         printTitle(Graphs.CORMEN_GRAPH);
 
-        HashMap<Integer, NodeBetweennessInfo> result =
+        Map<Integer, NodeBetweennessInfo> result =
                 doAnalysisPrintResults(
                 Graphs.graphCormenUnweightedBidirectional());
     }
@@ -101,7 +101,7 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
      * @param result Result to check.
      */
     private void check2DGraphResults(
-            HashMap<Integer, NodeBetweennessInfo> result) {
+            Map<Integer, NodeBetweennessInfo> result) {
         assertEquals(result.get(6).getCloseness(),
                      0.625, TOLERANCE);
         assertEquals(result.get(5).getCloseness(),

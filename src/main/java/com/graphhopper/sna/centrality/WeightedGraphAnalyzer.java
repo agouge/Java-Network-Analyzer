@@ -31,7 +31,7 @@ import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Calculates various centrality measures on weighted graphs which are
@@ -86,7 +86,7 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
      * @return The closeness centrality hash map.
      */
     @Override
-    public HashMap<Integer, Double> computeCloseness() {
+    public Map<Integer, Double> computeCloseness() {
         ClosenessCentrality closenessCentrality =
                 new ClosenessCentrality(graph, pm);
         return closenessCentrality.calculateUsingContractionHierarchies();

@@ -40,10 +40,10 @@ import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.MyIntDeque;
 import gnu.trove.iterator.TIntIterator;
-import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implementation of Freeman's original closeness centrality using several
@@ -92,7 +92,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public HashMap<Integer, Double> calculateUsingBFS() {
+    public Map<Integer, Double> calculateUsingBFS() {
 
         System.out.println(
                 "Calculating closeness centrality using BFS.");
@@ -259,7 +259,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public HashMap<Integer, Double> calculateUsingDijkstraSimple() {
+    public Map<Integer, Double> calculateUsingDijkstraSimple() {
         DijkstraSimple ds = new DijkstraSimple(graph);
         System.out.println(
                 "Calculating closeness centrality using DijkstraSimple.");
@@ -272,7 +272,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public HashMap<Integer, Double> calculateUsingDijkstraBidirection() {
+    public Map<Integer, Double> calculateUsingDijkstraBidirection() {
         DijkstraBidirection db = new DijkstraBidirection(graph);
         System.out.println(
                 "Calculating closeness centrality using DijkstraBidirection.");
@@ -285,7 +285,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public HashMap<Integer, Double> calculateUsingDijkstraBidirectionRef() {
+    public Map<Integer, Double> calculateUsingDijkstraBidirectionRef() {
         DijkstraBidirectionRef dbr = new DijkstraBidirectionRef(graph);
         System.out.
                 println(
@@ -299,7 +299,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public HashMap<Integer, Double> calculateUsingAStar() {
+    public Map<Integer, Double> calculateUsingAStar() {
         AStar as = new AStar(graph);
         System.out.println("Calculating closeness centrality using AStar.");
         return calculate(as);
@@ -311,7 +311,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public HashMap<Integer, Double> calculateUsingAStarBidirection() {
+    public Map<Integer, Double> calculateUsingAStarBidirection() {
         AStarBidirection asb = new AStarBidirection(graph);
         System.out.println(
                 "Calculating closeness centrality using AStarBidirection.");
@@ -324,7 +324,7 @@ public class ClosenessCentrality {
      * @return A map with the vertex as the key and the closeness centrality as
      *         the value.
      */
-    public HashMap<Integer, Double> calculateUsingContractionHierarchies() {
+    public Map<Integer, Double> calculateUsingContractionHierarchies() {
 
         PrepareContractionHierarchies prepare =
                 new PrepareContractionHierarchies().
@@ -345,7 +345,7 @@ public class ClosenessCentrality {
      * @return A map with each vertex as key and each closeness centrality as
      *         value.
      */
-    private HashMap<Integer, Double> calculate(
+    private Map<Integer, Double> calculate(
             AbstractRoutingAlgorithm algorithm) {
 
         // Initiate the result Map.

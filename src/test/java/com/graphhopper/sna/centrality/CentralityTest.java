@@ -27,7 +27,6 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import gnu.trove.iterator.TIntDoubleIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -69,7 +68,7 @@ public abstract class CentralityTest {
      *
      * @param result The result.
      */
-    protected void printResults(HashMap<Integer, NodeBetweennessInfo> result) {
+    protected void printResults(Map<Integer, NodeBetweennessInfo> result) {
         // Print results.
         System.out.format("%-12s%-12s%-12s",
                           "v",

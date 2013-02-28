@@ -34,6 +34,7 @@ import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Calculates various centrality measures on the given graph, <b>assumed to be
@@ -59,7 +60,7 @@ public abstract class GraphAnalyzer {
      * Map of all nodes with their respective {@link NodeBetweennessInfo}, which
      * stores information needed for the node betweenness calculation.
      */
-    protected final HashMap<Integer, NodeBetweennessInfo> nodeBetweenness;
+    protected final Map<Integer, NodeBetweennessInfo> nodeBetweenness;
     /**
      * The maximum betweenness centrality value.
      */
@@ -107,7 +108,7 @@ public abstract class GraphAnalyzer {
      *
      * @return The closeness centrality hash map.
      */
-    public abstract HashMap<Integer, Double> computeCloseness();
+    public abstract Map<Integer, Double> computeCloseness();
 
     /**
      * Returns a {@link TIntHashSet} of the nodes of the given graph.
@@ -136,7 +137,7 @@ public abstract class GraphAnalyzer {
      *
      * @return The results of the graph analysis.
      */
-    public HashMap<Integer, NodeBetweennessInfo> computeAll() {
+    public Map<Integer, NodeBetweennessInfo> computeAll() {
 
         long startTime = System.currentTimeMillis();
 

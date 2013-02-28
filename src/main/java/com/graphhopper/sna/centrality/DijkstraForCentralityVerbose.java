@@ -28,7 +28,7 @@ import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.storage.Graph;
 import gnu.trove.stack.array.TIntArrayStack;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 /**
@@ -59,7 +59,7 @@ public class DijkstraForCentralityVerbose extends DijkstraForCentrality {
      */
     public DijkstraForCentralityVerbose(
             Graph graph,
-            final HashMap<Integer, NodeBetweennessInfo> nodeBetweenness,
+            final Map<Integer, NodeBetweennessInfo> nodeBetweenness,
             int startNode,
             PathLengthData pathsFromStartNode,
             TIntArrayStack stack) {

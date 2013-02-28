@@ -29,7 +29,7 @@ import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import gnu.trove.stack.array.TIntArrayStack;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 /**
@@ -62,7 +62,7 @@ public class DijkstraForCentrality extends Dijkstra {
      */
     public DijkstraForCentrality(
             Graph graph,
-            final HashMap<Integer, NodeBetweennessInfo> nodeBetweenness,
+            final Map<Integer, NodeBetweennessInfo> nodeBetweenness,
             int startNode,
             PathLengthData pathsFromStartNode,
             TIntArrayStack stack) {

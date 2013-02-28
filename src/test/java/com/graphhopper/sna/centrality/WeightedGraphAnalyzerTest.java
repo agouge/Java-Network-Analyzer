@@ -26,7 +26,7 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Contains a method for doing (possibly verbose) weighted graph analysis.
@@ -39,7 +39,7 @@ public abstract class WeightedGraphAnalyzerTest extends GraphAnalyzerTest {
      * {@inheritDoc}
      */
     @Override
-    protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(
+    protected Map<Integer, NodeBetweennessInfo> doAnalysis(
             Graph graph,
             boolean verbose,
             boolean printResults) {

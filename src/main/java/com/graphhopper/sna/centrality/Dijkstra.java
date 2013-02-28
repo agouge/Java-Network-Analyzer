@@ -27,9 +27,8 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
-import gnu.trove.set.hash.TIntHashSet;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 /**
@@ -48,7 +47,7 @@ public class Dijkstra {
      * stores information calculated during the execution of Dijkstra's
      * algorithm in {@link Dijkstra#calculate()}.
      */
-    protected final HashMap<Integer, NodeBetweennessInfo> nodeBetweenness;
+    protected final Map<Integer, NodeBetweennessInfo> nodeBetweenness;
     /**
      * Start node.
      */
@@ -67,7 +66,7 @@ public class Dijkstra {
      * @param startNode       The start node.
      */
     public Dijkstra(Graph graph,
-                    final HashMap<Integer, NodeBetweennessInfo> nodeBetweenness,
+                    final Map<Integer, NodeBetweennessInfo> nodeBetweenness,
                     int startNode) {
         this.graph = graph;
         this.nodeBetweenness = nodeBetweenness;

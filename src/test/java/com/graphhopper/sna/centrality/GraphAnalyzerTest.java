@@ -26,7 +26,7 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Parent class for {@link GraphAnalyzer} tests.
@@ -48,7 +48,7 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The result.
      */
-    protected abstract HashMap<Integer, NodeBetweennessInfo> doAnalysis(
+    protected abstract Map<Integer, NodeBetweennessInfo> doAnalysis(
             Graph graph,
             boolean verbose,
             boolean printResults);
@@ -60,7 +60,7 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The result.
      */
-    protected HashMap<Integer, NodeBetweennessInfo> doAnalysis(Graph graph) {
+    protected Map<Integer, NodeBetweennessInfo> doAnalysis(Graph graph) {
         return doAnalysis(graph, false, false);
     }
 
@@ -72,7 +72,7 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The result.
      */
-    protected HashMap<Integer, NodeBetweennessInfo> doVerboseAnalysis(
+    protected Map<Integer, NodeBetweennessInfo> doVerboseAnalysis(
             Graph graph) {
         return doAnalysis(graph, true, true);
     }
@@ -85,7 +85,7 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The result.
      */
-    protected HashMap<Integer, NodeBetweennessInfo> doAnalysisPrintResults(
+    protected Map<Integer, NodeBetweennessInfo> doAnalysisPrintResults(
             Graph graph) {
         return doAnalysis(graph, false, true);
     }
@@ -99,12 +99,12 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The results.
      */
-    protected HashMap<Integer, NodeBetweennessInfo> computeAll(
+    protected Map<Integer, NodeBetweennessInfo> computeAll(
             GraphAnalyzer analyzer,
             boolean printResults) {
         // Do network analysis.
         long start = System.currentTimeMillis();
-        HashMap<Integer, NodeBetweennessInfo> result = analyzer.computeAll();
+        Map<Integer, NodeBetweennessInfo> result = analyzer.computeAll();
         long stop = System.currentTimeMillis();
         printTime(stop - start);
         if (printResults) {
