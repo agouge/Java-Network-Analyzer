@@ -24,8 +24,8 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.sna.progress.DefaultProgressMonitor;
 import com.graphhopper.sna.storage.GDMSGraphStorage;
-import gnu.trove.map.hash.TIntDoubleHashMap;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
@@ -54,7 +54,7 @@ public class ClosenessCentralityTest extends CentralityTest {
 
         // Prepare the unweighted graph analyzer.
         WeightedGraphAnalyzer analyzer =
-                new WeightedGraphAnalyzer(graph);
+                new WeightedGraphAnalyzer(graph, new DefaultProgressMonitor());
 
         // Calculate closeness.
         HashMap<Integer, Double> result = analyzer.computeCloseness();
@@ -144,7 +144,8 @@ public class ClosenessCentralityTest extends CentralityTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingDijkstraSimple()
             throws FileNotFoundException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                Graphs.graph2DWeightedBidirectional());
+                Graphs.graph2DWeightedBidirectional(),
+                new DefaultProgressMonitor());
         HashMap<Integer, Double> result = cc.calculateUsingDijkstraSimple();
     }
 
@@ -159,7 +160,8 @@ public class ClosenessCentralityTest extends CentralityTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingDijkstraBidirection()
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                Graphs.graph2DWeightedBidirectional());
+                Graphs.graph2DWeightedBidirectional(),
+                new DefaultProgressMonitor());
         HashMap<Integer, Double> result = cc.calculateUsingDijkstraBidirection();
     }
 
@@ -174,8 +176,10 @@ public class ClosenessCentralityTest extends CentralityTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingDijkstraBidirectionRef()
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                Graphs.graph2DWeightedBidirectional());
-        HashMap<Integer, Double> result = cc.calculateUsingDijkstraBidirectionRef();
+                Graphs.graph2DWeightedBidirectional(),
+                new DefaultProgressMonitor());
+        HashMap<Integer, Double> result = cc.
+                calculateUsingDijkstraBidirectionRef();
     }
 
     /**
@@ -188,7 +192,8 @@ public class ClosenessCentralityTest extends CentralityTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingAStar() throws
             IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                Graphs.graph2DWeightedBidirectional());
+                Graphs.graph2DWeightedBidirectional(),
+                new DefaultProgressMonitor());
         HashMap<Integer, Double> result = cc.calculateUsingAStar();
     }
 
@@ -203,7 +208,8 @@ public class ClosenessCentralityTest extends CentralityTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingAStarBidirection()
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                Graphs.graph2DWeightedBidirectional());
+                Graphs.graph2DWeightedBidirectional(),
+                new DefaultProgressMonitor());
         HashMap<Integer, Double> result = cc.calculateUsingAStarBidirection();
     }
 
@@ -217,8 +223,10 @@ public class ClosenessCentralityTest extends CentralityTest {
     public void testClosenessCentralityGraph2DBidirectionalUsingContractionHierarchies()
             throws IOException {
         ClosenessCentrality cc = new ClosenessCentrality(
-                Graphs.graph2DWeightedBidirectional());
-        HashMap<Integer, Double> result = cc.calculateUsingContractionHierarchies();
+                Graphs.graph2DWeightedBidirectional(),
+                new DefaultProgressMonitor());
+        HashMap<Integer, Double> result = cc.
+                calculateUsingContractionHierarchies();
     }
 
     /**

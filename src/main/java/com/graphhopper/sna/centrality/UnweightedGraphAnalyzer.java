@@ -32,7 +32,6 @@ import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.MyIntDeque;
 import gnu.trove.iterator.TIntIterator;
-import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.HashMap;
 
@@ -98,7 +97,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
     @Override
     public HashMap<Integer, Double> computeCloseness() {
         ClosenessCentrality closenessCentrality =
-                new ClosenessCentrality(graph);
+                new ClosenessCentrality(graph, pm);
         return closenessCentrality.calculateUsingBFS();
     }
 

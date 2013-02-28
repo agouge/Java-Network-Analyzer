@@ -35,6 +35,7 @@ import com.graphhopper.routing.DijkstraSimple;
 import com.graphhopper.routing.Path;
 import com.graphhopper.routing.ch.PrepareContractionHierarchies;
 import com.graphhopper.sna.data.PathLengthData;
+import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.MyIntDeque;
@@ -68,6 +69,10 @@ public class ClosenessCentrality {
      * The graph on which we will calculate the closeness centrality.
      */
     private Graph graph;
+    /**
+     * Progress monitor.
+     */
+    private ProgressMonitor pm;
 
     /**
      * Constructs a {@link ClosenessCentrality} object.
@@ -75,8 +80,9 @@ public class ClosenessCentrality {
      * @param graph The graph on which we will calculate the closeness
      *              centrality.
      */
-    public ClosenessCentrality(Graph graph) {
+    public ClosenessCentrality(Graph graph, ProgressMonitor pm) {
         this.graph = graph;
+        this.pm = pm;
     }
 
     /**
@@ -91,8 +97,6 @@ public class ClosenessCentrality {
         System.out.println(
                 "Calculating closeness centrality using BFS.");
 
-        long time = System.currentTimeMillis();
-
         // Closeness centrality
         HashMap<Integer, Double> closenessCentrality =
                 new HashMap<Integer, Double>();
@@ -100,8 +104,17 @@ public class ClosenessCentrality {
         TIntHashSet nodeSet = GraphAnalyzer.nodeSet(graph);
         TIntIterator nodeIter = nodeSet.iterator();
 
+        // Initialize the progress.
+        int count = 0;
+        long startTime = System.currentTimeMillis();
+        pm.startTask("Closeness centrality computation", nodeSet.size());
+        pm.setProgress(count, startTime);
+
         // Begin graph analysis.
         while (nodeIter.hasNext()) {
+
+            // Update the count.
+            count++;
 
             // Start timing for this node.
             long start = System.currentTimeMillis();
@@ -133,15 +146,15 @@ public class ClosenessCentrality {
             // Stop timing for this node.
             long stop = System.currentTimeMillis();
 
-//            System.out.println("Node: " + node
-//                    + ", Closeness: " + closeness
-//                    + ", Time: " + (stop - start)
-//                    + " ms.");
+            // Update the progress.
+            pm.setProgress(count, startTime);
         } // End node iteration.
 
-        time = System.currentTimeMillis() - time;
         System.out.println("Closeness centrality computation (BFS) took "
-                + time + " ms.");
+                + (System.currentTimeMillis() - startTime) + " ms.");
+
+        pm.endTask();
+
         return closenessCentrality;
     }
 
@@ -332,9 +345,8 @@ public class ClosenessCentrality {
      * @return A map with each vertex as key and each closeness centrality as
      *         value.
      */
-    private HashMap<Integer, Double> calculate(AbstractRoutingAlgorithm algorithm) {
-
-        long time = System.currentTimeMillis();
+    private HashMap<Integer, Double> calculate(
+            AbstractRoutingAlgorithm algorithm) {
 
         // Initiate the result Map.
         HashMap<Integer, Double> result = new HashMap<Integer, Double>();
@@ -350,8 +362,17 @@ public class ClosenessCentrality {
         // Get an iterator over the node set.
         TIntIterator sourceIterator = nodeSet.iterator();
 
+        // Initialize the progress.
+        int count = 0;
+        long startTime = System.currentTimeMillis();
+        pm.startTask("Closeness centrality computation", nodeSet.size());
+        pm.setProgress(count, startTime);
+
         // Fix a node.
         while (sourceIterator.hasNext()) {
+
+            // Update the count.
+            count++;
 
             // Recover the source node.
             int source = sourceIterator.next();
@@ -422,10 +443,15 @@ public class ClosenessCentrality {
 
             // Store the closeness centrality for this source node.
             result.put(source, closeness);
+
+            // Update the progress.
+            pm.setProgress(count, startTime);
         }
-        time = System.currentTimeMillis() - time;
         System.out.println("Closeness centrality computation took "
-                + time + " ms.");
+                + (System.currentTimeMillis() - startTime) + " ms.");
+
+        pm.endTask();
+
         // Return the Map of closeness centrality results.
         return result;
     }

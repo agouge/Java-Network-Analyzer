@@ -30,7 +30,6 @@ import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
-import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.HashMap;
 
@@ -89,7 +88,7 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
     @Override
     public HashMap<Integer, Double> computeCloseness() {
         ClosenessCentrality closenessCentrality =
-                new ClosenessCentrality(graph);
+                new ClosenessCentrality(graph, pm);
         return closenessCentrality.calculateUsingContractionHierarchies();
     }
 
