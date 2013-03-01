@@ -28,6 +28,7 @@ import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.GHUtility;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -98,7 +99,8 @@ public class DijkstraForCentrality extends Dijkstra {
                         nodeBetweenness.get(u).getDistance());
             }
             // Relax every neighbor of u.
-            EdgeIterator outgoingEdges = graph.getOutgoing(u);
+            EdgeIterator outgoingEdges =
+                    GHUtility.getCarOutgoing(graph, u);
             while (outgoingEdges.next()) {
                 int v = outgoingEdges.node();
                 double uvWeight = outgoingEdges.distance();

@@ -29,6 +29,7 @@ import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.GHUtility;
 import com.graphhopper.util.MyIntDeque;
 import gnu.trove.stack.array.TIntArrayStack;
 
@@ -100,7 +101,8 @@ public class UnweightedGraphAnalyzerVerbose extends UnweightedGraphAnalyzer {
             stack.push(current);
 
             // Get the outgoing edges of the current node.
-            EdgeIterator edgesOfCurrentNode = graph.getOutgoing(current);
+            EdgeIterator edgesOfCurrentNode =
+                    GHUtility.getCarOutgoing(graph, current);
             // For every neighbor of the current node ...
             while (edgesOfCurrentNode.next()) {
 

@@ -122,7 +122,7 @@ public abstract class GraphAnalyzer {
         // Initialize the Set.
         TIntHashSet set = new TIntHashSet();
         // Get all the edges.
-        RawEdgeIterator iter = graph.allEdges();
+        RawEdgeIterator iter = graph.getAllEdges();
         // Add each source and destination node to the set.
         while (iter.next()) {
             set.add(iter.nodeA());

@@ -27,6 +27,7 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.GHUtility;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -89,7 +90,8 @@ public class Dijkstra {
             // Extract the minimum element.
             int u = queue.poll();
             // Relax every neighbor of u.
-            EdgeIterator outgoingEdges = graph.getOutgoing(u);
+            EdgeIterator outgoingEdges = 
+                    GHUtility.getCarOutgoing(graph, u);
             while (outgoingEdges.next()) {
                 int v = outgoingEdges.node();
                 double uvWeight = outgoingEdges.distance();

@@ -33,11 +33,14 @@ import com.graphhopper.routing.DijkstraBidirection;
 import com.graphhopper.routing.DijkstraBidirectionRef;
 import com.graphhopper.routing.DijkstraSimple;
 import com.graphhopper.routing.Path;
+import com.graphhopper.routing.RoutingAlgorithm;
 import com.graphhopper.routing.ch.PrepareContractionHierarchies;
+import com.graphhopper.routing.util.CarFlagEncoder;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.GHUtility;
 import com.graphhopper.util.MyIntDeque;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -219,7 +222,7 @@ public class ClosenessCentrality {
 //            System.out.println("BFS for " + currentNode + " ");
 
             // Get the outgoing edges of the current node.
-            EdgeIterator iter = graph.getOutgoing(currentNode);
+            EdgeIterator iter = GHUtility.getCarOutgoing(graph, currentNode);
             while (iter.next()) {
 
                 // For every neighbor of the current node,
@@ -260,7 +263,7 @@ public class ClosenessCentrality {
      *         the value.
      */
     public Map<Integer, Double> calculateUsingDijkstraSimple() {
-        DijkstraSimple ds = new DijkstraSimple(graph);
+        DijkstraSimple ds = new DijkstraSimple(graph, new CarFlagEncoder());
         System.out.println(
                 "Calculating closeness centrality using DijkstraSimple.");
         return calculate(ds);
@@ -273,7 +276,8 @@ public class ClosenessCentrality {
      *         the value.
      */
     public Map<Integer, Double> calculateUsingDijkstraBidirection() {
-        DijkstraBidirection db = new DijkstraBidirection(graph);
+        DijkstraBidirection db =
+                new DijkstraBidirection(graph, new CarFlagEncoder());
         System.out.println(
                 "Calculating closeness centrality using DijkstraBidirection.");
         return calculate(db);
@@ -286,10 +290,10 @@ public class ClosenessCentrality {
      *         the value.
      */
     public Map<Integer, Double> calculateUsingDijkstraBidirectionRef() {
-        DijkstraBidirectionRef dbr = new DijkstraBidirectionRef(graph);
-        System.out.
-                println(
-                "Calculating closeness centrality using DijkstraBidirectionRef.");
+        DijkstraBidirectionRef dbr =
+                new DijkstraBidirectionRef(graph, new CarFlagEncoder());
+        System.out.println("Calculating closeness centrality "
+                + "using DijkstraBidirectionRef.");
         return calculate(dbr);
     }
 
@@ -300,7 +304,7 @@ public class ClosenessCentrality {
      *         the value.
      */
     public Map<Integer, Double> calculateUsingAStar() {
-        AStar as = new AStar(graph);
+        AStar as = new AStar(graph, new CarFlagEncoder());
         System.out.println("Calculating closeness centrality using AStar.");
         return calculate(as);
     }
@@ -312,7 +316,8 @@ public class ClosenessCentrality {
      *         the value.
      */
     public Map<Integer, Double> calculateUsingAStarBidirection() {
-        AStarBidirection asb = new AStarBidirection(graph);
+        AStarBidirection asb =
+                new AStarBidirection(graph, new CarFlagEncoder());
         System.out.println(
                 "Calculating closeness centrality using AStarBidirection.");
         return calculate(asb);
@@ -330,8 +335,7 @@ public class ClosenessCentrality {
                 new PrepareContractionHierarchies().
                 graph(graph);
         prepare.doWork();
-        DijkstraBidirectionRef algo = prepare.createAlgo();
-        return calculate(algo);
+        return calculate((AbstractRoutingAlgorithm) prepare.createAlgo());
     }
 
     /**
@@ -345,8 +349,7 @@ public class ClosenessCentrality {
      * @return A map with each vertex as key and each closeness centrality as
      *         value.
      */
-    private Map<Integer, Double> calculate(
-            AbstractRoutingAlgorithm algorithm) {
+    private Map<Integer, Double> calculate(AbstractRoutingAlgorithm algorithm) {
 
         // Initiate the result Map.
         HashMap<Integer, Double> result = new HashMap<Integer, Double>();
@@ -401,7 +404,7 @@ public class ClosenessCentrality {
 
                 // Obtain (one of) the shortest path(s) from the source node
                 // to the destination node.
-                Path path = algorithm.clear().calcPath(source, destination);
+                Path path = algorithm.calcPath(source, destination);
 //                System.out.println("Source " + source
 //                        + ", Destination " + destination
 //                        + ", Path " + path.toDetailsString());
