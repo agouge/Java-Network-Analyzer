@@ -73,17 +73,16 @@ public class ConsoleProgressBar {
     public String progressBar(long count, long startTime) {
 
         // The progress bar to print.
-        String progressBar = "";
+        StringBuilder progressBar = new StringBuilder();
 
         // Get the current progress.
         int percentageComplete = pm.getPercentageComplete();
 
         // (1) Print at 0%
         if (count == 0) {
-            progressBar += bar(0, width);
-            progressBar += percentage(0);
+            progressBar.append(bar(0, width)).append(percentage(0));
             // Carriage return.
-            progressBar += "\r";
+            progressBar.append("\r");
         } else {
             // Get the elapsed time.
             long elapsed = (System.currentTimeMillis() - startTime);
@@ -101,24 +100,23 @@ public class ConsoleProgressBar {
             if (count != pm.getEnd()) {
                 // See if we should update the progress bar.
                 if ((count % mod) == 0) {
-                    progressBar += bar(percentageComplete, width);
-                    progressBar += percentage(percentageComplete);
-                    progressBar += time(count, elapsed);
+                    progressBar.append(bar(percentageComplete, width));
+                    progressBar.append(percentage(percentageComplete));
+                    progressBar.append(time(count, elapsed));
                     // Carriage return.
-                    progressBar += "\r";
+                    progressBar.append("\r");
                 }
             } // (3) Print at 100%.
             else {
-                progressBar += bar(100, width);
-                progressBar += percentage(100);
-                progressBar += time(count, elapsed);
+                progressBar.append(bar(100, width)).append(percentage(100));
+                progressBar.append(time(count, elapsed));
                 // When done, print a new line.
-                progressBar += "\n";
+                progressBar.append("\n");
             }
         }
 
         // Return the progress bar String.
-        return progressBar;
+        return progressBar.toString();
     }
 
     /**
@@ -132,33 +130,32 @@ public class ConsoleProgressBar {
      */
     private String bar(long percentageComplete, int width) {
 
-        String bar = "";
+        StringBuilder bar = new StringBuilder();
 
         int numberOfEqualSigns = (int) ((percentageComplete * width) / 100);
         int numberOfBlankSpaces = width - numberOfEqualSigns;
 
-        bar += "  [";
-
+        bar.append("  [");
 
         for (int i = 0; i < numberOfEqualSigns; i++) {
-            bar += "=";
+            bar.append("=");
         }
 
         if (percentageComplete == 0) {
-            bar += " ";
+            bar.append(" ");
         } else if (percentageComplete < 100) {
-            bar += ">";
+            bar.append(">");
         } else {
-            bar += "=";
+            bar.append("=");
         }
 
         for (int i = 0; i < numberOfBlankSpaces; i++) {
-            bar += " ";
+            bar.append(" ");
         }
 
-        bar += "] ";
+        bar.append("] ");
 
-        return bar;
+        return bar.toString();
     }
 
     /**
@@ -171,16 +168,16 @@ public class ConsoleProgressBar {
      */
     private String percentage(long percentageComplete) {
 
-        String percentage = "";
+        StringBuilder percentage = new StringBuilder();
 
         if (percentageComplete < 10) {
-            percentage += "  ";
+            percentage.append("  ");
         } else if ((percentageComplete >= 10) && (percentageComplete < 100)) {
-            percentage += " ";
+            percentage.append(" ");
         }
-        percentage += percentageComplete + "% ";
+        percentage.append(percentageComplete).append("% ");
 
-        return percentage;
+        return percentage.toString();
     }
 
     /**
@@ -194,22 +191,22 @@ public class ConsoleProgressBar {
      */
     private String time(long count, long elapsed) {
 
-        String time = "";
+        StringBuilder time = new StringBuilder();
 
         long[] elapsedHMS = millisecondsToHoursMinutesSeconds(elapsed);
-        time += formatHMSString(elapsedHMS[0],
-                                elapsedHMS[1],
-                                elapsedHMS[2]);
+        time.append(formatHMSString(elapsedHMS[0],
+                                    elapsedHMS[1],
+                                    elapsedHMS[2]));
 
         // The remaining time is the average time per count multiplied by
         // the number of counts remaining.
         long remaining = (elapsed / count) * (pm.getEnd() - count);
         long[] remainingHMS = millisecondsToHoursMinutesSeconds(remaining);
-        time += " (" + formatHMSString(remainingHMS[0],
-                                       remainingHMS[1],
-                                       remainingHMS[2]) + ")";
+        time.append(" (").append(formatHMSString(remainingHMS[0],
+                                                 remainingHMS[1],
+                                                 remainingHMS[2])).append(")");
 
-        return time;
+        return time.toString();
     }
 
     /**
@@ -232,8 +229,7 @@ public class ConsoleProgressBar {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(time)
                 - TimeUnit.HOURS.toSeconds(hours)
                 - TimeUnit.MINUTES.toSeconds(minutes);
-        long[] result = {hours, minutes, seconds};
-        return result;
+        return new long[]{hours, minutes, seconds};
     }
 
     /**
@@ -247,11 +243,9 @@ public class ConsoleProgressBar {
      * @return The formatted {@link String}.
      */
     private String formatHMSString(long hours, long minutes, long seconds) {
-        String formattedTime = "";
-        formattedTime += addZeroIfLessThanTen(hours)
+        return addZeroIfLessThanTen(hours)
                 + ":" + addZeroIfLessThanTen(minutes)
                 + ":" + addZeroIfLessThanTen(seconds);
-        return formattedTime;
     }
 
     /**
@@ -263,11 +257,9 @@ public class ConsoleProgressBar {
      * @return The formatted {@link String}.
      */
     private String addZeroIfLessThanTen(long number) {
-        String formattedNumber = "";
         if (number < 10) {
-            formattedNumber += "0";
+            return "0" + number;
         }
-        formattedNumber += number;
-        return formattedNumber;
+        return String.valueOf(number);
     }
 }
