@@ -27,14 +27,14 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
+import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.progress.ProgressMonitor;
-import com.graphhopper.storage.Graph;
-import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.GHUtility;
-import com.graphhopper.util.MyIntDeque;
-import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
-import java.util.Map;
+import java.util.Iterator;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import org.jgrapht.Graph;
 
 /**
  * Calculates various centrality measures on unweighted graphs <b>assumed to be
@@ -52,7 +52,8 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
      * @param graph The graph to be analyzed.
      * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public UnweightedGraphAnalyzer(Graph graph, ProgressMonitor pm) {
+    public UnweightedGraphAnalyzer(Graph<Integer, Edge> graph,
+                                   ProgressMonitor pm) {
         super(graph, pm);
     }
 
@@ -62,7 +63,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
      *
      * @param graph The graph to be analyzed.
      */
-    public UnweightedGraphAnalyzer(Graph graph) {
+    public UnweightedGraphAnalyzer(Graph<Integer, Edge> graph) {
         super(graph);
     }
 
@@ -72,34 +73,11 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
     @Override
     protected void init() {
         nodeBetweenness.clear();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
+        Iterator<Integer> nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             nodeBetweenness.put(nodeSetIterator.next(),
                                 new UnweightedNodeBetweennessInfo());
         }
-    }
-
-    /**
-     * Computes the closeness centrality indices of all vertices of the graph
-     * (assumed to be connected) and stores them in a hash map, where the keys
-     * are the vertices and the values are the closeness.
-     *
-     * <p> This method uses Breadth-First Search (BFS).
-     *
-     * @return The closeness centrality hash map.
-     */
-    // TODO: For the moment, we assume the graph has only one connected
-    // component.
-    // TODO: We might eventually delete this method because in GDMS-Topology,
-    // ST_ClosenessCentrality will most likely be replaced by
-    // ST_NetworkAnalyzer. At the same time, we need to compare the
-    // cost of computing just closeness vs. computing closeness along
-    // with betweenness.
-    @Override
-    public Map<Integer, Double> computeCloseness() {
-        ClosenessCentrality closenessCentrality =
-                new ClosenessCentrality(graph, pm);
-        return closenessCentrality.calculateUsingBFS();
     }
 
     /**
@@ -113,7 +91,8 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
      * @param stack              The stack which will return nodes ordered by
      *                           non-increasing distance from startNode.
      * @param pathsFromStartNode Holds information about shortest path lengths
-     *                           from startNode to the other nodes in the network
+     *                           from startNode to the other nodes in the
+     *                           network
      */
     @Override
     protected void calculateShortestPathsFromNode(
@@ -122,32 +101,35 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             TIntArrayStack stack) {
 
         // Create the BFS traversal queue and enqueue startNode.
-        MyIntDeque queue = new MyIntDeque();
-        queue.push(startNode);
+        Queue<Integer> queue = new PriorityQueue<Integer>();
+        queue.add(startNode);
 
         // While the queue is not empty ...
         while (!queue.isEmpty()) {
             // ... dequeue a node
-            int current = queue.pop();
+            final int current = queue.poll();
             final NodeBetweennessInfo currentNBInfo =
                     nodeBetweenness.get(current);
             // and push this node to the stack.
             stack.push(current);
 
             // Get the outgoing edges of the current node.
-            EdgeIterator edgesOfCurrentNode =
-                    GHUtility.getCarOutgoing(graph, current);
+            // TODO: For now, this only works for undirected edges.
+            Set<Edge> outgoingEdges = getOutgoingEdges(graph, current);
+            Iterator<Edge> edgesOfCurrentNode = outgoingEdges.iterator();
             // For every neighbor of the current node ...
-            while (edgesOfCurrentNode.next()) {
+            while (edgesOfCurrentNode.hasNext()) {
 
-                int neighbor = edgesOfCurrentNode.node();
+                // Get the neighbor.
+                Edge edge = edgesOfCurrentNode.next();
+                int neighbor = getAdjacentNode(edge, current);
                 final NodeBetweennessInfo neighborNBInfo =
                         nodeBetweenness.get(neighbor);
 
                 // If this neighbor is found for the first time ...
                 if (neighborNBInfo.getSteps() < 0) {
                     // then enqueue it
-                    queue.push(neighbor);
+                    queue.add(neighbor);
                     // and update the distance.
                     int updatedSteps = currentNBInfo.getSteps() + 1;
                     neighborNBInfo.setSteps(updatedSteps);
@@ -186,9 +168,9 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
     @Override
     protected void printSPInfo(int startNode) {
         System.out.println("       d  SP pred");
-        TIntIterator it = nodeSet.iterator();
+        Iterator<Integer> it = nodeSet.iterator();
         while (it.hasNext()) {
-            int node = it.next();
+            final int node = it.next();
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
             System.out.print("(" + startNode + "," + node + ")  ");
             System.out.format("%-8d%-3d%-12s",

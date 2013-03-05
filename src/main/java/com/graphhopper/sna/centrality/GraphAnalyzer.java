@@ -26,15 +26,16 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
+import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
-import com.graphhopper.storage.Graph;
-import com.graphhopper.util.RawEdgeIterator;
-import gnu.trove.iterator.TIntIterator;
-import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.Graph;
 
 /**
  * Calculates various centrality measures on the given graph, <b>assumed to be
@@ -47,11 +48,11 @@ public abstract class GraphAnalyzer {
     /**
      * The graph to be analyzed.
      */
-    protected final Graph graph;
+    protected final Graph<Integer, Edge> graph;
     /**
      * The set of nodes of this graph.
      */
-    protected final TIntHashSet nodeSet;
+    protected final Set<Integer> nodeSet;
     /**
      * The number of nodes in this graph.
      */
@@ -81,9 +82,10 @@ public abstract class GraphAnalyzer {
      * @param graph The graph to be analyzed.
      * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public GraphAnalyzer(Graph graph, ProgressMonitor pm) {
+    public GraphAnalyzer(Graph<Integer, Edge> graph,
+                         ProgressMonitor pm) {
         this.graph = graph;
-        this.nodeSet = nodeSet(this.graph);
+        this.nodeSet = graph.vertexSet();
         this.nodeCount = this.nodeSet.size();
         this.nodeBetweenness = new HashMap<Integer, NodeBetweennessInfo>();
         this.maxBetweenness = Double.NEGATIVE_INFINITY;
@@ -97,38 +99,8 @@ public abstract class GraphAnalyzer {
      *
      * @param graph The graph to be analyzed.
      */
-    public GraphAnalyzer(Graph graph) {
+    public GraphAnalyzer(Graph<Integer, Edge> graph) {
         this(graph, new NullProgressMonitor());
-    }
-
-    /**
-     * Computes the closeness centrality indices of all vertices of the graph
-     * (assumed to be connected) and stores them in a hash map, where the keys
-     * are the vertices and the values are the closeness.
-     *
-     * @return The closeness centrality hash map.
-     */
-    public abstract Map<Integer, Double> computeCloseness();
-
-    /**
-     * Returns a {@link TIntHashSet} of the nodes of the given graph.
-     *
-     * @param graph The graph.
-     *
-     * @return a {@link TIntHashSet} of the nodes of the given graph.
-     */
-    // TODO: Optimize this (by making use of the data structure).
-    protected static TIntHashSet nodeSet(Graph graph) {
-        // Initialize the Set.
-        TIntHashSet set = new TIntHashSet();
-        // Get all the edges.
-        RawEdgeIterator iter = graph.getAllEdges();
-        // Add each source and destination node to the set.
-        while (iter.next()) {
-            set.add(iter.nodeA());
-            set.add(iter.nodeB());
-        }
-        return set;
     }
 
     /**
@@ -147,9 +119,8 @@ public abstract class GraphAnalyzer {
         long count = 0;
         init();
         pm.setProgress(count, startTime);
-
         // ***** CENTRALITY CONTRIBUTION FROM EACH NODE ********
-        TIntIterator nodeSetIterator = nodeSet.iterator();
+        Iterator<Integer> nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             // Update the count.
             count++;
@@ -158,7 +129,6 @@ public abstract class GraphAnalyzer {
             if (pm.isCancelled()) {
                 return new HashMap<Integer, NodeBetweennessInfo>();
             }
-
             // Calculate betweenness and closeness for each node.
             calculateCentralityContributionFromNode(nodeSetIterator.next());
 
@@ -186,7 +156,7 @@ public abstract class GraphAnalyzer {
      * closeness) of every node.
      */
     private void resetBetweenness() {
-        TIntIterator it = nodeSet.iterator();
+        Iterator<Integer> it = nodeSet.iterator();
         while (it.hasNext()) {
             nodeBetweenness.get(it.next()).reset();
         }
@@ -251,6 +221,39 @@ public abstract class GraphAnalyzer {
             TIntArrayStack stack);
 
     /**
+     * Returns the set of outgoing edges of the given node if the graph is
+     * directed or the set of edges of the given node if the graph is
+     * undirected.
+     *
+     * @param graph The graph.
+     * @param node  The node.
+     *
+     * @return The outgoing edges.
+     */
+    protected Set getOutgoingEdges(Graph graph, int node) {
+        return (graph instanceof DirectedGraph)
+                ? ((DirectedGraph) graph).outgoingEdgesOf(node)
+                : graph.edgesOf(node);
+    }
+
+    /**
+     * Returns the node which is adjacent to the given node via the given edge.
+     *
+     * @param edge The edge.
+     * @param node The node.
+     *
+     * @return The adjacent node.
+     */
+    protected int getAdjacentNode(Edge edge, int node) {
+        int source = graph.getEdgeSource(edge);
+        int target = graph.getEdgeTarget(edge);
+        int neighbor = (node == source)
+                ? target
+                : source;
+        return neighbor;
+    }
+
+    /**
      * Given a node and its {@link PathLengthData} calculated in
      * {@link #calculateCentralityMeasures(int)}, this method calculates
      * closeness centrality for the given node.
@@ -310,36 +313,41 @@ public abstract class GraphAnalyzer {
 
             // For every predecessor v of w on shortest paths from
             // startNode, do:
-            TIntHashSet predecessorSet = wNBInfo.getPredecessors();
-//                printPredecessorList(w, predecessorList);
-            TIntIterator it = predecessorSet.iterator();
+            Set<Integer> predecessorSet = wNBInfo.getPredecessors();
+            Iterator<Integer> it = predecessorSet.iterator();
             while (it.hasNext()) {
-                int predecessor = it.next();
+                final int predecessor = it.next();
                 final NodeBetweennessInfo predecessorNBInfo = nodeBetweenness.
                         get(predecessor);
 
                 // (A) Add the contribution of the dependency of startNode
                 // on w to the dependency of startNode on v.
-                double depContribution =
+                final double depContribution =
                         ((double) predecessorNBInfo.getSPCount()
                         / wNBInfo.getSPCount())
                         * (1 + wNBInfo.getDependency());
-//                    printDependencyContribution(
-//                            predecessor, startNode, w, dependency,
-//                            shortestPathsCount, dep);
+//                System.out.print("Dep(" + predecessor + ") "
+//                        + predecessorNBInfo.getDependency());
                 predecessorNBInfo.accumulateDependency(depContribution);
+//                System.out.println(" --> " + predecessorNBInfo.getDependency()
+//                        + " (accum " + depContribution + ").");
             }
             // (The betweenness of w cannot receive contributions from
             // the dependency of w on w, by the definition of dependency.)
             if (w != startNode) {
-
                 // (B) At this point, the dependency of startNode on w
                 // has finished calculating, so we can add it to
                 // the betweenness centrality of w.
-                wNBInfo.accumulateBetweenness(
-                        wNBInfo.getDependency());
+                final double dependency = wNBInfo.getDependency();
+//                System.out.println("---Dep(" + w + ")=" + dependency + ".");
+//                System.out.print("                                   "
+//                        + "Betwn(" + w + ") "
+//                        + wNBInfo.getBetweenness());
+                wNBInfo.accumulateBetweenness(dependency);
 //                    printBetweennessContribution(w, betweenness, dependency,
 //                                                 updatedBetweenness);
+//                System.out.println(" --> " + wNBInfo.getBetweenness()
+//                        + " (accum " + dependency + ").");
             }
         } // ***** END STAGE 3, Stack iteration  **************
 
@@ -358,7 +366,7 @@ public abstract class GraphAnalyzer {
 
         long start = System.currentTimeMillis();
         final double denominator = maxBetweenness - minBetweenness;
-        TIntIterator nodeSetIterator = nodeSet.iterator();
+        Iterator<Integer> nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             final int node = nodeSetIterator.next();
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
@@ -377,9 +385,9 @@ public abstract class GraphAnalyzer {
      */
     private void findExtremeBetweennessValues() {
         long start = System.currentTimeMillis();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
+        Iterator<Integer> nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
-            int node = nodeSetIterator.next();
+            final int node = nodeSetIterator.next();
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
             final double betweenness = nodeNBInfo.getBetweenness();
             if (betweenness > maxBetweenness) {
@@ -391,7 +399,8 @@ public abstract class GraphAnalyzer {
         }
         long stop = System.currentTimeMillis();
         System.out.println("Found extreme values in "
-                + (stop - start) + " ms.");
+                + (stop - start) + " ms. Max: " + maxBetweenness
+                + ", Min: " + minBetweenness);
     }
 
     /**
@@ -401,17 +410,4 @@ public abstract class GraphAnalyzer {
      * @param startNode The start node.
      */
     protected abstract void printSPInfo(int startNode);
-//    /**
-//     * Prints the given {@link TIntDoubleHashMap}.
-//     *
-//     * @param hashmap The given {@link TIntDoubleHashMap}.
-//     */
-//    public static void printHashMap(TIntDoubleHashMap hashmap) {
-//        TIntDoubleIterator it = hashmap.iterator();
-//        while (it.hasNext()) {
-//            it.advance();
-//            System.out.println("(" + it.key()
-//                    + "," + it.value() + ")");
-//        }
-//    }
 }
