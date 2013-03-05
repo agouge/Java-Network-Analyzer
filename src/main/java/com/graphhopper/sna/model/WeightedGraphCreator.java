@@ -60,7 +60,7 @@ public class WeightedGraphCreator extends GraphCreator {
      */
     private void loadWeightedEdges(
             Scanner scanner,
-            WeightedGraph<Integer, DefaultWeightedEdge> graph,
+            WeightedGraph<Integer, Edge> graph,
             boolean reverse) {
         // Go through the file and add each edge.
         while (scanner.hasNextLine()) {
@@ -77,14 +77,15 @@ public class WeightedGraphCreator extends GraphCreator {
             graph.addVertex(startNode);
             graph.addVertex(endNode);
             // Add the edge to the graph.
-            DefaultWeightedEdge edge;
+            Edge edge;
             if (reverse) {
                 edge = graph.addEdge(endNode, startNode);
             } else {
                 edge = graph.addEdge(startNode, endNode);
             }
             // Set the edge weight.
-            graph.setEdgeWeight(edge, weight);
+//             Note: graph.setEdgeWeight(edge, weight) does not work.
+            edge.setWeight(weight);
         }
     }
 
@@ -94,7 +95,7 @@ public class WeightedGraphCreator extends GraphCreator {
     @Override
     protected void loadDirectedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, ? extends DefaultEdge> graph) {
+            DirectedGraph<Integer, Edge> graph) {
         loadWeightedEdges(scanner, (WeightedGraph) graph, false);
     }
 
@@ -104,7 +105,7 @@ public class WeightedGraphCreator extends GraphCreator {
     @Override
     protected void loadReversedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, ? extends DefaultEdge> graph) {
+            DirectedGraph<Integer, Edge> graph) {
         loadWeightedEdges(scanner, (WeightedGraph) graph, true);
     }
 
@@ -114,7 +115,7 @@ public class WeightedGraphCreator extends GraphCreator {
     @Override
     protected void loadUndirectedEdges(
             Scanner scanner,
-            UndirectedGraph<Integer, ? extends DefaultEdge> graph) {
+            UndirectedGraph<Integer, Edge> graph) {
         loadWeightedEdges(scanner, (WeightedGraph) graph, false);
     }
 }

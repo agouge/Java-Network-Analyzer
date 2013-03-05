@@ -136,7 +136,7 @@ public abstract class GraphCreator {
         // Initialize the indices of the start_node, end_node, and length.
         initializeIndices(scanner);
         // Load the edges from the input file.
-        Graph<Integer, ? extends DefaultEdge> graph = loadEdges(scanner);
+        Graph<Integer, Edge> graph = loadEdges(scanner);
 
         long stop = System.currentTimeMillis();
         System.out.println("Created graph in " + (stop - start) + " ms.");
@@ -213,13 +213,12 @@ public abstract class GraphCreator {
      * @param scanner The scanner that will parse the csv file.
      */
     // TODO: A Multigraph does not allow loops!
-    private Graph<Integer, ? extends DefaultEdge> loadEdges(Scanner scanner) {
+    private Graph<Integer, Edge> loadEdges(Scanner scanner) {
         // Unweighted
         if (weightField == null) {
             if (orientation != UNDIRECTED) {
-                DirectedMultigraph<Integer, DefaultEdge> graph =
-                        new DirectedMultigraph<Integer, DefaultEdge>(
-                        DefaultEdge.class);
+                DirectedMultigraph<Integer, Edge> graph =
+                        new DirectedMultigraph<Integer, Edge>(Edge.class);
                 if (orientation == DIRECTED) {
                     loadDirectedEdges(scanner, graph);
                 } else {
@@ -227,17 +226,16 @@ public abstract class GraphCreator {
                 }
                 return graph;
             } else {
-                Multigraph<Integer, DefaultEdge> graph =
-                        new Multigraph<Integer, DefaultEdge>(DefaultEdge.class);
+                Multigraph<Integer, Edge> graph =
+                        new Multigraph<Integer, Edge>(Edge.class);
                 loadUndirectedEdges(scanner, graph);
                 return graph;
             }
         } // Weighted
         else {
             if (orientation != UNDIRECTED) {
-                DirectedWeightedMultigraph<Integer, DefaultWeightedEdge> graph =
-                        new DirectedWeightedMultigraph<Integer, DefaultWeightedEdge>(
-                        DefaultWeightedEdge.class);
+                DirectedWeightedMultigraph<Integer, Edge> graph =
+                        new DirectedWeightedMultigraph<Integer, Edge>(Edge.class);
                 if (orientation == DIRECTED) {
                     loadDirectedEdges(scanner, graph);
                 } else {
@@ -245,9 +243,8 @@ public abstract class GraphCreator {
                 }
                 return graph;
             } else {
-                WeightedMultigraph<Integer, DefaultWeightedEdge> graph =
-                        new WeightedMultigraph<Integer, DefaultWeightedEdge>(
-                        DefaultWeightedEdge.class);
+                WeightedMultigraph<Integer, Edge> graph =
+                        new WeightedMultigraph<Integer, Edge>(Edge.class);
                 loadUndirectedEdges(scanner, graph);
                 return graph;
             }
@@ -263,7 +260,7 @@ public abstract class GraphCreator {
      */
     protected abstract void loadDirectedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, ? extends DefaultEdge> graph);
+            DirectedGraph<Integer, Edge> graph);
 
     /**
      * Loads directed edges with orientations reversed; the weight is decided by
@@ -274,7 +271,7 @@ public abstract class GraphCreator {
      */
     protected abstract void loadReversedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, ? extends DefaultEdge> graph);
+            DirectedGraph<Integer, Edge> graph);
 
     /**
      * Loads undirected edges; the weight is decided by the implementation of
@@ -285,5 +282,5 @@ public abstract class GraphCreator {
      */
     protected abstract void loadUndirectedEdges(
             Scanner scanner,
-            UndirectedGraph<Integer, ? extends DefaultEdge> graph);
+            UndirectedGraph<Integer, Edge> graph);
 }

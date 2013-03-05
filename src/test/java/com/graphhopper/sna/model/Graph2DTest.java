@@ -101,11 +101,16 @@ public class Graph2DTest {
         }
     }
 
-//    private void printEdges(Graph graph) {
-//        Set edgeSet = graph.edgeSet();
-//        Iterator<? extends DefaultEdge> iterator = edgeSet.iterator();
+//    /**
+//     * Prints all edges of the graph.
+//     *
+//     * @param graph The graph.
+//     */
+//    private void printEdges(Graph<Integer, Edge> graph) {
+//        Set<Edge> edgeSet = graph.edgeSet();
+//        Iterator<Edge> iterator = edgeSet.iterator();
 //        while (iterator.hasNext()) {
-//            DefaultEdge edge = iterator.next();
+//            Edge edge = iterator.next();
 //            String edgeString = graph.getEdgeSource(edge).toString() + " ";
 //            if (graph instanceof UndirectedGraph) {
 //                edgeString += "<";

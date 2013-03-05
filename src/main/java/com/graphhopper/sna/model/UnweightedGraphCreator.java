@@ -56,7 +56,7 @@ public class UnweightedGraphCreator extends GraphCreator {
      * @param reverse {@code true} iff the edge orientation should be reversed.
      */
     private void loadUnweightedEdges(Scanner scanner,
-                                     Graph<Integer, ? extends DefaultEdge> graph,
+                                     Graph<Integer, Edge> graph,
                                      boolean reverse) {
         // Go through the file and add each edge.
         while (scanner.hasNextLine()) {
@@ -85,7 +85,7 @@ public class UnweightedGraphCreator extends GraphCreator {
     @Override
     protected void loadDirectedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, ? extends DefaultEdge> graph) {
+            DirectedGraph<Integer, Edge> graph) {
         loadUnweightedEdges(scanner, graph, false);
     }
 
@@ -95,7 +95,7 @@ public class UnweightedGraphCreator extends GraphCreator {
     @Override
     protected void loadReversedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, ? extends DefaultEdge> graph) {
+            DirectedGraph<Integer, Edge> graph) {
         loadUnweightedEdges(scanner, graph, true);
     }
 
@@ -105,7 +105,7 @@ public class UnweightedGraphCreator extends GraphCreator {
     @Override
     protected void loadUndirectedEdges(
             Scanner scanner,
-            UndirectedGraph<Integer, ? extends DefaultEdge> graph) {
+            UndirectedGraph<Integer, Edge> graph) {
         loadUnweightedEdges(scanner, graph, false);
     }
 }
