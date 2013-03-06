@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.graphhopper.sna.centrality;
+package com.graphhopper.sna.centrality.examples;
 
+import com.graphhopper.sna.centrality.GraphAnalyzerTest;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
 
