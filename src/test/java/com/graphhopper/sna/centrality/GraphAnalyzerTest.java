@@ -63,7 +63,7 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
             Graph<Integer, Edge> graph,
             String orientation) {
         return doAnalysis(new UnweightedGraphAnalyzer(graph, progressMonitor()),
-                          WEIGHTED + " " + orientation);
+                          UNWEIGHTED + " " + orientation);
     }
 
     /**
@@ -77,7 +77,7 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
             Graph<Integer, Edge> graph,
             String orientation) {
         return doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()),
-                          UNWEIGHTED + " " + orientation);
+                          WEIGHTED + " " + orientation);
     }
 
     /**
