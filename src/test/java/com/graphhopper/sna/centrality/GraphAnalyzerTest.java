@@ -42,6 +42,11 @@ import org.junit.Test;
  */
 public abstract class GraphAnalyzerTest extends CentralityTest {
 
+    private static final String WEIGHTED = "Weighted";
+    private static final String UNWEIGHTED = "Unweighted";
+    private static final String DIRECTED = "Directed";
+    private static final String REVERSED = "Reversed";
+    private static final String UNDIRECTED = "Undirected";
     /**
      * The name of this test.
      */
@@ -55,8 +60,10 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      * @return The result.
      */
     protected Map<Integer, NodeBetweennessInfo> doUnweightedAnalysis(
-            Graph<Integer, Edge> graph) {
-        return doAnalysis(new UnweightedGraphAnalyzer(graph, progressMonitor()));
+            Graph<Integer, Edge> graph,
+            String orientation) {
+        return doAnalysis(new UnweightedGraphAnalyzer(graph, progressMonitor()),
+                          WEIGHTED + " " + orientation);
     }
 
     /**
@@ -67,8 +74,10 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      * @return The result.
      */
     protected Map<Integer, NodeBetweennessInfo> doWeightedAnalysis(
-            Graph<Integer, Edge> graph) {
-        return doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()));
+            Graph<Integer, Edge> graph,
+            String orientation) {
+        return doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()),
+                          UNWEIGHTED + " " + orientation);
     }
 
     /**
@@ -79,11 +88,13 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      * @return The results.
      */
     private Map<Integer, NodeBetweennessInfo> doAnalysis(
-            GraphAnalyzer analyzer) {
+            GraphAnalyzer analyzer,
+            String analysisType) {
         // Do network analysis.
+        System.out.println("    _" + analysisType + "_");
         long start = System.currentTimeMillis();
         Map<Integer, NodeBetweennessInfo> result = analyzer.computeAll();
-        printTime(System.currentTimeMillis() - start);
+        printTime(System.currentTimeMillis() - start, analysisType);
         if (printsResults()) {
             printResults(result);
         }
@@ -98,7 +109,8 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      */
     @Test
     public void unweightedDirected() throws FileNotFoundException {
-        doUnweightedAnalysis(unweightedGraph(GraphCreator.DIRECTED));
+        doUnweightedAnalysis(unweightedGraph(GraphCreator.DIRECTED),
+                             DIRECTED);
     }
 
     /**
@@ -109,7 +121,8 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      */
     @Test
     public void unweightedReversed() throws FileNotFoundException {
-        doUnweightedAnalysis(unweightedGraph(GraphCreator.REVERSED));
+        doUnweightedAnalysis(unweightedGraph(GraphCreator.REVERSED),
+                             REVERSED);
     }
 
     /**
@@ -120,7 +133,8 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      */
     @Test
     public void unweightedUndirected() throws FileNotFoundException {
-        doUnweightedAnalysis(unweightedGraph(GraphCreator.UNDIRECTED));
+        doUnweightedAnalysis(unweightedGraph(GraphCreator.UNDIRECTED),
+                             UNDIRECTED);
     }
 
     /**
@@ -131,7 +145,8 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      */
     @Test
     public void weightedDirected() throws FileNotFoundException {
-        doWeightedAnalysis(weightedGraph(GraphCreator.DIRECTED));
+        doWeightedAnalysis(weightedGraph(GraphCreator.DIRECTED),
+                           DIRECTED);
     }
 
     /**
@@ -142,7 +157,8 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      */
     @Test
     public void weightedReversed() throws FileNotFoundException {
-        doWeightedAnalysis(weightedGraph(GraphCreator.REVERSED));
+        doWeightedAnalysis(weightedGraph(GraphCreator.REVERSED),
+                           REVERSED);
     }
 
     /**
@@ -153,7 +169,8 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      */
     @Test
     public void weightedUndirected() throws FileNotFoundException {
-        doWeightedAnalysis(weightedGraph(GraphCreator.UNDIRECTED));
+        doWeightedAnalysis(weightedGraph(GraphCreator.UNDIRECTED),
+                           UNDIRECTED);
     }
 
     /**
@@ -242,8 +259,9 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @param time
      */
-    protected void printTime(double time) {
+    protected void printTime(double time, String analysisType) {
         System.out.println(TIME + time + " ms: "
-                + NAME + " - " + getName() + ".");
+                + NAME + " - " + getName()
+                + " " + analysisType + ".");
     }
 }
