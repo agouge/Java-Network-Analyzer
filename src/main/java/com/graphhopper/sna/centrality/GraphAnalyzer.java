@@ -232,7 +232,7 @@ public abstract class GraphAnalyzer {
      *
      * @return The outgoing edges.
      */
-    protected Set getOutgoingEdges(Graph graph, int node) {
+    protected static Set getOutgoingEdges(Graph graph, int node) {
         return (graph instanceof DirectedGraph)
                 ? ((DirectedGraph) graph).outgoingEdgesOf(node)
                 : graph.edgesOf(node);
@@ -246,7 +246,9 @@ public abstract class GraphAnalyzer {
      *
      * @return The adjacent node.
      */
-    protected int getAdjacentNode(Edge edge, int node) {
+    protected static int getAdjacentNode(Graph<Integer, Edge> graph,
+                                         Edge edge,
+                                         int node) {
         int source = graph.getEdgeSource(edge);
         int target = graph.getEdgeTarget(edge);
         int neighbor = (node == source)

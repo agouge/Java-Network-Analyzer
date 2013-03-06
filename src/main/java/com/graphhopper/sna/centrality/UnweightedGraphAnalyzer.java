@@ -29,6 +29,7 @@ import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.progress.ProgressMonitor;
+import com.graphhopper.util.MyIntDeque;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.Iterator;
 import java.util.PriorityQueue;
@@ -122,7 +123,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
 
                 // Get the neighbor.
                 Edge edge = edgesOfCurrentNode.next();
-                int neighbor = getAdjacentNode(edge, current);
+                int neighbor = getAdjacentNode(graph, edge, current);
                 final NodeBetweennessInfo neighborNBInfo =
                         nodeBetweenness.get(neighbor);
 
