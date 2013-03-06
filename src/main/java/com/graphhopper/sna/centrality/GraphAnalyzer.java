@@ -29,6 +29,8 @@ import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
+import gnu.trove.iterator.TIntIterator;
+import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -310,11 +312,10 @@ public abstract class GraphAnalyzer {
         while (stack.size() != 0) {
             int w = stack.pop();
             final NodeBetweennessInfo wNBInfo = nodeBetweenness.get(w);
-
             // For every predecessor v of w on shortest paths from
             // startNode, do:
-            Set<Integer> predecessorSet = wNBInfo.getPredecessors();
-            Iterator<Integer> it = predecessorSet.iterator();
+            TIntHashSet predecessorSet = wNBInfo.getPredecessors();
+            TIntIterator it = predecessorSet.iterator();
             while (it.hasNext()) {
                 final int predecessor = it.next();
                 final NodeBetweennessInfo predecessorNBInfo = nodeBetweenness.
