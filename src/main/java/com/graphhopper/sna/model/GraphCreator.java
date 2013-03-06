@@ -104,6 +104,7 @@ public abstract class GraphCreator {
      * @param weightField The weight column name.
      * @param orientation The desired graph orientation.
      */
+    // TODO: Make sure the orientation is valid!
     public GraphCreator(String csvFile,
                         String weightField,
                         int orientation) {
