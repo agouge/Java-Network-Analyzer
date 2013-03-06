@@ -54,7 +54,7 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The result.
      */
-    private Map<Integer, NodeBetweennessInfo> doUnweightedAnalysis(
+    protected Map<Integer, NodeBetweennessInfo> doUnweightedAnalysis(
             Graph<Integer, Edge> graph) {
         return doAnalysis(new UnweightedGraphAnalyzer(graph, progressMonitor()));
     }
@@ -66,7 +66,7 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The result.
      */
-    private Map<Integer, NodeBetweennessInfo> doWeightedAnalysis(
+    protected Map<Integer, NodeBetweennessInfo> doWeightedAnalysis(
             Graph<Integer, Edge> graph) {
         return doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()));
     }
