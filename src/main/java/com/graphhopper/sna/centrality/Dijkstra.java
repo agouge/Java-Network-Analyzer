@@ -25,12 +25,13 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
-import com.graphhopper.storage.Graph;
-import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.GHUtility;
+import com.graphhopper.sna.model.Edge;
+import org.jgrapht.Graph;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 /**
  * Home-brewed implementation of Dijkstra's algorithm.
@@ -42,7 +43,7 @@ public class Dijkstra {
     /**
      * The graph on which to calculate shortest paths.
      */
-    protected final Graph graph;
+    protected final Graph<Integer, Edge> graph;
     /**
      * Map of all nodes with their respective {@link NodeBetweennessInfo}, which
      * stores information calculated during the execution of Dijkstra's
@@ -66,7 +67,7 @@ public class Dijkstra {
      * @param nodeBetweenness The hash map.
      * @param startNode       The start node.
      */
-    public Dijkstra(Graph graph,
+    public Dijkstra(Graph<Integer, Edge> graph,
                     final Map<Integer, NodeBetweennessInfo> nodeBetweenness,
                     int startNode) {
         this.graph = graph;
@@ -90,11 +91,17 @@ public class Dijkstra {
             // Extract the minimum element.
             int u = queue.poll();
             // Relax every neighbor of u.
-            EdgeIterator outgoingEdges = 
-                    GHUtility.getCarOutgoing(graph, u);
-            while (outgoingEdges.next()) {
-                int v = outgoingEdges.node();
-                double uvWeight = outgoingEdges.distance();
+            // Get the outgoing edges of the current node.
+            // TODO: Need to make sure this gives OUTGOING edges!
+            Set<Edge> outgoingEdges = GraphAnalyzer.getOutgoingEdges(graph, u);
+            Iterator<Edge> edgesOfCurrentNode = outgoingEdges.iterator();
+            // For every neighbor of the current node ...
+            while (edgesOfCurrentNode.hasNext()) {
+                // Get the next edge.
+                Edge edge = edgesOfCurrentNode.next();
+                // Get the neighbor using this edge.
+                int v = GraphAnalyzer.getAdjacentNode(graph, edge, u);
+                double uvWeight = graph.getEdgeWeight(edge);
                 relax(u, v, uvWeight, queue);
             }
         }
@@ -183,15 +190,16 @@ public class Dijkstra {
      * @return The {@link PriorityQueue} used in {@link Dijkstra}'s algorithm.
      */
     protected PriorityQueue<Integer> createPriorityQueue() {
+        // TODO: The call to Set.size() is expensive!
         return new PriorityQueue<Integer>(
-                graph.nodes(),
+                graph.vertexSet().size(),
                 new Comparator<Integer>() {
-                    @Override
-                    public int compare(Integer v1, Integer v2) {
-                        return Double.compare(
-                                nodeBetweenness.get(v1).getDistance(),
-                                nodeBetweenness.get(v2).getDistance());
-                    }
-                });
+            @Override
+            public int compare(Integer v1, Integer v2) {
+                return Double.compare(
+                        nodeBetweenness.get(v1).getDistance(),
+                        nodeBetweenness.get(v2).getDistance());
+            }
+        });
     }
 }

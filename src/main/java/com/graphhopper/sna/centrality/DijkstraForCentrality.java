@@ -26,12 +26,13 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
-import com.graphhopper.storage.Graph;
-import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.GHUtility;
+import com.graphhopper.sna.model.Edge;
 import gnu.trove.stack.array.TIntArrayStack;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
+import org.jgrapht.Graph;
 
 /**
  * An implementation of Dijkstra's algorithm with can be used to calculate
@@ -62,7 +63,7 @@ public class DijkstraForCentrality extends Dijkstra {
      *                           non-increasing distance from startNode.
      */
     public DijkstraForCentrality(
-            Graph graph,
+            Graph<Integer, Edge> graph,
             final Map<Integer, NodeBetweennessInfo> nodeBetweenness,
             int startNode,
             PathLengthData pathsFromStartNode,
@@ -99,11 +100,17 @@ public class DijkstraForCentrality extends Dijkstra {
                         nodeBetweenness.get(u).getDistance());
             }
             // Relax every neighbor of u.
-            EdgeIterator outgoingEdges =
-                    GHUtility.getCarOutgoing(graph, u);
-            while (outgoingEdges.next()) {
-                int v = outgoingEdges.node();
-                double uvWeight = outgoingEdges.distance();
+            // Get the outgoing edges of the current node.
+            // TODO: Need to make sure this gives OUTGOING edges!
+            Set<Edge> outgoingEdges = GraphAnalyzer.getOutgoingEdges(graph, u);
+            Iterator<Edge> edgesOfCurrentNode = outgoingEdges.iterator();
+            // For every neighbor of the current node ...
+            while (edgesOfCurrentNode.hasNext()) {
+                // Get the next edge.
+                Edge edge = edgesOfCurrentNode.next();
+                // Get the neighbor using this edge.
+                int v = GraphAnalyzer.getAdjacentNode(graph, edge, u);
+                double uvWeight = graph.getEdgeWeight(edge);
                 relax(u, v, uvWeight, queue);
             }
         }

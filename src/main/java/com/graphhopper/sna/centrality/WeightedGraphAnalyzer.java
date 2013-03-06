@@ -27,11 +27,11 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
+import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.progress.ProgressMonitor;
-import com.graphhopper.storage.Graph;
-import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
-import java.util.Map;
+import java.util.Iterator;
+import org.jgrapht.Graph;
 
 /**
  * Calculates various centrality measures on weighted graphs which are
@@ -48,7 +48,8 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
      * @param graph The graph to be analyzed.
      * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public WeightedGraphAnalyzer(Graph graph, ProgressMonitor pm) {
+    public WeightedGraphAnalyzer(Graph<Integer, Edge> graph,
+                                 ProgressMonitor pm) {
         super(graph, pm);
     }
 
@@ -58,7 +59,7 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
      *
      * @param graph The graph to be analyzed.
      */
-    public WeightedGraphAnalyzer(Graph graph) {
+    public WeightedGraphAnalyzer(Graph<Integer, Edge> graph) {
         super(graph);
     }
 
@@ -68,28 +69,11 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
     @Override
     protected void init() {
         nodeBetweenness.clear();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
+        Iterator<Integer> nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             nodeBetweenness.put(nodeSetIterator.next(),
                                 new WeightedNodeBetweennessInfo());
         }
-    }
-
-    /**
-     * Computes the closeness centrality indices of all vertices of the graph
-     * (assumed to be connected) and stores them in a hash map, where the keys
-     * are the vertices and the values are the closeness.
-     *
-     * <p> This method first computes contraction hierarchies on the given
-     * graph, which greatly reduces the shortest paths computation time.
-     *
-     * @return The closeness centrality hash map.
-     */
-    @Override
-    public Map<Integer, Double> computeCloseness() {
-        ClosenessCentrality closenessCentrality =
-                new ClosenessCentrality(graph, pm);
-        return closenessCentrality.calculateUsingContractionHierarchies();
     }
 
     /**
@@ -141,9 +125,9 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
     protected void printSPInfo(
             int startNode) {
         System.out.println("       d           SP pred");
-        TIntIterator it = nodeSet.iterator();
+        Iterator<Integer> it = nodeSet.iterator();
         while (it.hasNext()) {
-            int node = it.next();
+            final int node = it.next();
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
             System.out.print("(" + startNode + "," + node + ")  ");
             System.out.format("%-12f%-3d%-12s",
