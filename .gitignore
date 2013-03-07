@@ -6,3 +6,8 @@ files/example.edges.csv
 src/test/java/com/graphhoppersna/centrality/NewClass.java.old
 nb-configuration.xml
 files/pays_de_la_loire.edges.csv
+*.bak
+files/nantes_1_edges_noloops.csv
+pom.xml.logger
+src/main/java/com/graphhopper/sna/verbose/
+src/test/java/com/graphhopper/sna/centrality/examples/NantesAnalyzerTest.java
