@@ -31,7 +31,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Set;
 
 /**
  * Home-brewed implementation of Dijkstra's algorithm.
@@ -93,12 +92,12 @@ public class Dijkstra {
             // Relax every neighbor of u.
             // Get the outgoing edges of the current node.
             // TODO: Need to make sure this gives OUTGOING edges!
-            Set<Edge> outgoingEdges = GraphAnalyzer.getOutgoingEdges(graph, u);
-            Iterator<Edge> edgesOfCurrentNode = outgoingEdges.iterator();
+            Iterator<Edge> it =
+                    GraphAnalyzer.getOutgoingEdges(graph, u).iterator();
             // For every neighbor of the current node ...
-            while (edgesOfCurrentNode.hasNext()) {
+            while (it.hasNext()) {
                 // Get the next edge.
-                Edge edge = edgesOfCurrentNode.next();
+                Edge edge = it.next();
                 // Get the neighbor using this edge.
                 int v = GraphAnalyzer.getAdjacentNode(graph, edge, u);
                 double uvWeight = graph.getEdgeWeight(edge);

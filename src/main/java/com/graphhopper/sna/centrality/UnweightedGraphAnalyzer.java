@@ -24,6 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
+import static com.graphhopper.sna.centrality.GraphAnalyzer.getOutgoingEdges;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
@@ -33,7 +34,6 @@ import com.graphhopper.util.MyIntDeque;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.Iterator;
-import java.util.Set;
 import org.jgrapht.Graph;
 
 /**
@@ -115,15 +115,13 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
 
             // Get the outgoing edges of the current node.
             // TODO: For now, this only works for undirected edges.
-            Set<Edge> outgoingEdges = getOutgoingEdges(graph, current);
-            Iterator<Edge> edgesOfCurrentNode = outgoingEdges.iterator();
+            Iterator<Edge> it = getOutgoingEdges(graph, current).iterator();
             System.out.print("neighbors(" + current + ") = ");
             // For every neighbor of the current node ...
-            while (edgesOfCurrentNode.hasNext()) {
+            while (it.hasNext()) {
 
                 // Get the neighbor.
-                Edge edge = edgesOfCurrentNode.next();
-                int neighbor = getAdjacentNode(graph, edge, current);
+                int neighbor = getAdjacentNode(graph, it.next(), current);
                 System.out.print(neighbor + " ");
                 final NodeBetweennessInfo neighborNBInfo =
                         nodeBetweenness.get(neighbor);
