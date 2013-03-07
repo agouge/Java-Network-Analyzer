@@ -101,7 +101,10 @@ public class DefaultProgressMonitor implements ProgressMonitor {
     public void setProgress(long count, long startTime) {
 
         // Print the progress to the console.
-        System.out.print(consoleProgressBar.progressBar(count, startTime));
+        String bar = consoleProgressBar.progressBar(count, startTime);
+        if (!bar.equals("")) {
+            System.out.println(bar);
+        }
 
         // Update the percentage complete.
         setProgress(count);
