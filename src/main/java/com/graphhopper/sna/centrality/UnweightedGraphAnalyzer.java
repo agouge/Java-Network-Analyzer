@@ -29,11 +29,10 @@ import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.progress.ProgressMonitor;
+import com.graphhopper.util.MyIntDeque;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.Iterator;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Set;
 import org.jgrapht.Graph;
 
@@ -102,13 +101,13 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             TIntArrayStack stack) {
 
         // Create the BFS traversal queue and enqueue startNode.
-        Queue<Integer> queue = new PriorityQueue<Integer>();
-        queue.add(startNode);
+        MyIntDeque queue = new MyIntDeque();
+        queue.push(startNode);
 
         // While the queue is not empty ...
         while (!queue.isEmpty()) {
             // ... dequeue a node
-            final int current = queue.poll();
+            final int current = queue.pop();
             final NodeBetweennessInfo currentNBInfo =
                     nodeBetweenness.get(current);
             // and push this node to the stack.
@@ -130,7 +129,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                 // If this neighbor is found for the first time ...
                 if (neighborNBInfo.getSteps() < 0) {
                     // then enqueue it
-                    queue.add(neighbor);
+                    queue.push(neighbor);
                     // and update the distance.
                     int updatedSteps = currentNBInfo.getSteps() + 1;
                     neighborNBInfo.setSteps(updatedSteps);
