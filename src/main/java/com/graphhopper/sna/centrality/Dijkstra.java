@@ -26,12 +26,15 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.model.Edge;
+import gnu.trove.iterator.TIntIterator;
+import gnu.trove.set.hash.TIntHashSet;
 import org.jgrapht.Graph;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
+import org.jgrapht.util.FibonacciHeap;
+import org.jgrapht.util.FibonacciHeapNode;
 
 /**
  * Home-brewed implementation of Dijkstra's algorithm.
@@ -84,23 +87,42 @@ public class Dijkstra {
 
         initializeSingleSource(graph, startNode);
 
-        PriorityQueue<Integer> queue = createPriorityQueue();
-        queue.add(startNode);
+        FibonacciHeap<Integer> queue = new FibonacciHeap<Integer>();
+        Map<Integer, FibonacciHeapNode<Integer>> map =
+                new HashMap<Integer, FibonacciHeapNode<Integer>>();
+        TIntHashSet nodeSet = new TIntHashSet(graph.vertexSet());
+        nodeSet.remove(startNode);
+        TIntIterator it = nodeSet.iterator();
+        while (it.hasNext()) {
+            int node = it.next();
+            FibonacciHeapNode<Integer> heapNode =
+                    new FibonacciHeapNode<Integer>(node);
+            queue.insert(heapNode,
+                         Double.POSITIVE_INFINITY);
+            map.put(node, heapNode);
+        }
+        FibonacciHeapNode<Integer> startHeapNode =
+                new FibonacciHeapNode<Integer>(startNode);
+        queue.insert(startHeapNode, 0.0);
+        map.put(startNode, startHeapNode);
 
         while (!queue.isEmpty()) {
             // Extract the minimum element.
-            int u = queue.poll();
+            FibonacciHeapNode<Integer> u = queue.removeMin();
             // Relax every neighbor of u.
             // Get the outgoing edges of the current node.
             // TODO: Need to make sure this gives OUTGOING edges!
-            Set<Edge> outgoingEdges = GraphAnalyzer.getOutgoingEdges(graph, u);
+            Set<Edge> outgoingEdges =
+                    GraphAnalyzer.getOutgoingEdges(graph, u.getData());
             Iterator<Edge> edgesOfCurrentNode = outgoingEdges.iterator();
             // For every neighbor of the current node ...
             while (edgesOfCurrentNode.hasNext()) {
                 // Get the next edge.
                 Edge edge = edgesOfCurrentNode.next();
                 // Get the neighbor using this edge.
-                int v = GraphAnalyzer.getAdjacentNode(graph, edge, u);
+                FibonacciHeapNode<Integer> v =
+                        map.get(
+                        GraphAnalyzer.getAdjacentNode(graph, edge, u.getData()));
                 double uvWeight = graph.getEdgeWeight(edge);
                 relax(u, v, uvWeight, queue);
             }
@@ -130,25 +152,34 @@ public class Dijkstra {
      * @param uvWeight The weight of the edge (u,v).
      * @param queue    The queue.
      */
-    protected void relax(int u,
-                         int v,
+    protected void relax(FibonacciHeapNode<Integer> u,
+                         FibonacciHeapNode<Integer> v,
                          double uvWeight,
-                         PriorityQueue<Integer> queue) {
+                         FibonacciHeap<Integer> queue) {
         // Get the node betweenness info objects.
-        final NodeBetweennessInfo uNBInfo = nodeBetweenness.get(u);
-        final NodeBetweennessInfo vNBInfo = nodeBetweenness.get(v);
+        final NodeBetweennessInfo uNBInfo =
+                nodeBetweenness.get(u.getData());
+        final NodeBetweennessInfo vNBInfo =
+                nodeBetweenness.get(v.getData());
         // If the length of this path to v through u is less than
         // OR EQUAL TO (this corresponds to multiple shortest paths)
         // the current distance estimate on v, then update the
         // shortest path information of v. The TOLERANCE takes care
         // of the "or equal to" part.
         if (vNBInfo.getDistance() - uNBInfo.getDistance() - uvWeight
-                > -TOLERANCE) {
-            updateSPCount(u, v, uNBInfo, vNBInfo, uvWeight);
-            vNBInfo.addPredecessor(u);
+                >= 0.0) {
+//            System.out.println(
+//                    vNBInfo.getDistance() > uNBInfo.getDistance() - uvWeight);
+//            System.out.println("V dist = " + vNBInfo.getDistance());
+//            System.out.println("U dist (" + uNBInfo.getDistance()
+//                    + ") + uvWeight (" + uvWeight
+//                    + ") = " + (uNBInfo.getDistance() + uvWeight) + ".");
+//            System.out.println("Diff: " + (vNBInfo.getDistance() - uNBInfo.
+//                    getDistance() - uvWeight));
+            updateSPCount(uNBInfo, vNBInfo, uvWeight);
+            vNBInfo.addPredecessor(u.getData());
             vNBInfo.setDistance(uNBInfo.getDistance() + uvWeight);
-            queue.remove(v);
-            queue.add(v);
+            queue.decreaseKey(v, uvWeight);
         }
     }
 
@@ -163,8 +194,6 @@ public class Dijkstra {
      * @param uvWeight w(u,v).
      */
     protected void updateSPCount(
-            int u,
-            int v,
             final NodeBetweennessInfo uNBInfo,
             final NodeBetweennessInfo vNBInfo,
             double uvWeight) {
@@ -182,24 +211,5 @@ public class Dijkstra {
         else {
             vNBInfo.setSPCount(uNBInfo.getSPCount());
         }
-    }
-
-    /**
-     * Creates the {@link PriorityQueue} used in {@link Dijkstra}'s algorithm.
-     *
-     * @return The {@link PriorityQueue} used in {@link Dijkstra}'s algorithm.
-     */
-    protected PriorityQueue<Integer> createPriorityQueue() {
-        // TODO: The call to Set.size() is expensive!
-        return new PriorityQueue<Integer>(
-                graph.vertexSet().size(),
-                new Comparator<Integer>() {
-            @Override
-            public int compare(Integer v1, Integer v2) {
-                return Double.compare(
-                        nodeBetweenness.get(v1).getDistance(),
-                        nodeBetweenness.get(v2).getDistance());
-            }
-        });
     }
 }

@@ -27,12 +27,16 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.model.Edge;
+import gnu.trove.iterator.TIntIterator;
+import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
 import org.jgrapht.Graph;
+import org.jgrapht.util.FibonacciHeap;
+import org.jgrapht.util.FibonacciHeapNode;
 
 /**
  * An implementation of Dijkstra's algorithm with can be used to calculate
@@ -81,35 +85,57 @@ public class DijkstraForCentrality extends Dijkstra {
 
         initializeSingleSource(graph, startNode);
 
-        PriorityQueue<Integer> queue = createPriorityQueue();
-        queue.add(startNode);
+        FibonacciHeap<Integer> queue = new FibonacciHeap<Integer>();
+        Map<Integer, FibonacciHeapNode<Integer>> map =
+                new HashMap<Integer, FibonacciHeapNode<Integer>>();
+        TIntHashSet nodeSet = new TIntHashSet(graph.vertexSet());
+        nodeSet.remove(startNode);
+        TIntIterator it = nodeSet.iterator();
+        while (it.hasNext()) {
+            int node = it.next();
+            FibonacciHeapNode<Integer> heapNode =
+                    new FibonacciHeapNode<Integer>(node);
+            queue.insert(heapNode,
+                         Double.POSITIVE_INFINITY);
+            map.put(node, heapNode);
+        }
+        FibonacciHeapNode<Integer> startHeapNode =
+                new FibonacciHeapNode<Integer>(startNode);
+        queue.insert(startHeapNode, 0.0);
+        map.put(startNode, startHeapNode);
 
         while (!queue.isEmpty()) {
             // Extract the minimum element.
-            int u = queue.poll();
+            FibonacciHeapNode<Integer> u = queue.removeMin();
             // Push it to the stack.
-            if (canPushToStack(u)) {
-                stack.push(u);
+            if (canPushToStack(u.getData())) {
+                System.out.println("Pushed " + u.getData()
+                        + ", dist = " + nodeBetweenness.get(u.getData()).
+                        getDistance());
+                stack.push(u.getData());
             } else {
                 throw new IllegalStateException(
-                        "Cannot push node " + u + " to the stack.");
+                        "Cannot push node " + u.getData() + " to the stack.");
             }
             // Record this shortest path length (for closeness).
-            if (u != startNode) {
+            if (u.getData() != startNode) {
                 pathsFromStartNode.addSPLength(
-                        nodeBetweenness.get(u).getDistance());
+                        nodeBetweenness.get(u.getData()).getDistance());
             }
             // Relax every neighbor of u.
             // Get the outgoing edges of the current node.
             // TODO: Need to make sure this gives OUTGOING edges!
-            Set<Edge> outgoingEdges = GraphAnalyzer.getOutgoingEdges(graph, u);
+            Set<Edge> outgoingEdges =
+                    GraphAnalyzer.getOutgoingEdges(graph, u.getData());
             Iterator<Edge> edgesOfCurrentNode = outgoingEdges.iterator();
             // For every neighbor of the current node ...
             while (edgesOfCurrentNode.hasNext()) {
                 // Get the next edge.
                 Edge edge = edgesOfCurrentNode.next();
                 // Get the neighbor using this edge.
-                int v = GraphAnalyzer.getAdjacentNode(graph, edge, u);
+                FibonacciHeapNode<Integer> v =
+                        map.get(
+                        GraphAnalyzer.getAdjacentNode(graph, edge, u.getData()));
                 double uvWeight = graph.getEdgeWeight(edge);
                 relax(u, v, uvWeight, queue);
             }
@@ -128,6 +154,11 @@ public class DijkstraForCentrality extends Dijkstra {
         if (!(stack.size() == 0)) {
             if (nodeBetweenness.get(node).getDistance()
                     < nodeBetweenness.get(stack.peek()).getDistance()) {
+                System.out.println("Node " + stack.peek()
+                        + " had distance "
+                        + nodeBetweenness.get(stack.peek()).getDistance()
+                        + " > " + nodeBetweenness.get(node).getDistance()
+                        + " = dist(" + node + ").");
                 return false;
             }
         }
