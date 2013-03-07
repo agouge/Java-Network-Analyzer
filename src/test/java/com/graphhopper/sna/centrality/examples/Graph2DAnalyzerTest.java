@@ -49,41 +49,41 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
         return new NullProgressMonitor();
     }
 
-    @Test
-    @Override
-    public void unweightedDirected() throws FileNotFoundException {
-        super.unweightedDirected();
-    }
-
-    @Test
-    @Override
-    public void unweightedReversed() throws FileNotFoundException {
-        super.unweightedReversed();
-    }
-
-    @Test
-    @Override
-    public void unweightedUndirected() throws FileNotFoundException {
-        super.unweightedUndirected();
-    }
-
-    @Test
-    @Override
-    public void weightedDirected() throws FileNotFoundException {
-        super.weightedDirected();
-    }
-
-    @Test
-    @Override
-    public void weightedReversed() throws FileNotFoundException {
-        super.weightedReversed();
-    }
-
-    @Test
-    @Override
-    public void weightedUndirected() throws FileNotFoundException {
-        super.weightedUndirected();
-    }
+//    @Test
+//    @Override
+//    public void unweightedDirected() throws FileNotFoundException {
+////        super.unweightedDirected();
+//    }
+//
+//    @Test
+//    @Override
+//    public void unweightedReversed() throws FileNotFoundException {
+////        super.unweightedReversed();
+//    }
+//
+//    @Test
+//    @Override
+//    public void unweightedUndirected() throws FileNotFoundException {
+////        super.unweightedUndirected();
+//    }
+//
+//    @Test
+//    @Override
+//    public void weightedDirected() throws FileNotFoundException {
+////        super.weightedDirected();
+//    }
+//
+//    @Test
+//    @Override
+//    public void weightedReversed() throws FileNotFoundException {
+////        super.weightedReversed();
+//    }
+//
+//    @Test
+//    @Override
+//    public void weightedUndirected() throws FileNotFoundException {
+////        super.weightedUndirected();
+//    }
 
     /**
      * {@inheritDoc}
