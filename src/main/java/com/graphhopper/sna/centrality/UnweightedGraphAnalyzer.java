@@ -117,12 +117,14 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             // TODO: For now, this only works for undirected edges.
             Set<Edge> outgoingEdges = getOutgoingEdges(graph, current);
             Iterator<Edge> edgesOfCurrentNode = outgoingEdges.iterator();
+            System.out.print("neighbors(" + current + ") = ");
             // For every neighbor of the current node ...
             while (edgesOfCurrentNode.hasNext()) {
 
                 // Get the neighbor.
                 Edge edge = edgesOfCurrentNode.next();
                 int neighbor = getAdjacentNode(graph, edge, current);
+                System.out.print(neighbor + " ");
                 final NodeBetweennessInfo neighborNBInfo =
                         nodeBetweenness.get(neighbor);
 
@@ -149,6 +151,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                     neighborNBInfo.addPredecessor(current);
                 }
             }
+            System.out.println(".");
         }
     }
 

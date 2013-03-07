@@ -135,6 +135,8 @@ public abstract class GraphAnalyzer {
 
             // Update and print the progress.
             pm.setProgress(count, startTime);
+
+            System.out.println("*************************");
         }
         // ***** END CENTRALITY CONTRIBUTION FROM EACH NODE *****
 
