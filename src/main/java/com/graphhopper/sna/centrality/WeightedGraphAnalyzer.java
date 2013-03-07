@@ -29,7 +29,6 @@ import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.progress.ProgressMonitor;
-import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
 import org.jgrapht.Graph;
 
@@ -69,10 +68,9 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
     @Override
     protected void init() {
         nodeBetweenness.clear();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            nodeBetweenness.put(nodeSetIterator.next(),
-                                new WeightedNodeBetweennessInfo());
+        for (int i = nodeSet.nextSetBit(0); i >= 0;
+                i = nodeSet.nextSetBit(i + 1)) {
+            nodeBetweenness.put(i, new WeightedNodeBetweennessInfo());
         }
     }
 
@@ -125,9 +123,9 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
     protected void printSPInfo(
             int startNode) {
         System.out.println("       d           SP pred");
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
-            final int node = it.next();
+        for (int i = nodeSet.nextSetBit(0); i >= 0;
+                i = nodeSet.nextSetBit(i + 1)) {
+            final int node = i;
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
             System.out.print("(" + startNode + "," + node + ")  ");
             System.out.format("%-12f%-3d%-12s",

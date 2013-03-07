@@ -24,6 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.coll.MyBitSetImpl;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.model.Edge;
@@ -33,6 +34,7 @@ import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import org.jgrapht.DirectedGraph;
@@ -53,7 +55,7 @@ public abstract class GraphAnalyzer {
     /**
      * The set of nodes of this graph.
      */
-    protected final TIntHashSet nodeSet;
+    protected final MyBitSetImpl nodeSet;
     /**
      * The number of nodes in this graph.
      */
@@ -86,7 +88,13 @@ public abstract class GraphAnalyzer {
     public GraphAnalyzer(Graph<Integer, Edge> graph,
                          ProgressMonitor pm) {
         this.graph = graph;
-        this.nodeSet = new TIntHashSet(graph.vertexSet());
+
+        this.nodeSet = new MyBitSetImpl();
+        Iterator<Integer> it = graph.vertexSet().iterator();
+        while (it.hasNext()) {
+            nodeSet.add(it.next());
+        }
+
         this.nodeCount = this.nodeSet.size();
         this.nodeBetweenness = new HashMap<Integer, NodeBetweennessInfo>();
         this.maxBetweenness = Double.NEGATIVE_INFINITY;
@@ -121,8 +129,9 @@ public abstract class GraphAnalyzer {
         init();
         pm.setProgress(count, startTime);
         // ***** CENTRALITY CONTRIBUTION FROM EACH NODE ********
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
+        for (int i = nodeSet.nextSetBit(0); i >= 0;
+                i = nodeSet.nextSetBit(i + 1)) {
+
             // Update the count.
             count++;
 
@@ -131,7 +140,7 @@ public abstract class GraphAnalyzer {
                 return new HashMap<Integer, NodeBetweennessInfo>();
             }
             // Calculate betweenness and closeness for each node.
-            calculateCentralityContributionFromNode(nodeSetIterator.next());
+            calculateCentralityContributionFromNode(i);
 
             // Update and print the progress.
             pm.setProgress(count, startTime);
@@ -157,9 +166,9 @@ public abstract class GraphAnalyzer {
      * closeness) of every node.
      */
     private void resetBetweenness() {
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
-            nodeBetweenness.get(it.next()).reset();
+        for (int i = nodeSet.nextSetBit(0); i >= 0;
+                i = nodeSet.nextSetBit(i + 1)) {
+            nodeBetweenness.get(i).reset();
         }
     }
 
@@ -368,9 +377,10 @@ public abstract class GraphAnalyzer {
 
         long start = System.currentTimeMillis();
         final double denominator = maxBetweenness - minBetweenness;
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            final int node = nodeSetIterator.next();
+        for (int i = nodeSet.nextSetBit(0); i >= 0;
+                i = nodeSet.nextSetBit(i + 1)) {
+
+            final int node = i;
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
             final double betweenness = nodeNBInfo.getBetweenness();
             final double normalizedBetweenness =
@@ -387,9 +397,10 @@ public abstract class GraphAnalyzer {
      */
     private void findExtremeBetweennessValues() {
         long start = System.currentTimeMillis();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            final int node = nodeSetIterator.next();
+        for (int i = nodeSet.nextSetBit(0); i >= 0;
+                i = nodeSet.nextSetBit(i + 1)) {
+
+            final int node = i;
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
             final double betweenness = nodeNBInfo.getBetweenness();
             if (betweenness > maxBetweenness) {
