@@ -190,7 +190,7 @@ public abstract class NodeBetweennessInfo {
         steps = -1;
         distance = Double.POSITIVE_INFINITY;
         dependency = 0.0;
-        predecessors = new TIntHashSet();
+        predecessors.clear();
     }
 
     /**
