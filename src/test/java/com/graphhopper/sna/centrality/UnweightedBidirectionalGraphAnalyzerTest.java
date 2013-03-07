@@ -26,6 +26,7 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -88,9 +89,8 @@ public class UnweightedBidirectionalGraphAnalyzerTest extends UnweightedGraphAna
 //        printTitle("Nantes");
 //
 //        long start = System.currentTimeMillis();
-//        HashMap<Integer, NodeBetweennessInfo> result =
-//                doAnalysis(
-//                Graphs.graphNantesWeightedBidirectional());
+//        doAnalysisPrintResults(
+//                Graphs.graphNantesUnweightedBidirectional());
 //        System.out.println("NANTES in "
 //                + (System.currentTimeMillis() - start));
 //    }
