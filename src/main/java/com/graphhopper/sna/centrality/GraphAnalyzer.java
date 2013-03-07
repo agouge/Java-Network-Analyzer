@@ -33,7 +33,6 @@ import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import org.jgrapht.DirectedGraph;
@@ -54,7 +53,7 @@ public abstract class GraphAnalyzer {
     /**
      * The set of nodes of this graph.
      */
-    protected final Set<Integer> nodeSet;
+    protected final TIntHashSet nodeSet;
     /**
      * The number of nodes in this graph.
      */
@@ -87,7 +86,7 @@ public abstract class GraphAnalyzer {
     public GraphAnalyzer(Graph<Integer, Edge> graph,
                          ProgressMonitor pm) {
         this.graph = graph;
-        this.nodeSet = graph.vertexSet();
+        this.nodeSet = new TIntHashSet(graph.vertexSet());
         this.nodeCount = this.nodeSet.size();
         this.nodeBetweenness = new HashMap<Integer, NodeBetweennessInfo>();
         this.maxBetweenness = Double.NEGATIVE_INFINITY;
@@ -122,7 +121,7 @@ public abstract class GraphAnalyzer {
         init();
         pm.setProgress(count, startTime);
         // ***** CENTRALITY CONTRIBUTION FROM EACH NODE ********
-        Iterator<Integer> nodeSetIterator = nodeSet.iterator();
+        TIntIterator nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             // Update the count.
             count++;
@@ -158,7 +157,7 @@ public abstract class GraphAnalyzer {
      * closeness) of every node.
      */
     private void resetBetweenness() {
-        Iterator<Integer> it = nodeSet.iterator();
+        TIntIterator it = nodeSet.iterator();
         while (it.hasNext()) {
             nodeBetweenness.get(it.next()).reset();
         }
@@ -369,7 +368,7 @@ public abstract class GraphAnalyzer {
 
         long start = System.currentTimeMillis();
         final double denominator = maxBetweenness - minBetweenness;
-        Iterator<Integer> nodeSetIterator = nodeSet.iterator();
+        TIntIterator nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             final int node = nodeSetIterator.next();
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
@@ -388,7 +387,7 @@ public abstract class GraphAnalyzer {
      */
     private void findExtremeBetweennessValues() {
         long start = System.currentTimeMillis();
-        Iterator<Integer> nodeSetIterator = nodeSet.iterator();
+        TIntIterator nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             final int node = nodeSetIterator.next();
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);

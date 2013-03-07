@@ -29,7 +29,7 @@ import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.progress.ProgressMonitor;
-import com.graphhopper.util.MyIntDeque;
+import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.Iterator;
 import java.util.PriorityQueue;
@@ -74,7 +74,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
     @Override
     protected void init() {
         nodeBetweenness.clear();
-        Iterator<Integer> nodeSetIterator = nodeSet.iterator();
+        TIntIterator nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             nodeBetweenness.put(nodeSetIterator.next(),
                                 new UnweightedNodeBetweennessInfo());
@@ -143,7 +143,8 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
                 if (neighborNBInfo.getSteps()
                         == currentNBInfo.getSteps() + 1) {
                     // then update the number of shortest paths,
-                    neighborNBInfo.accumulateSPCount(currentNBInfo.getSPCount());
+                    neighborNBInfo.accumulateSPCount(currentNBInfo.
+                            getSPCount());
                     // and add currentNode to the set of predecessors
                     // of neighbor.
                     neighborNBInfo.addPredecessor(current);
@@ -169,7 +170,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
     @Override
     protected void printSPInfo(int startNode) {
         System.out.println("       d  SP pred");
-        Iterator<Integer> it = nodeSet.iterator();
+        TIntIterator it = nodeSet.iterator();
         while (it.hasNext()) {
             final int node = it.next();
             final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
