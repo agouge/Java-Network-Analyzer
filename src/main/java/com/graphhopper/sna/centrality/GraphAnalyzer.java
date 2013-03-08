@@ -102,15 +102,6 @@ public abstract class GraphAnalyzer {
     }
 
     /**
-     * Computes the closeness centrality indices of all vertices of the graph
-     * (assumed to be connected) and stores them in a hash map, where the keys
-     * are the vertices and the values are the closeness.
-     *
-     * @return The closeness centrality hash map.
-     */
-    public abstract Map<Integer, Double> computeCloseness();
-
-    /**
      * Returns a {@link TIntHashSet} of the nodes of the given graph.
      *
      * @param graph The graph.

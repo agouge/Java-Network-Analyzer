@@ -80,29 +80,6 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
     }
 
     /**
-     * Computes the closeness centrality indices of all vertices of the graph
-     * (assumed to be connected) and stores them in a hash map, where the keys
-     * are the vertices and the values are the closeness.
-     *
-     * <p> This method uses Breadth-First Search (BFS).
-     *
-     * @return The closeness centrality hash map.
-     */
-    // TODO: For the moment, we assume the graph has only one connected
-    // component.
-    // TODO: We might eventually delete this method because in GDMS-Topology,
-    // ST_ClosenessCentrality will most likely be replaced by
-    // ST_NetworkAnalyzer. At the same time, we need to compare the
-    // cost of computing just closeness vs. computing closeness along
-    // with betweenness.
-    @Override
-    public Map<Integer, Double> computeCloseness() {
-        ClosenessCentrality closenessCentrality =
-                new ClosenessCentrality(graph, pm);
-        return closenessCentrality.calculateUsingBFS();
-    }
-
-    /**
      *
      * Calculates the number of shortest paths from startNode to every other
      * node and the lengths of these paths using a Breadth-First Search (BFS),
@@ -113,7 +90,8 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
      * @param stack              The stack which will return nodes ordered by
      *                           non-increasing distance from startNode.
      * @param pathsFromStartNode Holds information about shortest path lengths
-     *                           from startNode to the other nodes in the network
+     *                           from startNode to the other nodes in the
+     *                           network
      */
     @Override
     protected void calculateShortestPathsFromNode(

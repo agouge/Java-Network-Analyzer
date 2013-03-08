@@ -76,23 +76,6 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
     }
 
     /**
-     * Computes the closeness centrality indices of all vertices of the graph
-     * (assumed to be connected) and stores them in a hash map, where the keys
-     * are the vertices and the values are the closeness.
-     *
-     * <p> This method first computes contraction hierarchies on the given
-     * graph, which greatly reduces the shortest paths computation time.
-     *
-     * @return The closeness centrality hash map.
-     */
-    @Override
-    public Map<Integer, Double> computeCloseness() {
-        ClosenessCentrality closenessCentrality =
-                new ClosenessCentrality(graph, pm);
-        return closenessCentrality.calculateUsingContractionHierarchies();
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
