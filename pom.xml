@@ -33,6 +33,16 @@
             <artifactId>jgrapht</artifactId>
             <version>0.8.3</version>
         </dependency>
+        <dependency>
+                <groupId>graphlayout</groupId>
+                <artifactId>graphlayout</artifactId>
+                <version>1.2.1</version>
+        </dependency>
+        <dependency>
+                <groupId>jgraph</groupId>
+                <artifactId>jgraph</artifactId>
+                <version>5.13.0.0</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
@@ -52,6 +62,8 @@
                     <instructions>
                         <Bundle-Vendor>IRSTV - FR CNRS 2488</Bundle-Vendor>
                         <Export-Package>com.graphhopper.sna.*</Export-Package>
+                        <Embed-Dependency>jgraph;jgrapht;graphlayout</Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
                         <Bundle-Category>OrbisGIS</Bundle-Category>
                     </instructions>
                 </configuration>
