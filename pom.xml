@@ -40,7 +40,7 @@
                     <instructions>
                         <Bundle-Vendor>IRSTV - FR CNRS 2488</Bundle-Vendor>
                         <Export-Package>com.graphhopper.sna.*</Export-Package>
-                        <Bundle-Category>OrbisGIS</Bundle-Category>
+                        <Bundle-Category>Network Analysis</Bundle-Category>
                     </instructions>
                 </configuration>
             </plugin>
