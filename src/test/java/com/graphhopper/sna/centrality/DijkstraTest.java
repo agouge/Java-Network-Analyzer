@@ -24,7 +24,6 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
@@ -59,13 +58,12 @@ public class DijkstraTest extends CentralityTest {
      *
      * @return The hash map.
      */
-    protected HashMap<Integer, NodeBetweennessInfo> dijkstra(
-            Graph graph,
-            HashMap<Integer, NodeBetweennessInfo> nodeBetweenness,
-            int source) {
+    protected HashMap<Integer, WeightedNodeBetweennessInfo> dijkstra(
+            Graph graph, int source,
+            HashMap<Integer, WeightedNodeBetweennessInfo> nodeBetweenness) {
 
         long start = System.currentTimeMillis();
-        Dijkstra algorithm = new Dijkstra(graph, nodeBetweenness, source);
+        Dijkstra algorithm = new Dijkstra(graph, source, nodeBetweenness);
         algorithm.calculate();
         long stop = System.currentTimeMillis();
 //        System.out.println("Dijkstra for " + startNode
@@ -75,7 +73,7 @@ public class DijkstraTest extends CentralityTest {
 
     /**
      * Initializes the hash map that will be used by the
-     * {@link DijkstraTest#dijkstra(com.graphhopper.storage.Graph, java.util.HashMap, int) dijkstra}
+     * {@link DijkstraTest#dijkstra(com.graphhopper.storage.Graph, int, java.util.HashMap)}
      * method.
      *
      * @param graph   The graph.
@@ -84,12 +82,12 @@ public class DijkstraTest extends CentralityTest {
      *
      * @return The newly initialized hash map.
      */
-    protected HashMap<Integer, NodeBetweennessInfo> initDijkstra(
+    protected HashMap<Integer, WeightedNodeBetweennessInfo> initDijkstra(
             Graph graph,
             TIntHashSet nodeSet) {
         long start = System.currentTimeMillis();
-        HashMap<Integer, NodeBetweennessInfo> nodeBetweenness =
-                new HashMap<Integer, NodeBetweennessInfo>();
+        HashMap<Integer, WeightedNodeBetweennessInfo> nodeBetweenness =
+                new HashMap<Integer, WeightedNodeBetweennessInfo>();
         nodeBetweenness.clear();
         TIntIterator it = nodeSet.iterator();
 //        long start2 = System.currentTimeMillis();
@@ -120,7 +118,7 @@ public class DijkstraTest extends CentralityTest {
      *                        don't have to regenerate it).
      */
     protected void resetHashMap(
-            HashMap<Integer, NodeBetweennessInfo> nodeBetweenness,
+            HashMap<Integer, WeightedNodeBetweennessInfo> nodeBetweenness,
             TIntHashSet nodeSet) {
         TIntIterator it = nodeSet.iterator();
         while (it.hasNext()) {
@@ -135,7 +133,7 @@ public class DijkstraTest extends CentralityTest {
      * @param graph    The graph.
      * @param source   The source node.
      */
-    private HashMap<Integer, NodeBetweennessInfo> testDijkstra(
+    private HashMap<Integer, WeightedNodeBetweennessInfo> testDijkstra(
             String testName,
             Graph graph,
             int source) {
@@ -144,9 +142,9 @@ public class DijkstraTest extends CentralityTest {
                 + source + " *****");
         long start = System.currentTimeMillis();
         TIntHashSet nodeSet = GraphAnalyzer.nodeSet(graph);
-        HashMap<Integer, NodeBetweennessInfo> nodeBetweenness =
+        HashMap<Integer, WeightedNodeBetweennessInfo> nodeBetweenness =
                 initDijkstra(graph, nodeSet);
-        dijkstra(graph, nodeBetweenness, source);
+        dijkstra(graph, source, nodeBetweenness);
         long stop = System.currentTimeMillis();
         System.out.println(TIME
                 + (stop - start) + " ms - Dijkstra: "
@@ -161,7 +159,7 @@ public class DijkstraTest extends CentralityTest {
      */
     @Test
     public void testDijkstra1() {
-        HashMap<Integer, NodeBetweennessInfo> nodeBetweenness =
+        HashMap<Integer, WeightedNodeBetweennessInfo> nodeBetweenness =
                 testDijkstra(Graphs.CORMEN_GRAPH,
                              Graphs.graphCormenWeightedDirected(),
                              1);
@@ -195,7 +193,7 @@ public class DijkstraTest extends CentralityTest {
      */
     @Test
     public void testDijkstra2() {
-        HashMap<Integer, NodeBetweennessInfo> nodeBetweenness =
+        HashMap<Integer, WeightedNodeBetweennessInfo> nodeBetweenness =
                 testDijkstra(Graphs.EXAMPLE_GRAPH_2,
                              Graphs.weightedDirected(),
                              1);

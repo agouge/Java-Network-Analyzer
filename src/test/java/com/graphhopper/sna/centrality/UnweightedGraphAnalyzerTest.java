@@ -24,31 +24,52 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.progress.DefaultProgressMonitor;
 import com.graphhopper.storage.Graph;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Contains a method for doing (possibly verbose) unweighted graph analysis.
  *
  * @author Adam Gouge
  */
-public abstract class UnweightedGraphAnalyzerTest extends GraphAnalyzerTest {
+public abstract class UnweightedGraphAnalyzerTest
+        extends GraphAnalyzerTest<UnweightedNodeBetweennessInfo> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected Map<Integer, NodeBetweennessInfo> doAnalysis(
+    protected Map<Integer, UnweightedNodeBetweennessInfo> doAnalysis(
             Graph graph,
-            boolean verbose,
             boolean printResults) {
-        // Prepare the unweighted graph analyzer.
-        UnweightedGraphAnalyzer analyzer = verbose
-                ? new UnweightedGraphAnalyzerVerbose(graph, new DefaultProgressMonitor())
-                : new UnweightedGraphAnalyzer(graph, new DefaultProgressMonitor());
-        // Do network analysis.
-        return computeAll(analyzer, printResults);
+        try {
+            // Prepare the unweighted graph analyzer.
+            UnweightedGraphAnalyzer analyzer =
+                    new UnweightedGraphAnalyzer(graph,
+                                                new DefaultProgressMonitor());
+            // Do network analysis.
+            return computeAll(analyzer, printResults);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(UnweightedGraphAnalyzerTest.class.getName()).
+                    log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(UnweightedGraphAnalyzerTest.class.getName()).
+                    log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(UnweightedGraphAnalyzerTest.class.getName()).
+                    log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(UnweightedGraphAnalyzerTest.class.getName()).
+                    log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(UnweightedGraphAnalyzerTest.class.getName()).
+                    log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

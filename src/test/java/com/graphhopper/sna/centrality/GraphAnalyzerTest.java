@@ -33,7 +33,8 @@ import java.util.Map;
  *
  * @author Adam Gouge
  */
-public abstract class GraphAnalyzerTest extends CentralityTest {
+public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
+        extends CentralityTest<T> {
 
     protected final static String GRAPH_ANALYSIS = "Graph analysis";
 
@@ -48,9 +49,8 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The result.
      */
-    protected abstract Map<Integer, NodeBetweennessInfo> doAnalysis(
+    protected abstract Map<Integer, T> doAnalysis(
             Graph graph,
-            boolean verbose,
             boolean printResults);
 
     /**
@@ -60,8 +60,8 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The result.
      */
-    protected Map<Integer, NodeBetweennessInfo> doAnalysis(Graph graph) {
-        return doAnalysis(graph, false, false);
+    protected Map<Integer, T> doAnalysis(Graph graph) {
+        return doAnalysis(graph, false);
     }
 
     /**
@@ -72,9 +72,9 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The result.
      */
-    protected Map<Integer, NodeBetweennessInfo> doVerboseAnalysis(
+    protected Map<Integer, T> doVerboseAnalysis(
             Graph graph) {
-        return doAnalysis(graph, true, true);
+        return doAnalysis(graph, true);
     }
 
     /**
@@ -85,9 +85,9 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The result.
      */
-    protected Map<Integer, NodeBetweennessInfo> doAnalysisPrintResults(
+    protected Map<Integer, T> doAnalysisPrintResults(
             Graph graph) {
-        return doAnalysis(graph, false, true);
+        return doAnalysis(graph, true);
     }
 
     /**
@@ -99,12 +99,13 @@ public abstract class GraphAnalyzerTest extends CentralityTest {
      *
      * @return The results.
      */
-    protected Map<Integer, NodeBetweennessInfo> computeAll(
+    protected Map<Integer, T> computeAll(
             GraphAnalyzer analyzer,
             boolean printResults) {
         // Do network analysis.
         long start = System.currentTimeMillis();
-        Map<Integer, NodeBetweennessInfo> result = analyzer.computeAll();
+        Map<Integer, T> result = analyzer.
+                computeAll();
         long stop = System.currentTimeMillis();
         printTime(stop - start);
         if (printResults) {
