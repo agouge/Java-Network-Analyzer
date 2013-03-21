@@ -34,7 +34,6 @@ import com.graphhopper.util.GHUtility;
 import com.graphhopper.util.MyIntDeque;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
-import java.util.Map;
 
 /**
  * Calculates various centrality measures on unweighted graphs <b>assumed to be
@@ -43,7 +42,8 @@ import java.util.Map;
  *
  * @author Adam Gouge
  */
-public class UnweightedGraphAnalyzer extends GraphAnalyzer {
+public class UnweightedGraphAnalyzer
+        extends GraphAnalyzer<UnweightedNodeBetweennessInfo> {
 
     /**
      * Initializes a new instance of an unweighted graph analyzer with the given
@@ -107,7 +107,7 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         while (!queue.isEmpty()) {
             // ... dequeue a node
             int current = queue.pop();
-            final NodeBetweennessInfo currentNBInfo =
+            final UnweightedNodeBetweennessInfo currentNBInfo =
                     nodeBetweenness.get(current);
             // and push this node to the stack.
             stack.push(current);
@@ -119,24 +119,24 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
             while (edgesOfCurrentNode.next()) {
 
                 int neighbor = edgesOfCurrentNode.node();
-                final NodeBetweennessInfo neighborNBInfo =
+                final UnweightedNodeBetweennessInfo neighborNBInfo =
                         nodeBetweenness.get(neighbor);
 
                 // If this neighbor is found for the first time ...
-                if (neighborNBInfo.getSteps() < 0) {
+                if (neighborNBInfo.getDistance() < 0) {
                     // then enqueue it
                     queue.push(neighbor);
                     // and update the distance.
-                    int updatedSteps = currentNBInfo.getSteps() + 1;
-                    neighborNBInfo.setSteps(updatedSteps);
+                    int updatedSteps = currentNBInfo.getDistance() + 1;
+                    neighborNBInfo.setDistance(updatedSteps);
                     // Add this to the path length data. (For closeness)
                     pathsFromStartNode.addSPStep(updatedSteps);
                 }
 
                 // If this is a shortest path from startNode to neighbor
                 // via current ...
-                if (neighborNBInfo.getSteps()
-                        == currentNBInfo.getSteps() + 1) {
+                if (neighborNBInfo.getDistance()
+                        == currentNBInfo.getDistance() + 1) {
                     // then update the number of shortest paths,
                     neighborNBInfo.accumulateSPCount(currentNBInfo.getSPCount());
                     // and add currentNode to the set of predecessors
@@ -167,10 +167,11 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
         TIntIterator it = nodeSet.iterator();
         while (it.hasNext()) {
             int node = it.next();
-            final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
+            final UnweightedNodeBetweennessInfo nodeNBInfo =
+                    nodeBetweenness.get(node);
             System.out.print("(" + startNode + "," + node + ")  ");
             System.out.format("%-8d%-3d%-12s",
-                              nodeNBInfo.getSteps(),
+                              nodeNBInfo.getDistance(),
                               nodeNBInfo.getSPCount(),
                               nodeNBInfo.getPredecessors().toString());
             System.out.println("");

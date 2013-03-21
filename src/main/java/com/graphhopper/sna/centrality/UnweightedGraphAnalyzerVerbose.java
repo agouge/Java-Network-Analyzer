@@ -26,6 +26,7 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
+import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
@@ -79,7 +80,8 @@ public class UnweightedGraphAnalyzerVerbose extends UnweightedGraphAnalyzer {
      * @param stack              The stack which will return nodes ordered by
      *                           non-increasing distance from startNode.
      * @param pathsFromStartNode Holds information about shortest path lengths
-     *                           from startNode to the other nodes in the network
+     *                           from startNode to the other nodes in the
+     *                           network
      */
     @Override
     protected void calculateShortestPathsFromNode(
@@ -95,7 +97,7 @@ public class UnweightedGraphAnalyzerVerbose extends UnweightedGraphAnalyzer {
         while (!queue.isEmpty()) {
             // ... dequeue a node
             int current = queue.pop();
-            final NodeBetweennessInfo currentNBInfo =
+            final UnweightedNodeBetweennessInfo currentNBInfo =
                     nodeBetweenness.get(current);
             // and push this node to the stack.
             stack.push(current);
@@ -107,19 +109,19 @@ public class UnweightedGraphAnalyzerVerbose extends UnweightedGraphAnalyzer {
             while (edgesOfCurrentNode.next()) {
 
                 int neighbor = edgesOfCurrentNode.node();
-                final NodeBetweennessInfo neighborNBInfo =
+                final UnweightedNodeBetweennessInfo neighborNBInfo =
                         nodeBetweenness.get(neighbor);
 
                 // If this neighbor is found for the first time ...
-                if (neighborNBInfo.getSteps() < 0) {
+                if (neighborNBInfo.getDistance() < 0) {
                     // then enqueue it
                     queue.push(neighbor);
                     System.out.print("Found neighbor " + neighbor);
                     // and update the distance.
-                    int updatedSteps = currentNBInfo.getSteps() + 1;
+                    int updatedSteps = currentNBInfo.getDistance() + 1;
                     System.out.println(", dist = " + updatedSteps
                             + " (current = " + current + ").");
-                    neighborNBInfo.setSteps(updatedSteps);
+                    neighborNBInfo.setDistance(updatedSteps);
                     // Add this to the path length data. (For closeness)
                     // TODO: This could be messing up closeness values
                     // when we are at the start node.
@@ -128,8 +130,8 @@ public class UnweightedGraphAnalyzerVerbose extends UnweightedGraphAnalyzer {
 
                 // If this is a shortest path from startNode to neighbor
                 // via current ...
-                if (neighborNBInfo.getSteps()
-                        == currentNBInfo.getSteps() + 1) {
+                if (neighborNBInfo.getDistance()
+                        == currentNBInfo.getDistance() + 1) {
                     System.out.print(
                             " (" + startNode + "," + neighbor
                             + ") (via " + current

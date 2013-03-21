@@ -25,6 +25,7 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.GHUtility;
@@ -37,27 +38,18 @@ import java.util.PriorityQueue;
  *
  * @author Adam Gouge
  */
-public class Dijkstra {
+public class Dijkstra extends GraphSearchAlgorithm {
 
-    /**
-     * The graph on which to calculate shortest paths.
-     */
-    protected final Graph graph;
-    /**
-     * Map of all nodes with their respective {@link NodeBetweennessInfo}, which
-     * stores information calculated during the execution of Dijkstra's
-     * algorithm in {@link Dijkstra#calculate()}.
-     */
-    protected final Map<Integer, NodeBetweennessInfo> nodeBetweenness;
-    /**
-     * Start node.
-     */
-    protected final int startNode;
     /**
      * Tolerance to be used when determining if two potential shortest paths
      * have the same length.
      */
     protected static final double TOLERANCE = 0.000000001;
+    /**
+     * Stores information calculated during the execution of Dijkstra's
+     * algorithm in {@link Dijkstra#calculate()}.
+     */
+    protected Map<Integer, WeightedNodeBetweennessInfo> nodeBetweenness;
 
     /**
      * Constructs a new {@link Dijkstra} object.
@@ -67,11 +59,10 @@ public class Dijkstra {
      * @param startNode       The start node.
      */
     public Dijkstra(Graph graph,
-                    final Map<Integer, NodeBetweennessInfo> nodeBetweenness,
-                    int startNode) {
-        this.graph = graph;
+                    int startNode,
+                    final Map<Integer, WeightedNodeBetweennessInfo> nodeBetweenness) {
+        super(graph, startNode);
         this.nodeBetweenness = nodeBetweenness;
-        this.startNode = startNode;
     }
 
     /**
@@ -81,7 +72,7 @@ public class Dijkstra {
      */
     public void calculate() {
 
-        initializeSingleSource(graph, startNode);
+        nodeBetweenness.get(startNode).setSource();
 
         PriorityQueue<Integer> queue = createPriorityQueue();
         queue.add(startNode);
@@ -90,7 +81,7 @@ public class Dijkstra {
             // Extract the minimum element.
             int u = queue.poll();
             // Relax every neighbor of u.
-            EdgeIterator outgoingEdges = 
+            EdgeIterator outgoingEdges =
                     GHUtility.getCarOutgoing(graph, u);
             while (outgoingEdges.next()) {
                 int v = outgoingEdges.node();
@@ -98,21 +89,6 @@ public class Dijkstra {
                 relax(u, v, uvWeight, queue);
             }
         }
-    }
-
-    /**
-     * Sets the distance from startNode to itself to 0.0 and the number of
-     * shortest paths to 1; all other initializations of distance, shortest path
-     * counts, and predecessor lists are already taken care of by the
-     * constructor of {@link NodeBetweennessInfo}.
-     *
-     * @param graph     The graph.
-     * @param startNode The start node.
-     */
-    protected void initializeSingleSource(
-            Graph graph,
-            int startNode) {
-        nodeBetweenness.get(startNode).setSource();
     }
 
     /**
@@ -128,8 +104,8 @@ public class Dijkstra {
                          double uvWeight,
                          PriorityQueue<Integer> queue) {
         // Get the node betweenness info objects.
-        final NodeBetweennessInfo uNBInfo = nodeBetweenness.get(u);
-        final NodeBetweennessInfo vNBInfo = nodeBetweenness.get(v);
+        final WeightedNodeBetweennessInfo uNBInfo = nodeBetweenness.get(u);
+        final WeightedNodeBetweennessInfo vNBInfo = nodeBetweenness.get(v);
         // If the length of this path to v through u is less than
         // OR EQUAL TO (this corresponds to multiple shortest paths)
         // the current distance estimate on v, then update the
@@ -158,8 +134,8 @@ public class Dijkstra {
     protected void updateSPCount(
             int u,
             int v,
-            final NodeBetweennessInfo uNBInfo,
-            final NodeBetweennessInfo vNBInfo,
+            final WeightedNodeBetweennessInfo uNBInfo,
+            final WeightedNodeBetweennessInfo vNBInfo,
             double uvWeight) {
         // If the difference between the distance to v on the one hand
         // and the distance to u plus w(u,v) on the other hand is less
@@ -186,12 +162,12 @@ public class Dijkstra {
         return new PriorityQueue<Integer>(
                 graph.nodes(),
                 new Comparator<Integer>() {
-                    @Override
-                    public int compare(Integer v1, Integer v2) {
-                        return Double.compare(
-                                nodeBetweenness.get(v1).getDistance(),
-                                nodeBetweenness.get(v2).getDistance());
-                    }
-                });
+            @Override
+            public int compare(Integer v1, Integer v2) {
+                return Double.compare(
+                        nodeBetweenness.get(v1).getDistance(),
+                        nodeBetweenness.get(v2).getDistance());
+            }
+        });
     }
 }

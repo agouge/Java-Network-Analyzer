@@ -24,8 +24,8 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class DijkstraForCentralityVerbose extends DijkstraForCentrality {
      */
     public DijkstraForCentralityVerbose(
             Graph graph,
-            final Map<Integer, NodeBetweennessInfo> nodeBetweenness,
+            final Map<Integer, WeightedNodeBetweennessInfo> nodeBetweenness,
             int startNode,
             PathLengthData pathsFromStartNode,
             TIntArrayStack stack) {
@@ -87,8 +87,8 @@ public class DijkstraForCentralityVerbose extends DijkstraForCentrality {
     protected void updateSPCount(
             int u,
             int v,
-            final NodeBetweennessInfo uNBInfo,
-            final NodeBetweennessInfo vNBInfo,
+            final WeightedNodeBetweennessInfo uNBInfo,
+            final WeightedNodeBetweennessInfo vNBInfo,
             double uvWeight) {
 
         System.out.println(" -- Update: "

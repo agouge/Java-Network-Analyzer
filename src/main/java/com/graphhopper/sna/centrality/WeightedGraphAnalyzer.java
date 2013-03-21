@@ -24,14 +24,12 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
-import java.util.Map;
 
 /**
  * Calculates various centrality measures on weighted graphs which are
@@ -39,7 +37,8 @@ import java.util.Map;
  *
  * @author Adam Gouge
  */
-public class WeightedGraphAnalyzer extends GraphAnalyzer {
+public class WeightedGraphAnalyzer
+        extends GraphAnalyzer<WeightedNodeBetweennessInfo> {
 
     /**
      * Initializes a new instance of a weighted graph analyzer with the given
@@ -98,11 +97,12 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
         // the nodes are popped in order of non-increasing distance from s.
         // This is IMPORTANT.
         DijkstraForCentrality algorithm =
-                new DijkstraForCentrality(graph,
-                                          nodeBetweenness,
-                                          startNode,
-                                          pathsFromStartNode,
-                                          stack);
+                new DijkstraForCentrality(
+                graph,
+                nodeBetweenness,
+                startNode,
+                pathsFromStartNode,
+                stack);
         algorithm.calculate();
     }
 
@@ -127,7 +127,8 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
         TIntIterator it = nodeSet.iterator();
         while (it.hasNext()) {
             int node = it.next();
-            final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
+            final WeightedNodeBetweennessInfo nodeNBInfo =
+                    nodeBetweenness.get(node);
             System.out.print("(" + startNode + "," + node + ")  ");
             System.out.format("%-12f%-3d%-12s",
                               nodeNBInfo.getDistance(),
