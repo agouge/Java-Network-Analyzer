@@ -26,12 +26,15 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
+import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,18 +64,30 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo>
      * Progress monitor.
      */
     protected ProgressMonitor pm;
+    /**
+     * Constructor for {@link T} objects.
+     */
+    private final Constructor<? extends T> tConstructor;
 
     /**
      * Initializes a new instance of a graph analyzer with the given
      * {@link ProgressMonitor}.
      *
-     * @param graph The graph to be analyzed.
-     * @param pm    The {@link ProgressMonitor} to be used.
+     * @param graph     The graph to be analyzed.
+     * @param pm        The {@link ProgressMonitor} to be used.
+     * @param infoClass The class of the {@link NodeBetweennessInfo} to use.
      */
-    public GraphAnalyzer(Graph graph, ProgressMonitor pm) {
+    public GraphAnalyzer(Graph graph,
+                         ProgressMonitor pm,
+                         Class<? extends T> infoClass)
+            throws NoSuchMethodException, InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
         super(graph);
         this.pm = pm;
-        nodeBetweenness = new HashMap<Integer, T>();
+        this.tConstructor = infoClass.getConstructor();
+        this.nodeBetweenness = new HashMap<Integer, T>();
+        init();
         this.maxBetweenness = Double.NEGATIVE_INFINITY;
         this.minBetweenness = Double.POSITIVE_INFINITY;
     }
@@ -83,8 +98,28 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo>
      *
      * @param graph The graph to be analyzed.
      */
-    public GraphAnalyzer(Graph graph) {
-        this(graph, new NullProgressMonitor());
+    public GraphAnalyzer(Graph graph, Class<? extends T> infoClass)
+            throws NoSuchMethodException, InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
+        this(graph, new NullProgressMonitor(), infoClass);
+    }
+
+    /**
+     * Clears and initializes the data structure that will hold all the results
+     * of the network analysis.
+     */
+    private void init() throws
+            InstantiationException,
+            IllegalAccessException,
+            IllegalArgumentException,
+            InvocationTargetException {
+        nodeBetweenness.clear();
+        TIntIterator nodeSetIterator = nodeSet.iterator();
+        while (nodeSetIterator.hasNext()) {
+            nodeBetweenness.put(nodeSetIterator.next(),
+                                tConstructor.newInstance());
+        }
     }
 
     /**
@@ -101,7 +136,6 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo>
 
         // ***** GLOBAL INITIALIZATION *************************
         long count = 0;
-        init();
         pm.setProgress(count, startTime);
 
         // ***** CENTRALITY CONTRIBUTION FROM EACH NODE ********
@@ -130,12 +164,6 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo>
 
         return nodeBetweenness;
     }
-
-    /**
-     * Clears and initializes the data structure that will hold all the results
-     * of the network analysis.
-     */
-    protected abstract void init();
 
     /**
      * Resets the node betweenness hash map (except for betweenness and

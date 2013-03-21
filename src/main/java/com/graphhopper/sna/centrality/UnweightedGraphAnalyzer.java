@@ -34,6 +34,7 @@ import com.graphhopper.util.GHUtility;
 import com.graphhopper.util.MyIntDeque;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Calculates various centrality measures on unweighted graphs <b>assumed to be
@@ -52,8 +53,11 @@ public class UnweightedGraphAnalyzer
      * @param graph The graph to be analyzed.
      * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public UnweightedGraphAnalyzer(Graph graph, ProgressMonitor pm) {
-        super(graph, pm);
+    public UnweightedGraphAnalyzer(Graph graph, ProgressMonitor pm) throws
+            NoSuchMethodException, InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
+        super(graph, pm, UnweightedNodeBetweennessInfo.class);
     }
 
     /**
@@ -62,21 +66,10 @@ public class UnweightedGraphAnalyzer
      *
      * @param graph The graph to be analyzed.
      */
-    public UnweightedGraphAnalyzer(Graph graph) {
-        super(graph);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void init() {
-        nodeBetweenness.clear();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            nodeBetweenness.put(nodeSetIterator.next(),
-                                new UnweightedNodeBetweennessInfo());
-        }
+    public UnweightedGraphAnalyzer(Graph graph) throws NoSuchMethodException,
+            InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        super(graph, UnweightedNodeBetweennessInfo.class);
     }
 
     /**
