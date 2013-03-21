@@ -25,24 +25,57 @@
 package com.graphhopper.sna.data;
 
 /**
+ * {@link NodeBetweennessInfo} for weighted graphs.
+ *
+ * All distances are {@code double}s; we initialize them to
+ * {@link Double#POSITIVE_INFINITY}.
  *
  * @author Adam Gouge
  */
-public class WeightedNodeBetweennessInfo extends NodeBetweennessInfo {
+public class WeightedNodeBetweennessInfo extends NodeBetweennessInfo
+        implements DistanceInfoDouble {
 
     /**
-     * {@inheritDoc}
+     * Length of a shortest path starting from a certain source leading to this
+     * node (Dijkstra).
      */
-    @Override
-    public int getSteps() {
-        throw new IllegalStateException("Cannot get the steps when weighted.");
+    private double distance;
+
+    public WeightedNodeBetweennessInfo() {
+        distance = Double.POSITIVE_INFINITY;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setSteps(int newSteps) {
-        throw new IllegalStateException("Cannot set the steps when weighted.");
+    public void reset() {
+        super.reset();
+        distance = Double.POSITIVE_INFINITY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setSource() {
+        super.setSource();
+        distance = 0.0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getDistance() {
+        return distance;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDistance(double newDistance) {
+        distance = newDistance;
     }
 }

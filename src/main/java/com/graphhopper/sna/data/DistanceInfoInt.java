@@ -25,56 +25,26 @@
 package com.graphhopper.sna.data;
 
 /**
- * {@link NodeBetweennessInfo} for unweighted graphs.
+ * Interface with a getter and a setter for integer distances.
  *
- * All distances are {@code int}s; we initialize them to -1.
- *
- * @author Adam Gouge
+ * @author adam
  */
-public class UnweightedNodeBetweennessInfo extends NodeBetweennessInfo
-        implements DistanceInfoInt {
+public interface DistanceInfoInt extends SourceInfo {
 
     /**
-     * Number of steps on a shortest path from a certain source leading to this
-     * node (BFS).
+     * Returns the number of steps from a source node to this node on a shortest
+     * path (BFS).
+     *
+     * @return The number of steps from a source node to this node on a shortest
+     *         path (BFS).
      */
-    private int distance;
-
-    public UnweightedNodeBetweennessInfo() {
-        this.distance = -1;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void reset() {
-        super.reset();
-        distance = -1;
-    }
+    public int getDistance();
 
     /**
-     * {@inheritDoc}
+     * Sets the number of steps on a shortest path from a certain source leading
+     * to this node.
+     *
+     * @param newDistance Number of steps to this node.
      */
-    @Override
-    public void setSource() {
-        super.setSource();
-        distance = 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getDistance() {
-        return distance;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setDistance(int newDistance) {
-        distance = newDistance;
-    }
+    public void setDistance(int newDistance);
 }
