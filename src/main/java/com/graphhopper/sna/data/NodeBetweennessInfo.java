@@ -33,7 +33,8 @@ import gnu.trove.set.hash.TIntHashSet;
  *
  * @author Adam Gouge
  */
-public abstract class NodeBetweennessInfo {
+public abstract class NodeBetweennessInfo<T extends Number>
+        implements DistanceInfo<T> {
 
     /**
      * List of the predecessors of this node.
@@ -162,10 +163,10 @@ public abstract class NodeBetweennessInfo {
     /**
      * Sets this node as the source node during initialization.
      */
+    @Override
     public void setSource() {
         spCount = 1;
         dependency = 0.0;
-        // TODO: predecessors.clear(); ?
     }
 
     /**

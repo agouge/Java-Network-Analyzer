@@ -24,7 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.DistanceInfoInt;
+import com.graphhopper.sna.data.DistanceInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.GHUtility;
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author Adam Gouge
  */
-public class BFS<T extends DistanceInfoInt> extends GraphSearchAlgorithm {
+public class BFS<T extends DistanceInfo<Integer>> extends GraphSearchAlgorithm {
 
     /**
      * Stores information calculated during the execution of BFS in
@@ -86,8 +86,7 @@ public class BFS<T extends DistanceInfoInt> extends GraphSearchAlgorithm {
             while (outgoingEdges.next()) {
 
                 int neighbor = outgoingEdges.node();
-                final DistanceInfoInt neighborNBInfo =
-                        nodeMap.get(neighbor);
+                final T neighborNBInfo = nodeMap.get(neighbor);
 
                 // If this neighbor is found for the first time ...
                 if (neighborNBInfo.getDistance() < 0) {

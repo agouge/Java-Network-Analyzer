@@ -32,8 +32,8 @@ package com.graphhopper.sna.data;
  *
  * @author Adam Gouge
  */
-public class WeightedNodeBetweennessInfo extends NodeBetweennessInfo
-        implements DistanceInfoDouble {
+public class WeightedNodeBetweennessInfo
+        extends NodeBetweennessInfo<Double> {
 
     /**
      * Length of a shortest path starting from a certain source leading to this
@@ -67,7 +67,7 @@ public class WeightedNodeBetweennessInfo extends NodeBetweennessInfo
      * {@inheritDoc}
      */
     @Override
-    public double getDistance() {
+    public Double getDistance() {
         return distance;
     }
 
@@ -75,7 +75,7 @@ public class WeightedNodeBetweennessInfo extends NodeBetweennessInfo
      * {@inheritDoc}
      */
     @Override
-    public void setDistance(double newDistance) {
+    public void setDistance(Double newDistance) {
         distance = newDistance;
     }
 }

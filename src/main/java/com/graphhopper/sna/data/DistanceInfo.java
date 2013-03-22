@@ -25,26 +25,29 @@
 package com.graphhopper.sna.data;
 
 /**
- * Interface with a getter and a setter for integer distances.
+ * Interface for node info containing the distance from a source node as well as
+ * the ability to set this as the source node.
  *
- * @author adam
+ * @author Adam Gouge
  */
-public interface DistanceInfoInt extends SourceInfo {
+public interface DistanceInfo<T extends Number> {
 
     /**
-     * Returns the number of steps from a source node to this node on a shortest
-     * path (BFS).
-     *
-     * @return The number of steps from a source node to this node on a shortest
-     *         path (BFS).
+     * Sets this to be the source node.
      */
-    public int getDistance();
+    void setSource();
 
     /**
-     * Sets the number of steps on a shortest path from a certain source leading
-     * to this node.
+     * Returns the length of the shortest path from a source node to this node.
      *
-     * @param newDistance Number of steps to this node.
+     * @return The length of the shortest path from a source node to this node.
      */
-    public void setDistance(int newDistance);
+    T getDistance();
+
+    /**
+     * Sets the new length of a shortest path from a source node to this node.
+     *
+     * @param newDistance Length of a shortest path to this node.
+     */
+    void setDistance(T newDistance);
 }
