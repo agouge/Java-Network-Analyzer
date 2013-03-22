@@ -386,8 +386,9 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo, S extends Pat
             }
         }
         long stop = System.currentTimeMillis();
-        System.out.println("Found extreme values in "
-                + (stop - start) + " ms.");
+        System.out.println("Found extreme values ("
+                + minBetweenness + ", " + maxBetweenness
+                + ") in " + (stop - start) + " ms.");
     }
 
     /**
