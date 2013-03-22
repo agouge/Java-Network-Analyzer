@@ -24,58 +24,57 @@
  */
 package com.graphhopper.sna.data;
 
+import static com.graphhopper.sna.data.PathLengthData.SPL_ERROR;
+
 /**
- * {@link NodeBetweennessInfo} for weighted graphs.
- *
- * All distances are {@code double}s; we initialize them to
- * {@link Double#POSITIVE_INFINITY}.
+ * {@link PathLengthData} for weighted graphs.
  *
  * @author Adam Gouge
  */
-public class WeightedNodeBetweennessInfo
-        extends NodeBetweennessInfo<Double> {
+public class WeightedPathLengthData extends PathLengthData<Double> {
 
     /**
-     * Length of a shortest path starting from a certain source leading to this
-     * node (Dijkstra).
+     * Maximum length of a shortest path accumulated in this instance.
      */
-    private double distance;
+    private double maxLength;
+    /**
+     * Sum of all shortest path lengths accumulated in this instance.
+     */
+    private double totalLength;
 
-    public WeightedNodeBetweennessInfo() {
-        distance = Double.POSITIVE_INFINITY;
+    /**
+     * Constructor.
+     */
+    public WeightedPathLengthData() {
+        super();
+        totalLength = 0.0;
+        maxLength = 0.0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void reset() {
-        super.reset();
-        distance = Double.POSITIVE_INFINITY;
+    public void addSPLength(Double length) {
+        count++;
+        totalLength += length;
+        if (maxLength < length) {
+            maxLength = length;
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void setSource() {
-        super.setSource();
-        distance = 0.0;
+    public Double getMaxLength() {
+        return maxLength;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Double getDistance() {
-        return distance;
+    public Double getTotalLength() {
+        return totalLength;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void setDistance(Double newDistance) {
-        distance = newDistance;
+    public double getAverageLength() {
+        if (getCount() == 0) {
+            throw new IllegalStateException(SPL_ERROR);
+        }
+        return ((double) getTotalLength()) / getCount();
     }
 }

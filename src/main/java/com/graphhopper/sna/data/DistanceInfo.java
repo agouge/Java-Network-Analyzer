@@ -25,57 +25,29 @@
 package com.graphhopper.sna.data;
 
 /**
- * {@link NodeBetweennessInfo} for weighted graphs.
- *
- * All distances are {@code double}s; we initialize them to
- * {@link Double#POSITIVE_INFINITY}.
+ * Interface for node info containing the distance from a source node as well as
+ * the ability to set this as the source node.
  *
  * @author Adam Gouge
  */
-public class WeightedNodeBetweennessInfo
-        extends NodeBetweennessInfo<Double> {
+public interface DistanceInfo<T extends Number> {
 
     /**
-     * Length of a shortest path starting from a certain source leading to this
-     * node (Dijkstra).
+     * Sets this to be the source node.
      */
-    private double distance;
-
-    public WeightedNodeBetweennessInfo() {
-        distance = Double.POSITIVE_INFINITY;
-    }
+    void setSource();
 
     /**
-     * {@inheritDoc}
+     * Returns the length of the shortest path from a source node to this node.
+     *
+     * @return The length of the shortest path from a source node to this node.
      */
-    @Override
-    public void reset() {
-        super.reset();
-        distance = Double.POSITIVE_INFINITY;
-    }
+    T getDistance();
 
     /**
-     * {@inheritDoc}
+     * Sets the new length of a shortest path from a source node to this node.
+     *
+     * @param newDistance Length of a shortest path to this node.
      */
-    @Override
-    public void setSource() {
-        super.setSource();
-        distance = 0.0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Double getDistance() {
-        return distance;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setDistance(Double newDistance) {
-        distance = newDistance;
-    }
+    void setDistance(T newDistance);
 }

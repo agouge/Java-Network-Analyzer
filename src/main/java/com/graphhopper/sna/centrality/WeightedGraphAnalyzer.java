@@ -24,14 +24,14 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
-import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
+import com.graphhopper.sna.data.WeightedPathLengthData;
+import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Calculates various centrality measures on weighted graphs which are
@@ -39,7 +39,8 @@ import java.util.Map;
  *
  * @author Adam Gouge
  */
-public class WeightedGraphAnalyzer extends GraphAnalyzer {
+public class WeightedGraphAnalyzer
+        extends GraphAnalyzer<WeightedNodeBetweennessInfo, WeightedPathLengthData> {
 
     /**
      * Initializes a new instance of a weighted graph analyzer with the given
@@ -48,8 +49,12 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
      * @param graph The graph to be analyzed.
      * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public WeightedGraphAnalyzer(Graph graph, ProgressMonitor pm) {
-        super(graph, pm);
+    public WeightedGraphAnalyzer(Graph graph, ProgressMonitor pm)
+            throws NoSuchMethodException, InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
+        super(graph, pm, WeightedNodeBetweennessInfo.class,
+              WeightedPathLengthData.class);
     }
 
     /**
@@ -58,21 +63,11 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
      *
      * @param graph The graph to be analyzed.
      */
-    public WeightedGraphAnalyzer(Graph graph) {
-        super(graph);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void init() {
-        nodeBetweenness.clear();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            nodeBetweenness.put(nodeSetIterator.next(),
-                                new WeightedNodeBetweennessInfo());
-        }
+    public WeightedGraphAnalyzer(Graph graph)
+            throws NoSuchMethodException, InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
+        this(graph, new NullProgressMonitor());
     }
 
     /**
@@ -81,7 +76,7 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
     @Override
     protected void calculateShortestPathsFromNode(
             int startNode,
-            PathLengthData pathsFromStartNode,
+            WeightedPathLengthData pathsFromStartNode,
             TIntArrayStack stack) {
         // Need to compute all shortest paths from s=startNode.
         //
@@ -97,43 +92,10 @@ public class WeightedGraphAnalyzer extends GraphAnalyzer {
         // {@link GraphAnalyzer.accumulateDependencies(int, TIntArrayStack)},
         // the nodes are popped in order of non-increasing distance from s.
         // This is IMPORTANT.
-        DijkstraForCentrality algorithm =
-                new DijkstraForCentrality(graph,
-                                          nodeBetweenness,
-                                          startNode,
-                                          pathsFromStartNode,
-                                          stack);
-        algorithm.calculate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected double getAveragePathLength(
-            PathLengthData pathsFromStartNode) {
-        return (pathsFromStartNode.getCount() > 0)
-                ? pathsFromStartNode.getAverageLength()
-                : 0.0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void printSPInfo(
-            int startNode) {
-        System.out.println("       d           SP pred");
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
-            int node = it.next();
-            final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
-            System.out.print("(" + startNode + "," + node + ")  ");
-            System.out.format("%-12f%-3d%-12s",
-                              nodeNBInfo.getDistance(),
-                              nodeNBInfo.getSPCount(),
-                              nodeNBInfo.getPredecessors().toString());
-            System.out.println("");
-        }
+        new DijkstraForCentrality(graph,
+                                  nodeBetweenness,
+                                  startNode,
+                                  pathsFromStartNode,
+                                  stack).calculate();
     }
 }
