@@ -88,32 +88,10 @@ public class UnweightedGraphAnalyzer
             int startNode,
             UnweightedPathLengthData pathsFromStartNode,
             TIntArrayStack stack) {
-        BFSForCentrality algorithm =
-                new BFSForCentrality(graph,
-                                     startNode,
-                                     nodeBetweenness,
-                                     pathsFromStartNode,
-                                     stack);
-        algorithm.calculate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void printSPInfo(int startNode) {
-        System.out.println("       d  SP pred");
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
-            int node = it.next();
-            final UnweightedNodeBetweennessInfo nodeNBInfo =
-                    nodeBetweenness.get(node);
-            System.out.print("(" + startNode + "," + node + ")  ");
-            System.out.format("%-8d%-3d%-12s",
-                              nodeNBInfo.getDistance(),
-                              nodeNBInfo.getSPCount(),
-                              nodeNBInfo.getPredecessors().toString());
-            System.out.println("");
-        }
+        new BFSForCentrality(graph,
+                             startNode,
+                             nodeBetweenness,
+                             pathsFromStartNode,
+                             stack).calculate();
     }
 }

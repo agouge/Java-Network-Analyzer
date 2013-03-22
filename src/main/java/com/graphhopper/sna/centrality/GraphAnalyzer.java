@@ -396,18 +396,26 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo, S extends Pat
      *
      * @param startNode The start node.
      */
-    protected abstract void printSPInfo(int startNode);
-//    /**
-//     * Prints the given {@link TIntDoubleHashMap}.
-//     *
-//     * @param hashmap The given {@link TIntDoubleHashMap}.
-//     */
-//    public static void printHashMap(TIntDoubleHashMap hashmap) {
-//        TIntDoubleIterator it = hashmap.iterator();
-//        while (it.hasNext()) {
-//            it.advance();
-//            System.out.println("(" + it.key()
-//                    + "," + it.value() + ")");
-//        }
-//    }
+    protected void printSPInfo(int startNode) {
+        System.out.println("       d           SP    pred");
+        TIntIterator it = nodeSet.iterator();
+        while (it.hasNext()) {
+            int node = it.next();
+            final T nodeNBInfo = nodeBetweenness.get(node);
+            System.out.print("(" + startNode + "," + node + ")  ");
+            String formatString = "%-12";
+            if (this instanceof UnweightedGraphAnalyzer) {
+                formatString += "d";
+            } else {
+                formatString += "f";
+            }
+            formatString += "%-6d%-12s";
+            System.out.format(formatString,
+                              nodeNBInfo.getDistance(),
+                              nodeNBInfo.getSPCount(),
+                              nodeNBInfo.getPredecessors().toString());
+            System.out.println("");
+        }
+        System.out.println("");
+    }
 }

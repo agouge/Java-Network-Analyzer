@@ -92,34 +92,10 @@ public class WeightedGraphAnalyzer
         // {@link GraphAnalyzer.accumulateDependencies(int, TIntArrayStack)},
         // the nodes are popped in order of non-increasing distance from s.
         // This is IMPORTANT.
-        DijkstraForCentrality algorithm =
-                new DijkstraForCentrality(
-                graph,
-                nodeBetweenness,
-                startNode,
-                pathsFromStartNode,
-                stack);
-        algorithm.calculate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void printSPInfo(
-            int startNode) {
-        System.out.println("       d           SP pred");
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
-            int node = it.next();
-            final WeightedNodeBetweennessInfo nodeNBInfo =
-                    nodeBetweenness.get(node);
-            System.out.print("(" + startNode + "," + node + ")  ");
-            System.out.format("%-12f%-3d%-12s",
-                              nodeNBInfo.getDistance(),
-                              nodeNBInfo.getSPCount(),
-                              nodeNBInfo.getPredecessors().toString());
-            System.out.println("");
-        }
+        new DijkstraForCentrality(graph,
+                                  nodeBetweenness,
+                                  startNode,
+                                  pathsFromStartNode,
+                                  stack).calculate();
     }
 }
