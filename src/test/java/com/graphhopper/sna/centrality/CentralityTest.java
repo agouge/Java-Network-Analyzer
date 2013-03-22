@@ -27,7 +27,6 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import gnu.trove.iterator.TIntDoubleIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -35,7 +34,7 @@ import java.util.Map;
  *
  * @author Adam Gouge
  */
-public abstract class CentralityTest {
+public abstract class CentralityTest<T extends NodeBetweennessInfo> {
 
     /**
      * Used for printing out timing messages.
@@ -68,19 +67,16 @@ public abstract class CentralityTest {
      *
      * @param result The result.
      */
-    protected void printResults(Map<Integer, NodeBetweennessInfo> result) {
+    protected void printResults(Map<Integer, T> result) {
         // Print results.
         System.out.format("%-12s%-12s%-12s",
                           "v",
                           "Betweenness",
                           "Closeness");
         System.out.println("");
-        Iterator<Map.Entry<Integer, NodeBetweennessInfo>> iterator =
-                result.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, NodeBetweennessInfo> next = iterator.next();
-            final Integer id = next.getKey();
-            final NodeBetweennessInfo info = next.getValue();
+        for (Map.Entry next : result.entrySet()) {
+            final Integer id = (Integer) next.getKey();
+            final T info = (T) next.getValue();
             System.out.format("%-12d%-12f%-12f",
                               next.getKey(),
                               info.getBetweenness(),

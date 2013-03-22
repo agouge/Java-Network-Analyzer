@@ -29,10 +29,11 @@ import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
-import com.graphhopper.util.RawEdgeIterator;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import gnu.trove.stack.array.TIntArrayStack;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,25 +43,14 @@ import java.util.Map;
  *
  * @author Adam Gouge
  */
-public abstract class GraphAnalyzer {
+public abstract class GraphAnalyzer<T extends NodeBetweennessInfo, S extends PathLengthData>
+        extends GeneralizedGraphAnalyzer {
 
     /**
-     * The graph to be analyzed.
+     * Map of all nodes to their respective data structures to hold information
+     * needed for the node betweenness calculation.
      */
-    protected final Graph graph;
-    /**
-     * The set of nodes of this graph.
-     */
-    protected final TIntHashSet nodeSet;
-    /**
-     * The number of nodes in this graph.
-     */
-    protected final int nodeCount;
-    /**
-     * Map of all nodes with their respective {@link NodeBetweennessInfo}, which
-     * stores information needed for the node betweenness calculation.
-     */
-    protected final Map<Integer, NodeBetweennessInfo> nodeBetweenness;
+    protected Map<Integer, T> nodeBetweenness;
     /**
      * The maximum betweenness centrality value.
      */
@@ -73,22 +63,38 @@ public abstract class GraphAnalyzer {
      * Progress monitor.
      */
     protected ProgressMonitor pm;
+    /**
+     * Constructor for {@link T} objects.
+     */
+    private final Constructor<? extends T> tConstructor;
+    /**
+     * Constructor for {@link S} objects.
+     */
+    private final Constructor<? extends S> sConstructor;
 
     /**
      * Initializes a new instance of a graph analyzer with the given
      * {@link ProgressMonitor}.
      *
-     * @param graph The graph to be analyzed.
-     * @param pm    The {@link ProgressMonitor} to be used.
+     * @param graph     The graph to be analyzed.
+     * @param pm        The {@link ProgressMonitor} to be used.
+     * @param infoClass The class of the {@link NodeBetweennessInfo} to use.
      */
-    public GraphAnalyzer(Graph graph, ProgressMonitor pm) {
-        this.graph = graph;
-        this.nodeSet = nodeSet(this.graph);
-        this.nodeCount = this.nodeSet.size();
-        this.nodeBetweenness = new HashMap<Integer, NodeBetweennessInfo>();
+    public GraphAnalyzer(Graph graph,
+                         ProgressMonitor pm,
+                         Class<? extends T> infoClass,
+                         Class<? extends S> pathClass)
+            throws NoSuchMethodException, InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
+        super(graph);
+        this.pm = pm;
+        this.tConstructor = infoClass.getConstructor();
+        this.sConstructor = pathClass.getConstructor();
+        this.nodeBetweenness = new HashMap<Integer, T>();
+        init();
         this.maxBetweenness = Double.NEGATIVE_INFINITY;
         this.minBetweenness = Double.POSITIVE_INFINITY;
-        this.pm = pm;
     }
 
     /**
@@ -97,29 +103,29 @@ public abstract class GraphAnalyzer {
      *
      * @param graph The graph to be analyzed.
      */
-    public GraphAnalyzer(Graph graph) {
-        this(graph, new NullProgressMonitor());
+    public GraphAnalyzer(Graph graph, Class<? extends T> infoClass,
+                         Class<? extends S> pathClass)
+            throws NoSuchMethodException, InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
+        this(graph, new NullProgressMonitor(), infoClass, pathClass);
     }
 
     /**
-     * Returns a {@link TIntHashSet} of the nodes of the given graph.
-     *
-     * @param graph The graph.
-     *
-     * @return a {@link TIntHashSet} of the nodes of the given graph.
+     * Clears and initializes the data structure that will hold all the results
+     * of the network analysis.
      */
-    // TODO: Optimize this (by making use of the data structure).
-    protected static TIntHashSet nodeSet(Graph graph) {
-        // Initialize the Set.
-        TIntHashSet set = new TIntHashSet();
-        // Get all the edges.
-        RawEdgeIterator iter = graph.getAllEdges();
-        // Add each source and destination node to the set.
-        while (iter.next()) {
-            set.add(iter.nodeA());
-            set.add(iter.nodeB());
+    private void init() throws
+            InstantiationException,
+            IllegalAccessException,
+            IllegalArgumentException,
+            InvocationTargetException {
+        nodeBetweenness.clear();
+        TIntIterator nodeSetIterator = nodeSet.iterator();
+        while (nodeSetIterator.hasNext()) {
+            nodeBetweenness.put(nodeSetIterator.next(),
+                                tConstructor.newInstance());
         }
-        return set;
     }
 
     /**
@@ -128,7 +134,9 @@ public abstract class GraphAnalyzer {
      *
      * @return The results of the graph analysis.
      */
-    public Map<Integer, NodeBetweennessInfo> computeAll() {
+    public Map<Integer, T> computeAll() throws InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
 
         long startTime = System.currentTimeMillis();
 
@@ -136,7 +144,6 @@ public abstract class GraphAnalyzer {
 
         // ***** GLOBAL INITIALIZATION *************************
         long count = 0;
-        init();
         pm.setProgress(count, startTime);
 
         // ***** CENTRALITY CONTRIBUTION FROM EACH NODE ********
@@ -147,7 +154,7 @@ public abstract class GraphAnalyzer {
 
             // See if the task has been cancelled.
             if (pm.isCancelled()) {
-                return new HashMap<Integer, NodeBetweennessInfo>();
+                return new HashMap<Integer, T>();
             }
 
             // Calculate betweenness and closeness for each node.
@@ -167,12 +174,6 @@ public abstract class GraphAnalyzer {
     }
 
     /**
-     * Clears and initializes the data structure that will hold all the results
-     * of the network analysis.
-     */
-    protected abstract void init();
-
-    /**
      * Resets the node betweenness hash map (except for betweenness and
      * closeness) of every node.
      */
@@ -190,13 +191,15 @@ public abstract class GraphAnalyzer {
      * @param startNode The given node.
      */
     // TODO: For now, we assume the graph is connected.
-    private void calculateCentralityContributionFromNode(int startNode) {
+    private void calculateCentralityContributionFromNode(int startNode) throws
+            InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
 
         // ***** LOCAL INITIALIZATION *************************
         // A data structure to hold information about startNode
         // relative to all the other nodes in the network during
         // this calculation.
-        final NodeBetweennessInfo startNBInfo =
+        final T startNBInfo =
                 nodeBetweenness.get(startNode);
         // Set this as the source node.
         startNBInfo.setSource();
@@ -204,7 +207,7 @@ public abstract class GraphAnalyzer {
         // in order of non-increasing distance from startNode.
         TIntArrayStack stack = new TIntArrayStack();
         // This will be used for the closeness centrality calculation.
-        PathLengthData pathsFromStartNode = new PathLengthData();
+        S pathsFromStartNode = sConstructor.newInstance();
         // ***** END LOCAL INITIALIZATION *********************
 
         // ***** CENTRALITY CONTRIBUTION CALCULATION **********
@@ -226,8 +229,8 @@ public abstract class GraphAnalyzer {
 
     /**
      * Stores number of shortest paths and the length of these paths from
-     * startNode to every other node in the {@link NodeBetweennessInfo} of every
-     * other node; also updates the predecessor sets.
+     * startNode to every other node in the {@link T} of every other node; also
+     * updates the predecessor sets.
      *
      * @param startNode          The start node.
      * @param stack              The stack which will return nodes ordered by
@@ -238,11 +241,11 @@ public abstract class GraphAnalyzer {
      */
     protected abstract void calculateShortestPathsFromNode(
             int startNode,
-            PathLengthData pathsFromStartNode,
+            S pathsFromStartNode,
             TIntArrayStack stack);
 
     /**
-     * Given a node and its {@link PathLengthData} calculated in
+     * Given a node and its {@link S} calculated in
      * {@link #calculateCentralityMeasures(int)}, this method calculates
      * closeness centrality for the given node.
      *
@@ -251,7 +254,7 @@ public abstract class GraphAnalyzer {
      */
     protected void calculateClosenessForNode(
             int startNode,
-            PathLengthData pathsFromStartNode) {
+            S pathsFromStartNode) {
         // Get the average path length for the startNode.
         final double avgPathLength = getAveragePathLength(pathsFromStartNode);
         // Once we have the average path length for this node,
@@ -260,27 +263,29 @@ public abstract class GraphAnalyzer {
                 ? 1 / avgPathLength
                 : 0.0;
         // Store it.
-        final NodeBetweennessInfo startNodeInfo =
+        final T startNodeInfo =
                 nodeBetweenness.get(startNode);
         startNodeInfo.setCloseness(startNodeCloseness);
     }
 
     /**
-     * Returns the average path length from the given {@link PathLengthData}.
+     * Returns the average path length from the given {@link S}.
      *
-     * @param pathsFromStartNode The {@link PathLengthData}.
+     * @param pathsFromStartNode The {@link S}.
      *
      * @return The average path length.
      */
-    protected abstract double getAveragePathLength(
-            PathLengthData pathsFromStartNode);
+    private double getAveragePathLength(S pathsFromStartNode) {
+        return (pathsFromStartNode.getCount() > 0)
+                ? pathsFromStartNode.getAverageLength()
+                : 0.0;
+    }
 
     /**
      * Uses the recursion formula to calculate update the dependency values of
      * startNode on every node and their contributions to the betweenness values
      * of every node except startNode. Node that all these values are contained
-     * in the appropriate {@link NodeBetweennessInfo} of
-     * {@link #nodeBetweenness}.
+     * in the appropriate {@link T} of {@link #nodeBetweenness}.
      *
      * @param startNode The start node.
      * @param stack     The stack that returns nodes ordered by non-increasing
@@ -297,7 +302,7 @@ public abstract class GraphAnalyzer {
         // startNode, do:
         while (stack.size() != 0) {
             int w = stack.pop();
-            final NodeBetweennessInfo wNBInfo = nodeBetweenness.get(w);
+            final T wNBInfo = nodeBetweenness.get(w);
 
             // For every predecessor v of w on shortest paths from
             // startNode, do:
@@ -306,7 +311,7 @@ public abstract class GraphAnalyzer {
             TIntIterator it = predecessorSet.iterator();
             while (it.hasNext()) {
                 int predecessor = it.next();
-                final NodeBetweennessInfo predecessorNBInfo = nodeBetweenness.
+                final T predecessorNBInfo = nodeBetweenness.
                         get(predecessor);
 
                 // (A) Add the contribution of the dependency of startNode
@@ -352,7 +357,7 @@ public abstract class GraphAnalyzer {
         TIntIterator nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             final int node = nodeSetIterator.next();
-            final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
+            final T nodeNBInfo = nodeBetweenness.get(node);
             final double betweenness = nodeNBInfo.getBetweenness();
             final double normalizedBetweenness =
                     (betweenness - minBetweenness) / denominator;
@@ -371,7 +376,7 @@ public abstract class GraphAnalyzer {
         TIntIterator nodeSetIterator = nodeSet.iterator();
         while (nodeSetIterator.hasNext()) {
             int node = nodeSetIterator.next();
-            final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
+            final T nodeNBInfo = nodeBetweenness.get(node);
             final double betweenness = nodeNBInfo.getBetweenness();
             if (betweenness > maxBetweenness) {
                 maxBetweenness = betweenness;
@@ -381,8 +386,9 @@ public abstract class GraphAnalyzer {
             }
         }
         long stop = System.currentTimeMillis();
-        System.out.println("Found extreme values in "
-                + (stop - start) + " ms.");
+        System.out.println("Found extreme values ("
+                + minBetweenness + ", " + maxBetweenness
+                + ") in " + (stop - start) + " ms.");
     }
 
     /**
@@ -391,18 +397,26 @@ public abstract class GraphAnalyzer {
      *
      * @param startNode The start node.
      */
-    protected abstract void printSPInfo(int startNode);
-//    /**
-//     * Prints the given {@link TIntDoubleHashMap}.
-//     *
-//     * @param hashmap The given {@link TIntDoubleHashMap}.
-//     */
-//    public static void printHashMap(TIntDoubleHashMap hashmap) {
-//        TIntDoubleIterator it = hashmap.iterator();
-//        while (it.hasNext()) {
-//            it.advance();
-//            System.out.println("(" + it.key()
-//                    + "," + it.value() + ")");
-//        }
-//    }
+    protected void printSPInfo(int startNode) {
+        System.out.println("       d           SP    pred");
+        TIntIterator it = nodeSet.iterator();
+        while (it.hasNext()) {
+            int node = it.next();
+            final T nodeNBInfo = nodeBetweenness.get(node);
+            System.out.print("(" + startNode + "," + node + ")  ");
+            String formatString = "%-12";
+            if (this instanceof UnweightedGraphAnalyzer) {
+                formatString += "d";
+            } else {
+                formatString += "f";
+            }
+            formatString += "%-6d%-12s";
+            System.out.format(formatString,
+                              nodeNBInfo.getDistance(),
+                              nodeNBInfo.getSPCount(),
+                              nodeNBInfo.getPredecessors().toString());
+            System.out.println("");
+        }
+        System.out.println("");
+    }
 }

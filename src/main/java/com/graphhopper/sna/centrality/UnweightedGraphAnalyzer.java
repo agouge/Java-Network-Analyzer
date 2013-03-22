@@ -24,17 +24,14 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
-import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
+import com.graphhopper.sna.data.UnweightedPathLengthData;
+import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
-import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.GHUtility;
-import com.graphhopper.util.MyIntDeque;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Calculates various centrality measures on unweighted graphs <b>assumed to be
@@ -43,7 +40,8 @@ import java.util.Map;
  *
  * @author Adam Gouge
  */
-public class UnweightedGraphAnalyzer extends GraphAnalyzer {
+public class UnweightedGraphAnalyzer
+        extends GraphAnalyzer<UnweightedNodeBetweennessInfo, UnweightedPathLengthData> {
 
     /**
      * Initializes a new instance of an unweighted graph analyzer with the given
@@ -52,8 +50,12 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
      * @param graph The graph to be analyzed.
      * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public UnweightedGraphAnalyzer(Graph graph, ProgressMonitor pm) {
-        super(graph, pm);
+    public UnweightedGraphAnalyzer(Graph graph, ProgressMonitor pm) throws
+            NoSuchMethodException, InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
+        super(graph, pm, UnweightedNodeBetweennessInfo.class,
+              UnweightedPathLengthData.class);
     }
 
     /**
@@ -62,29 +64,17 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
      *
      * @param graph The graph to be analyzed.
      */
-    public UnweightedGraphAnalyzer(Graph graph) {
-        super(graph);
+    public UnweightedGraphAnalyzer(Graph graph) throws NoSuchMethodException,
+            InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        this(graph, new NullProgressMonitor());
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void init() {
-        nodeBetweenness.clear();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            nodeBetweenness.put(nodeSetIterator.next(),
-                                new UnweightedNodeBetweennessInfo());
-        }
-    }
-
-    /**
-     *
      * Calculates the number of shortest paths from startNode to every other
      * node and the lengths of these paths using a Breadth-First Search (BFS),
-     * storing them in the appropriate {@link NodeBetweennessInfo} of
-     * {@link #nodeBetweenness}; also updates the predecessor sets.
+     * storing them in the appropriate node info of {@link #nodeBetweenness};
+     * also updates the predecessor sets.
      *
      * @param startNode          The start node.
      * @param stack              The stack which will return nodes ordered by
@@ -96,84 +86,12 @@ public class UnweightedGraphAnalyzer extends GraphAnalyzer {
     @Override
     protected void calculateShortestPathsFromNode(
             int startNode,
-            PathLengthData pathsFromStartNode,
+            UnweightedPathLengthData pathsFromStartNode,
             TIntArrayStack stack) {
-
-        // Create the BFS traversal queue and enqueue startNode.
-        MyIntDeque queue = new MyIntDeque();
-        queue.push(startNode);
-
-        // While the queue is not empty ...
-        while (!queue.isEmpty()) {
-            // ... dequeue a node
-            int current = queue.pop();
-            final NodeBetweennessInfo currentNBInfo =
-                    nodeBetweenness.get(current);
-            // and push this node to the stack.
-            stack.push(current);
-
-            // Get the outgoing edges of the current node.
-            EdgeIterator edgesOfCurrentNode =
-                    GHUtility.getCarOutgoing(graph, current);
-            // For every neighbor of the current node ...
-            while (edgesOfCurrentNode.next()) {
-
-                int neighbor = edgesOfCurrentNode.node();
-                final NodeBetweennessInfo neighborNBInfo =
-                        nodeBetweenness.get(neighbor);
-
-                // If this neighbor is found for the first time ...
-                if (neighborNBInfo.getSteps() < 0) {
-                    // then enqueue it
-                    queue.push(neighbor);
-                    // and update the distance.
-                    int updatedSteps = currentNBInfo.getSteps() + 1;
-                    neighborNBInfo.setSteps(updatedSteps);
-                    // Add this to the path length data. (For closeness)
-                    pathsFromStartNode.addSPStep(updatedSteps);
-                }
-
-                // If this is a shortest path from startNode to neighbor
-                // via current ...
-                if (neighborNBInfo.getSteps()
-                        == currentNBInfo.getSteps() + 1) {
-                    // then update the number of shortest paths,
-                    neighborNBInfo.accumulateSPCount(currentNBInfo.getSPCount());
-                    // and add currentNode to the set of predecessors
-                    // of neighbor.
-                    neighborNBInfo.addPredecessor(current);
-                }
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected double getAveragePathLength(
-            PathLengthData pathsFromStartNode) {
-        return (pathsFromStartNode.getCount() > 0)
-                ? pathsFromStartNode.getAverageSteps()
-                : 0.0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void printSPInfo(int startNode) {
-        System.out.println("       d  SP pred");
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
-            int node = it.next();
-            final NodeBetweennessInfo nodeNBInfo = nodeBetweenness.get(node);
-            System.out.print("(" + startNode + "," + node + ")  ");
-            System.out.format("%-8d%-3d%-12s",
-                              nodeNBInfo.getSteps(),
-                              nodeNBInfo.getSPCount(),
-                              nodeNBInfo.getPredecessors().toString());
-            System.out.println("");
-        }
+        new BFSForCentrality(graph,
+                             startNode,
+                             nodeBetweenness,
+                             pathsFromStartNode,
+                             stack).calculate();
     }
 }

@@ -24,8 +24,8 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.PathLengthData;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.GHUtility;
@@ -63,11 +63,11 @@ public class DijkstraForCentrality extends Dijkstra {
      */
     public DijkstraForCentrality(
             Graph graph,
-            final Map<Integer, NodeBetweennessInfo> nodeBetweenness,
+            final Map<Integer, WeightedNodeBetweennessInfo> nodeBetweenness,
             int startNode,
             PathLengthData pathsFromStartNode,
             TIntArrayStack stack) {
-        super(graph, nodeBetweenness, startNode);
+        super(graph, startNode, nodeBetweenness);
         this.pathsFromStartNode = pathsFromStartNode;
         this.stack = stack;
     }
@@ -78,7 +78,7 @@ public class DijkstraForCentrality extends Dijkstra {
     @Override
     public void calculate() {
 
-        initializeSingleSource(graph, startNode);
+        nodeBetweenness.get(startNode).setSource();
 
         PriorityQueue<Integer> queue = createPriorityQueue();
         queue.add(startNode);

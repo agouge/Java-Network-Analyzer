@@ -24,7 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
@@ -53,7 +53,7 @@ public class AllPairsShortestPathsDijkstraTest extends DijkstraTest {
 
         long start = System.currentTimeMillis();
         TIntHashSet nodeSet = GraphAnalyzer.nodeSet(graph);
-        HashMap<Integer, NodeBetweennessInfo> nodeBetweenness =
+        HashMap<Integer, WeightedNodeBetweennessInfo> nodeBetweenness =
                 initDijkstra(graph, nodeSet);
         TIntIterator it = nodeSet.iterator();
         while (it.hasNext()) {
@@ -62,7 +62,7 @@ public class AllPairsShortestPathsDijkstraTest extends DijkstraTest {
 //                    "********************* "
 //                    + source
 //                    + " *********************");
-            dijkstra(graph, nodeBetweenness, source);
+            dijkstra(graph, source, nodeBetweenness);
             resetHashMap(nodeBetweenness, nodeSet);
         }
         long stop = System.currentTimeMillis();

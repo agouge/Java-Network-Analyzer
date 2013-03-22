@@ -24,7 +24,8 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
 import java.io.FileNotFoundException;
@@ -96,8 +97,8 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
      * @param unweightedResults The unweighted results.
      */
     private void checkResults(Graph graph,
-                              Map<Integer, NodeBetweennessInfo> weightedResults,
-                              Map<Integer, NodeBetweennessInfo> unweightedResults) {
+                              Map<Integer, WeightedNodeBetweennessInfo> weightedResults,
+                              Map<Integer, UnweightedNodeBetweennessInfo> unweightedResults) {
         TIntIterator iterator = GraphAnalyzer.nodeSet(graph).iterator();
         while (iterator.hasNext()) {
             int next = iterator.next();
@@ -117,28 +118,23 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
      * @param printResults Print results?
      */
     @Override
-    protected Map<Integer, NodeBetweennessInfo> doAnalysis(
+    protected Map<Integer, WeightedNodeBetweennessInfo> doAnalysis(
             Graph graph,
-            boolean verbose,
             boolean printResults) {
 
         // Do Unweighted analysis.
         UnweightedBidirectionalGraphAnalyzerTest unweightedTest =
                 new UnweightedBidirectionalGraphAnalyzerTest();
-        Map<Integer, NodeBetweennessInfo> unweightedResults =
-                verbose
-                ? unweightedTest.doVerboseAnalysis(graph)
-                : printResults
+        Map<Integer, UnweightedNodeBetweennessInfo> unweightedResults =
+                printResults
                 ? unweightedTest.doAnalysisPrintResults(graph)
                 : unweightedTest.doAnalysis(graph);
 
         // Do weighted analysis.
         WeightedBidirectionalGraphAnalyzerTest weightedTest =
                 new WeightedBidirectionalGraphAnalyzerTest();
-        Map<Integer, NodeBetweennessInfo> weightedResults =
-                verbose
-                ? weightedTest.doVerboseAnalysis(graph)
-                : printResults
+        Map<Integer, WeightedNodeBetweennessInfo> weightedResults =
+                printResults
                 ? weightedTest.doAnalysisPrintResults(graph)
                 : weightedTest.doAnalysis(graph);
 

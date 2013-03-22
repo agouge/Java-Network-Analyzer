@@ -29,11 +29,12 @@ import gnu.trove.set.hash.TIntHashSet;
 /**
  * Storage class for information needed by node betweenness calculation. <p> An
  * instance of this class is assigned to every node during the computation of
- * node and edge betweenness. </p>
+ * node betweenness. </p>
  *
  * @author Adam Gouge
  */
-public abstract class NodeBetweennessInfo {
+public abstract class NodeBetweennessInfo<T extends Number>
+        implements DistanceInfo<T> {
 
     /**
      * List of the predecessors of this node.
@@ -46,16 +47,6 @@ public abstract class NodeBetweennessInfo {
      * source.
      */
     protected long spCount;
-    /**
-     * Number of steps on a shortest path from a certain source leading to this
-     * node (BFS).
-     */
-    private int steps;
-    /**
-     * Length of a shortest path starting from a certain source leading to this
-     * node (Dijkstra).
-     */
-    private double distance;
     /**
      * Dependency of this node on any other vertex.
      */
@@ -78,8 +69,6 @@ public abstract class NodeBetweennessInfo {
     public NodeBetweennessInfo() {
 //        outedges = new TIntLinkedList();
         predecessors = new TIntHashSet();
-        steps = -1;
-        distance = Double.POSITIVE_INFINITY;
         spCount = 0;
         betweenness = 0.0;
         dependency = 0.0;
@@ -102,26 +91,6 @@ public abstract class NodeBetweennessInfo {
      */
     public double getDependency() {
         return dependency;
-    }
-
-    /**
-     * Returns the length of the shortest path from a source node to this node.
-     *
-     * @return The length of the shortest path from a source node to this node.
-     */
-    public double getDistance() {
-        return distance;
-    }
-
-    /**
-     * Returns the number of steps from a source node to this node on a shortest
-     * path (BFS).
-     *
-     * @return The number of steps from a source node to this node on a shortest
-     *         path (BFS).
-     */
-    public int getSteps() {
-        return steps;
     }
 
     /**
@@ -187,8 +156,6 @@ public abstract class NodeBetweennessInfo {
      */
     public void reset() {
         spCount = 0;
-        steps = -1;
-        distance = Double.POSITIVE_INFINITY;
         dependency = 0.0;
         predecessors.clear();
     }
@@ -196,10 +163,9 @@ public abstract class NodeBetweennessInfo {
     /**
      * Sets this node as the source node during initialization.
      */
+    @Override
     public void setSource() {
         spCount = 1;
-        steps = 0;
-        distance = 0.0;
         dependency = 0.0;
     }
 
@@ -237,24 +203,5 @@ public abstract class NodeBetweennessInfo {
      */
     public void setBetweenness(double betweenness) {
         this.betweenness = betweenness;
-    }
-
-    /**
-     * Sets the new length of a shortest path to this node from a source node.
-     *
-     * @param newDistance Length of a shortest path to this node.
-     */
-    public void setDistance(double newDistance) {
-        distance = newDistance;
-    }
-
-    /**
-     * Sets the number of steps on a shortest path from a certain source leading
-     * to this node.
-     *
-     * @param newSteps Number of steps to this node.
-     */
-    public void setSteps(int newSteps) {
-        steps = newSteps;
     }
 }
