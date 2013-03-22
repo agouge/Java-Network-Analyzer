@@ -26,6 +26,7 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.UnweightedPathLengthData;
+import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
@@ -66,8 +67,7 @@ public class UnweightedGraphAnalyzer
     public UnweightedGraphAnalyzer(Graph graph) throws NoSuchMethodException,
             InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
-        super(graph, UnweightedNodeBetweennessInfo.class,
-              UnweightedPathLengthData.class);
+        this(graph, new NullProgressMonitor());
     }
 
     /**
