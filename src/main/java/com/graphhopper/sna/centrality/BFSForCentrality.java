@@ -24,8 +24,8 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
+import com.graphhopper.sna.data.UnweightedPathLengthData;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.GHUtility;
@@ -48,7 +48,7 @@ public class BFSForCentrality extends BFS<UnweightedNodeBetweennessInfo> {
     /**
      * Data structure used to hold information used to calculate closeness.
      */
-    private final PathLengthData pathsFromStartNode;
+    private final UnweightedPathLengthData pathsFromStartNode;
 
     /**
      * Constructs a new {@link BFSForCentrality} object.
@@ -60,7 +60,7 @@ public class BFSForCentrality extends BFS<UnweightedNodeBetweennessInfo> {
     public BFSForCentrality(Graph graph,
                             int startNode,
                             Map<Integer, UnweightedNodeBetweennessInfo> nodeMap,
-                            PathLengthData pathsFromStartNode,
+                            UnweightedPathLengthData pathsFromStartNode,
                             TIntArrayStack stack) {
         super(graph, startNode, nodeMap);
         this.pathsFromStartNode = pathsFromStartNode;
@@ -104,7 +104,7 @@ public class BFSForCentrality extends BFS<UnweightedNodeBetweennessInfo> {
                     int updatedSteps = currentNBInfo.getDistance() + 1;
                     neighborNBInfo.setDistance(updatedSteps);
                     // Add this to the path length data. (For closeness)
-                    pathsFromStartNode.addSPStep(updatedSteps);
+                    pathsFromStartNode.addSPLength(updatedSteps);
                 }
 
                 // If this is a shortest path from startNode to neighbor

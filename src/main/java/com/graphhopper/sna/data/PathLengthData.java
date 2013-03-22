@@ -30,64 +30,24 @@ package com.graphhopper.sna.data;
  *
  * @author Adam Gouge
  */
-public class PathLengthData {
+public abstract class PathLengthData<T extends Number> {
 
     /**
      * Number of shortest path lengths accumulated in this instance.
      */
-    private int count;
+    protected int count;
     /**
-     * Sum of all shortest path steps accumulated in this instance.
+     * Error message to be given when no shortest path lengths have been
+     * accumulated.
      */
-    private long totalSteps;
-    /**
-     * Maximum shortest path step number accumulated in this instance.
-     */
-    private int maxSteps;
-    /**
-     * Sum of all shortest path lengths accumulated in this instance.
-     */
-    private double totalLength;
-    /**
-     * Maximum length of a shortest path accumulated in this instance.
-     */
-    private double maxLength;
+    protected static final String SPL_ERROR = "No shortest path lengths "
+            + "accumulated in this instance.";
 
     /**
      * Initializes a new instance of {@link PathLengthData}.
      */
     public PathLengthData() {
         count = 0;
-        totalSteps = 0;
-        maxSteps = 0;
-        totalLength = 0.0;
-        maxLength = 0.0;
-    }
-
-    /**
-     * Accumulates a new shortest path step to this data instance.
-     *
-     * @param aStep New shortest path step to be accumulated.
-     */
-    public void addSPStep(int aStep) {
-        count++;
-        totalSteps += aStep;
-        if (maxSteps < aStep) {
-            maxSteps = aStep;
-        }
-    }
-
-    /**
-     * Accumulates a new shortest path length to this data instance.
-     *
-     * @param aLength Length of a new shortest path to be accumulated.
-     */
-    public void addSPLength(double aLength) {
-        count++;
-        totalLength += aLength;
-        if (maxLength < aLength) {
-            maxLength = aLength;
-        }
     }
 
     /**
@@ -100,62 +60,25 @@ public class PathLengthData {
     }
 
     /**
-     * Gets the total number of shortest path steps.
+     * Accumulates a new shortest path length to this data instance.
      *
-     * @return Sum of all shortest path length steps accumulated in this
-     *         instance.
+     * @param length Length of a new shortest path to be accumulated.
      */
-    public long getTotalSteps() {
-        return totalSteps;
-    }
-
-    /**
-     * Gets the total length of shortest paths.
-     *
-     * @return Sum of all shortest path lengths accumulated in this instance.
-     */
-    public double getTotalLength() {
-        return totalLength;
-    }
-
-    /**
-     * Longest among the shortest path steps added to this data instance.
-     *
-     * @return Maximum shortest path steps accumulated in this instance.
-     */
-    public int getMaxSteps() {
-        return maxSteps;
-    }
+    public abstract void addSPLength(T length);
 
     /**
      * Longest among the shortest path lengths added to this data instance.
      *
      * @return Maximum length of a shortest path accumulated in this instance.
      */
-    public double getMaxLength() {
-        return maxLength;
-    }
+    public abstract T getMaxLength();
 
     /**
-     * Average shortest path steps.
+     * Gets the total length of shortest paths.
      *
-     * @return Average shortest path steps accumulated in this instance.
-     *
-     * @throws IllegalStateException If no SPLs were accumulated in this
-     *                               instance
-     *                               ({@link #getCount()}<code> == 0</code>).
+     * @return Sum of all shortest path lengths accumulated in this instance.
      */
-    public double getAverageSteps() {
-        if (count == 0) {
-            throw new IllegalStateException();
-        }
-//        // If the maximum length is "infinite", then return an infinite 
-//        // average path length.
-//        if (maxLength >= Integer.MAX_VALUE) {
-//            return Double.POSITIVE_INFINITY;
-//        }
-        return ((double) totalSteps) / count;
-    }
+    public abstract T getTotalLength();
 
     /**
      * Average shortest path length.
@@ -163,18 +86,12 @@ public class PathLengthData {
      * @return Average length of a shortest path accumulated in this instance.
      *
      * @throws IllegalStateException If no SPLs were accumulated in this
-     *                               instance
-     *                               ({@link #getCount()}<code> == 0</code>).
+     *                               instance.
      */
-    public double getAverageLength() {
-        if (count == 0) {
-            throw new IllegalStateException();
-        }
-//        // If the maximum length is "infinite", then return an infinite 
-//        // average path length.
-//        if (maxLength >= Integer.MAX_VALUE) {
-//            return Double.POSITIVE_INFINITY;
-//        }
-        return ((double) totalLength) / count;
-    }
+    // TODO: If the maximum length is "infinite", then return an infinite 
+    // average path length.
+    //        if (maxLength >= Integer.MAX_VALUE) {
+    //            return Double.POSITIVE_INFINITY;
+    //        }
+    public abstract double getAverageLength();
 }

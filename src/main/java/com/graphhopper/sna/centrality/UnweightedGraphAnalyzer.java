@@ -24,8 +24,8 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
+import com.graphhopper.sna.data.UnweightedPathLengthData;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
@@ -40,7 +40,7 @@ import java.lang.reflect.InvocationTargetException;
  * @author Adam Gouge
  */
 public class UnweightedGraphAnalyzer
-        extends GraphAnalyzer<UnweightedNodeBetweennessInfo> {
+        extends GraphAnalyzer<UnweightedNodeBetweennessInfo, UnweightedPathLengthData> {
 
     /**
      * Initializes a new instance of an unweighted graph analyzer with the given
@@ -53,7 +53,8 @@ public class UnweightedGraphAnalyzer
             NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
-        super(graph, pm, UnweightedNodeBetweennessInfo.class);
+        super(graph, pm, UnweightedNodeBetweennessInfo.class,
+              UnweightedPathLengthData.class);
     }
 
     /**
@@ -65,7 +66,8 @@ public class UnweightedGraphAnalyzer
     public UnweightedGraphAnalyzer(Graph graph) throws NoSuchMethodException,
             InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
-        super(graph, UnweightedNodeBetweennessInfo.class);
+        super(graph, UnweightedNodeBetweennessInfo.class,
+              UnweightedPathLengthData.class);
     }
 
     /**
@@ -84,7 +86,7 @@ public class UnweightedGraphAnalyzer
     @Override
     protected void calculateShortestPathsFromNode(
             int startNode,
-            PathLengthData pathsFromStartNode,
+            UnweightedPathLengthData pathsFromStartNode,
             TIntArrayStack stack) {
         BFSForCentrality algorithm =
                 new BFSForCentrality(graph,
@@ -93,17 +95,6 @@ public class UnweightedGraphAnalyzer
                                      pathsFromStartNode,
                                      stack);
         algorithm.calculate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected double getAveragePathLength(
-            PathLengthData pathsFromStartNode) {
-        return (pathsFromStartNode.getCount() > 0)
-                ? pathsFromStartNode.getAverageSteps()
-                : 0.0;
     }
 
     /**

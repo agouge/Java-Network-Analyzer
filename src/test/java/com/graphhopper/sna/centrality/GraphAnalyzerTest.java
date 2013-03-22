@@ -26,6 +26,7 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 /**
@@ -101,11 +102,12 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
      */
     protected Map<Integer, T> computeAll(
             GraphAnalyzer analyzer,
-            boolean printResults) {
+            boolean printResults) throws InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
         // Do network analysis.
         long start = System.currentTimeMillis();
-        Map<Integer, T> result = analyzer.
-                computeAll();
+        Map<Integer, T> result = analyzer.computeAll();
         long stop = System.currentTimeMillis();
         printTime(stop - start);
         if (printResults) {
