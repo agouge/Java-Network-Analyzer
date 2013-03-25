@@ -76,30 +76,51 @@ public abstract class NodeBetweennessInfo<T extends Number>
     }
 
     /**
+     * Resets all variables for the calculation of edge and node betweenness to
+     * their default values except the betweenness and closeness.
+     */
+    public void reset() {
+        spCount = 0;
+        dependency = 0.0;
+        predecessors.clear();
+    }
+
+    /**
+     * Sets this node as the source node during initialization.
+     */
+    @Override
+    public void setSource() {
+        spCount = 1;
+        dependency = 0.0;
+    }
+
+// ************************** PREDECESSORS **************************
+    /**
+     * Returns the predecessors.
+     *
+     * @return The predecessors.
+     */
+    public TIntHashSet getPredecessors() {
+        return predecessors;
+    }
+
+    /**
+     * Adds a predecessor to the predecessor list of this node
+     *
+     * @param pred Node to be added since it is a predecessor of this node
+     */
+    public void addPredecessor(int pred) {
+        predecessors.add(pred);
+    }
+
+// ************************** SP COUNT *****************************
+    /**
      * Gets the number of shortest paths to this node
      *
      * @return spCount Number of shortest paths to this node
      */
     public long getSPCount() {
         return spCount;
-    }
-
-    /**
-     * Gets the dependency of this node to any other vertex
-     *
-     * @return dependency Dependency of this node to any other vertex
-     */
-    public double getDependency() {
-        return dependency;
-    }
-
-    /**
-     * Gets the betweenness value for this node.
-     *
-     * @return The betweenness value of this node.
-     */
-    public double getBetweenness() {
-        return betweenness;
     }
 
     /**
@@ -121,6 +142,16 @@ public abstract class NodeBetweennessInfo<T extends Number>
         spCount = newSPCount;
     }
 
+// ************************** DEPENDENCY **************************
+    /**
+     * Gets the dependency of this node to any other vertex
+     *
+     * @return dependency Dependency of this node to any other vertex
+     */
+    public double getDependency() {
+        return dependency;
+    }
+
     /**
      * Accumulates the dependency of this node
      *
@@ -130,13 +161,14 @@ public abstract class NodeBetweennessInfo<T extends Number>
         dependency += additionalDependency;
     }
 
+// ************************** BETWEENNESS **************************
     /**
-     * Adds a predecessor to the predecessor list of this node
+     * Gets the betweenness value for this node.
      *
-     * @param pred Node to be added since it is a predecessor of this node
+     * @return The betweenness value of this node.
      */
-    public void addPredecessor(int pred) {
-        getPredecessors().add(pred);
+    public double getBetweenness() {
+        return betweenness;
     }
 
     /**
@@ -151,42 +183,15 @@ public abstract class NodeBetweennessInfo<T extends Number>
     }
 
     /**
-     * Resets all variables for the calculation of edge and node betweenness to
-     * their default values except the betweenness and closeness.
-     */
-    public void reset() {
-        spCount = 0;
-        dependency = 0.0;
-        predecessors.clear();
-    }
-
-    /**
-     * Sets this node as the source node during initialization.
-     */
-    @Override
-    public void setSource() {
-        spCount = 1;
-        dependency = 0.0;
-    }
-
-    /**
-     * Returns the predecessors.
+     * Sets the betweenness.
      *
-     * @return The predecessors.
+     * @param betweenness The betweenness to set.
      */
-    public TIntHashSet getPredecessors() {
-        return predecessors;
+    public void setBetweenness(double betweenness) {
+        this.betweenness = betweenness;
     }
 
-    /**
-     * Sets the closeness.
-     *
-     * @param closeness The closeness to set.
-     */
-    public void setCloseness(double closeness) {
-        this.closeness = closeness;
-    }
-
+// ************************** CLOSENESS **************************
     /**
      * Returns the closeness.
      *
@@ -197,11 +202,11 @@ public abstract class NodeBetweennessInfo<T extends Number>
     }
 
     /**
-     * Sets the betweenness.
+     * Sets the closeness.
      *
-     * @param betweenness The betweenness to set.
+     * @param closeness The closeness to set.
      */
-    public void setBetweenness(double betweenness) {
-        this.betweenness = betweenness;
+    public void setCloseness(double closeness) {
+        this.closeness = closeness;
     }
 }
