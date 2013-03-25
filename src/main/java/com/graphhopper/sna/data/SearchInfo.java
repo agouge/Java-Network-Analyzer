@@ -25,23 +25,11 @@
 package com.graphhopper.sna.data;
 
 /**
- * Interface for node info containing the distance from a source node.
+ * Root interface for node info for algorithms like BFS and Dijkstra that have a
+ * source node, distance info and predecessor info.
  *
  * @author Adam Gouge
  */
-public interface DistanceInfo<T extends Number> {
-
-    /**
-     * Returns the length of the shortest path from a source node to this node.
-     *
-     * @return The length of the shortest path from a source node to this node.
-     */
-    T getDistance();
-
-    /**
-     * Sets the new length of a shortest path from a source node to this node.
-     *
-     * @param newDistance Length of a shortest path to this node.
-     */
-    void setDistance(T newDistance);
+public interface SearchInfo<T extends Number>
+        extends SourceInfo, DistanceInfo<T>, PredecessorInfo {
 }

@@ -27,14 +27,14 @@ package com.graphhopper.sna.data;
 import gnu.trove.set.hash.TIntHashSet;
 
 /**
- * Storage class for information needed by node betweenness calculation. <p> An
- * instance of this class is assigned to every node during the computation of
- * node betweenness. </p>
+ * Node info needed by the node betweenness calculation. <p> An instance of this
+ * class is assigned to every node during the computation of node betweenness.
+ * </p>
  *
  * @author Adam Gouge
  */
 public abstract class NodeBetweennessInfo<T extends Number>
-        implements DistanceInfo<T> {
+        implements SearchInfo<T> {
 
     /**
      * List of the predecessors of this node.
@@ -95,20 +95,12 @@ public abstract class NodeBetweennessInfo<T extends Number>
     }
 
 // ************************** PREDECESSORS **************************
-    /**
-     * Returns the predecessors.
-     *
-     * @return The predecessors.
-     */
+    @Override
     public TIntHashSet getPredecessors() {
         return predecessors;
     }
 
-    /**
-     * Adds a predecessor to the predecessor list of this node
-     *
-     * @param pred Node to be added since it is a predecessor of this node
-     */
+    @Override
     public void addPredecessor(int pred) {
         predecessors.add(pred);
     }

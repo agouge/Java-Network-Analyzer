@@ -24,24 +24,26 @@
  */
 package com.graphhopper.sna.data;
 
+import gnu.trove.set.hash.TIntHashSet;
+
 /**
- * Interface for node info containing the distance from a source node.
+ * Interface for node info containing predecessors.
  *
  * @author Adam Gouge
  */
-public interface DistanceInfo<T extends Number> {
+public interface PredecessorInfo {
 
     /**
-     * Returns the length of the shortest path from a source node to this node.
+     * Returns the predecessors.
      *
-     * @return The length of the shortest path from a source node to this node.
+     * @return The predecessors.
      */
-    T getDistance();
+    TIntHashSet getPredecessors();
 
     /**
-     * Sets the new length of a shortest path from a source node to this node.
+     * Adds a predecessor to the predecessor list of this node
      *
-     * @param newDistance Length of a shortest path to this node.
+     * @param pred Node to be added since it is a predecessor of this node
      */
-    void setDistance(T newDistance);
+    public void addPredecessor(int pred);
 }
