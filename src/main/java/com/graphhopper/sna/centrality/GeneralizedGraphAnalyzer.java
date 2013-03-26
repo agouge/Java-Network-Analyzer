@@ -7,6 +7,8 @@ package com.graphhopper.sna.centrality;
 import static com.graphhopper.sna.centrality.GraphAnalyzer.nodeSet;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
+import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.GHUtility;
 import com.graphhopper.util.RawEdgeIterator;
 import gnu.trove.set.hash.TIntHashSet;
 
@@ -63,5 +65,23 @@ public abstract class GeneralizedGraphAnalyzer {
             set.add(iter.nodeB());
         }
         return set;
+    }
+
+    /**
+     * Returns the outdegree of the given node of the given graph.
+     *
+     * @param graph The graph.
+     * @param node  The node.
+     *
+     * @return The outdegree.
+     */
+    protected static int outDegree(Graph graph, int node) {
+        int outDegree = 0;
+        EdgeIterator outgoingEdges =
+                GHUtility.getCarOutgoing(graph, node);
+        while (outgoingEdges.next()) {
+            outDegree++;
+        }
+        return outDegree;
     }
 }
