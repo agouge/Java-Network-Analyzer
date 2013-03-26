@@ -69,10 +69,9 @@ public class DFS<T extends DFSInfo> {
     }
 
     /**
-     * Do the depth first search.
+     * Do the depth first search for all nodes in the graph.
      */
     protected void calculate() {
-
         TIntHashSet nodeSet = GeneralizedGraphAnalyzer.nodeSet(graph);
         TIntIterator it = nodeSet.iterator();
         while (it.hasNext()) {
@@ -84,27 +83,27 @@ public class DFS<T extends DFSInfo> {
     }
 
     /**
-     * Visit the current node, updating its predecessor and discovery and
+     * Visit the given node, updating its predecessor and discovery and
      * finishing times.
      *
-     * @param current
+     * @param node The node.
      */
-    private void visit(int current) {
+    protected void visit(int node) {
 
         time++;
 
-        T currentInfo = nodeMap.get(current);
+        T currentInfo = nodeMap.get(node);
         currentInfo.setDiscoveryTime(time);
 
         EdgeIterator outgoingEdges =
-                GHUtility.getCarOutgoing(graph, current);
+                GHUtility.getCarOutgoing(graph, node);
         while (outgoingEdges.next()) {
 
             int neighbor = outgoingEdges.node();
             T neighborInfo = nodeMap.get(neighbor);
 
             if (neighborInfo.getDiscoveryTime() < 0) {
-                neighborInfo.addPredecessor(current);
+                neighborInfo.addPredecessor(node);
                 visit(neighbor);
             }
         }
