@@ -76,15 +76,14 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
     private void calculateStrahlerNumber(int node) {
         StrahlerInfo info = nodeMap.get(node);
 
-        if (info.getFinishingTime() == info.getDiscoveryTime() + 1) {
+        // Get the outdegree of this node.
+        int outDegree = GeneralizedGraphAnalyzer.outDegree(graph, node);
+
+        if (outDegree == 0) {
             // All leafs have a Strahler number of 1. 
-            // (Leafs have the property that their finishing times are one 
-            // more than their discovery times.)
             info.setStrahlerNumber(1);
         } else {
-            // If this is not a leaf, we must consider the outdegree.
-            int outDegree = GeneralizedGraphAnalyzer
-                    .outDegree(graph, node);
+            // For non-leaves, we have to consider the children.
             EdgeIterator outgoingEdges =
                     GHUtility.getCarOutgoing(graph, node);
 
