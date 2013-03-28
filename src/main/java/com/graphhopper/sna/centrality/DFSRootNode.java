@@ -5,8 +5,8 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.DFSInfo;
-import com.graphhopper.sna.data.StrahlerInfo;
 import com.graphhopper.storage.Graph;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 /**
@@ -29,9 +29,11 @@ public class DFSRootNode<T extends DFSInfo> extends DFS<T> {
      * @param startNode The start node.
      */
     public DFSRootNode(Graph graph,
-                       final Map<Integer, T> nodeMap,
-                       int rootNode) {
-        super(graph, nodeMap);
+                       Class<? extends T> infoClass,
+                       int rootNode) throws NoSuchMethodException,
+            InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        super(graph, infoClass);
         this.rootNode = rootNode;
     }
 
@@ -39,7 +41,8 @@ public class DFSRootNode<T extends DFSInfo> extends DFS<T> {
      * Start a DFS search from the root node.
      */
     @Override
-    protected void calculate() {
+    public Map<Integer, T> calculate() {
         visit(rootNode);
+        return nodeMap;
     }
 }

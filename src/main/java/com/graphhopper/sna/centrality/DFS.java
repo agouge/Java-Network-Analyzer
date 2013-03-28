@@ -30,6 +30,9 @@ import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.GHUtility;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -55,6 +58,10 @@ public class DFS<T extends DFSInfo> {
      * For discovery and finishing times.
      */
     private int time = 0;
+    /**
+     * Constructor for {@link T} objects.
+     */
+    private final Constructor<? extends T> tConstructor;
 
     /**
      * Constructs a new {@link DFS} object.
@@ -63,15 +70,32 @@ public class DFS<T extends DFSInfo> {
      * @param nodeMap Maps nodes to their info.
      */
     public DFS(Graph graph,
-               final Map<Integer, T> nodeMap) {
+               Class<? extends T> infoClass) throws NoSuchMethodException,
+            InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
         this.graph = graph;
-        this.nodeMap = nodeMap;
+        this.nodeMap = new HashMap<Integer, T>();
+        this.tConstructor = infoClass.getConstructor();
+        init();
+    }
+
+    /**
+     * Initializes the node info map.
+     */
+    private void init() throws InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
+        TIntHashSet nodeSet = GeneralizedGraphAnalyzer.nodeSet(graph);
+        TIntIterator it = nodeSet.iterator();
+        while (it.hasNext()) {
+            nodeMap.put(it.next(), tConstructor.newInstance());
+        }
     }
 
     /**
      * Do the depth first search for all nodes in the graph.
      */
-    protected void calculate() {
+    public Map<Integer, T> calculate() {
         TIntHashSet nodeSet = GeneralizedGraphAnalyzer.nodeSet(graph);
         TIntIterator it = nodeSet.iterator();
         while (it.hasNext()) {
@@ -80,6 +104,7 @@ public class DFS<T extends DFSInfo> {
                 visit(current);
             }
         }
+        return nodeMap;
     }
 
     /**

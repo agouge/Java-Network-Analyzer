@@ -56,8 +56,9 @@ public class StrahlerTest extends DFSTest {
             InvocationTargetException {
 
         Graph graph = prepareTree();
-        Map<Integer, StrahlerInfo> nodeMap = init(graph);
-        new DFSForStrahler(graph, nodeMap, 1).calculate();
+        Map<Integer, StrahlerInfo> nodeMap =
+                new DFSForStrahler(graph, StrahlerInfo.class, 1)
+                .calculate();
 
         assertEquals(nodeMap.get(1).getStrahlerNumber(), 3);
         assertEquals(nodeMap.get(2).getStrahlerNumber(), 1);
@@ -79,23 +80,5 @@ public class StrahlerTest extends DFSTest {
         assertEquals(nodeMap.get(18).getStrahlerNumber(), 2);
         assertEquals(nodeMap.get(19).getStrahlerNumber(), 1);
         assertEquals(nodeMap.get(20).getStrahlerNumber(), 1);
-    }
-
-    /**
-     * Initializes the node info map.
-     *
-     * @param graph The input graph.
-     *
-     * @return The newly initialized node info map.
-     */
-    protected Map<Integer, StrahlerInfo> init(Graph graph) {
-        Map<Integer, StrahlerInfo> nodeMap =
-                new HashMap<Integer, StrahlerInfo>();
-        TIntHashSet nodeSet = GeneralizedGraphAnalyzer.nodeSet(graph);
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
-            nodeMap.put(it.next(), new StrahlerInfo());
-        }
-        return nodeMap;
     }
 }

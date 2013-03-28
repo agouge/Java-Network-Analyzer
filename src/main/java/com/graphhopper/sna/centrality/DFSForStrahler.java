@@ -28,7 +28,7 @@ import com.graphhopper.sna.data.StrahlerInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.GHUtility;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Calculates the Strahler numbers of the nodes in the given tree.
@@ -50,9 +50,11 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
      * @param rootNode The root node.
      */
     public DFSForStrahler(Graph graph,
-                          final Map<Integer, StrahlerInfo> nodeMap,
-                          int rootNode) {
-        super(graph, nodeMap, rootNode);
+                          Class<? extends StrahlerInfo> infoClass,
+                          int rootNode) throws NoSuchMethodException,
+            InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        super(graph, infoClass, rootNode);
     }
 
     /**
@@ -73,8 +75,6 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
      */
     private void calculateStrahlerNumber(int node) {
         StrahlerInfo info = nodeMap.get(node);
-
-        String infoString = String.valueOf(node);
 
         if (info.getFinishingTime() == info.getDiscoveryTime() + 1) {
             // All leafs have a Strahler number of 1. 
