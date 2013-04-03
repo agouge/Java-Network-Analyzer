@@ -4,12 +4,13 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.routing.util.AllEdgesIterator;
+import com.graphhopper.routing.util.CarFlagEncoder;
+import com.graphhopper.routing.util.DefaultEdgeFilter;
 import static com.graphhopper.sna.centrality.GraphAnalyzer.nodeSet;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.GHUtility;
-import com.graphhopper.util.RawEdgeIterator;
 import gnu.trove.set.hash.TIntHashSet;
 
 /**
@@ -58,11 +59,11 @@ public abstract class GeneralizedGraphAnalyzer {
         // Initialize the Set.
         TIntHashSet set = new TIntHashSet();
         // Get all the edges.
-        RawEdgeIterator iter = graph.getAllEdges();
+        AllEdgesIterator iter = graph.getAllEdges();
         // Add each source and destination node to the set.
         while (iter.next()) {
-            set.add(iter.nodeA());
-            set.add(iter.nodeB());
+            set.add(iter.baseNode());
+            set.add(iter.adjNode());
         }
         return set;
     }
@@ -77,11 +78,25 @@ public abstract class GeneralizedGraphAnalyzer {
      */
     protected static int outDegree(Graph graph, int node) {
         int outDegree = 0;
-        EdgeIterator outgoingEdges =
-                GHUtility.getCarOutgoing(graph, node);
+        EdgeIterator outgoingEdges = outgoingEdges(graph, node);
         while (outgoingEdges.next()) {
             outDegree++;
         }
         return outDegree;
+    }
+
+    /**
+     * Get an iterator on the outgoing edges of the given node.
+     *
+     * @param graph The graph
+     * @param node  The node
+     *
+     * @return An iterator on the outgoing edges of the given node.
+     */
+    protected static EdgeIterator outgoingEdges(Graph graph, int node) {
+        return graph.getEdges(node,
+                              new DefaultEdgeFilter(new CarFlagEncoder(),
+                                                    false,
+                                                    true));
     }
 }

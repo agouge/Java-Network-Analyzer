@@ -28,7 +28,6 @@ import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.GHUtility;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -82,9 +81,9 @@ public class Dijkstra extends GraphSearchAlgorithm {
             int u = queue.poll();
             // Relax every neighbor of u.
             EdgeIterator outgoingEdges =
-                    GHUtility.getCarOutgoing(graph, u);
+                    GeneralizedGraphAnalyzer.outgoingEdges(graph, u);
             while (outgoingEdges.next()) {
-                int v = outgoingEdges.node();
+                int v = outgoingEdges.adjNode();
                 double uvWeight = outgoingEdges.distance();
                 relax(u, v, uvWeight, queue);
             }

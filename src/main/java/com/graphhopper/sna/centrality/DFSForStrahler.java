@@ -27,7 +27,6 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.StrahlerInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.GHUtility;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -86,13 +85,13 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
             int outDegree = GeneralizedGraphAnalyzer
                     .outDegree(graph, node);
             EdgeIterator outgoingEdges =
-                    GHUtility.getCarOutgoing(graph, node);
+                    GeneralizedGraphAnalyzer.outgoingEdges(graph, node);
 
             if (outDegree == 1) {
                 // If there is only one child, then the Strahler number is
                 // the same as that of the child.
                 outgoingEdges.next();
-                int child = outgoingEdges.node();
+                int child = outgoingEdges.adjNode();
                 info.setStrahlerNumber(nodeMap.get(child).getStrahlerNumber());
             } else {
 
@@ -130,7 +129,7 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
         int max = Integer.MIN_VALUE;
         int secondLargest = Integer.MIN_VALUE;
         while (outgoingEdges.next()) {
-            int current = nodeMap.get(outgoingEdges.node())
+            int current = nodeMap.get(outgoingEdges.adjNode())
                     .getStrahlerNumber();
             if (current > max) {
                 secondLargest = max;

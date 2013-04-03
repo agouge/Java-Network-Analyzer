@@ -27,7 +27,6 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.DFSInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.GHUtility;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import java.lang.reflect.Constructor;
@@ -121,10 +120,10 @@ public class DFS<T extends DFSInfo> {
         currentInfo.setDiscoveryTime(time);
 
         EdgeIterator outgoingEdges =
-                GHUtility.getCarOutgoing(graph, node);
+                    GeneralizedGraphAnalyzer.outgoingEdges(graph, node);
         while (outgoingEdges.next()) {
 
-            int neighbor = outgoingEdges.node();
+            int neighbor = outgoingEdges.adjNode();
             T neighborInfo = nodeMap.get(neighbor);
 
             if (neighborInfo.getDiscoveryTime() < 0) {
