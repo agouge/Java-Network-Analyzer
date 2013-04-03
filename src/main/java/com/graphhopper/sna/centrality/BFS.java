@@ -27,7 +27,6 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.SearchInfo;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.GHUtility;
 import com.graphhopper.util.MyIntDeque;
 import java.util.Map;
 
@@ -84,10 +83,10 @@ public class BFS<T extends SearchInfo<Integer>>
 
             // For every neighbor of the current node ...
             EdgeIterator outgoingEdges =
-                    GHUtility.getCarOutgoing(graph, current);
+                    GeneralizedGraphAnalyzer.outgoingEdges(graph, current);
             while (outgoingEdges.next()) {
 
-                int neighbor = outgoingEdges.node();
+                int neighbor = outgoingEdges.adjNode();
                 final T neighborNBInfo = nodeMap.get(neighbor);
 
                 // If this neighbor is found for the first time ...
