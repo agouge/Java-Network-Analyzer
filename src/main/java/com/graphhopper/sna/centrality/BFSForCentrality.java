@@ -28,7 +28,6 @@ import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.UnweightedPathLengthData;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.GHUtility;
 import com.graphhopper.util.MyIntDeque;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.Map;
@@ -88,11 +87,11 @@ public class BFSForCentrality extends BFS<UnweightedNodeBetweennessInfo> {
 
             // Get the outgoing edges of the current node.
             EdgeIterator edgesOfCurrentNode =
-                    GHUtility.getCarOutgoing(graph, current);
+                    GeneralizedGraphAnalyzer.outgoingEdges(graph, current);
             // For every neighbor of the current node ...
             while (edgesOfCurrentNode.next()) {
 
-                int neighbor = edgesOfCurrentNode.node();
+                int neighbor = edgesOfCurrentNode.adjNode();
                 final UnweightedNodeBetweennessInfo neighborNBInfo =
                         nodeMap.get(neighbor);
 
