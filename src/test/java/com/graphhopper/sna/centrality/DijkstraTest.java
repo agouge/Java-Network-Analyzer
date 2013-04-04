@@ -89,11 +89,11 @@ public class DijkstraTest extends CentralityTest {
         HashMap<Integer, WeightedNodeBetweennessInfo> nodeBetweenness =
                 new HashMap<Integer, WeightedNodeBetweennessInfo>();
         nodeBetweenness.clear();
-        TIntIterator it = nodeSet.iterator();
 //        long start2 = System.currentTimeMillis();
 //        long stop2;
 //        int count = 0;
-        while (it.hasNext()) {
+        for (TIntIterator it = nodeSet.iterator();
+                it.hasNext();) {
 //            count++;
             nodeBetweenness.put(it.next(), new WeightedNodeBetweennessInfo());
 //            if ((count % 1000) == 0) {
@@ -120,8 +120,8 @@ public class DijkstraTest extends CentralityTest {
     protected void resetHashMap(
             HashMap<Integer, WeightedNodeBetweennessInfo> nodeBetweenness,
             TIntHashSet nodeSet) {
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
+        for (TIntIterator it = nodeSet.iterator();
+                it.hasNext();) {
             nodeBetweenness.get(it.next()).reset();
         }
     }

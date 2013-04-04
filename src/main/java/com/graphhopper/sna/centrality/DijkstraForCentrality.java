@@ -98,9 +98,9 @@ public class DijkstraForCentrality extends Dijkstra {
                         nodeBetweenness.get(u).getDistance());
             }
             // Relax every neighbor of u.
-            EdgeIterator outgoingEdges =
+            for (EdgeIterator outgoingEdges =
                     GeneralizedGraphAnalyzer.outgoingEdges(graph, u);
-            while (outgoingEdges.next()) {
+                    outgoingEdges.next();) {
                 int v = outgoingEdges.adjNode();
                 double uvWeight = outgoingEdges.distance();
                 relax(u, v, uvWeight, queue);

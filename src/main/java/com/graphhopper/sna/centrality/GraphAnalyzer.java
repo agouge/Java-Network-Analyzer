@@ -121,9 +121,9 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo, S extends Pat
             IllegalArgumentException,
             InvocationTargetException {
         nodeBetweenness.clear();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            nodeBetweenness.put(nodeSetIterator.next(),
+        for (TIntIterator it = nodeSet.iterator();
+                it.hasNext();) {
+            nodeBetweenness.put(it.next(),
                                 tConstructor.newInstance());
         }
     }
@@ -147,8 +147,8 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo, S extends Pat
         pm.setProgress(count, startTime);
 
         // ***** CENTRALITY CONTRIBUTION FROM EACH NODE ********
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
+        for (TIntIterator it = nodeSet.iterator();
+                it.hasNext();) {
             // Update the count.
             count++;
 
@@ -158,7 +158,7 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo, S extends Pat
             }
 
             // Calculate betweenness and closeness for each node.
-            calculateCentralityContributionFromNode(nodeSetIterator.next());
+            calculateCentralityContributionFromNode(it.next());
 
             // Update and print the progress.
             pm.setProgress(count, startTime);
@@ -178,8 +178,8 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo, S extends Pat
      * closeness) of every node.
      */
     private void resetBetweenness() {
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
+        for (TIntIterator it = nodeSet.iterator();
+                it.hasNext();) {
             nodeBetweenness.get(it.next()).reset();
         }
     }
@@ -306,10 +306,9 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo, S extends Pat
 
             // For every predecessor v of w on shortest paths from
             // startNode, do:
-            TIntHashSet predecessorSet = wNBInfo.getPredecessors();
-//                printPredecessorList(w, predecessorList);
-            TIntIterator it = predecessorSet.iterator();
-            while (it.hasNext()) {
+            for (TIntIterator it = wNBInfo.getPredecessors().iterator();
+                    it.hasNext();) {
+                // printPredecessorList(w, predecessorList);
                 int predecessor = it.next();
                 final T predecessorNBInfo = nodeBetweenness.
                         get(predecessor);
@@ -354,9 +353,9 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo, S extends Pat
 
         long start = System.currentTimeMillis();
         final double denominator = maxBetweenness - minBetweenness;
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            final int node = nodeSetIterator.next();
+        for (TIntIterator it = nodeSet.iterator();
+                it.hasNext();) {
+            final int node = it.next();
             final T nodeNBInfo = nodeBetweenness.get(node);
             final double betweenness = nodeNBInfo.getBetweenness();
             final double normalizedBetweenness =
@@ -373,9 +372,9 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo, S extends Pat
      */
     private void findExtremeBetweennessValues() {
         long start = System.currentTimeMillis();
-        TIntIterator nodeSetIterator = nodeSet.iterator();
-        while (nodeSetIterator.hasNext()) {
-            int node = nodeSetIterator.next();
+        for (TIntIterator it = nodeSet.iterator();
+                it.hasNext();) {
+            int node = it.next();
             final T nodeNBInfo = nodeBetweenness.get(node);
             final double betweenness = nodeNBInfo.getBetweenness();
             if (betweenness > maxBetweenness) {
@@ -399,8 +398,8 @@ public abstract class GraphAnalyzer<T extends NodeBetweennessInfo, S extends Pat
      */
     protected void printSPInfo(int startNode) {
         System.out.println("       d           SP    pred");
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
+        for (TIntIterator it = nodeSet.iterator();
+                it.hasNext();) {
             int node = it.next();
             final T nodeNBInfo = nodeBetweenness.get(node);
             System.out.print("(" + startNode + "," + node + ")  ");
