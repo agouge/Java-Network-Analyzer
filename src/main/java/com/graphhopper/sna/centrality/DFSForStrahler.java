@@ -84,12 +84,12 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
             // If this is not a leaf, we must consider the outdegree.
             int outDegree = GeneralizedGraphAnalyzer
                     .outDegree(graph, node);
-            EdgeIterator outgoingEdges =
-                    GeneralizedGraphAnalyzer.outgoingEdges(graph, node);
 
             if (outDegree == 1) {
                 // If there is only one child, then the Strahler number is
                 // the same as that of the child.
+                EdgeIterator outgoingEdges =
+                        GeneralizedGraphAnalyzer.outgoingEdges(graph, node);
                 outgoingEdges.next();
                 int child = outgoingEdges.adjNode();
                 info.setStrahlerNumber(nodeMap.get(child).getStrahlerNumber());
@@ -97,7 +97,7 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
 
                 // Otherwise the outdegree is >= 2, so consider the top two
                 // Strahler numbers.
-                int[] topTwo = topTwoStrahlerNumbers(outgoingEdges);
+                int[] topTwo = topTwoStrahlerNumbers(node);
                 int max = topTwo[0];
                 int secondLargest = topTwo[1];
 
@@ -119,16 +119,18 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
 
     /**
      * Returns a 2-element array consisting of the largest and second largest
-     * Strahler numbers of the given child nodes.
+     * Strahler numbers of children of the given node.
      *
-     * @param outgoingEdges An iterator over the outgoing edges.
+     * @param node The node
      *
-     * @return The top two Strahler numbers.
+     * @return The top two Strahler numbers of the node's children.
      */
-    private int[] topTwoStrahlerNumbers(EdgeIterator outgoingEdges) {
+    private int[] topTwoStrahlerNumbers(int node) {
         int max = Integer.MIN_VALUE;
         int secondLargest = Integer.MIN_VALUE;
-        while (outgoingEdges.next()) {
+        for (EdgeIterator outgoingEdges =
+                GeneralizedGraphAnalyzer.outgoingEdges(graph, node);
+                outgoingEdges.next();) {
             int current = nodeMap.get(outgoingEdges.adjNode())
                     .getStrahlerNumber();
             if (current > max) {

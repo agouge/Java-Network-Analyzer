@@ -58,12 +58,11 @@ public abstract class GeneralizedGraphAnalyzer {
     protected static TIntHashSet nodeSet(Graph graph) {
         // Initialize the Set.
         TIntHashSet set = new TIntHashSet();
-        // Get all the edges.
-        AllEdgesIterator iter = graph.getAllEdges();
         // Add each source and destination node to the set.
-        while (iter.next()) {
-            set.add(iter.baseNode());
-            set.add(iter.adjNode());
+        for (AllEdgesIterator i = graph.getAllEdges();
+                i.next();) {
+            set.add(i.baseNode());
+            set.add(i.adjNode());
         }
         return set;
     }
@@ -78,8 +77,8 @@ public abstract class GeneralizedGraphAnalyzer {
      */
     public static int outDegree(Graph graph, int node) {
         int outDegree = 0;
-        EdgeIterator outgoingEdges = outgoingEdges(graph, node);
-        while (outgoingEdges.next()) {
+        for (EdgeIterator outgoingEdges = outgoingEdges(graph, node);
+                outgoingEdges.next();) {
             outDegree++;
         }
         return outDegree;

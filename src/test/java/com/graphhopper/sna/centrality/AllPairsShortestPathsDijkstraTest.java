@@ -55,8 +55,8 @@ public class AllPairsShortestPathsDijkstraTest extends DijkstraTest {
         TIntHashSet nodeSet = GraphAnalyzer.nodeSet(graph);
         HashMap<Integer, WeightedNodeBetweennessInfo> nodeBetweenness =
                 initDijkstra(graph, nodeSet);
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
+        for (TIntIterator it = nodeSet.iterator();
+                it.hasNext();) {
             int source = it.next();
 //            System.out.println(
 //                    "********************* "
