@@ -99,9 +99,9 @@ public class WeightedVsUnweightedComparisonTest extends GraphAnalyzerTest {
     private void checkResults(Graph graph,
                               Map<Integer, WeightedNodeBetweennessInfo> weightedResults,
                               Map<Integer, UnweightedNodeBetweennessInfo> unweightedResults) {
-        TIntIterator iterator = GraphAnalyzer.nodeSet(graph).iterator();
-        while (iterator.hasNext()) {
-            int next = iterator.next();
+        for (TIntIterator it = GraphAnalyzer.nodeSet(graph).iterator();
+                it.hasNext();) {
+            int next = it.next();
             assertEquals(weightedResults.get(next).getBetweenness(),
                          unweightedResults.get(next).getBetweenness(), TOLERANCE);
             assertEquals(weightedResults.get(next).getCloseness(),

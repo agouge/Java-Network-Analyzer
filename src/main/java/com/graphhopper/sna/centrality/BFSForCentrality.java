@@ -85,13 +85,12 @@ public class BFSForCentrality extends BFS<UnweightedNodeBetweennessInfo> {
             // and push this node to the stack.
             stack.push(current);
 
-            // Get the outgoing edges of the current node.
-            EdgeIterator edgesOfCurrentNode =
-                    GeneralizedGraphAnalyzer.outgoingEdges(graph, current);
             // For every neighbor of the current node ...
-            while (edgesOfCurrentNode.next()) {
+            for (EdgeIterator outgoingEdges =
+                    GeneralizedGraphAnalyzer.outgoingEdges(graph, current);
+                    outgoingEdges.next();) {
 
-                int neighbor = edgesOfCurrentNode.adjNode();
+                int neighbor = outgoingEdges.adjNode();
                 final UnweightedNodeBetweennessInfo neighborNBInfo =
                         nodeMap.get(neighbor);
 

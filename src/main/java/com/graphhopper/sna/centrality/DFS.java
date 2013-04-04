@@ -85,8 +85,8 @@ public class DFS<T extends DFSInfo> {
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
         TIntHashSet nodeSet = GeneralizedGraphAnalyzer.nodeSet(graph);
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
+        for (TIntIterator it = nodeSet.iterator();
+                it.hasNext();) {
             nodeMap.put(it.next(), tConstructor.newInstance());
         }
     }
@@ -96,8 +96,8 @@ public class DFS<T extends DFSInfo> {
      */
     public Map<Integer, T> calculate() {
         TIntHashSet nodeSet = GeneralizedGraphAnalyzer.nodeSet(graph);
-        TIntIterator it = nodeSet.iterator();
-        while (it.hasNext()) {
+        for (TIntIterator it = nodeSet.iterator();
+                it.hasNext();) {
             int current = it.next();
             if (nodeMap.get(current).getDiscoveryTime() < 0) {
                 visit(current);
@@ -119,9 +119,9 @@ public class DFS<T extends DFSInfo> {
         T currentInfo = nodeMap.get(node);
         currentInfo.setDiscoveryTime(time);
 
-        EdgeIterator outgoingEdges =
-                    GeneralizedGraphAnalyzer.outgoingEdges(graph, node);
-        while (outgoingEdges.next()) {
+        for (EdgeIterator outgoingEdges =
+                GeneralizedGraphAnalyzer.outgoingEdges(graph, node);
+                outgoingEdges.next();) {
 
             int neighbor = outgoingEdges.adjNode();
             T neighborInfo = nodeMap.get(neighbor);

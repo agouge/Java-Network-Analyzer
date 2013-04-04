@@ -82,10 +82,9 @@ public class BFS<T extends SearchInfo<Integer>>
             final T currentNBInfo = nodeMap.get(current);
 
             // For every neighbor of the current node ...
-            EdgeIterator outgoingEdges =
+            for (EdgeIterator outgoingEdges =
                     GeneralizedGraphAnalyzer.outgoingEdges(graph, current);
-            while (outgoingEdges.next()) {
-
+                    outgoingEdges.next();) {
                 int neighbor = outgoingEdges.adjNode();
                 final T neighborNBInfo = nodeMap.get(neighbor);
 

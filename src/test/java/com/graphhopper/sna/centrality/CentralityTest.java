@@ -96,11 +96,11 @@ public abstract class CentralityTest<T extends NodeBetweennessInfo> {
                           "v",
                           "Closeness");
         System.out.println("");
-        TIntDoubleIterator iterator = result.iterator();
-        while (iterator.hasNext()) {
-            iterator.advance();
-            final int id = iterator.key();
-            final double closeness = iterator.value();
+        for (TIntDoubleIterator it = result.iterator();
+                it.hasNext();) {
+            it.advance();
+            final int id = it.key();
+            final double closeness = it.value();
             System.out.println(id + ",  " + closeness);
         }
     }
