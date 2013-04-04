@@ -76,7 +76,7 @@ public abstract class GeneralizedGraphAnalyzer {
      *
      * @return The outdegree.
      */
-    protected static int outDegree(Graph graph, int node) {
+    public static int outDegree(Graph graph, int node) {
         int outDegree = 0;
         EdgeIterator outgoingEdges = outgoingEdges(graph, node);
         while (outgoingEdges.next()) {
@@ -93,7 +93,7 @@ public abstract class GeneralizedGraphAnalyzer {
      *
      * @return An iterator on the outgoing edges of the given node.
      */
-    protected static EdgeIterator outgoingEdges(Graph graph, int node) {
+    public static EdgeIterator outgoingEdges(Graph graph, int node) {
         return graph.getEdges(node,
                               new DefaultEdgeFilter(new CarFlagEncoder(),
                                                     false,
