@@ -25,7 +25,6 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.DFSInfo;
-import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
@@ -33,34 +32,32 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.NeighborIndex;
+import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Root Depth First Search (DFS) class.
  *
- * @param <T> The data structure to hold node information during the execution
+ * @param <V> The data structure to hold node information during the execution
  *            of DFS.
  *
  * @author Adam Gouge
  */
-public class DFS<T extends DFSInfo> {
+public class DFS<V extends DFSInfo, E> {
 
     /**
      * The graph on which to calculate shortest paths.
      */
-    protected final Graph graph;
+    protected final Graph<V, E> graph;
     /**
-     * Stores information calculated during the execution of BFS in
-     * {@link BFS#calculate()}.
+     * Neighbor index.
      */
-    protected final Map<Integer, T> nodeMap;
+    protected final NeighborIndex<V, E> neighborIndex;
     /**
      * For discovery and finishing times.
      */
     private int time = 0;
-    /**
-     * Constructor for {@link T} objects.
-     */
-    private final Constructor<? extends T> tConstructor;
 
     /**
      * Constructs a new {@link DFS} object.
@@ -68,42 +65,20 @@ public class DFS<T extends DFSInfo> {
      * @param graph   The graph.
      * @param nodeMap Maps nodes to their info.
      */
-    public DFS(Graph graph,
-               Class<? extends T> infoClass) throws NoSuchMethodException,
-            InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException {
+    public DFS(Graph<V, E> graph) {
         this.graph = graph;
-        this.nodeMap = new HashMap<Integer, T>();
-        this.tConstructor = infoClass.getConstructor();
-        init();
-    }
-
-    /**
-     * Initializes the node info map.
-     */
-    private void init() throws InstantiationException,
-            IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException {
-        TIntHashSet nodeSet = GeneralizedGraphAnalyzer.nodeSet(graph);
-        for (TIntIterator it = nodeSet.iterator();
-                it.hasNext();) {
-            nodeMap.put(it.next(), tConstructor.newInstance());
-        }
+        this.neighborIndex = new NeighborIndex<V, E>(graph);
     }
 
     /**
      * Do the depth first search for all nodes in the graph.
      */
-    public Map<Integer, T> calculate() {
-        TIntHashSet nodeSet = GeneralizedGraphAnalyzer.nodeSet(graph);
-        for (TIntIterator it = nodeSet.iterator();
-                it.hasNext();) {
-            int current = it.next();
-            if (nodeMap.get(current).getDiscoveryTime() < 0) {
-                visit(current);
+    public void calculate() {
+        for (V node : graph.vertexSet()) {
+            if (node.getDiscoveryTime() < 0) {
+                visit(node);
             }
         }
-        return nodeMap;
     }
 
     /**
@@ -112,28 +87,21 @@ public class DFS<T extends DFSInfo> {
      *
      * @param node The node.
      */
-    protected void visit(int node) {
+    protected void visit(V node) {
 
         time++;
 
-        T currentInfo = nodeMap.get(node);
-        currentInfo.setDiscoveryTime(time);
+        node.setDiscoveryTime(time);
 
-        for (EdgeIterator outgoingEdges =
-                GeneralizedGraphAnalyzer.outgoingEdges(graph, node);
-                outgoingEdges.next();) {
-
-            int neighbor = outgoingEdges.adjNode();
-            T neighborInfo = nodeMap.get(neighbor);
-
-            if (neighborInfo.getDiscoveryTime() < 0) {
-                neighborInfo.addPredecessor(node);
+        for (V neighbor : neighborIndex.neighborListOf(node)) {
+            if (neighbor.getDiscoveryTime() < 0) {
+                neighbor.addPredecessor(node);
                 visit(neighbor);
             }
         }
 
         time++;
 
-        currentInfo.setFinishingTime(time);
+        node.setFinishingTime(time);
     }
 }

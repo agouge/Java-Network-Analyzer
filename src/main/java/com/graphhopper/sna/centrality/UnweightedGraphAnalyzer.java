@@ -28,10 +28,10 @@ import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.UnweightedPathLengthData;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
-import com.graphhopper.storage.Graph;
-import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Stack;
+import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 
 /**
@@ -51,12 +51,13 @@ public class UnweightedGraphAnalyzer
      * @param graph The graph to be analyzed.
      * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public UnweightedGraphAnalyzer(Graph graph, ProgressMonitor pm) throws
+    public UnweightedGraphAnalyzer(
+            Graph<UnweightedNodeBetweennessInfo, DefaultEdge> graph,
+            ProgressMonitor pm) throws
             NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
-        super(graph, pm, UnweightedNodeBetweennessInfo.class,
-              UnweightedPathLengthData.class);
+        super(graph, pm, UnweightedPathLengthData.class);
     }
 
     /**
@@ -86,9 +87,9 @@ public class UnweightedGraphAnalyzer
      */
     @Override
     protected void calculateShortestPathsFromNode(
-            int startNode,
+            UnweightedNodeBetweennessInfo startNode,
             UnweightedPathLengthData pathsFromStartNode,
-            TIntArrayStack stack) {
+            Stack<UnweightedNodeBetweennessInfo> stack) {
         new BFSForCentrality(graph,
                              startNode,
                              nodeBetweenness,

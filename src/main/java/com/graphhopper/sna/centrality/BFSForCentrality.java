@@ -57,11 +57,10 @@ public class BFSForCentrality extends BFS<UnweightedNodeBetweennessInfo> {
      * @param nodeMap   Maps nodes to their info.
      */
     public BFSForCentrality(Graph graph,
-                            int startNode,
-                            Map<Integer, UnweightedNodeBetweennessInfo> nodeMap,
+                            UnweightedNodeBetweennessInfo startNode,
                             UnweightedPathLengthData pathsFromStartNode,
                             TIntArrayStack stack) {
-        super(graph, startNode, nodeMap);
+        super(graph, startNode);
         this.pathsFromStartNode = pathsFromStartNode;
         this.stack = stack;
     }

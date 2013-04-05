@@ -7,7 +7,9 @@ package com.graphhopper.sna.centrality;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import java.util.Set;
+import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
+import org.jgrapht.UndirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
 /**
@@ -43,5 +45,20 @@ public abstract class GeneralizedGraphAnalyzer
         this.graph = graph;
         this.nodeSet = graph.vertexSet();
         this.nodeCount = this.nodeSet.size();
+    }
+    
+    /**
+     * Returns the outdegree (or degree) of the given node.
+     * @param graph The graph.
+     * @param node The node.
+     * @return 
+     */
+    public int outdegree(Graph<V, E> graph, V node) {
+        if (this instanceof DirectedGraph) {
+            return ((DirectedGraph)graph).outDegreeOf(node);
+        } else if (this instanceof UndirectedGraph) {
+            return ((UndirectedGraph)graph).degreeOf(node);
+        }
+        return -1;
     }
 }

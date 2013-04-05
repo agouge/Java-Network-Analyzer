@@ -25,10 +25,11 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.SearchInfo;
-import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.MyIntDeque;
-import java.util.Map;
+import java.util.LinkedList;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.NeighborIndex;
+import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Root Breadth First Search (BFS) class.
@@ -36,19 +37,13 @@ import java.util.Map;
  * The {@link #calculate()} method can be overridden in subclasses in order to
  * do graph analysis (e.g., calculating betweenness centrality).
  *
- * @param <T> The data structure to hold node information during the execution
+ * @param <V> The data structure to hold node information during the execution
  *            of BFS.
  *
  * @author Adam Gouge
  */
-public class BFS<T extends SearchInfo<Integer>>
-        extends GraphSearchAlgorithm {
-
-    /**
-     * Stores information calculated during the execution of BFS in
-     * {@link BFS#calculate()}.
-     */
-    protected final Map<Integer, T> nodeMap;
+public class BFS<V extends SearchInfo<Integer>> 
+    extends GraphSearchAlgorithm<V, DefaultEdge> {
 
     /**
      * Constructs a new {@link BFS} object.
@@ -57,11 +52,8 @@ public class BFS<T extends SearchInfo<Integer>>
      * @param startNode The start node.
      * @param nodeMap   Maps nodes to their info.
      */
-    public BFS(Graph graph,
-               int startNode,
-               final Map<Integer, T> nodeMap) {
+    public BFS(Graph<V, DefaultEdge> graph, V startNode) {
         super(graph, startNode);
-        this.nodeMap = nodeMap;
     }
 
     /**
@@ -69,34 +61,29 @@ public class BFS<T extends SearchInfo<Integer>>
      */
     protected void calculate() {
 
-        nodeMap.get(startNode).setSource();
+        startNode.setSource();
 
         // Create the BFS traversal queue and enqueue startNode.
-        MyIntDeque queue = new MyIntDeque();
-        queue.push(startNode);
+        // ToDo: Make sure this is FIFO!
+        LinkedList<V> queue = new LinkedList<V>();
+        queue.add(startNode);
 
         // While the queue is not empty ...
         while (!queue.isEmpty()) {
             // ... dequeue a node
-            int current = queue.pop();
-            final T currentNBInfo = nodeMap.get(current);
+            V current = queue.poll();
 
             // For every neighbor of the current node ...
-            for (EdgeIterator outgoingEdges =
-                    GeneralizedGraphAnalyzer.outgoingEdges(graph, current);
-                    outgoingEdges.next();) {
-                int neighbor = outgoingEdges.adjNode();
-                final T neighborNBInfo = nodeMap.get(neighbor);
-
+            for (V neighbor : neighborIndex.neighborListOf(current)) {
                 // If this neighbor is found for the first time ...
-                if (neighborNBInfo.getDistance() < 0) {
+                if (neighbor.getDistance() < 0) {
                     // then update the distance
-                    int updatedSteps = currentNBInfo.getDistance() + 1;
-                    neighborNBInfo.setDistance(updatedSteps);
+                    int updatedSteps = current.getDistance() + 1;
+                    neighbor.setDistance(updatedSteps);
                     // set the predecessor
-                    neighborNBInfo.addPredecessor(current);
+                    neighbor.addPredecessor(current);
                     // and enqueue it
-                    queue.push(neighbor);
+                    queue.add(neighbor);
                 }
             }
         }

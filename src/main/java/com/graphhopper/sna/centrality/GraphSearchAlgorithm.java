@@ -4,7 +4,8 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.storage.Graph;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.NeighborIndex;
 
 /**
  * Root class for graph search algorithms, including BFS, Dijkstra, etc., and
@@ -12,16 +13,20 @@ import com.graphhopper.storage.Graph;
  *
  * @author Adam Gouge
  */
-public class GraphSearchAlgorithm {
+public class GraphSearchAlgorithm<V, E> {
 
     /**
      * The graph on which to calculate shortest paths.
      */
-    protected final Graph graph;
+    protected final Graph<V, E> graph;
     /**
      * Start node.
      */
-    protected final int startNode;
+    protected final V startNode;
+    /**
+     * Neighbor index.
+     */
+    protected final NeighborIndex<V, E> neighborIndex;
 
     /**
      * Constructs a new {@link GraphSearchAlgorithm} object.
@@ -30,9 +35,10 @@ public class GraphSearchAlgorithm {
      * @param nodeBetweenness The hash map.
      * @param startNode       The start node.
      */
-    public GraphSearchAlgorithm(Graph graph,
-                                int startNode) {
+    public GraphSearchAlgorithm(Graph<V, E> graph,
+                                V startNode) {
         this.graph = graph;
         this.startNode = startNode;
+        this.neighborIndex = new NeighborIndex<V, E>(graph);
     }
 }

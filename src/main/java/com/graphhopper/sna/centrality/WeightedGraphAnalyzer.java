@@ -29,9 +29,9 @@ import com.graphhopper.sna.data.WeightedPathLengthData;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import com.graphhopper.storage.Graph;
-import gnu.trove.iterator.TIntIterator;
-import gnu.trove.stack.array.TIntArrayStack;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Stack;
+import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Calculates various centrality measures on weighted graphs which are
@@ -40,7 +40,7 @@ import java.lang.reflect.InvocationTargetException;
  * @author Adam Gouge
  */
 public class WeightedGraphAnalyzer
-        extends GraphAnalyzer<WeightedNodeBetweennessInfo, WeightedPathLengthData> {
+        extends GraphAnalyzer<WeightedNodeBetweennessInfo, DefaultEdge, WeightedPathLengthData> {
 
     /**
      * Initializes a new instance of a weighted graph analyzer with the given
@@ -53,8 +53,7 @@ public class WeightedGraphAnalyzer
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
-        super(graph, pm, WeightedNodeBetweennessInfo.class,
-              WeightedPathLengthData.class);
+        super(graph, pm, WeightedPathLengthData.class);
     }
 
     /**
@@ -75,9 +74,9 @@ public class WeightedGraphAnalyzer
      */
     @Override
     protected void calculateShortestPathsFromNode(
-            int startNode,
+            WeightedNodeBetweennessInfo startNode,
             WeightedPathLengthData pathsFromStartNode,
-            TIntArrayStack stack) {
+            Stack<WeightedNodeBetweennessInfo> stack) {
         // Need to compute all shortest paths from s=startNode.
         //
         // Once a SP from s to a node "current"=w is found, we need to

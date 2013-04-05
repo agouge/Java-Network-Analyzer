@@ -25,9 +25,9 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.StrahlerInfo;
-import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
-import java.lang.reflect.InvocationTargetException;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Calculates the Strahler numbers of the nodes in the given tree.
@@ -39,21 +39,17 @@ import java.lang.reflect.InvocationTargetException;
  *
  * @author Adam Gouge
  */
-public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
+public class DFSForStrahler extends DFSRootNode<StrahlerInfo, DefaultEdge> {
 
     /**
      * Constructor.
      *
      * @param graph    The graph.
-     * @param nodeMap  Maps nodes to their info.
      * @param rootNode The root node.
      */
-    public DFSForStrahler(Graph graph,
-                          Class<? extends StrahlerInfo> infoClass,
-                          int rootNode) throws NoSuchMethodException,
-            InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException {
-        super(graph, infoClass, rootNode);
+    public DFSForStrahler(Graph<StrahlerInfo, DefaultEdge> graph,
+                          StrahlerInfo rootNode) {
+        super(graph, rootNode);
     }
 
     /**
@@ -62,7 +58,7 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
      * @param node The node.
      */
     @Override
-    protected void visit(int node) {
+    protected void visit(StrahlerInfo node) {
         super.visit(node);
         calculateStrahlerNumber(node);
     }
@@ -72,18 +68,16 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
      *
      * @param node The node.
      */
-    private void calculateStrahlerNumber(int node) {
-        StrahlerInfo info = nodeMap.get(node);
+    private void calculateStrahlerNumber(StrahlerInfo node) {
 
-        if (info.getFinishingTime() == info.getDiscoveryTime() + 1) {
+        if (node.getFinishingTime() == node.getDiscoveryTime() + 1) {
             // All leafs have a Strahler number of 1. 
             // (Leafs have the property that their finishing times are one 
             // more than their discovery times.)
-            info.setStrahlerNumber(1);
+            node.setStrahlerNumber(1);
         } else {
             // If this is not a leaf, we must consider the outdegree.
-            int outDegree = GeneralizedGraphAnalyzer
-                    .outDegree(graph, node);
+            int outDegree = GeneralizedGraphAnalyzer.outDegree(graph, node);
 
             if (outDegree == 1) {
                 // If there is only one child, then the Strahler number is
@@ -92,7 +86,7 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
                         GeneralizedGraphAnalyzer.outgoingEdges(graph, node);
                 outgoingEdges.next();
                 int child = outgoingEdges.adjNode();
-                info.setStrahlerNumber(nodeMap.get(child).getStrahlerNumber());
+                node.setStrahlerNumber(nodeMap.get(child).getStrahlerNumber());
             } else {
 
                 // Otherwise the outdegree is >= 2, so consider the top two
@@ -106,12 +100,12 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo> {
                     // are >= 2 children with the same Strahler number S, and
                     // all other children have Strahler number <= S. So the
                     // Strahler number is S + 1.
-                    info.setStrahlerNumber(max + 1);
+                    node.setStrahlerNumber(max + 1);
                 } else {
                     // If they are not equal, then there is one child with
                     // Strahler number S, and all other children have Strahler
                     // number < S. So the Strahler number is S.
-                    info.setStrahlerNumber(max);
+                    node.setStrahlerNumber(max);
                 }
             }
         }
