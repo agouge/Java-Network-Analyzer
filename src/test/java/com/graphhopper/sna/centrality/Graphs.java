@@ -72,7 +72,7 @@ public class Graphs {
         //          > 4 -----------> 5
         //                   2
         GraphStorage graph = new GraphStorage(new RAMDirectory());
-        graph.createNew(10);
+        graph.create(10);
 
         // 1 out
         graph.edge(1, 2, 10, false);
@@ -120,7 +120,7 @@ public class Graphs {
         //          > 4 ------------ 5
         //                   2
         GraphStorage graph = new GraphStorage(new RAMDirectory());
-        graph.createNew(10);
+        graph.create(10);
 
         // 1 out
         graph.edge(1, 2, 10, true);
@@ -157,7 +157,7 @@ public class Graphs {
     public static Graph graphCormenUnweightedDirected() {
 
         GraphStorage graph = new GraphStorage(new RAMDirectory());
-        graph.createNew(10);
+        graph.create(10);
 
         // 1 out
         graph.edge(1, 2, ALL_WEIGHTS_ONE, false);
@@ -194,7 +194,7 @@ public class Graphs {
     public static Graph graphCormenUnweightedBidirectional() {
 
         GraphStorage graph = new GraphStorage(new RAMDirectory());
-        graph.createNew(10);
+        graph.create(10);
 
         // 1 out
         graph.edge(1, 2, ALL_WEIGHTS_ONE, true);
@@ -236,7 +236,7 @@ public class Graphs {
         //        1------->3
         //           0.8
         GraphStorage graph = new GraphStorage(new RAMDirectory());
-        graph.createNew(10);
+        graph.create(10);
 
         graph.edge(1, 2, 1.2, false);
         graph.edge(1, 3, 0.8, false);

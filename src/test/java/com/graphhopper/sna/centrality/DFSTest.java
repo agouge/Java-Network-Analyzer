@@ -45,7 +45,7 @@ public class DFSTest {
     protected Graph prepareTree() {
 
         GraphStorage graph = new GraphStorage(new RAMDirectory());
-        graph.createNew(10);
+        graph.create(10);
 
         graph.edge(1, 2, ONE, false);
         graph.edge(1, 3, ONE, false);

@@ -131,7 +131,7 @@ public class GDMSGraphStorage extends LevelGraphStorage {
 
             // Create the LevelGraph. 
             // TODO: Is this a good way to allocate space for the graph?
-            graph.createNew(graph.nodes()); // TODO: Returns a GraphStorage!
+            graph.create(graph.nodes()); // TODO: Returns a GraphStorage!
 
             // Load the edges from the input file into the levelgraph.
             graph.loadEdges(scanner, bothDirections);
@@ -195,7 +195,7 @@ public class GDMSGraphStorage extends LevelGraphStorage {
 
             // Create the LevelGraph. 
             // TODO: Is this a good way to allocate space for the graph?
-            graph.createNew(graph.nodes()); // TODO: Returns a GraphStorage!
+            graph.create(graph.nodes()); // TODO: Returns a GraphStorage!
 
             // Load the edges from the input file into the levelgraph.
             graph.loadUnweightedEdges(scanner, bothDirections);
