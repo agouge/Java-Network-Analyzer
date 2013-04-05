@@ -33,15 +33,15 @@ import java.util.HashSet;
  *
  * @author Adam Gouge
  */
-public abstract class NodeBetweennessInfo<V extends NodeBetweennessInfo, T extends Number>
-        implements SearchInfo<V, T> {
+public abstract class NodeBetweennessInfo<N, T extends Number>
+        implements SearchInfo<N, T> {
 
     /**
      * List of the predecessors of this node.
      *
      * I.e., the nodes lying on the shortest path to this node
      */
-    protected HashSet<V> predecessors;
+    protected HashSet<N> predecessors;
     /**
      * Number of shortest paths leading to this node starting from a certain
      * source.
@@ -68,7 +68,7 @@ public abstract class NodeBetweennessInfo<V extends NodeBetweennessInfo, T exten
      */
     public NodeBetweennessInfo() {
 //        outedges = new TIntLinkedList();
-        predecessors = new HashSet<V>();
+        predecessors = new HashSet<N>();
         spCount = 0;
         betweenness = 0.0;
         dependency = 0.0;
@@ -96,12 +96,12 @@ public abstract class NodeBetweennessInfo<V extends NodeBetweennessInfo, T exten
 
 // ************************** PREDECESSORS **************************
     @Override
-    public HashSet<V> getPredecessors() {
+    public HashSet<N> getPredecessors() {
         return predecessors;
     }
 
     @Override
-    public void addPredecessor(V pred) {
+    public void addPredecessor(N pred) {
         predecessors.add(pred);
     }
 
