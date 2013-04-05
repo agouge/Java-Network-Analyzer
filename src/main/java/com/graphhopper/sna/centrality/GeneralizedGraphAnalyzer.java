@@ -4,14 +4,11 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.routing.util.AllEdgesIterator;
-import com.graphhopper.routing.util.CarFlagEncoder;
-import com.graphhopper.routing.util.DefaultEdgeFilter;
-import static com.graphhopper.sna.centrality.GraphAnalyzer.nodeSet;
+import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.progress.ProgressMonitor;
-import com.graphhopper.storage.Graph;
-import com.graphhopper.util.EdgeIterator;
-import gnu.trove.set.hash.TIntHashSet;
+import java.util.Set;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Root class of all classes that do some type of analysis on graphs
@@ -19,16 +16,17 @@ import gnu.trove.set.hash.TIntHashSet;
  *
  * @author Adam Gouge
  */
-public abstract class GeneralizedGraphAnalyzer {
+public abstract class GeneralizedGraphAnalyzer
+    <V extends NodeBetweennessInfo, E extends DefaultEdge> {
 
     /**
      * The graph to be analyzed.
      */
-    protected final Graph graph;
+    protected final Graph<V, E> graph;
     /**
      * The set of nodes of this graph.
      */
-    protected final TIntHashSet nodeSet;
+    protected final Set<V> nodeSet;
     /**
      * The number of nodes in this graph.
      */
@@ -41,61 +39,9 @@ public abstract class GeneralizedGraphAnalyzer {
      * @param graph The graph to be analyzed.
      * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public GeneralizedGraphAnalyzer(Graph graph) {
+    public GeneralizedGraphAnalyzer(Graph<V, E> graph) {
         this.graph = graph;
-        this.nodeSet = nodeSet(this.graph);
+        this.nodeSet = graph.vertexSet();
         this.nodeCount = this.nodeSet.size();
-    }
-
-    /**
-     * Returns a {@link TIntHashSet} of the nodes of the given graph.
-     *
-     * @param graph The graph.
-     *
-     * @return a {@link TIntHashSet} of the nodes of the given graph.
-     */
-    // TODO: Optimize this (by making use of the data structure).
-    protected static TIntHashSet nodeSet(Graph graph) {
-        // Initialize the Set.
-        TIntHashSet set = new TIntHashSet();
-        // Add each source and destination node to the set.
-        for (AllEdgesIterator i = graph.getAllEdges();
-                i.next();) {
-            set.add(i.baseNode());
-            set.add(i.adjNode());
-        }
-        return set;
-    }
-
-    /**
-     * Returns the outdegree of the given node of the given graph.
-     *
-     * @param graph The graph.
-     * @param node  The node.
-     *
-     * @return The outdegree.
-     */
-    public static int outDegree(Graph graph, int node) {
-        int outDegree = 0;
-        for (EdgeIterator outgoingEdges = outgoingEdges(graph, node);
-                outgoingEdges.next();) {
-            outDegree++;
-        }
-        return outDegree;
-    }
-
-    /**
-     * Get an iterator on the outgoing edges of the given node.
-     *
-     * @param graph The graph
-     * @param node  The node
-     *
-     * @return An iterator on the outgoing edges of the given node.
-     */
-    public static EdgeIterator outgoingEdges(Graph graph, int node) {
-        return graph.getEdges(node,
-                              new DefaultEdgeFilter(new CarFlagEncoder(),
-                                                    false,
-                                                    true));
     }
 }

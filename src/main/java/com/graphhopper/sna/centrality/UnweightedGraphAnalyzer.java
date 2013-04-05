@@ -32,6 +32,7 @@ import com.graphhopper.storage.Graph;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.lang.reflect.InvocationTargetException;
+import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Calculates various centrality measures on unweighted graphs <b>assumed to be
@@ -41,7 +42,7 @@ import java.lang.reflect.InvocationTargetException;
  * @author Adam Gouge
  */
 public class UnweightedGraphAnalyzer
-        extends GraphAnalyzer<UnweightedNodeBetweennessInfo, UnweightedPathLengthData> {
+        extends GraphAnalyzer<UnweightedNodeBetweennessInfo, DefaultEdge, UnweightedPathLengthData> {
 
     /**
      * Initializes a new instance of an unweighted graph analyzer with the given
