@@ -24,21 +24,21 @@
  */
 package com.graphhopper.sna.data;
 
-import gnu.trove.set.hash.TIntHashSet;
+import java.util.HashSet;
 
 /**
  * Node info for DFS algorithms containing the discovery and finishing times.
  *
  * @author Adam Gouge
  */
-public class DFSInfo implements PredecessorInfo {
+public class DFSInfo implements PredecessorInfo<DFSInfo> {
 
     /**
      * List of the predecessors of this node.
      *
      * I.e., the nodes lying on the shortest path to this node
      */
-    protected TIntHashSet predecessors;
+    protected HashSet<DFSInfo> predecessors;
     /**
      * The time this node was discovered.
      */
@@ -52,7 +52,7 @@ public class DFSInfo implements PredecessorInfo {
      * Constructor.
      */
     public DFSInfo() {
-        predecessors = new TIntHashSet();
+        predecessors = new HashSet<DFSInfo>();
         this.discoveryTime = -1;
         this.finishingTime = -1;
     }
@@ -94,12 +94,12 @@ public class DFSInfo implements PredecessorInfo {
     }
 
     @Override
-    public TIntHashSet getPredecessors() {
+    public HashSet<DFSInfo> getPredecessors() {
         return predecessors;
     }
 
     @Override
-    public void addPredecessor(int pred) {
+    public void addPredecessor(DFSInfo pred) {
         predecessors.add(pred);
     }
 }

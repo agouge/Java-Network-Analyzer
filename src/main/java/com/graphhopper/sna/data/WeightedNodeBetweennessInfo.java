@@ -33,7 +33,7 @@ package com.graphhopper.sna.data;
  * @author Adam Gouge
  */
 public class WeightedNodeBetweennessInfo
-        extends NodeBetweennessInfo<Double> {
+        extends NodeBetweennessInfo<WeightedNodeBetweennessInfo, Double> {
 
     /**
      * Length of a shortest path starting from a certain source leading to this

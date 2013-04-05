@@ -32,7 +32,7 @@ package com.graphhopper.sna.data;
  * @author Adam Gouge
  */
 public class UnweightedNodeBetweennessInfo
-        extends NodeBetweennessInfo<Integer> {
+        extends NodeBetweennessInfo<UnweightedNodeBetweennessInfo, Integer> {
 
     /**
      * Number of steps on a shortest path from a certain source leading to this
