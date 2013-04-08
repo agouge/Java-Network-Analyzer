@@ -35,8 +35,7 @@ public class GraphSearchAlgorithm<V, E> {
      * @param nodeBetweenness The hash map.
      * @param startNode       The start node.
      */
-    public GraphSearchAlgorithm(Graph<V, E> graph,
-                                V startNode) {
+    public GraphSearchAlgorithm(Graph<V, E> graph, V startNode) {
         this.graph = graph;
         this.startNode = startNode;
         this.neighborIndex = new NeighborIndex<V, E>(graph);
