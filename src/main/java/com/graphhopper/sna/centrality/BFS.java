@@ -42,7 +42,7 @@ import org.jgrapht.graph.DefaultEdge;
  *
  * @author Adam Gouge
  */
-public class BFS<V extends SearchInfo<Integer>> 
+public class BFS<V extends SearchInfo<V, Integer>> 
     extends GraphSearchAlgorithm<V, DefaultEdge> {
 
     /**

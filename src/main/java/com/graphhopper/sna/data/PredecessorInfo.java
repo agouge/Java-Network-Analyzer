@@ -31,19 +31,19 @@ import java.util.HashSet;
  *
  * @author Adam Gouge
  */
-public interface PredecessorInfo<N> {
+public interface PredecessorInfo<V> {
 
     /**
      * Returns the predecessors.
      *
      * @return The predecessors.
      */
-    HashSet<N> getPredecessors();
+    HashSet<V> getPredecessors();
 
     /**
      * Adds a predecessor to the predecessor list of this node
      *
      * @param pred Node to be added since it is a predecessor of this node
      */
-    public void addPredecessor(N pred);
+    public void addPredecessor(V pred);
 }

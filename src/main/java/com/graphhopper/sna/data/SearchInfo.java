@@ -30,6 +30,6 @@ package com.graphhopper.sna.data;
  *
  * @author Adam Gouge
  */
-public interface SearchInfo<N, T extends Number>
-        extends SourceInfo, DistanceInfo<T>, PredecessorInfo<N> {
+public interface SearchInfo<V, T extends Number>
+        extends SourceInfo, DistanceInfo<T>, PredecessorInfo<V> {
 }
