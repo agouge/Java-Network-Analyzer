@@ -24,44 +24,37 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
-import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
-import com.graphhopper.storage.Graph;
-import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.sna.data.SearchInfo;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.PriorityQueue;
+import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
 
 /**
  * Home-brewed implementation of Dijkstra's algorithm.
  *
+ * @param <V> Vertices
+ * @param <E> Edges
+ *
  * @author Adam Gouge
  */
-public class Dijkstra extends GraphSearchAlgorithm {
+public class Dijkstra<V extends SearchInfo<V, Double>, E>
+        extends GraphSearchAlgorithm<V, E> {
 
     /**
      * Tolerance to be used when determining if two potential shortest paths
      * have the same length.
      */
     protected static final double TOLERANCE = 0.000000001;
-    /**
-     * Stores information calculated during the execution of Dijkstra's
-     * algorithm in {@link Dijkstra#calculate()}.
-     */
-    protected Map<Integer, WeightedNodeBetweennessInfo> nodeBetweenness;
 
     /**
      * Constructs a new {@link Dijkstra} object.
      *
-     * @param graph           The graph.
-     * @param nodeBetweenness The hash map.
-     * @param startNode       The start node.
+     * @param graph     The graph.
+     * @param startNode The start node.
      */
-    public Dijkstra(Graph graph,
-                    int startNode,
-                    final Map<Integer, WeightedNodeBetweennessInfo> nodeBetweenness) {
+    public Dijkstra(Graph<V, E> graph, V startNode) {
         super(graph, startNode);
-        this.nodeBetweenness = nodeBetweenness;
     }
 
     /**
@@ -71,101 +64,90 @@ public class Dijkstra extends GraphSearchAlgorithm {
      */
     public void calculate() {
 
-        nodeBetweenness.get(startNode).setSource();
+        startNode.setSource();
 
-        PriorityQueue<Integer> queue = createPriorityQueue();
+        PriorityQueue<V> queue = createPriorityQueue();
         queue.add(startNode);
 
         while (!queue.isEmpty()) {
             // Extract the minimum element.
-            int u = queue.poll();
-            // Relax every neighbor of u.
-            for (EdgeIterator outgoingEdges =
-                    GeneralizedGraphAnalyzer.outgoingEdges(graph, u);
-                    outgoingEdges.next();) {
-                int v = outgoingEdges.adjNode();
-                double uvWeight = outgoingEdges.distance();
-                relax(u, v, uvWeight, queue);
+            V u = queue.poll();
+            // Relax all the outgoing edges of u.
+            for (E e : outgoingEdgesOf(u)) {
+                relax(u, e, queue);
             }
         }
     }
 
     /**
-     * Relaxes the edge (u,v) and updates the queue appropriately.
+     * Relaxes the edge outgoing from u and updates the queue appropriately.
      *
-     * @param u        Node u.
-     * @param v        Node v.
-     * @param uvWeight The weight of the edge (u,v).
-     * @param queue    The queue.
+     * @param u     Vertex u.
+     * @param e     Edge e.
+     * @param queue The queue.
      */
-    protected void relax(int u,
-                         int v,
-                         double uvWeight,
-                         PriorityQueue<Integer> queue) {
-        // Get the node betweenness info objects.
-        final WeightedNodeBetweennessInfo uNBInfo = nodeBetweenness.get(u);
-        final WeightedNodeBetweennessInfo vNBInfo = nodeBetweenness.get(v);
-        // If the length of this path to v through u is less than
-        // OR EQUAL TO (this corresponds to multiple shortest paths)
-        // the current distance estimate on v, then update the
-        // shortest path information of v. The TOLERANCE takes care
-        // of the "or equal to" part.
-        if (vNBInfo.getDistance() - uNBInfo.getDistance() - uvWeight
-                > -TOLERANCE) {
-            updateSPCount(u, v, uNBInfo, vNBInfo, uvWeight);
-            vNBInfo.addPredecessor(u);
-            vNBInfo.setDistance(uNBInfo.getDistance() + uvWeight);
-            queue.remove(v);
-            queue.add(v);
+    protected void relax(V u, E e, PriorityQueue<V> queue) {
+        // Get the target vertex.
+        V v = Graphs.getOppositeVertex(graph, e, u);
+        // Get the weight.
+        double uvWeight = graph.getEdgeWeight(e);
+        // If a smaller distance estimate is available, make the necessary
+        // updates.
+        if (smallerEstimateExists(u, v, uvWeight)) {
+            updateNeighbor(u, v, uvWeight, queue);
         }
     }
 
     /**
-     * Updates the number of shortest paths leading to v when relaxing the edge
-     * (u,v).
+     * Returns {@code true} iff the current distance estimate on v is greater
+     * than the length of the path to u plus w(u,v).
      *
-     * @param u        Node u.
-     * @param v        Node v.
-     * @param uNBInfo  {@link NodeBetweennessInfo} for u.
-     * @param vNBInfo  {@link NodeBetweennessInfo} for v.
-     * @param uvWeight w(u,v).
+     * @param u        Vertex u
+     * @param v        Vertex v
+     * @param uvWeight w(u,v)
+     *
+     * @return {@code true} iff a smaller distance estimate exists.
      */
-    protected void updateSPCount(
-            int u,
-            int v,
-            final WeightedNodeBetweennessInfo uNBInfo,
-            final WeightedNodeBetweennessInfo vNBInfo,
-            double uvWeight) {
-        // If the difference between the distance to v on the one hand
-        // and the distance to u plus w(u,v) on the other hand is less
-        // than the defined tolerance (think EQUAL), then this
-        // is one of multiple shortest paths. As such, we add the number
-        // of shortest paths to u.
-        if (Math.abs(vNBInfo.getDistance()
-                - uNBInfo.getDistance()
-                - uvWeight) < TOLERANCE) {
-            vNBInfo.accumulateSPCount(uNBInfo.getSPCount());
-        } // Otherwise this is the first shortest path found to v so far,
-        // so we set the number of shortest paths to that of u.
-        else {
-            vNBInfo.setSPCount(uNBInfo.getSPCount());
+    protected boolean smallerEstimateExists(V u, V v, Double uvWeight) {
+        if (v.getDistance() > u.getDistance() + uvWeight) {
+            return true;
         }
+        return false;
     }
 
     /**
-     * Creates the {@link PriorityQueue} used in {@link Dijkstra}'s algorithm.
+     * Sets the predecessor of v to be u and updates the distance estimate on v
+     * to equal the distance to u plus w(u,v).
      *
-     * @return The {@link PriorityQueue} used in {@link Dijkstra}'s algorithm.
+     * @param u        Vertex u
+     * @param v        Vertex v
+     * @param uvWeight w(u,v)
+     * @param queue    Queue
      */
-    protected PriorityQueue<Integer> createPriorityQueue() {
-        return new PriorityQueue<Integer>(
-                graph.nodes(),
-                new Comparator<Integer>() {
+    protected void updateNeighbor(V u, V v, Double uvWeight,
+                                  PriorityQueue<V> queue) {
+        // Set the predecessor and the distance.
+        v.addPredecessor(u);
+        v.setDistance(u.getDistance() + uvWeight);
+        // Update the queue.
+        queue.remove(v);
+        queue.add(v);
+    }
+
+    /**
+     * Creates the priority queue used in Dijkstra's algorithm.
+     *
+     * @return The priority queue used in Dijkstra's algorithm.
+     */
+    protected PriorityQueue<V> createPriorityQueue() {
+        return new PriorityQueue<V>(
+                graph.vertexSet().size(),
+                new Comparator<V>() {
             @Override
-            public int compare(Integer v1, Integer v2) {
+            public int compare(V v1, V v2) {
                 return Double.compare(
-                        nodeBetweenness.get(v1).getDistance(),
-                        nodeBetweenness.get(v2).getDistance());
+                        v1.getDistance(),
+                        v2.getDistance());
             }
         });
     }
