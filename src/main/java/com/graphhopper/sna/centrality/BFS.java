@@ -71,10 +71,10 @@ public class BFS<V extends SearchInfo<V, Integer>, E>
         // While the queue is not empty ...
         while (!queue.isEmpty()) {
             // ... dequeue a node
-            V current = queue.poll();
+            final V current = queue.poll();
 
             // For every neighbor of the current node ...
-            for (V neighbor : neighborIndex.neighborListOf(current)) {
+            for (final V neighbor : neighborIndex.neighborListOf(current)) {
                 // If this neighbor is found for the first time ...
                 if (neighbor.getDistance() < 0) {
                     // then update the distance
