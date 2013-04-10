@@ -58,9 +58,8 @@ public class Dijkstra<V extends SearchInfo<V, Double>, E>
     }
 
     /**
-     * Calculates the distance and number of shortest paths from startNode to
-     * all the other nodes, as well as the predecessor of each node on shortest
-     * paths from startNode.
+     * Calculates the distance from startNode to all the other nodes, as well as
+     * the predecessor of each node on shortest paths from startNode.
      */
     public void calculate() {
 
