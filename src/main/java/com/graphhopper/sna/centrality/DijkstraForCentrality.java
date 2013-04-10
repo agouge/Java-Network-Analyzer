@@ -24,7 +24,6 @@
  */
 package com.graphhopper.sna.centrality;
 
-import static com.graphhopper.sna.centrality.Dijkstra.TOLERANCE;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import java.util.PriorityQueue;
@@ -108,29 +107,6 @@ public class DijkstraForCentrality<E>
     }
 
     /**
-     * Returns {@code true} iff the current distance estimate on v is greater
-     * than OR EQUAL TO (this corresponds to multiple shortest paths) the length
-     * of the path to u plus w(u,v).
-     *
-     * @param u        Vertex u
-     * @param v        Vertex v
-     * @param uvWeight w(u,v)
-     *
-     * @return {@code true} iff a smaller distance estimate exists.
-     */
-    @Override
-    protected boolean smallerEstimateExists(
-            WeightedNodeBetweennessInfo u,
-            WeightedNodeBetweennessInfo v,
-            Double uvWeight) {
-        // The TOLERANCE takes care of the "or equal to" part.
-        if (v.getDistance() > u.getDistance() + uvWeight - TOLERANCE) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Sets the predecessor of v to be u and updates the distance estimate on v
      * to equal the distance to u plus w(u,v).
      *
@@ -157,16 +133,16 @@ public class DijkstraForCentrality<E>
      * @param v        Node v.
      * @param uvWeight w(u,v).
      */
+    // TODO: Maybe we test if v.getSPCount == 0 instead?
+    // (Potentially more efficient.)
     protected void updateSPCount(WeightedNodeBetweennessInfo u,
                                  WeightedNodeBetweennessInfo v,
                                  double uvWeight) {
-        // If the difference between the distance to v on the one hand
-        // and the distance to u plus w(u,v) on the other hand is less
-        // than the defined tolerance (think EQUAL), then this
+        // If the distance to v is just below the distance to u plus w(u,v)
+        // (this situation is allowed by the tolerance), then this
         // is one of multiple shortest paths. As such, we add the number
         // of shortest paths to u.
-        if (Math.abs(v.getDistance() - u.getDistance() - uvWeight)
-                < TOLERANCE) {
+        if (v.getDistance() <= u.getDistance() + uvWeight) {
             v.accumulateSPCount(u.getSPCount());
         } // Otherwise this is the first shortest path found to v so far,
         // so we set the number of shortest paths to that of u.
