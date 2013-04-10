@@ -24,27 +24,27 @@
  */
 package com.graphhopper.sna.centrality;
 
+import static com.graphhopper.sna.centrality.Dijkstra.TOLERANCE;
 import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
-import com.graphhopper.storage.Graph;
-import com.graphhopper.util.EdgeIterator;
-import gnu.trove.stack.array.TIntArrayStack;
-import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Stack;
+import org.jgrapht.Graph;
 
 /**
- * An implementation of Dijkstra's algorithm with can be used to calculate
+ * An implementation of Dijkstra's algorithm which can be used to calculate
  * betweenness and closeness in a {@link GraphAnalyzer}.
  *
  * @author Adam Gouge
  */
-public class DijkstraForCentrality extends Dijkstra {
+public class DijkstraForCentrality<E>
+        extends Dijkstra<WeightedNodeBetweennessInfo, E> {
 
     /**
      * Stack that will return the nodes ordered by non-increasing distance from
      * the source node.
      */
-    private final TIntArrayStack stack;
+    private final Stack<WeightedNodeBetweennessInfo> stack;
     /**
      * Data structure used to hold information used to calculate closeness.
      */
@@ -54,57 +54,39 @@ public class DijkstraForCentrality extends Dijkstra {
      * Constructs a new {@link DijkstraForCentrality} object.
      *
      * @param graph              The graph.
-     * @param nodeBetweenness    The hash map.
      * @param startNode          The start node.
      * @param pathsFromStartNode Information for calculating closeness.
      * @param stack              The stack which will return nodes ordered by
      *                           non-increasing distance from startNode.
      */
     public DijkstraForCentrality(
-            Graph graph,
-            final Map<Integer, WeightedNodeBetweennessInfo> nodeBetweenness,
-            int startNode,
+            Graph<WeightedNodeBetweennessInfo, E> graph,
+            WeightedNodeBetweennessInfo startNode,
             PathLengthData pathsFromStartNode,
-            TIntArrayStack stack) {
-        super(graph, startNode, nodeBetweenness);
+            Stack<WeightedNodeBetweennessInfo> stack) {
+        super(graph, startNode);
         this.pathsFromStartNode = pathsFromStartNode;
         this.stack = stack;
     }
 
     /**
-     * {@inheritDoc}
+     * Before relaxing the outgoing edges of u, we push it to the stack and
+     * record its shortest path length.
+     *
+     * @param u Vertex u.
      */
     @Override
-    public void calculate() {
-
-        nodeBetweenness.get(startNode).setSource();
-
-        PriorityQueue<Integer> queue = createPriorityQueue();
-        queue.add(startNode);
-
-        while (!queue.isEmpty()) {
-            // Extract the minimum element.
-            int u = queue.poll();
-            // Push it to the stack.
-            if (canPushToStack(u)) {
-                stack.push(u);
-            } else {
-                throw new IllegalStateException(
-                        "Cannot push node " + u + " to the stack.");
-            }
-            // Record this shortest path length (for closeness).
-            if (u != startNode) {
-                pathsFromStartNode.addSPLength(
-                        nodeBetweenness.get(u).getDistance());
-            }
-            // Relax every neighbor of u.
-            for (EdgeIterator outgoingEdges =
-                    GeneralizedGraphAnalyzer.outgoingEdges(graph, u);
-                    outgoingEdges.next();) {
-                int v = outgoingEdges.adjNode();
-                double uvWeight = outgoingEdges.distance();
-                relax(u, v, uvWeight, queue);
-            }
+    protected void preRelaxStep(WeightedNodeBetweennessInfo u) {
+        // Push it to the stack.
+        if (canPushToStack(u)) {
+            stack.push(u);
+        } else {
+            throw new IllegalStateException(
+                    "Cannot push node " + u + " to the stack.");
+        }
+        // Record this shortest path length (for closeness).
+        if (!u.equals(startNode)) {
+            pathsFromStartNode.addSPLength(u.getDistance());
         }
     }
 
@@ -116,13 +98,80 @@ public class DijkstraForCentrality extends Dijkstra {
      *
      * @return {@code true} if and only if the node can be pushed to the stack.
      */
-    private boolean canPushToStack(int node) {
+    private boolean canPushToStack(WeightedNodeBetweennessInfo node) {
         if (!(stack.size() == 0)) {
-            if (nodeBetweenness.get(node).getDistance()
-                    < nodeBetweenness.get(stack.peek()).getDistance()) {
+            if (node.getDistance() < stack.peek().getDistance()) {
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Returns {@code true} iff the current distance estimate on v is greater
+     * than OR EQUAL TO (this corresponds to multiple shortest paths) the length
+     * of the path to u plus w(u,v).
+     *
+     * @param u        Vertex u
+     * @param v        Vertex v
+     * @param uvWeight w(u,v)
+     *
+     * @return {@code true} iff a smaller distance estimate exists.
+     */
+    @Override
+    protected boolean smallerEstimateExists(
+            WeightedNodeBetweennessInfo u,
+            WeightedNodeBetweennessInfo v,
+            Double uvWeight) {
+        // The TOLERANCE takes care of the "or equal to" part.
+        if (v.getDistance() > u.getDistance() + uvWeight - TOLERANCE) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Sets the predecessor of v to be u and updates the distance estimate on v
+     * to equal the distance to u plus w(u,v).
+     *
+     * @param u        Vertex u
+     * @param v        Vertex v
+     * @param uvWeight w(u,v)
+     * @param queue    Queue
+     */
+    @Override
+    protected void updateNeighbor(
+            WeightedNodeBetweennessInfo u,
+            WeightedNodeBetweennessInfo v,
+            Double uvWeight,
+            PriorityQueue<WeightedNodeBetweennessInfo> queue) {
+        updateSPCount(u, v, uvWeight);
+        super.updateNeighbor(u, v, uvWeight, queue);
+    }
+
+    /**
+     * Updates the number of shortest paths leading to v when relaxing the edge
+     * (u,v).
+     *
+     * @param u        Node u.
+     * @param v        Node v.
+     * @param uvWeight w(u,v).
+     */
+    protected void updateSPCount(WeightedNodeBetweennessInfo u,
+                                 WeightedNodeBetweennessInfo v,
+                                 double uvWeight) {
+        // If the difference between the distance to v on the one hand
+        // and the distance to u plus w(u,v) on the other hand is less
+        // than the defined tolerance (think EQUAL), then this
+        // is one of multiple shortest paths. As such, we add the number
+        // of shortest paths to u.
+        if (Math.abs(v.getDistance() - u.getDistance() - uvWeight)
+                < TOLERANCE) {
+            v.accumulateSPCount(u.getSPCount());
+        } // Otherwise this is the first shortest path found to v so far,
+        // so we set the number of shortest paths to that of u.
+        else {
+            v.setSPCount(u.getSPCount());
+        }
     }
 }

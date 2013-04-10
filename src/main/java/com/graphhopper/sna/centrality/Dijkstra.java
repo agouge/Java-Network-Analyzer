@@ -25,6 +25,7 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.SearchInfo;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import org.jgrapht.Graph;
@@ -71,11 +72,22 @@ public class Dijkstra<V extends SearchInfo<V, Double>, E>
         while (!queue.isEmpty()) {
             // Extract the minimum element.
             V u = queue.poll();
+            // Do any pre-relax step.
+            preRelaxStep(u);
             // Relax all the outgoing edges of u.
             for (E e : outgoingEdgesOf(u)) {
                 relax(u, e, queue);
             }
         }
+    }
+
+    /**
+     * Any work to be done using vertex u before relaxing the outgoing edges of
+     * u.
+     *
+     * @param u Vertex u.
+     */
+    protected void preRelaxStep(V u) {
     }
 
     /**
