@@ -26,18 +26,18 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.UnweightedPathLengthData;
-import com.graphhopper.storage.Graph;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.MyIntDeque;
 import gnu.trove.stack.array.TIntArrayStack;
 import java.util.Map;
+import org.jgrapht.Graph;
 
 /**
  * Uses BFS to do graph analysis (calculating betweenness centrality, etc.).
  *
  * @author Adam Gouge
  */
-public class BFSForCentrality extends BFS<UnweightedNodeBetweennessInfo> {
+public class BFSForCentrality<E> extends BFS<UnweightedNodeBetweennessInfo, E> {
 
     /**
      * Stack that will return the nodes ordered by non-increasing distance from
@@ -56,7 +56,7 @@ public class BFSForCentrality extends BFS<UnweightedNodeBetweennessInfo> {
      * @param startNode The start node.
      * @param nodeMap   Maps nodes to their info.
      */
-    public BFSForCentrality(Graph graph,
+    public BFSForCentrality(Graph<UnweightedNodeBetweennessInfo, E> graph,
                             UnweightedNodeBetweennessInfo startNode,
                             UnweightedPathLengthData pathsFromStartNode,
                             TIntArrayStack stack) {
