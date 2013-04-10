@@ -68,6 +68,7 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
      * @param pm        The {@link ProgressMonitor} to be used.
      * @param nodeClass The class of the {@link NodeBetweennessInfo} to use.
      */
+    // TODO: Do I need the wildcard on S?
     public GraphAnalyzer(Graph<V, E> graph,
                          ProgressMonitor pm,
                          Class<? extends S> pathClass)
@@ -284,10 +285,6 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
 //                                                 updatedBetweenness);
             }
         } // ***** END STAGE 3, Stack iteration  **************
-
-//        long stop = System.currentTimeMillis();
-//        System.out.println(startNode + " analysis took "
-//                + (stop - start) + " ms.");
     }
 
     /**
@@ -337,7 +334,7 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
      *
      * @param startNode The start node.
      */
-    protected void printSPInfo(int startNode) {
+    protected void printSPInfo(V startNode) {
         System.out.println("       d           SP    pred");
         for (V node : nodeSet) {
             System.out.print("(" + startNode + "," + node + ")  ");
