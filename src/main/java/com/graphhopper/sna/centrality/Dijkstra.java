@@ -83,7 +83,7 @@ public class Dijkstra<V extends SearchInfo<V, Double>, E>
 
     /**
      * Any work to be done using vertex u before relaxing the outgoing edges of
-     * u.
+     * u. In this class, it is empty on purpose.
      *
      * @param u Vertex u.
      */
