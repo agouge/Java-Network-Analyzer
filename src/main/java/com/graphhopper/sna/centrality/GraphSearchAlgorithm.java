@@ -31,7 +31,6 @@ public class GraphSearchAlgorithm<V, E> {
     /**
      * Neighbor index.
      */
-    // TODO: Do we really use this?
     protected final NeighborIndex<V, E> neighborIndex;
 
     /**

@@ -25,11 +25,8 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.SearchInfo;
-import com.graphhopper.util.EdgeIterator;
 import java.util.LinkedList;
 import org.jgrapht.Graph;
-import org.jgrapht.alg.NeighborIndex;
-import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Root Breadth First Search (BFS) class.
@@ -42,8 +39,8 @@ import org.jgrapht.graph.DefaultEdge;
  *
  * @author Adam Gouge
  */
-public class BFS<V extends SearchInfo<V, Integer>, E> 
-    extends GraphSearchAlgorithm<V, E> {
+public class BFS<V extends SearchInfo<V, Integer>, E>
+        extends GraphSearchAlgorithm<V, E> {
 
     /**
      * Constructs a new {@link BFS} object.
@@ -77,15 +74,55 @@ public class BFS<V extends SearchInfo<V, Integer>, E>
             for (final V neighbor : neighborIndex.neighborListOf(current)) {
                 // If this neighbor is found for the first time ...
                 if (neighbor.getDistance() < 0) {
-                    // then update the distance
-                    int updatedSteps = current.getDistance() + 1;
-                    neighbor.setDistance(updatedSteps);
-                    // set the predecessor
-                    neighbor.addPredecessor(current);
-                    // and enqueue it
-                    queue.add(neighbor);
+                    enqueueAndUpdateDistance(current, neighbor, queue);
+                    firstTimeFoundStep(current, neighbor);
+                }
+                // If this is a shortest path from startNode to neighbor
+                // via current ...
+                if (neighbor.getDistance() == current.getDistance() + 1) {
+                    shortestPathStep(current, neighbor);
                 }
             }
         }
+    }
+
+    /**
+     * Enqueue neighbor and set neighbor's distance to be one more than
+     * current's distance.
+     *
+     * @param current  Current node
+     * @param neighbor Neighbor node
+     * @param queue    The queue
+     */
+    protected void enqueueAndUpdateDistance(final V current,
+                                            final V neighbor,
+                                            LinkedList<V> queue) {
+        // Enqueue the neighbor.
+        queue.add(neighbor);
+        // Calculate the new distance.
+        int updatedDistance = current.getDistance() + 1;
+        // Update the distance.
+        neighbor.setDistance(updatedDistance);
+    }
+
+    /**
+     * Work to be done after {@link BFS#enqueueAndUpdateDistance}.
+     *
+     * @param current  Current node
+     * @param neighbor Neighbor node
+     */
+    protected void firstTimeFoundStep(final V current, final V neighbor) {
+        // Set the predecessor.
+        neighbor.addPredecessor(current);
+    }
+
+    /**
+     * Work to be done if this is a shortest path from the start node to
+     * neighbor via current. This is empty here on purpose.
+     *
+     * @param current  Current node
+     * @param neighbor Neighbor node
+     */
+    protected void shortestPathStep(V current, V neighbor) {
     }
 }

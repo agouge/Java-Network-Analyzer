@@ -26,10 +26,7 @@ package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.UnweightedPathLengthData;
-import com.graphhopper.util.EdgeIterator;
-import com.graphhopper.util.MyIntDeque;
-import gnu.trove.stack.array.TIntArrayStack;
-import java.util.Map;
+import java.util.Stack;
 import org.jgrapht.Graph;
 
 /**
@@ -43,7 +40,7 @@ public class BFSForCentrality<E> extends BFS<UnweightedNodeBetweennessInfo, E> {
      * Stack that will return the nodes ordered by non-increasing distance from
      * the source node.
      */
-    private final TIntArrayStack stack;
+    private final Stack<UnweightedNodeBetweennessInfo> stack;
     /**
      * Data structure used to hold information used to calculate closeness.
      */
@@ -59,62 +56,26 @@ public class BFSForCentrality<E> extends BFS<UnweightedNodeBetweennessInfo, E> {
     public BFSForCentrality(Graph<UnweightedNodeBetweennessInfo, E> graph,
                             UnweightedNodeBetweennessInfo startNode,
                             UnweightedPathLengthData pathsFromStartNode,
-                            TIntArrayStack stack) {
+                            Stack<UnweightedNodeBetweennessInfo> stack) {
         super(graph, startNode);
         this.pathsFromStartNode = pathsFromStartNode;
         this.stack = stack;
     }
 
-    /**
-     * Uses BFS to do graph analysis (betweenness centrality, etc.).
-     */
     @Override
-    protected void calculate() {
+    protected void firstTimeFoundStep(
+            final UnweightedNodeBetweennessInfo current,
+            final UnweightedNodeBetweennessInfo neighbor) {
+        // Add this to the path length data. (For closeness)
+        pathsFromStartNode.addSPLength(neighbor.getDistance());
+    }
 
-        // Create the BFS traversal queue and enqueue startNode.
-        MyIntDeque queue = new MyIntDeque();
-        queue.push(startNode);
-
-        // While the queue is not empty ...
-        while (!queue.isEmpty()) {
-            // ... dequeue a node
-            int current = queue.pop();
-            final UnweightedNodeBetweennessInfo currentNBInfo =
-                    nodeMap.get(current);
-            // and push this node to the stack.
-            stack.push(current);
-
-            // For every neighbor of the current node ...
-            for (EdgeIterator outgoingEdges =
-                    GeneralizedGraphAnalyzer.outgoingEdges(graph, current);
-                    outgoingEdges.next();) {
-
-                int neighbor = outgoingEdges.adjNode();
-                final UnweightedNodeBetweennessInfo neighborNBInfo =
-                        nodeMap.get(neighbor);
-
-                // If this neighbor is found for the first time ...
-                if (neighborNBInfo.getDistance() < 0) {
-                    // then enqueue it
-                    queue.push(neighbor);
-                    // and update the distance.
-                    int updatedSteps = currentNBInfo.getDistance() + 1;
-                    neighborNBInfo.setDistance(updatedSteps);
-                    // Add this to the path length data. (For closeness)
-                    pathsFromStartNode.addSPLength(updatedSteps);
-                }
-
-                // If this is a shortest path from startNode to neighbor
-                // via current ...
-                if (neighborNBInfo.getDistance()
-                        == currentNBInfo.getDistance() + 1) {
-                    // then update the number of shortest paths,
-                    neighborNBInfo.accumulateSPCount(currentNBInfo.getSPCount());
-                    // and add currentNode to the set of predecessors
-                    // of neighbor.
-                    neighborNBInfo.addPredecessor(current);
-                }
-            }
-        }
+    @Override
+    protected void shortestPathStep(UnweightedNodeBetweennessInfo current,
+                                    UnweightedNodeBetweennessInfo neighbor) {
+        // Update the number of shortest paths.
+        neighbor.accumulateSPCount(current.getSPCount());
+        // Add currentNode to the set of predecessors of neighbor.
+        neighbor.addPredecessor(current);
     }
 }
