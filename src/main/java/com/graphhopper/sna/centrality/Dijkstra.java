@@ -111,7 +111,8 @@ public class Dijkstra<V extends SearchInfo<V, Double>, E>
 
     /**
      * Returns {@code true} iff the current distance estimate on v is greater
-     * than the length of the path to u plus w(u,v).
+     * than OR EQUAL TO (this corresponds to multiple shortest paths) the length
+     * of the path to u plus w(u,v).
      *
      * @param u        Vertex u
      * @param v        Vertex v
@@ -120,7 +121,12 @@ public class Dijkstra<V extends SearchInfo<V, Double>, E>
      * @return {@code true} iff a smaller distance estimate exists.
      */
     protected boolean smallerEstimateExists(V u, V v, Double uvWeight) {
-        if (v.getDistance() > u.getDistance() + uvWeight) {
+        // The TOLERANCE takes care of the "or equal to" part.
+        // (If the distance to v is "just a little bit" less than
+        // the distance to u plus w(u,v), then we consider this to be
+        // a new shortest path to v through u.)
+        // Without the tolerance, this would just be "greater".
+        if (v.getDistance() > u.getDistance() + uvWeight - TOLERANCE) {
             return true;
         }
         return false;
