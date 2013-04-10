@@ -33,7 +33,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Stack;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Calculates various centrality measures on the given graph, <b>assumed to be
@@ -41,7 +40,7 @@ import org.jgrapht.graph.DefaultEdge;
  *
  * @author Adam Gouge
  */
-public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E extends DefaultEdge, S extends PathLengthData>
+public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends PathLengthData>
         extends GeneralizedGraphAnalyzer<V, E> {
 
     /**

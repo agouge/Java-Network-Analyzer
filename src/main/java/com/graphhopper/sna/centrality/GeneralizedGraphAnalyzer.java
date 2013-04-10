@@ -10,7 +10,6 @@ import java.util.Set;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.UndirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Root class of all classes that do some type of analysis on graphs
@@ -18,8 +17,7 @@ import org.jgrapht.graph.DefaultEdge;
  *
  * @author Adam Gouge
  */
-public abstract class GeneralizedGraphAnalyzer
-    <V extends NodeBetweennessInfo, E extends DefaultEdge> {
+public abstract class GeneralizedGraphAnalyzer<V extends NodeBetweennessInfo, E> {
 
     /**
      * The graph to be analyzed.
@@ -46,18 +44,20 @@ public abstract class GeneralizedGraphAnalyzer
         this.nodeSet = graph.vertexSet();
         this.nodeCount = this.nodeSet.size();
     }
-    
+
     /**
      * Returns the outdegree (or degree) of the given node.
+     *
      * @param graph The graph.
-     * @param node The node.
-     * @return 
+     * @param node  The node.
+     *
+     * @return
      */
     public int outdegree(Graph<V, E> graph, V node) {
         if (this instanceof DirectedGraph) {
-            return ((DirectedGraph)graph).outDegreeOf(node);
+            return ((DirectedGraph) graph).outDegreeOf(node);
         } else if (this instanceof UndirectedGraph) {
-            return ((UndirectedGraph)graph).degreeOf(node);
+            return ((UndirectedGraph) graph).degreeOf(node);
         }
         return -1;
     }
