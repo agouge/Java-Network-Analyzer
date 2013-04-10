@@ -42,8 +42,8 @@ import org.jgrapht.graph.DefaultEdge;
  *
  * @author Adam Gouge
  */
-public class BFS<V extends SearchInfo<V, Integer>> 
-    extends GraphSearchAlgorithm<V, DefaultEdge> {
+public class BFS<V extends SearchInfo<V, Integer>, E> 
+    extends GraphSearchAlgorithm<V, E> {
 
     /**
      * Constructs a new {@link BFS} object.
@@ -52,7 +52,7 @@ public class BFS<V extends SearchInfo<V, Integer>>
      * @param startNode The start node.
      * @param nodeMap   Maps nodes to their info.
      */
-    public BFS(Graph<V, DefaultEdge> graph, V startNode) {
+    public BFS(Graph<V, E> graph, V startNode) {
         super(graph, startNode);
     }
 
