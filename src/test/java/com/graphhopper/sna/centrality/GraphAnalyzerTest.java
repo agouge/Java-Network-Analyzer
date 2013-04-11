@@ -24,6 +24,7 @@
  */
 package com.graphhopper.sna.centrality;
 
+import com.graphhopper.sna.analyzers.GraphAnalyzer;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.model.GraphCreator;

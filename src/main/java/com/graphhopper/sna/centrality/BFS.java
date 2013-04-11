@@ -56,7 +56,7 @@ public class BFS<V extends SearchInfo<V, Integer>, E>
     /**
      * Do the breadth first search.
      */
-    protected void calculate() {
+    public void calculate() {
 
         startNode.setSource();
 

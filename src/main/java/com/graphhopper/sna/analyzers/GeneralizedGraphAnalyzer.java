@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.graphhopper.sna.centrality;
+package com.graphhopper.sna.analyzers;
 
 import com.graphhopper.sna.progress.ProgressMonitor;
 import java.util.Set;
