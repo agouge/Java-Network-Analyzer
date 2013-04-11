@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhopper.sna.centrality;
+package com.graphhopper.sna.alg;
 
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.UnweightedPathLengthData;

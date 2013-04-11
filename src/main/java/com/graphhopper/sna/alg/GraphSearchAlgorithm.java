@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.graphhopper.sna.centrality;
+package com.graphhopper.sna.alg;
 
 import java.util.Set;
 import org.jgrapht.DirectedGraph;

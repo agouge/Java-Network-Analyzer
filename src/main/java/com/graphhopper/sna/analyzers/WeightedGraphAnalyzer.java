@@ -24,7 +24,7 @@
  */
 package com.graphhopper.sna.analyzers;
 
-import com.graphhopper.sna.centrality.DijkstraForCentrality;
+import com.graphhopper.sna.alg.DijkstraForCentrality;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.WeightedPathLengthData;
 import com.graphhopper.sna.progress.NullProgressMonitor;

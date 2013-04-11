@@ -24,7 +24,7 @@
  */
 package com.graphhopper.sna.analyzers;
 
-import com.graphhopper.sna.centrality.BFSForCentrality;
+import com.graphhopper.sna.alg.BFSForCentrality;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.UnweightedPathLengthData;
 import com.graphhopper.sna.progress.NullProgressMonitor;
