@@ -28,11 +28,9 @@ import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.UnweightedPathLengthData;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
-import gnu.trove.stack.array.TIntArrayStack;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Stack;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Calculates various centrality measures on unweighted graphs <b>assumed to be
@@ -41,8 +39,8 @@ import org.jgrapht.graph.DefaultEdge;
  *
  * @author Adam Gouge
  */
-public class UnweightedGraphAnalyzer
-        extends GraphAnalyzer<UnweightedNodeBetweennessInfo, DefaultEdge, UnweightedPathLengthData> {
+public class UnweightedGraphAnalyzer<E>
+        extends GraphAnalyzer<UnweightedNodeBetweennessInfo, E, UnweightedPathLengthData> {
 
     /**
      * Initializes a new instance of an unweighted graph analyzer with the given
@@ -52,7 +50,7 @@ public class UnweightedGraphAnalyzer
      * @param pm    The {@link ProgressMonitor} to be used.
      */
     public UnweightedGraphAnalyzer(
-            Graph<UnweightedNodeBetweennessInfo, DefaultEdge> graph,
+            Graph<UnweightedNodeBetweennessInfo, E> graph,
             ProgressMonitor pm) throws
             NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
@@ -66,7 +64,8 @@ public class UnweightedGraphAnalyzer
      *
      * @param graph The graph to be analyzed.
      */
-    public UnweightedGraphAnalyzer(Graph graph) throws NoSuchMethodException,
+    public UnweightedGraphAnalyzer(Graph<UnweightedNodeBetweennessInfo, E> graph)
+            throws NoSuchMethodException,
             InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
         this(graph, new NullProgressMonitor());
@@ -92,7 +91,6 @@ public class UnweightedGraphAnalyzer
             Stack<UnweightedNodeBetweennessInfo> stack) {
         new BFSForCentrality(graph,
                              startNode,
-                             nodeBetweenness,
                              pathsFromStartNode,
                              stack).calculate();
     }

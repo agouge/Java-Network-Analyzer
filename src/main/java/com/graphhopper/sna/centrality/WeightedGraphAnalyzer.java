@@ -28,10 +28,9 @@ import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.WeightedPathLengthData;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
-import com.graphhopper.storage.Graph;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Stack;
-import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.Graph;
 
 /**
  * Calculates various centrality measures on weighted graphs which are
@@ -39,8 +38,8 @@ import org.jgrapht.graph.DefaultEdge;
  *
  * @author Adam Gouge
  */
-public class WeightedGraphAnalyzer
-        extends GraphAnalyzer<WeightedNodeBetweennessInfo, DefaultEdge, WeightedPathLengthData> {
+public class WeightedGraphAnalyzer<E>
+        extends GraphAnalyzer<WeightedNodeBetweennessInfo, E, WeightedPathLengthData> {
 
     /**
      * Initializes a new instance of a weighted graph analyzer with the given
@@ -49,7 +48,8 @@ public class WeightedGraphAnalyzer
      * @param graph The graph to be analyzed.
      * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public WeightedGraphAnalyzer(Graph graph, ProgressMonitor pm)
+    public WeightedGraphAnalyzer(Graph<WeightedNodeBetweennessInfo, E> graph,
+                                 ProgressMonitor pm)
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
@@ -62,7 +62,7 @@ public class WeightedGraphAnalyzer
      *
      * @param graph The graph to be analyzed.
      */
-    public WeightedGraphAnalyzer(Graph graph)
+    public WeightedGraphAnalyzer(Graph<WeightedNodeBetweennessInfo, E> graph)
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
@@ -92,7 +92,6 @@ public class WeightedGraphAnalyzer
         // the nodes are popped in order of non-increasing distance from s.
         // This is IMPORTANT.
         new DijkstraForCentrality(graph,
-                                  nodeBetweenness,
                                   startNode,
                                   pathsFromStartNode,
                                   stack).calculate();
