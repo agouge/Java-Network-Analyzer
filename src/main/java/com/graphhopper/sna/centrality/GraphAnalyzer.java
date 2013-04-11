@@ -111,7 +111,6 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
         // ***** GLOBAL INITIALIZATION *************************
         long count = 0;
         pm.setProgress(count, startTime);
-
         // ***** CENTRALITY CONTRIBUTION FROM EACH NODE ********
         for (V node : nodeSet) {
             // Update the count.
@@ -121,7 +120,6 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
             if (pm.isCancelled()) {
                 break;
             }
-
             // Calculate betweenness and closeness for each node.
             calculateCentralityContributionFromNode(node);
 
@@ -275,7 +273,6 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
             // (The betweenness of w cannot receive contributions from
             // the dependency of w on w, by the definition of dependency.)
             if (w != startNode) {
-
                 // (B) At this point, the dependency of startNode on w
                 // has finished calculating, so we can add it to
                 // the betweenness centrality of w.

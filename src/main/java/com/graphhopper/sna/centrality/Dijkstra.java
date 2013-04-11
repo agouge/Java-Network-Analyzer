@@ -25,7 +25,6 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.SearchInfo;
-import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import org.jgrapht.Graph;

@@ -35,6 +35,13 @@
             <type>jar</type>
         </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>irstv</id>
+            <name>IRSTV repository</name>
+            <url>http://repo.orbisgis.org</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>

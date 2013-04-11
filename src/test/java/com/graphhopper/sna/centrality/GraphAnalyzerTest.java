@@ -25,104 +25,247 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
-import com.graphhopper.storage.Graph;
-import java.lang.reflect.InvocationTargetException;
+import com.graphhopper.sna.model.Edge;
+import com.graphhopper.sna.model.GraphCreator;
+import com.graphhopper.sna.model.UnweightedGraphCreator;
+import com.graphhopper.sna.model.WeightedGraphCreator;
+import com.graphhopper.sna.progress.ProgressMonitor;
+import java.io.FileNotFoundException;
 import java.util.Map;
+import org.jgrapht.Graph;
+import org.junit.Test;
 
 /**
- * Parent class for {@link GraphAnalyzer} tests.
+ * Tests weighted and unweighted graph analysis.
  *
  * @author Adam Gouge
  */
 public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
         extends CentralityTest<T> {
 
-    protected final static String GRAPH_ANALYSIS = "Graph analysis";
-
+    private static final String WEIGHTED = "Weighted";
+    private static final String UNWEIGHTED = "Unweighted";
+    private static final String DIRECTED = "Directed";
+    private static final String REVERSED = "Reversed";
+    private static final String UNDIRECTED = "Undirected";
     /**
-     * Does the analysis on the given graph, printing out debugging information
-     * if the boolean {@code verbose} is {@code true}; prints the results if
-     * {@code printResults} is {@code true}.
-     *
-     * @param graph        The graph.
-     * @param verbose      {@code true} iff verbose output is desired.
-     * @param printResults {@code true} iff the results are to be printed.
-     *
-     * @return The result.
+     * The name of this test.
      */
-    protected abstract Map<Integer, T> doAnalysis(
-            Graph graph,
-            boolean printResults);
+    protected final static String NAME = "Graph analysis";
 
     /**
-     * Does the analysis on the given graph, suppressing all output.
+     * Does unweighted graph analysis on the given graph.
      *
      * @param graph The graph.
      *
      * @return The result.
      */
-    protected Map<Integer, T> doAnalysis(Graph graph) {
-        return doAnalysis(graph, false);
+    protected Map<Integer, NodeBetweennessInfo> doUnweightedAnalysis(
+            Graph<Integer, Edge> graph,
+            String orientation) {
+        return null;
+//        return doAnalysis(new UnweightedGraphAnalyzer(graph, progressMonitor()),
+//                          UNWEIGHTED + " " + orientation);
     }
 
     /**
-     * Does the analysis on the given graph, printing debugging information and
-     * results.
+     * Does weighted graph analysis on the given graph.
      *
      * @param graph The graph.
      *
      * @return The result.
      */
-    protected Map<Integer, T> doVerboseAnalysis(
-            Graph graph) {
-        return doAnalysis(graph, true);
+    protected Map<Integer, NodeBetweennessInfo> doWeightedAnalysis(
+            Graph<Integer, Edge> graph,
+            String orientation) {
+        return null;
+//        return doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()),
+//                          WEIGHTED + " " + orientation);
     }
 
     /**
-     * Does the analysis on the given graph, printing results but no debugging
-     * information.
+     * Executes {@link GraphAnalyzer#computeAll()}.
      *
-     * @param graph The graph.
-     *
-     * @return The result.
-     */
-    protected Map<Integer, T> doAnalysisPrintResults(
-            Graph graph) {
-        return doAnalysis(graph, true);
-    }
-
-    /**
-     * Executes {@link GraphAnalyzer#computeAll()} and prints the results if
-     * requested.
-     *
-     * @param analyzer     The {@link GraphAnalyzer}.
-     * @param printResults {@code true} iff the results are to be printed.
+     * @param analyzer The {@link GraphAnalyzer}.
      *
      * @return The results.
      */
-    protected Map<Integer, T> computeAll(
+    private Map<Integer, NodeBetweennessInfo> doAnalysis(
             GraphAnalyzer analyzer,
-            boolean printResults) throws InstantiationException,
-            IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException {
+            String analysisType) {
         // Do network analysis.
+        System.out.println("    _" + analysisType + "_");
         long start = System.currentTimeMillis();
-        Map<Integer, T> result = analyzer.computeAll();
-        long stop = System.currentTimeMillis();
-        printTime(stop - start);
-        if (printResults) {
-            printResults(result);
-        }
-        return result;
+//        Map<Integer, NodeBetweennessInfo> result = analyzer.computeAll();
+//        printTime(System.currentTimeMillis() - start, analysisType);
+//        if (printsResults()) {
+//            printResults(result);
+//        }
+//        return result;
+        return null;
     }
+
+    /**
+     * Does unweighted graph analysis on the directed graph loaded by
+     * {@link GraphAnalyzerTest#unweightedGraph(int)}.
+     *
+     * @throws FileNotFoundException
+     */
+    @Test
+    public void unweightedDirected() throws FileNotFoundException {
+        doUnweightedAnalysis(unweightedGraph(GraphCreator.DIRECTED),
+                             DIRECTED);
+    }
+
+    /**
+     * Does unweighted graph analysis on the edge reversed graph loaded by
+     * {@link GraphAnalyzerTest#unweightedGraph(int)}.
+     *
+     * @throws FileNotFoundException
+     */
+    @Test
+    public void unweightedReversed() throws FileNotFoundException {
+        doUnweightedAnalysis(unweightedGraph(GraphCreator.REVERSED),
+                             REVERSED);
+    }
+
+    /**
+     * Does unweighted graph analysis on the undirected graph loaded by
+     * {@link GraphAnalyzerTest#unweightedGraph(int)}.
+     *
+     * @throws FileNotFoundException
+     */
+    @Test
+    public void unweightedUndirected() throws FileNotFoundException {
+        doUnweightedAnalysis(unweightedGraph(GraphCreator.UNDIRECTED),
+                             UNDIRECTED);
+    }
+
+    /**
+     * Does weighted graph analysis on the directed graph loaded by
+     * {@link GraphAnalyzerTest#weightedGraph(int)}.
+     *
+     * @throws FileNotFoundException
+     */
+    @Test
+    public void weightedDirected() throws FileNotFoundException {
+        doWeightedAnalysis(weightedGraph(GraphCreator.DIRECTED),
+                           DIRECTED);
+    }
+
+    /**
+     * Does weighted graph analysis on the edge reversed graph loaded by
+     * {@link GraphAnalyzerTest#weightedGraph(int)}.
+     *
+     * @throws FileNotFoundException
+     */
+    @Test
+    public void weightedReversed() throws FileNotFoundException {
+        doWeightedAnalysis(weightedGraph(GraphCreator.REVERSED),
+                           REVERSED);
+    }
+
+    /**
+     * Does weighted graph analysis on the undirected graph loaded by
+     * {@link GraphAnalyzerTest#weightedGraph(int)}.
+     *
+     * @throws FileNotFoundException
+     */
+    @Test
+    public void weightedUndirected() throws FileNotFoundException {
+        doWeightedAnalysis(weightedGraph(GraphCreator.UNDIRECTED),
+                           UNDIRECTED);
+    }
+
+    /**
+     * Does unweighted analysis on an unweighted graph (loaded by
+     * {@link GraphAnalyzerTest#unweightedGraph(int)} and weighted analysis on a
+     * weighted graph WITH ALL WEIGHTS EQUAL TO 1.0 (loaded by
+     * {@link GraphAnalyzerTest#weightedGraph(int)}) and makes sure the results
+     * are the same.
+     *
+     * @throws FileNotFoundException
+     */
+    // TODO: Implement this method.
+    @Test
+    public void undirectedComparison() throws FileNotFoundException {
+//        int orientation = GraphCreator.UNDIRECTED;
+//        
+//        Map<Integer, NodeBetweennessInfo> unweightedResults = 
+//                doUnweightedAnalysis(unweightedGraph(orientation));
+//        Map<Integer, NodeBetweennessInfo> weightedResults = 
+//                doWeightedAnalysis(weightedGraph(orientation));
+    }
+
+    /**
+     * Loads an unweighted graph with the given orientation from
+     * {@link GraphAnalyzerTest#getFilename()}.
+     *
+     * @param orientation The orientation.
+     *
+     * @return The graph.
+     *
+     * @throws FileNotFoundException
+     */
+    protected Graph unweightedGraph(int orientation) throws
+            FileNotFoundException {
+        return new UnweightedGraphCreator(getFilename(),
+                                          orientation).loadGraph();
+    }
+
+    /**
+     * Loads a weighted graph with the given orientation from
+     * {@link GraphAnalyzerTest#getFilename()}.
+     *
+     * @param orientation The orientation.
+     *
+     * @return The graph.
+     *
+     * @throws FileNotFoundException
+     */
+    protected Graph weightedGraph(int orientation) throws
+            FileNotFoundException {
+        return new WeightedGraphCreator(getFilename(),
+                                        getWeightColumnName(),
+                                        orientation).loadGraph();
+    }
+
+    /**
+     * Returns a boolean indicating whether the results should be printed.
+     *
+     * @return A boolean indicating whether the results should be printed.
+     */
+    protected abstract boolean printsResults();
+
+    /**
+     * Returns a {@link ProgressMonitor} to be used during graph analysis.
+     *
+     * @return
+     */
+    protected abstract ProgressMonitor progressMonitor();
+
+    /**
+     * Returns the filename from which the graph edges should be loaded.
+     *
+     * @return The filename from which the graph edges should be loaded.
+     */
+    protected abstract String getFilename();
+
+    /**
+     * Returns the weight column name.
+     *
+     * @return The weight column name.
+     */
+    protected abstract String getWeightColumnName();
 
     /**
      * Prints the amount of time graph analysis took.
      *
      * @param time
      */
-    protected void printTime(double time) {
+    protected void printTime(double time, String analysisType) {
         System.out.println(TIME + time + " ms: "
-                + getName() + " " + GRAPH_ANALYSIS);
+                + NAME + " - " + getName()
+                + " " + analysisType + ".");
     }
 }
