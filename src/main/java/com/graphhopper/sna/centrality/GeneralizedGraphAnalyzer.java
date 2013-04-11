@@ -4,7 +4,6 @@
  */
 package com.graphhopper.sna.centrality;
 
-import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import java.util.Set;
 import org.jgrapht.DirectedGraph;
@@ -17,7 +16,7 @@ import org.jgrapht.UndirectedGraph;
  *
  * @author Adam Gouge
  */
-public abstract class GeneralizedGraphAnalyzer<V extends NodeBetweennessInfo, E> {
+public abstract class GeneralizedGraphAnalyzer<V, E> {
 
     /**
      * The graph to be analyzed.
@@ -53,10 +52,11 @@ public abstract class GeneralizedGraphAnalyzer<V extends NodeBetweennessInfo, E>
      *
      * @return
      */
-    public int outdegree(Graph<V, E> graph, V node) {
-        if (this instanceof DirectedGraph) {
+    // 
+    public static int outdegree(Graph graph, Object node) {
+        if (graph instanceof DirectedGraph) {
             return ((DirectedGraph) graph).outDegreeOf(node);
-        } else if (this instanceof UndirectedGraph) {
+        } else if (graph instanceof UndirectedGraph) {
             return ((UndirectedGraph) graph).degreeOf(node);
         }
         return -1;
