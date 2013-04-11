@@ -39,7 +39,7 @@ import org.jgrapht.graph.DefaultEdge;
  *
  * @author Adam Gouge
  */
-public class DFSForStrahler extends DFSRootNode<StrahlerInfo, DefaultEdge> {
+public class DFSForStrahler<E> extends DFSRootNode<StrahlerInfo, E> {
 
     /**
      * Constructor.
@@ -47,7 +47,7 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo, DefaultEdge> {
      * @param graph    The graph.
      * @param rootNode The root node.
      */
-    public DFSForStrahler(Graph<StrahlerInfo, DefaultEdge> graph,
+    public DFSForStrahler(Graph<StrahlerInfo, E> graph,
                           StrahlerInfo rootNode) {
         super(graph, rootNode);
     }
@@ -77,7 +77,7 @@ public class DFSForStrahler extends DFSRootNode<StrahlerInfo, DefaultEdge> {
             node.setStrahlerNumber(1);
         } else {
             // If this is not a leaf, we must consider the outdegree.
-            int outDegree = GeneralizedGraphAnalyzer.outDegree(graph, node);
+            int outDegree = GeneralizedGraphAnalyzer.outdegree(graph, node);
 
             if (outDegree == 1) {
                 // If there is only one child, then the Strahler number is
