@@ -25,9 +25,8 @@
 package com.graphhopper.sna.centrality;
 
 import com.graphhopper.sna.data.StrahlerInfo;
-import com.graphhopper.util.EdgeIterator;
+import java.util.Set;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Calculates the Strahler numbers of the nodes in the given tree.
@@ -77,16 +76,20 @@ public class DFSForStrahler<E> extends DFSRootNode<StrahlerInfo, E> {
             node.setStrahlerNumber(1);
         } else {
             // If this is not a leaf, we must consider the outdegree.
-            int outDegree = GeneralizedGraphAnalyzer.outdegree(graph, node);
+            int outDegree = outdegree(node);
 
             if (outDegree == 1) {
                 // If there is only one child, then the Strahler number is
                 // the same as that of the child.
-                EdgeIterator outgoingEdges =
-                        GeneralizedGraphAnalyzer.outgoingEdges(graph, node);
-                outgoingEdges.next();
-                int child = outgoingEdges.adjNode();
-                node.setStrahlerNumber(nodeMap.get(child).getStrahlerNumber());
+                StrahlerInfo child;
+                Set<StrahlerInfo> neighborsOf = neighborIndex.neighborsOf(node);
+                if (neighborsOf.size() == 1) {
+                    child = neighborsOf.iterator().next();
+                } else {
+                    throw new IllegalStateException(
+                            "There should be exactly one child!");
+                }
+                node.setStrahlerNumber(child.getStrahlerNumber());
             } else {
 
                 // Otherwise the outdegree is >= 2, so consider the top two
@@ -119,19 +122,16 @@ public class DFSForStrahler<E> extends DFSRootNode<StrahlerInfo, E> {
      *
      * @return The top two Strahler numbers of the node's children.
      */
-    private int[] topTwoStrahlerNumbers(int node) {
+    private int[] topTwoStrahlerNumbers(StrahlerInfo node) {
         int max = Integer.MIN_VALUE;
         int secondLargest = Integer.MIN_VALUE;
-        for (EdgeIterator outgoingEdges =
-                GeneralizedGraphAnalyzer.outgoingEdges(graph, node);
-                outgoingEdges.next();) {
-            int current = nodeMap.get(outgoingEdges.adjNode())
-                    .getStrahlerNumber();
-            if (current > max) {
+        for (StrahlerInfo child : neighborIndex.neighborListOf(node)) {
+            int s = child.getStrahlerNumber();
+            if (s > max) {
                 secondLargest = max;
-                max = current;
-            } else if (current > secondLargest) {
-                secondLargest = current;
+                max = s;
+            } else if (s > secondLargest) {
+                secondLargest = s;
             }
         }
         return new int[]{max, secondLargest};
