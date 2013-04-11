@@ -44,16 +44,8 @@ import org.jgrapht.graph.DefaultEdge;
  *
  * @author Adam Gouge
  */
-public class DFS<V extends DFSInfo, E> {
+public class DFS<V extends DFSInfo, E>  extends GraphSearchAlgorithm<V, E> {
 
-    /**
-     * The graph on which to calculate shortest paths.
-     */
-    protected final Graph<V, E> graph;
-    /**
-     * Neighbor index.
-     */
-    protected final NeighborIndex<V, E> neighborIndex;
     /**
      * For discovery and finishing times.
      */
@@ -66,8 +58,7 @@ public class DFS<V extends DFSInfo, E> {
      * @param nodeMap Maps nodes to their info.
      */
     public DFS(Graph<V, E> graph) {
-        this.graph = graph;
-        this.neighborIndex = new NeighborIndex<V, E>(graph);
+        super(graph);
     }
 
     /**

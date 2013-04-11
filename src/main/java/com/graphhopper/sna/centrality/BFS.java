@@ -40,7 +40,7 @@ import org.jgrapht.Graph;
  * @author Adam Gouge
  */
 public class BFS<V extends SearchInfo<V, Integer>, E>
-        extends GraphSearchAlgorithm<V, E> {
+        extends GraphSearchAlgorithmStartNode<V, E> {
 
     /**
      * Constructs a new {@link BFS} object.

@@ -40,7 +40,7 @@ import org.jgrapht.Graphs;
  * @author Adam Gouge
  */
 public class Dijkstra<V extends SearchInfo<V, Double>, E>
-        extends GraphSearchAlgorithm<V, E> {
+        extends GraphSearchAlgorithmStartNode<V, E> {
 
     /**
      * Tolerance to be used when determining if two potential shortest paths

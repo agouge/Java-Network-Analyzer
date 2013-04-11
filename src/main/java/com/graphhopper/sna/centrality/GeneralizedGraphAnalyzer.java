@@ -43,22 +43,4 @@ public abstract class GeneralizedGraphAnalyzer<V, E> {
         this.nodeSet = graph.vertexSet();
         this.nodeCount = this.nodeSet.size();
     }
-
-    /**
-     * Returns the outdegree (or degree) of the given node.
-     *
-     * @param graph The graph.
-     * @param node  The node.
-     *
-     * @return
-     */
-    // 
-    public static int outdegree(Graph graph, Object node) {
-        if (graph instanceof DirectedGraph) {
-            return ((DirectedGraph) graph).outDegreeOf(node);
-        } else if (graph instanceof UndirectedGraph) {
-            return ((UndirectedGraph) graph).degreeOf(node);
-        }
-        return -1;
-    }
 }

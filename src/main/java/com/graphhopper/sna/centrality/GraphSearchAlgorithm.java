@@ -7,11 +7,12 @@ package com.graphhopper.sna.centrality;
 import java.util.Set;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
+import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.NeighborIndex;
 
 /**
- * Root class for graph search algorithms, including BFS, Dijkstra, etc., and
- * their modified versions for centrality and connectedness calculations.
+ * Root class for graph search algorithms, including BFS, DFS, Dijkstra, etc.,
+ * and their modified versions for centrality and connectedness calculations.
  *
  * @param <V> Vertices
  * @param <E> Edges
@@ -25,10 +26,6 @@ public class GraphSearchAlgorithm<V, E> {
      */
     protected final Graph<V, E> graph;
     /**
-     * Start node.
-     */
-    protected final V startNode;
-    /**
      * Neighbor index.
      */
     protected final NeighborIndex<V, E> neighborIndex;
@@ -36,12 +33,10 @@ public class GraphSearchAlgorithm<V, E> {
     /**
      * Constructs a new {@link GraphSearchAlgorithm} object.
      *
-     * @param graph     The graph.
-     * @param startNode The start node.
+     * @param graph The graph.
      */
-    public GraphSearchAlgorithm(Graph<V, E> graph, V startNode) {
+    public GraphSearchAlgorithm(Graph<V, E> graph) {
         this.graph = graph;
-        this.startNode = startNode;
         this.neighborIndex = new NeighborIndex<V, E>(graph);
     }
 
@@ -59,5 +54,24 @@ public class GraphSearchAlgorithm<V, E> {
         } else {
             return graph.edgesOf(node);
         }
+    }
+
+    /**
+     * Returns the outdegree (or degree for undirected graphs) of the given
+     * node.
+     *
+     * @param node The node.
+     *
+     * @return The outdegree (or degree for undirected graphs) of the given
+     *         node.
+     */
+    // 
+    public int outdegree(V node) {
+        if (graph instanceof DirectedGraph) {
+            return ((DirectedGraph) graph).outDegreeOf(node);
+        } else if (graph instanceof UndirectedGraph) {
+            return ((UndirectedGraph) graph).degreeOf(node);
+        }
+        return -1;
     }
 }
