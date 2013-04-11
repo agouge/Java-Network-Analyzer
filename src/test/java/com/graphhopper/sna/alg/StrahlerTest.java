@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhopper.sna.analyzers;
+package com.graphhopper.sna.alg;
 
 import com.graphhopper.sna.data.StrahlerInfo;
 import com.graphhopper.storage.Graph;
