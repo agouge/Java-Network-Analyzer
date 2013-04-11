@@ -22,9 +22,9 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhopper.sna.centrality.examples;
+package com.graphhopper.sna.analyzers.examples;
 
-import com.graphhopper.sna.centrality.ManuallyCreatedGraphAnalyzerTest;
+import com.graphhopper.sna.analyzers.ManuallyCreatedGraphAnalyzerTest;
 import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
