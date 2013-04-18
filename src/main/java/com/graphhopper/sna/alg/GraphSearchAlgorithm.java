@@ -8,6 +8,7 @@ import java.util.Set;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.UndirectedGraph;
+import org.jgrapht.alg.DirectedNeighborIndex;
 import org.jgrapht.alg.NeighborIndex;
 
 /**
@@ -29,6 +30,10 @@ public class GraphSearchAlgorithm<V, E> {
      * Neighbor index.
      */
     protected final NeighborIndex<V, E> neighborIndex;
+    /**
+     * Directed neighbor index.
+     */
+    protected final DirectedNeighborIndex<V, E> directedNeighborIndex;
 
     /**
      * Constructs a new {@link GraphSearchAlgorithm} object.
@@ -37,6 +42,8 @@ public class GraphSearchAlgorithm<V, E> {
      */
     public GraphSearchAlgorithm(Graph<V, E> graph) {
         this.graph = graph;
+        this.directedNeighborIndex = 
+                new DirectedNeighborIndex<V, E>((DirectedGraph) graph);
         this.neighborIndex = new NeighborIndex<V, E>(graph);
     }
 

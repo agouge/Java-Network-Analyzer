@@ -82,7 +82,8 @@ public class DFSForStrahler<E> extends DFSRootNode<StrahlerInfo, E> {
                 // If there is only one child, then the Strahler number is
                 // the same as that of the child.
                 StrahlerInfo child;
-                Set<StrahlerInfo> neighborsOf = neighborIndex.neighborsOf(node);
+                Set<StrahlerInfo> neighborsOf = directedNeighborIndex.
+                        successorsOf(node);
                 if (neighborsOf.size() == 1) {
                     child = neighborsOf.iterator().next();
                 } else {
@@ -125,7 +126,7 @@ public class DFSForStrahler<E> extends DFSRootNode<StrahlerInfo, E> {
     private int[] topTwoStrahlerNumbers(StrahlerInfo node) {
         int max = Integer.MIN_VALUE;
         int secondLargest = Integer.MIN_VALUE;
-        for (StrahlerInfo child : neighborIndex.neighborListOf(node)) {
+        for (StrahlerInfo child : directedNeighborIndex.successorListOf(node)) {
             int s = child.getStrahlerNumber();
             if (s > max) {
                 secondLargest = max;

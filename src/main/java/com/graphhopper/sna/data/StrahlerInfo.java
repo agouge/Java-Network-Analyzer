@@ -39,8 +39,8 @@ public class StrahlerInfo extends DFSInfo {
     /**
      * Constructor.
      */
-    public StrahlerInfo() {
-        super();
+    public StrahlerInfo(int id) {
+        super(id);
         this.strahlerNumber = -1;
     }
 
