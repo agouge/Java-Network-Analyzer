@@ -26,12 +26,8 @@ package com.graphhopper.sna.graphcreators;
 
 import com.graphhopper.sna.data.IdInfo;
 import com.graphhopper.sna.model.DirectedG;
-import com.graphhopper.sna.model.DirectedG;
-import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.model.UndirectedG;
-import com.graphhopper.sna.model.UndirectedG;
-import com.graphhopper.sna.model.WeightedKeyedGraph;
 import com.graphhopper.sna.model.WeightedKeyedGraph;
 import java.util.Scanner;
 
