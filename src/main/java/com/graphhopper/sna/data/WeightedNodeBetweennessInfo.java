@@ -41,7 +41,8 @@ public class WeightedNodeBetweennessInfo
      */
     private double distance;
 
-    public WeightedNodeBetweennessInfo() {
+    public WeightedNodeBetweennessInfo(Integer id) {
+        super(id);
         distance = Double.POSITIVE_INFINITY;
     }
 

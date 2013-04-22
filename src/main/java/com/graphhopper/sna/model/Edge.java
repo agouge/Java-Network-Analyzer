@@ -43,9 +43,6 @@ public class Edge extends DefaultWeightedEdge {
         weight = newWeight;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected double getWeight() {
         return weight;

@@ -31,12 +31,8 @@ import java.util.HashSet;
  *
  * @author Adam Gouge
  */
-public class DFSInfo implements PredecessorInfo<DFSInfo> {
+public class DFSInfo extends IdInfo implements PredecessorInfo<DFSInfo> {
 
-    /**
-     * Id
-     */
-    protected int id;
     /**
      * List of the predecessors of this node.
      *
@@ -56,19 +52,10 @@ public class DFSInfo implements PredecessorInfo<DFSInfo> {
      * Constructor.
      */
     public DFSInfo(int id) {
+        super(id);
         predecessors = new HashSet<DFSInfo>();
-        this.id = id;
         this.discoveryTime = -1;
         this.finishingTime = -1;
-    }
-
-    /**
-     * Returns the id of this node.
-     *
-     * @return The id of this node.
-     */
-    public int getID() {
-        return id;
     }
 
     /**

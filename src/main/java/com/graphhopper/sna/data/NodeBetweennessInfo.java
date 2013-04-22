@@ -34,8 +34,12 @@ import java.util.HashSet;
  * @author Adam Gouge
  */
 public abstract class NodeBetweennessInfo<N, T extends Number>
-        implements SearchInfo<N, T> {
+        extends IdInfo implements SearchInfo<N, T> {
 
+    /**
+     * IdInfo
+     */
+    protected int id;
     /**
      * List of the predecessors of this node.
      *
@@ -66,8 +70,9 @@ public abstract class NodeBetweennessInfo<N, T extends Number>
      * betweenness and closeness to 0; the distance variable is initialized in
      * the appropriate subclass.
      */
-    public NodeBetweennessInfo() {
+    public NodeBetweennessInfo(int id) {
 //        outedges = new TIntLinkedList();
+        super(id);
         predecessors = new HashSet<N>();
         spCount = 0;
         betweenness = 0.0;

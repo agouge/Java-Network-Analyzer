@@ -24,17 +24,16 @@
  */
 package com.graphhopper.sna.model;
 
+import com.graphhopper.sna.data.IdInfo;
 import java.util.Scanner;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.UndirectedGraph;
-import org.jgrapht.WeightedGraph;
 
 /**
  * Creates weighted JGraphT graphs from a csv file produced by OrbisGIS.
  *
  * @author Adam Gouge
  */
-public class WeightedGraphCreator<V, E> extends GraphCreator<V, E> {
+public class WeightedGraphCreator<V extends IdInfo, E extends Edge>
+        extends GraphCreator<V, E> {
 
     /**
      * Initializes a new {@link WeightedGraphCreator}.
@@ -46,8 +45,9 @@ public class WeightedGraphCreator<V, E> extends GraphCreator<V, E> {
     public WeightedGraphCreator(String csvFile,
                                 String weightField,
                                 int orientation,
+                                Class<? extends V> vertexClass,
                                 Class<? extends E> edgeClass) {
-        super(csvFile, weightField, orientation, edgeClass);
+        super(csvFile, weightField, orientation, vertexClass, edgeClass);
     }
 
     /**
@@ -59,7 +59,7 @@ public class WeightedGraphCreator<V, E> extends GraphCreator<V, E> {
      */
     private void loadWeightedEdges(
             Scanner scanner,
-            WeightedGraph<Integer, E> graph,
+            WeightedKeyedGraph<V, E> graph,
             boolean reverse) {
         // Go through the file and add each edge.
         while (scanner.hasNextLine()) {
@@ -72,9 +72,6 @@ public class WeightedGraphCreator<V, E> extends GraphCreator<V, E> {
                     deleteDoubleQuotes(parts[endNodeIndex]));
             double weight = Double.parseDouble(
                     deleteDoubleQuotes(parts[weightFieldIndex]));
-            // Add the nodes to the graph.
-            graph.addVertex(startNode);
-            graph.addVertex(endNode);
             // Add the edge to the graph.
             E edge;
             if (reverse) {
@@ -83,8 +80,6 @@ public class WeightedGraphCreator<V, E> extends GraphCreator<V, E> {
                 edge = graph.addEdge(startNode, endNode);
             }
             // Set the edge weight.
-//            edge.setWeight(weight);
-            // Note: graph.setEdgeWeight(edge, weight) does not seem to work.
             graph.setEdgeWeight(edge, weight);
         }
     }
@@ -95,8 +90,8 @@ public class WeightedGraphCreator<V, E> extends GraphCreator<V, E> {
     @Override
     protected void loadDirectedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, E> graph) {
-        loadWeightedEdges(scanner, (WeightedGraph) graph, false);
+            DirectedG<V, E> graph) {
+        loadWeightedEdges(scanner, (WeightedKeyedGraph) graph, false);
     }
 
     /**
@@ -105,8 +100,8 @@ public class WeightedGraphCreator<V, E> extends GraphCreator<V, E> {
     @Override
     protected void loadReversedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, E> graph) {
-        loadWeightedEdges(scanner, (WeightedGraph) graph, true);
+            DirectedG<V, E> graph) {
+        loadWeightedEdges(scanner, (WeightedKeyedGraph) graph, true);
     }
 
     /**
@@ -115,7 +110,7 @@ public class WeightedGraphCreator<V, E> extends GraphCreator<V, E> {
     @Override
     protected void loadUndirectedEdges(
             Scanner scanner,
-            UndirectedGraph<Integer, E> graph) {
-        loadWeightedEdges(scanner, (WeightedGraph) graph, false);
+            UndirectedG<V, E> graph) {
+        loadWeightedEdges(scanner, (WeightedKeyedGraph) graph, false);
     }
 }

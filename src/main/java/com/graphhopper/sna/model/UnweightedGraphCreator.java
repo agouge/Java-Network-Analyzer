@@ -24,17 +24,16 @@
  */
 package com.graphhopper.sna.model;
 
+import com.graphhopper.sna.data.IdInfo;
 import java.util.Scanner;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.Graph;
-import org.jgrapht.UndirectedGraph;
 
 /**
  * Creates unweighted JGraphT graphs from a csv file produced by OrbisGIS.
  *
  * @author Adam Gouge
  */
-public class UnweightedGraphCreator<V, E> extends GraphCreator<V, E> {
+public class UnweightedGraphCreator<V extends IdInfo, E extends Edge>
+        extends GraphCreator<V, E> {
 
     /**
      * Initializes a new {@link UnweightedGraphCreator}.
@@ -44,8 +43,9 @@ public class UnweightedGraphCreator<V, E> extends GraphCreator<V, E> {
      */
     public UnweightedGraphCreator(String csvFile,
                                   int orientation,
+                                  Class<? extends V> vertexClass,
                                   Class<? extends E> edgeClass) {
-        super(csvFile, null, orientation, edgeClass);
+        super(csvFile, null, orientation, vertexClass, edgeClass);
     }
 
     /**
@@ -56,7 +56,7 @@ public class UnweightedGraphCreator<V, E> extends GraphCreator<V, E> {
      * @param reverse {@code true} iff the edge orientation should be reversed.
      */
     private void loadUnweightedEdges(Scanner scanner,
-                                     Graph<Integer, E> graph,
+                                     KeyedGraph<V, E> graph,
                                      boolean reverse) {
         // Go through the file and add each edge.
         while (scanner.hasNextLine()) {
@@ -67,9 +67,6 @@ public class UnweightedGraphCreator<V, E> extends GraphCreator<V, E> {
                     deleteDoubleQuotes(parts[startNodeIndex]));
             int endNode = Integer.parseInt(
                     deleteDoubleQuotes(parts[endNodeIndex]));
-            // Add the nodes to the graph.
-            graph.addVertex(startNode);
-            graph.addVertex(endNode);
             // Add the unweighted edge to the graph.
             if (reverse) {
                 graph.addEdge(endNode, startNode);
@@ -85,7 +82,7 @@ public class UnweightedGraphCreator<V, E> extends GraphCreator<V, E> {
     @Override
     protected void loadDirectedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, E> graph) {
+            DirectedG<V, E> graph) {
         loadUnweightedEdges(scanner, graph, false);
     }
 
@@ -95,7 +92,7 @@ public class UnweightedGraphCreator<V, E> extends GraphCreator<V, E> {
     @Override
     protected void loadReversedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, E> graph) {
+            DirectedG<V, E> graph) {
         loadUnweightedEdges(scanner, graph, true);
     }
 
@@ -105,7 +102,7 @@ public class UnweightedGraphCreator<V, E> extends GraphCreator<V, E> {
     @Override
     protected void loadUndirectedEdges(
             Scanner scanner,
-            UndirectedGraph<Integer, E> graph) {
+            UndirectedG<V, E> graph) {
         loadUnweightedEdges(scanner, graph, false);
     }
 }

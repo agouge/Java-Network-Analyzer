@@ -40,7 +40,8 @@ public class UnweightedNodeBetweennessInfo
      */
     private int distance;
 
-    public UnweightedNodeBetweennessInfo() {
+    public UnweightedNodeBetweennessInfo(Integer id) {
+        super(id);
         this.distance = -1;
     }
 

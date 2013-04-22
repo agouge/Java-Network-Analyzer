@@ -24,25 +24,19 @@
  */
 package com.graphhopper.sna.model;
 
+import com.graphhopper.sna.data.IdInfo;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.Graph;
-import org.jgrapht.UndirectedGraph;
-import org.jgrapht.graph.DirectedMultigraph;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
-import org.jgrapht.graph.Multigraph;
-import org.jgrapht.graph.WeightedMultigraph;
 
 /**
  * Creates JGraphT graphs from a csv file produced by OrbisGIS.
  *
  * @author Adam Gouge
  */
-public abstract class GraphCreator<V, E> {
+public abstract class GraphCreator<V extends IdInfo, E extends Edge> {
 
     /**
      * Start node column name.
@@ -60,6 +54,10 @@ public abstract class GraphCreator<V, E> {
      * Orientation.
      */
     private final int orientation;
+    /**
+     * Vertex class used for initializing the graph.
+     */
+    private final Class<? extends V> vertexClass;
     /**
      * Edge class used for initializing the graph.
      */
@@ -110,10 +108,12 @@ public abstract class GraphCreator<V, E> {
     public GraphCreator(String csvFile,
                         String weightField,
                         int orientation,
+                        Class<? extends V> vertexClass,
                         Class<? extends E> edgeClass) {
         this.csvFile = csvFile;
         this.weightField = weightField;
         this.orientation = orientation;
+        this.vertexClass = vertexClass;
         this.edgeClass = edgeClass;
     }
 
@@ -129,8 +129,8 @@ public abstract class GraphCreator<V, E> {
      *
      * @throws FileNotFoundException
      */
-    public Graph loadGraph()
-            throws FileNotFoundException {
+    public KeyedGraph<V, E> loadGraph()
+            throws FileNotFoundException, NoSuchMethodException {
 
         long start = System.currentTimeMillis();
         System.out.println("Creating a graph from CSV. ");
@@ -141,7 +141,7 @@ public abstract class GraphCreator<V, E> {
         // Initialize the indices of the start_node, end_node, and length.
         initializeIndices(scanner);
         // Load the edges from the input file.
-        Graph<Integer, E> graph = loadEdges(scanner);
+        KeyedGraph<V, E> graph = loadEdges(scanner);
 
         long stop = System.currentTimeMillis();
         System.out.println("Created graph in " + (stop - start) + " ms.");
@@ -218,30 +218,30 @@ public abstract class GraphCreator<V, E> {
      * @param scanner The scanner that will parse the csv file.
      */
     // TODO: A Multigraph does not allow loops!
-    private Graph<Integer, E> loadEdges(Scanner scanner) {
+    private KeyedGraph<V, E> loadEdges(Scanner scanner) throws NoSuchMethodException {
         // Unweighted
         if (weightField == null) {
             if (orientation != UNDIRECTED) {
-                DirectedMultigraph<Integer, E> graph =
-                        new DirectedMultigraph<Integer, E>(edgeClass);
+                DirectedPseudoG<V, E> graph =
+                        new DirectedPseudoG<V, E>(vertexClass, edgeClass);
                 loadDirectedOrReversedEdges(scanner, graph);
                 return graph;
             } else {
-                Multigraph<Integer, E> graph =
-                        new Multigraph<Integer, E>(edgeClass);
+                PseudoG<V, E> graph =
+                        new PseudoG<V, E>(vertexClass, edgeClass);
                 loadUndirectedEdges(scanner, graph);
                 return graph;
             }
         } // Weighted
         else {
             if (orientation != UNDIRECTED) {
-                DirectedWeightedMultigraph<Integer, E> graph =
-                        new DirectedWeightedMultigraph<Integer, E>(edgeClass);
+                DirectedWeightedPseudoG<V, E> graph =
+                        new DirectedWeightedPseudoG<V, E>(vertexClass, edgeClass);
                 loadDirectedOrReversedEdges(scanner, graph);
                 return graph;
             } else {
-                WeightedMultigraph<Integer, E> graph =
-                        new WeightedMultigraph<Integer, E>(edgeClass);
+                WeightedPseudoG<V, E> graph =
+                        new WeightedPseudoG<V, E>(vertexClass, edgeClass);
                 loadUndirectedEdges(scanner, graph);
                 return graph;
             }
@@ -257,7 +257,7 @@ public abstract class GraphCreator<V, E> {
      */
     protected abstract void loadDirectedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, E> graph);
+            DirectedG<V, E> graph);
 
     /**
      * Loads directed edges with orientations reversed; the weight is decided by
@@ -268,7 +268,7 @@ public abstract class GraphCreator<V, E> {
      */
     protected abstract void loadReversedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, E> graph);
+            DirectedG<V, E> graph);
 
     /**
      * Loads undirected edges; the weight is decided by the implementation of
@@ -279,7 +279,7 @@ public abstract class GraphCreator<V, E> {
      */
     protected abstract void loadUndirectedEdges(
             Scanner scanner,
-            UndirectedGraph<Integer, E> graph);
+            UndirectedG<V, E> graph);
 
     /**
      * Loads directed or reversed edges depending on the orientation.
@@ -288,7 +288,7 @@ public abstract class GraphCreator<V, E> {
      * @param graph   The graph to which the edges will be added.
      */
     private void loadDirectedOrReversedEdges(Scanner scanner,
-                                             DirectedGraph<Integer, E> graph) {
+                                             DirectedG<V, E> graph) {
         if (orientation == DIRECTED) {
             loadDirectedEdges(scanner, graph);
         } else {
