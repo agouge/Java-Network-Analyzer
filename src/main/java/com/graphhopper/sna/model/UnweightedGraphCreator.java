@@ -28,14 +28,13 @@ import java.util.Scanner;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.UndirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Creates unweighted JGraphT graphs from a csv file produced by OrbisGIS.
  *
  * @author Adam Gouge
  */
-public class UnweightedGraphCreator extends GraphCreator {
+public class UnweightedGraphCreator<V, E> extends GraphCreator<V, E> {
 
     /**
      * Initializes a new {@link UnweightedGraphCreator}.
@@ -44,8 +43,9 @@ public class UnweightedGraphCreator extends GraphCreator {
      * @param orientation The desired graph orientation.
      */
     public UnweightedGraphCreator(String csvFile,
-                                  int orientation) {
-        super(csvFile, null, orientation);
+                                  int orientation,
+                                  Class<? extends E> edgeClass) {
+        super(csvFile, null, orientation, edgeClass);
     }
 
     /**
@@ -56,7 +56,7 @@ public class UnweightedGraphCreator extends GraphCreator {
      * @param reverse {@code true} iff the edge orientation should be reversed.
      */
     private void loadUnweightedEdges(Scanner scanner,
-                                     Graph<Integer, Edge> graph,
+                                     Graph<Integer, E> graph,
                                      boolean reverse) {
         // Go through the file and add each edge.
         while (scanner.hasNextLine()) {
@@ -85,7 +85,7 @@ public class UnweightedGraphCreator extends GraphCreator {
     @Override
     protected void loadDirectedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, Edge> graph) {
+            DirectedGraph<Integer, E> graph) {
         loadUnweightedEdges(scanner, graph, false);
     }
 
@@ -95,7 +95,7 @@ public class UnweightedGraphCreator extends GraphCreator {
     @Override
     protected void loadReversedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, Edge> graph) {
+            DirectedGraph<Integer, E> graph) {
         loadUnweightedEdges(scanner, graph, true);
     }
 
@@ -105,7 +105,7 @@ public class UnweightedGraphCreator extends GraphCreator {
     @Override
     protected void loadUndirectedEdges(
             Scanner scanner,
-            UndirectedGraph<Integer, Edge> graph) {
+            UndirectedGraph<Integer, E> graph) {
         loadUnweightedEdges(scanner, graph, false);
     }
 }

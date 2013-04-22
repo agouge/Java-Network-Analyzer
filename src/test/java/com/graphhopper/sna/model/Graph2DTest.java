@@ -93,14 +93,15 @@ public class Graph2DTest {
             return new WeightedGraphCreator(
                     FILENAME,
                     WEIGHT,
-                    orientation).loadGraph();
+                    orientation,
+                    Edge.class).loadGraph();
         } else {
             return new UnweightedGraphCreator(
                     FILENAME,
-                    orientation).loadGraph();
+                    orientation,
+                    Edge.class).loadGraph();
         }
     }
-
 //    /**
 //     * Prints all edges of the graph.
 //     *

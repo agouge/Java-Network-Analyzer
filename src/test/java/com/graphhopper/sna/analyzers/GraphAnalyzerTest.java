@@ -211,7 +211,8 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
     protected Graph unweightedGraph(int orientation) throws
             FileNotFoundException {
         return new UnweightedGraphCreator(getFilename(),
-                                          orientation).loadGraph();
+                                          orientation,
+                                          Edge.class).loadGraph();
     }
 
     /**
@@ -228,7 +229,8 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
             FileNotFoundException {
         return new WeightedGraphCreator(getFilename(),
                                         getWeightColumnName(),
-                                        orientation).loadGraph();
+                                        orientation,
+                                        Edge.class).loadGraph();
     }
 
     /**

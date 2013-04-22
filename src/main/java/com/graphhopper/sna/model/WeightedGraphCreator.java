@@ -28,15 +28,13 @@ import java.util.Scanner;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.WeightedGraph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 /**
  * Creates weighted JGraphT graphs from a csv file produced by OrbisGIS.
  *
  * @author Adam Gouge
  */
-public class WeightedGraphCreator extends GraphCreator {
+public class WeightedGraphCreator<V, E> extends GraphCreator<V, E> {
 
     /**
      * Initializes a new {@link WeightedGraphCreator}.
@@ -47,8 +45,9 @@ public class WeightedGraphCreator extends GraphCreator {
      */
     public WeightedGraphCreator(String csvFile,
                                 String weightField,
-                                int orientation) {
-        super(csvFile, weightField, orientation);
+                                int orientation,
+                                Class<? extends E> edgeClass) {
+        super(csvFile, weightField, orientation, edgeClass);
     }
 
     /**
@@ -60,7 +59,7 @@ public class WeightedGraphCreator extends GraphCreator {
      */
     private void loadWeightedEdges(
             Scanner scanner,
-            WeightedGraph<Integer, Edge> graph,
+            WeightedGraph<Integer, E> graph,
             boolean reverse) {
         // Go through the file and add each edge.
         while (scanner.hasNextLine()) {
@@ -77,15 +76,16 @@ public class WeightedGraphCreator extends GraphCreator {
             graph.addVertex(startNode);
             graph.addVertex(endNode);
             // Add the edge to the graph.
-            Edge edge;
+            E edge;
             if (reverse) {
                 edge = graph.addEdge(endNode, startNode);
             } else {
                 edge = graph.addEdge(startNode, endNode);
             }
             // Set the edge weight.
-//             Note: graph.setEdgeWeight(edge, weight) does not work.
-            edge.setWeight(weight);
+//            edge.setWeight(weight);
+            // Note: graph.setEdgeWeight(edge, weight) does not seem to work.
+            graph.setEdgeWeight(edge, weight);
         }
     }
 
@@ -95,7 +95,7 @@ public class WeightedGraphCreator extends GraphCreator {
     @Override
     protected void loadDirectedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, Edge> graph) {
+            DirectedGraph<Integer, E> graph) {
         loadWeightedEdges(scanner, (WeightedGraph) graph, false);
     }
 
@@ -105,7 +105,7 @@ public class WeightedGraphCreator extends GraphCreator {
     @Override
     protected void loadReversedEdges(
             Scanner scanner,
-            DirectedGraph<Integer, Edge> graph) {
+            DirectedGraph<Integer, E> graph) {
         loadWeightedEdges(scanner, (WeightedGraph) graph, true);
     }
 
@@ -115,7 +115,7 @@ public class WeightedGraphCreator extends GraphCreator {
     @Override
     protected void loadUndirectedEdges(
             Scanner scanner,
-            UndirectedGraph<Integer, Edge> graph) {
+            UndirectedGraph<Integer, E> graph) {
         loadWeightedEdges(scanner, (WeightedGraph) graph, false);
     }
 }
