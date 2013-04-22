@@ -22,9 +22,17 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhopper.sna.model;
+package com.graphhopper.sna.graphcreators;
 
 import com.graphhopper.sna.data.IdInfo;
+import com.graphhopper.sna.model.DirectedG;
+import com.graphhopper.sna.model.DirectedG;
+import com.graphhopper.sna.model.Edge;
+import com.graphhopper.sna.model.Edge;
+import com.graphhopper.sna.model.KeyedGraph;
+import com.graphhopper.sna.model.KeyedGraph;
+import com.graphhopper.sna.model.UndirectedG;
+import com.graphhopper.sna.model.UndirectedG;
 import java.util.Scanner;
 
 /**
