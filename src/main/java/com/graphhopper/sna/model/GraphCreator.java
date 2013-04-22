@@ -220,11 +220,7 @@ public abstract class GraphCreator {
             if (orientation != UNDIRECTED) {
                 DirectedMultigraph<Integer, Edge> graph =
                         new DirectedMultigraph<Integer, Edge>(Edge.class);
-                if (orientation == DIRECTED) {
-                    loadDirectedEdges(scanner, graph);
-                } else {
-                    loadReversedEdges(scanner, graph);
-                }
+                loadDirectedOrReversedEdges(scanner, graph);
                 return graph;
             } else {
                 Multigraph<Integer, Edge> graph =
@@ -237,11 +233,7 @@ public abstract class GraphCreator {
             if (orientation != UNDIRECTED) {
                 DirectedWeightedMultigraph<Integer, Edge> graph =
                         new DirectedWeightedMultigraph<Integer, Edge>(Edge.class);
-                if (orientation == DIRECTED) {
-                    loadDirectedEdges(scanner, graph);
-                } else {
-                    loadReversedEdges(scanner, graph);
-                }
+                loadDirectedOrReversedEdges(scanner, graph);
                 return graph;
             } else {
                 WeightedMultigraph<Integer, Edge> graph =
@@ -284,4 +276,19 @@ public abstract class GraphCreator {
     protected abstract void loadUndirectedEdges(
             Scanner scanner,
             UndirectedGraph<Integer, Edge> graph);
+
+    /**
+     * Loads directed or reversed edges depending on the orientation.
+     *
+     * @param scanner The scanner that will parse the csv file.
+     * @param graph   The graph to which the edges will be added.
+     */
+    private void loadDirectedOrReversedEdges(Scanner scanner,
+                                             DirectedGraph<Integer, Edge> graph) {
+        if (orientation == DIRECTED) {
+            loadDirectedEdges(scanner, graph);
+        } else {
+            loadReversedEdges(scanner, graph);
+        }
+    }
 }
