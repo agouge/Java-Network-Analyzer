@@ -6,9 +6,7 @@ package com.graphhopper.sna.analyzers;
 
 import com.graphhopper.sna.progress.ProgressMonitor;
 import java.util.Set;
-import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
-import org.jgrapht.UndirectedGraph;
 
 /**
  * Root class of all classes that do some type of analysis on graphs
