@@ -25,16 +25,7 @@
 package com.graphhopper.sna.alg;
 
 import com.graphhopper.sna.data.DFSInfo;
-import com.graphhopper.util.EdgeIterator;
-import gnu.trove.iterator.TIntIterator;
-import gnu.trove.set.hash.TIntHashSet;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 import org.jgrapht.Graph;
-import org.jgrapht.alg.NeighborIndex;
-import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Root Depth First Search (DFS) class.
@@ -83,8 +74,8 @@ public class DFS<V extends DFSInfo, E>  extends GraphSearchAlgorithm<V, E> {
         time++;
 
         node.setDiscoveryTime(time);
-
-        for (V neighbor : neighborIndex.neighborListOf(node)) {
+        
+        for (V neighbor : successorListOf(node)) {
             if (neighbor.getDiscoveryTime() < 0) {
                 neighbor.addPredecessor(node);
                 visit(neighbor);

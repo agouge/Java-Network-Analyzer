@@ -51,7 +51,7 @@ public class DFSInfo extends IdInfo implements PredecessorInfo<DFSInfo> {
     /**
      * Constructor.
      */
-    public DFSInfo(int id) {
+    public DFSInfo(Integer id) {
         super(id);
         predecessors = new HashSet<DFSInfo>();
         this.discoveryTime = -1;
