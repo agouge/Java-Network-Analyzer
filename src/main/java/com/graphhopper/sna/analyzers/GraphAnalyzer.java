@@ -174,6 +174,7 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
         // values and their contributions to betweenness values.
         accumulateDependencies(startNode, stack);
         // ***** END CENTRALITY CONTRIBUTION CALCULATION ******
+//        debug(startNode);
 
         // ***** RESET HASH MAP VALUES IN PREPARATION FOR *****
         // *****          THE NEXT CALCULATION            *****
@@ -265,9 +266,6 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
                         ((double) predecessor.getSPCount()
                         / w.getSPCount())
                         * (1 + w.getDependency());
-//                    printDependencyContribution(
-//                            predecessor, startNode, w, dependency,
-//                            shortestPathsCount, dep);
                 predecessor.accumulateDependency(depContribution);
             }
             // (The betweenness of w cannot receive contributions from
@@ -276,8 +274,7 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
                 // (B) At this point, the dependency of startNode on w
                 // has finished calculating, so we can add it to
                 // the betweenness centrality of w.
-                w.accumulateBetweenness(
-                        w.getDependency());
+                w.accumulateBetweenness(w.getDependency());
 //                    printBetweennessContribution(w, betweenness, dependency,
 //                                                 updatedBetweenness);
             }
@@ -347,6 +344,23 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
                               node.getSPCount(),
                               node.getPredecessors().toString());
             System.out.println("");
+        }
+        System.out.println("");
+    }
+
+    /**
+     * Prints out debug information about shortest paths from the given start
+     * node.
+     *
+     * @param startNode The start node.
+     */
+    private void debug(V startNode) {
+        int id = startNode.getID();
+        for (V node : graph.vertexSet()) {
+            System.out.println("d(" + id + "," + node.getID()
+                    + ") = " + node.getDistance()
+                    + ", spCount = " + node.getSPCount()
+                    + ", dep = " + node.getDependency());
         }
         System.out.println("");
     }
