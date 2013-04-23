@@ -26,15 +26,9 @@ package com.graphhopper.sna.alg;
 
 import com.graphhopper.sna.data.StrahlerInfo;
 import com.graphhopper.sna.model.StrahlerTree;
-import com.graphhopper.storage.Graph;
-import gnu.trove.iterator.TIntIterator;
-import gnu.trove.set.hash.TIntHashSet;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.Test;
@@ -57,9 +51,7 @@ public class StrahlerTest {
      * @throws InvocationTargetException
      */
     @Test
-    public void testTree() throws NoSuchMethodException, InstantiationException,
-            IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException {
+    public void testStrahler() {
 
         StrahlerTree<DefaultEdge> tree = prepareTree();
 
@@ -76,12 +68,13 @@ public class StrahlerTest {
         // Check the Strahler numbers.
         for (StrahlerInfo node : tree.vertexSet()) {
             int id = node.getID();
+            int strahlerNumber = node.getStrahlerNumber();
             if (s1.contains(id)) {
-                assertEquals(node.getStrahlerNumber(), 1);
+                assertEquals(strahlerNumber, 1);
             } else if (s2.contains(id)) {
-                assertEquals(node.getStrahlerNumber(), 2);
+                assertEquals(strahlerNumber, 2);
             } else if (s3.contains(id)) {
-                assertEquals(node.getStrahlerNumber(), 3);
+                assertEquals(strahlerNumber, 3);
             }
         }
     }
@@ -96,7 +89,6 @@ public class StrahlerTest {
         StrahlerTree<DefaultEdge> graph =
                 new StrahlerTree<DefaultEdge>(DefaultEdge.class);
 
-        // Add the edges.
         graph.addEdge(1, 2);
         graph.addEdge(1, 3);
 
