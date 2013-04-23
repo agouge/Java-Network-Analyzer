@@ -31,6 +31,7 @@ import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.graphcreators.GraphCreator;
 import com.graphhopper.sna.graphcreators.UnweightedGraphCreator;
 import com.graphhopper.sna.graphcreators.WeightedGraphCreator;
+import com.graphhopper.sna.model.KeyedGraph;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import java.io.FileNotFoundException;
 import org.jgrapht.Graph;
@@ -61,8 +62,8 @@ public abstract class GraphAnalyzerTest
      *
      * @param orientation The orientation.
      */
-    protected void doUnweightedAnalysis(
-            Graph<UnweightedNodeBetweennessInfo, Edge> graph,
+    protected KeyedGraph<UnweightedNodeBetweennessInfo, Edge> doUnweightedAnalysis(
+            KeyedGraph<UnweightedNodeBetweennessInfo, Edge> graph,
             String orientation) {
         try {
             doAnalysis(new UnweightedGraphAnalyzer(graph, progressMonitor()),
@@ -72,6 +73,7 @@ public abstract class GraphAnalyzerTest
         if (printsResults()) {
             printResults(graph);
         }
+        return graph;
     }
 
     /**
@@ -81,8 +83,8 @@ public abstract class GraphAnalyzerTest
      *
      * @param orientation The orientation.
      */
-    protected void doWeightedAnalysis(
-            Graph<WeightedNodeBetweennessInfo, Edge> graph,
+    protected KeyedGraph<WeightedNodeBetweennessInfo, Edge> doWeightedAnalysis(
+            KeyedGraph<WeightedNodeBetweennessInfo, Edge> graph,
             String orientation) {
         try {
             doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()),
@@ -92,6 +94,7 @@ public abstract class GraphAnalyzerTest
         if (printsResults()) {
             printResults(graph);
         }
+        return graph;
     }
 
     /**
@@ -128,11 +131,10 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    @Test
-    public void unweightedDirected() throws FileNotFoundException,
-            NoSuchMethodException {
-        doUnweightedAnalysis(unweightedGraph(GraphCreator.DIRECTED),
-                             DIRECTED);
+    public KeyedGraph<UnweightedNodeBetweennessInfo, Edge> unweightedDirected()
+            throws FileNotFoundException, NoSuchMethodException {
+        return doUnweightedAnalysis(unweightedGraph(GraphCreator.DIRECTED),
+                                    DIRECTED);
     }
 
     /**
@@ -142,11 +144,10 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    @Test
-    public void unweightedReversed() throws FileNotFoundException,
-            NoSuchMethodException {
-        doUnweightedAnalysis(unweightedGraph(GraphCreator.REVERSED),
-                             REVERSED);
+    public KeyedGraph<UnweightedNodeBetweennessInfo, Edge> unweightedReversed()
+            throws FileNotFoundException, NoSuchMethodException {
+        return doUnweightedAnalysis(unweightedGraph(GraphCreator.REVERSED),
+                                    REVERSED);
     }
 
     /**
@@ -156,11 +157,10 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    @Test
-    public void unweightedUndirected() throws FileNotFoundException,
-            NoSuchMethodException {
-        doUnweightedAnalysis(unweightedGraph(GraphCreator.UNDIRECTED),
-                             UNDIRECTED);
+    public KeyedGraph<UnweightedNodeBetweennessInfo, Edge> unweightedUndirected()
+            throws FileNotFoundException, NoSuchMethodException {
+        return doUnweightedAnalysis(unweightedGraph(GraphCreator.UNDIRECTED),
+                                    UNDIRECTED);
     }
 
     /**
@@ -170,11 +170,10 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    @Test
-    public void weightedDirected() throws FileNotFoundException,
-            NoSuchMethodException {
-        doWeightedAnalysis(weightedGraph(GraphCreator.DIRECTED),
-                           DIRECTED);
+    public KeyedGraph<WeightedNodeBetweennessInfo, Edge> weightedDirected()
+            throws FileNotFoundException, NoSuchMethodException {
+        return doWeightedAnalysis(weightedGraph(GraphCreator.DIRECTED),
+                                  DIRECTED);
     }
 
     /**
@@ -184,11 +183,10 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    @Test
-    public void weightedReversed() throws FileNotFoundException,
-            NoSuchMethodException {
-        doWeightedAnalysis(weightedGraph(GraphCreator.REVERSED),
-                           REVERSED);
+    public KeyedGraph<WeightedNodeBetweennessInfo, Edge> weightedReversed()
+            throws FileNotFoundException, NoSuchMethodException {
+        return doWeightedAnalysis(weightedGraph(GraphCreator.REVERSED),
+                                  REVERSED);
     }
 
     /**
@@ -198,11 +196,10 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    @Test
-    public void weightedUndirected() throws FileNotFoundException,
-            NoSuchMethodException {
-        doWeightedAnalysis(weightedGraph(GraphCreator.UNDIRECTED),
-                           UNDIRECTED);
+    public KeyedGraph<WeightedNodeBetweennessInfo, Edge> weightedUndirected()
+            throws FileNotFoundException, NoSuchMethodException {
+        return doWeightedAnalysis(weightedGraph(GraphCreator.UNDIRECTED),
+                                  UNDIRECTED);
     }
 
     /**
@@ -236,8 +233,9 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    protected Graph unweightedGraph(int orientation) throws
-            FileNotFoundException, NoSuchMethodException {
+    protected KeyedGraph<UnweightedNodeBetweennessInfo, Edge> unweightedGraph(
+            int orientation)
+            throws FileNotFoundException, NoSuchMethodException {
         return new UnweightedGraphCreator(getFilename(),
                                           orientation,
                                           UnweightedNodeBetweennessInfo.class,
@@ -255,8 +253,9 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    protected Graph weightedGraph(int orientation) throws
-            FileNotFoundException, NoSuchMethodException {
+    protected KeyedGraph<WeightedNodeBetweennessInfo, Edge> weightedGraph(
+            int orientation)
+            throws FileNotFoundException, NoSuchMethodException {
         return new WeightedGraphCreator(getFilename(),
                                         getWeightColumnName(),
                                         orientation,
