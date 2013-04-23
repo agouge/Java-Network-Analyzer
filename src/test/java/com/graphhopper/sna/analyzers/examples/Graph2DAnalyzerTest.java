@@ -25,21 +25,28 @@
 package com.graphhopper.sna.analyzers.examples;
 
 import com.graphhopper.sna.analyzers.GraphAnalyzerTest;
+import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.model.Edge;
+import com.graphhopper.sna.model.KeyedGraph;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import java.io.FileNotFoundException;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
+ * Tests graph analysis (betweenness, closeness) on an undirected 2D graph.
  *
  * @author Adam Gouge
  */
+// TODO: Write the tests for directed / reversed graphs.
 public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
 
     private final static String GRAPH2D = "2D Graph";
     private static final String FILENAME = "./files/graph2D.edges.csv";
     private static final String LENGTH = "length";
-    private static final boolean PRINT_RESULTS = true;
+    private static final boolean PRINT_RESULTS = false;
+    private static final int numberOfNodes = 6;
 
     /**
      * {@inheritDoc}
@@ -49,41 +56,38 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
         return new NullProgressMonitor();
     }
 
-//    @Test
-//    @Override
-//    public void unweightedDirected() throws FileNotFoundException {
-////        super.unweightedDirected();
-//    }
-//
-//    @Test
-//    @Override
-//    public void unweightedReversed() throws FileNotFoundException {
-////        super.unweightedReversed();
-//    }
-//
-//    @Test
-//    @Override
-//    public void unweightedUndirected() throws FileNotFoundException {
-////        super.unweightedUndirected();
-//    }
-//
-//    @Test
-//    @Override
-//    public void weightedDirected() throws FileNotFoundException {
-////        super.weightedDirected();
-//    }
-//
-//    @Test
-//    @Override
-//    public void weightedReversed() throws FileNotFoundException {
-////        super.weightedReversed();
-//    }
-//
-//    @Test
-//    @Override
-//    public void weightedUndirected() throws FileNotFoundException {
-////        super.weightedUndirected();
-//    }
+    @Test
+    public void unweightedUndirectedTest()
+            throws FileNotFoundException, NoSuchMethodException {
+        NodeBetweennessInfo[] vertices =
+                indexVertices(super.unweightedUndirected());
+
+        checkBetweenness(vertices,
+                         new double[]{
+            0.5, 0.0, 1.0,
+            0.0, 0.0, 0.75});
+        checkCloseness(vertices,
+                       new double[]{
+            0.5, 0.4166666666666667, 0.625,
+            0.35714285714285715, 0.4166666666666667, 0.625});
+    }
+
+    @Test
+    public void weightedUndirectedTest()
+            throws FileNotFoundException, NoSuchMethodException {
+        NodeBetweennessInfo[] vertices =
+                indexVertices(super.weightedUndirected());
+
+        checkBetweenness(vertices,
+                         new double[]{
+            0.5714285714285714, 0.0, 1.0,
+            0.0, 0.0, 0.8571428571428571});
+
+        checkCloseness(vertices, new double[]{
+            0.003787491035823884, 0.0035327735482214143, 0.0055753940798198886,
+            0.0032353723348164448, 0.003495002741097083, 0.0055753940798198886
+        });
+    }
 
     /**
      * {@inheritDoc}
@@ -116,36 +120,50 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
     protected String getName() {
         return GRAPH2D;
     }
-//    /**
-//     * Checks the computations for the 2D bidirectional graph.
-//     *
-//     * @param result Result to check.
-//     */
-//    private void check2DGraphResults(
-//            Map<Integer, NodeBetweennessInfo> result) {
-//        assertEquals(result.get(6).getCloseness(),
-//                     0.625, TOLERANCE);
-//        assertEquals(result.get(5).getCloseness(),
-//                     0.4166666666666667, TOLERANCE);
-//        assertEquals(result.get(4).getCloseness(),
-//                     0.35714285714285715, TOLERANCE);
-//        assertEquals(result.get(3).getCloseness(),
-//                     0.625, TOLERANCE);
-//        assertEquals(result.get(2).getCloseness(),
-//                     0.4166666666666667, TOLERANCE);
-//        assertEquals(result.get(1).getCloseness(),
-//                     0.5, TOLERANCE);
-//        assertEquals(result.get(6).getBetweenness(),
-//                     0.75, TOLERANCE);
-//        assertEquals(result.get(5).getBetweenness(),
-//                     0.0, TOLERANCE);
-//        assertEquals(result.get(4).getBetweenness(),
-//                     0.0, TOLERANCE);
-//        assertEquals(result.get(3).getBetweenness(),
-//                     1.0, TOLERANCE);
-//        assertEquals(result.get(2).getBetweenness(),
-//                     0.0, TOLERANCE);
-//        assertEquals(result.get(1).getBetweenness(),
-//                     0.5, TOLERANCE);
-//    }
+
+    /**
+     * Facilitates obtaining references to vertices.
+     *
+     * @param graph Input graph.
+     *
+     * @return An array with the vertex with index i is in position i-1.
+     */
+    protected NodeBetweennessInfo[] indexVertices(
+            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
+        NodeBetweennessInfo[] vertices = new NodeBetweennessInfo[numberOfNodes];
+        for (int i = 0; i < numberOfNodes; i++) {
+            vertices[i] = graph.getVertex(i + 1);
+        }
+        return vertices;
+    }
+
+    /**
+     * Checks the betweenness values of the given vertices against the given
+     * expected betweenness values.
+     *
+     * @param vertices            The vertices
+     * @param expectedBetweenness The expected betweenness values
+     */
+    private void checkBetweenness(NodeBetweennessInfo[] vertices,
+                                  double[] expectedBetweenness) {
+        for (int i = 0; i < numberOfNodes; i++) {
+            assertEquals(vertices[i].getBetweenness(), expectedBetweenness[i],
+                         TOLERANCE);
+        }
+    }
+
+    /**
+     * Checks the closeness values of the given vertices against the given
+     * expected closeness values.
+     *
+     * @param vertices          The vertices
+     * @param expectedCloseness The expected closeness values
+     */
+    private void checkCloseness(NodeBetweennessInfo[] vertices,
+                                double[] expectedCloseness) {
+        for (int i = 0; i < numberOfNodes; i++) {
+            assertEquals(vertices[i].getCloseness(), expectedCloseness[i],
+                         TOLERANCE);
+        }
+    }
 }
