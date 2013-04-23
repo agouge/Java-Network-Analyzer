@@ -26,6 +26,7 @@ package com.graphhopper.sna.alg;
 
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.UnweightedPathLengthData;
+import java.util.LinkedList;
 import java.util.Stack;
 import org.jgrapht.Graph;
 
@@ -60,6 +61,24 @@ public class BFSForCentrality<E> extends BFS<UnweightedNodeBetweennessInfo, E> {
         super(graph, startNode);
         this.pathsFromStartNode = pathsFromStartNode;
         this.stack = stack;
+    }
+
+    /**
+     * Dequeues a node from the given queue and pushes it to the stack.
+     *
+     * @param queue The queue.
+     *
+     * @return The newly dequeued node.
+     */
+    @Override
+    protected UnweightedNodeBetweennessInfo dequeueStep(
+            LinkedList<UnweightedNodeBetweennessInfo> queue) {
+        // Dequeue a node.
+        UnweightedNodeBetweennessInfo current = queue.poll();
+        // Push it to the stack.
+        stack.push(current);
+        // Return it.
+        return current;
     }
 
     @Override

@@ -67,8 +67,7 @@ public class BFS<V extends SearchInfo<V, Integer>, E>
 
         // While the queue is not empty ...
         while (!queue.isEmpty()) {
-            // ... dequeue a node
-            final V current = queue.poll();
+            V current = dequeueStep(queue);
 
             // For every neighbor of the current node ...
             for (final V neighbor : successorListOf(current)) {
@@ -84,6 +83,17 @@ public class BFS<V extends SearchInfo<V, Integer>, E>
                 }
             }
         }
+    }
+
+    /**
+     * Dequeues a node from the given queue.
+     *
+     * @param queue The queue.
+     *
+     * @return The newly dequeued node.
+     */
+    protected V dequeueStep(LinkedList<V> queue) {
+        return queue.poll();
     }
 
     /**
