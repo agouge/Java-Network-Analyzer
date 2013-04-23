@@ -57,6 +57,38 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
     }
 
     @Test
+    public void unweightedDirectedTest()
+            throws FileNotFoundException, NoSuchMethodException {
+        NodeBetweennessInfo[] vertices =
+                indexVertices(super.unweightedDirected());
+
+        checkBetweenness(vertices,
+                         new double[]{
+            1.0, 0.0, 1.0,
+            0.0, 0.0, 0.6666666666666666});
+        checkCloseness(vertices,
+                       new double[]{
+            1.0, 0.4166666666666667, 0.5714285714285714,
+            0.0, 0.0, 0.6666666666666666});
+    }
+
+    @Test
+    public void unweightedReversedTest()
+            throws FileNotFoundException, NoSuchMethodException {
+        NodeBetweennessInfo[] vertices =
+                indexVertices(super.unweightedReversed());
+
+        checkBetweenness(vertices,
+                         new double[]{
+            0.375, 0.0, 1.0,
+            0.0, 0.0, 1.0});
+        checkCloseness(vertices,
+                       new double[]{
+            0.5, 0.0, 1.0,
+            0.4, 0.6666666666666666, 0.6666666666666666});
+    }
+
+    @Test
     public void unweightedUndirectedTest()
             throws FileNotFoundException, NoSuchMethodException {
         NodeBetweennessInfo[] vertices =
@@ -70,6 +102,38 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
                        new double[]{
             0.5, 0.4166666666666667, 0.625,
             0.35714285714285715, 0.4166666666666667, 0.625});
+    }
+
+    @Test
+    public void weightedDirectedTest()
+            throws FileNotFoundException, NoSuchMethodException {
+        NodeBetweennessInfo[] vertices =
+                indexVertices(super.weightedDirected());
+
+        checkBetweenness(vertices,
+                         new double[]{
+            0.75, 0.0, 1.0,
+            0.0, 0.0, 1.0});
+        checkCloseness(vertices,
+                       new double[]{
+            0.017755520605710874, 0.0035327735482214143, 0.005213986222707472,
+            0.0, 0.0, 0.004169637060665741});
+    }
+
+    @Test
+    public void weightedReversedTest()
+            throws FileNotFoundException, NoSuchMethodException {
+        NodeBetweennessInfo[] vertices =
+                indexVertices(super.weightedReversed());
+
+        checkBetweenness(vertices,
+                         new double[]{
+            0.75, 0.0, 1.0,
+            0.0, 0.0, 1.0});
+        checkCloseness(vertices,
+                       new double[]{
+            0.003458851142284291, 0.0, 0.007714249189763772,
+            0.0036609182136564987, 0.005043646871278617, 0.00860830779189523});
     }
 
     @Test
