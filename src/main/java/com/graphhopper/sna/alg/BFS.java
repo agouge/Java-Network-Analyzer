@@ -71,7 +71,7 @@ public class BFS<V extends SearchInfo<V, Integer>, E>
             final V current = queue.poll();
 
             // For every neighbor of the current node ...
-            for (final V neighbor : neighborIndex.neighborListOf(current)) {
+            for (final V neighbor : successorListOf(current)) {
                 // If this neighbor is found for the first time ...
                 if (neighbor.getDistance() < 0) {
                     enqueueAndUpdateDistance(current, neighbor, queue);
@@ -99,10 +99,8 @@ public class BFS<V extends SearchInfo<V, Integer>, E>
                                             LinkedList<V> queue) {
         // Enqueue the neighbor.
         queue.add(neighbor);
-        // Calculate the new distance.
-        int updatedDistance = current.getDistance() + 1;
         // Update the distance.
-        neighbor.setDistance(updatedDistance);
+        neighbor.setDistance(current.getDistance() + 1);
     }
 
     /**
@@ -118,11 +116,12 @@ public class BFS<V extends SearchInfo<V, Integer>, E>
 
     /**
      * Work to be done if this is a shortest path from the start node to
-     * neighbor via current. This is empty here on purpose.
+     * neighbor via current.
      *
      * @param current  Current node
      * @param neighbor Neighbor node
      */
     protected void shortestPathStep(V current, V neighbor) {
+        // This is empty here on purpose.
     }
 }
