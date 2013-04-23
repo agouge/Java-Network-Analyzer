@@ -32,7 +32,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests the DFS algorithm on (un)directed graphs. Note: Both the choice of
+ * Tests the DFS algorithm on a(n) (un)directed graph. Note: Both the choice of
  * start vertex and the order in which neighbors are visited depend on the
  * underlying graph structure. (In the below examples, the start node seems to
  * be the first node added to the graph when the graph is created.) To specify
@@ -48,26 +48,21 @@ public class DFSTest {
                 prepareGraph();
 
         new DFS<DFSInfo, Edge>(graph).calculate();
+        
+        DFSInfo[] vertices = indexVertices(graph);
 
-        DFSInfo one = graph.getVertex(1);
-        DFSInfo two = graph.getVertex(2);
-        DFSInfo three = graph.getVertex(3);
-        DFSInfo four = graph.getVertex(4);
-        DFSInfo five = graph.getVertex(5);
-        DFSInfo six = graph.getVertex(6);
-
-        assertTrue(one.getDiscoveryTime() == 1);
-        assertTrue(one.getFinishingTime() == 8);
-        assertTrue(two.getDiscoveryTime() == 2);
-        assertTrue(two.getFinishingTime() == 7);
-        assertTrue(three.getDiscoveryTime() == 3);
-        assertTrue(three.getFinishingTime() == 6);
-        assertTrue(four.getDiscoveryTime() == 4);
-        assertTrue(four.getFinishingTime() == 5);
-        assertTrue(five.getDiscoveryTime() == 9);
-        assertTrue(five.getFinishingTime() == 12);
-        assertTrue(six.getDiscoveryTime() == 10);
-        assertTrue(six.getFinishingTime() == 11);
+        assertTrue(vertices[0].getDiscoveryTime() == 1);
+        assertTrue(vertices[0].getFinishingTime() == 8);
+        assertTrue(vertices[1].getDiscoveryTime() == 2);
+        assertTrue(vertices[1].getFinishingTime() == 7);
+        assertTrue(vertices[2].getDiscoveryTime() == 3);
+        assertTrue(vertices[2].getFinishingTime() == 6);
+        assertTrue(vertices[3].getDiscoveryTime() == 4);
+        assertTrue(vertices[3].getFinishingTime() == 5);
+        assertTrue(vertices[4].getDiscoveryTime() == 9);
+        assertTrue(vertices[4].getFinishingTime() == 12);
+        assertTrue(vertices[5].getDiscoveryTime() == 10);
+        assertTrue(vertices[5].getFinishingTime() == 11);
     }
 
     @Test
@@ -127,5 +122,21 @@ public class DFSTest {
         } catch (NoSuchMethodException ex) {
         }
         return graph;
+    }
+
+    /**
+     * Facilitates obtaining references to vertices.
+     *
+     * @param graph Input graph.
+     *
+     * @return An array with the vertex with index i is in position i-1.
+     */
+    protected DFSInfo[] indexVertices(DirectedPseudoG<DFSInfo, Edge> graph) {
+        int numberOfNodes = 6;
+        DFSInfo[] vertices = new DFSInfo[numberOfNodes];
+        for (int i = 0; i < numberOfNodes; i++) {
+            vertices[i] = graph.getVertex(i + 1);
+        }
+        return vertices;
     }
 }
