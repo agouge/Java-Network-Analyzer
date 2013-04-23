@@ -25,16 +25,13 @@
 package com.graphhopper.sna.analyzers;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
-import gnu.trove.iterator.TIntDoubleIterator;
-import gnu.trove.map.hash.TIntDoubleHashMap;
-import java.util.Map;
 
 /**
  * Parent class in the centrality tests hierarchy.
  *
  * @author Adam Gouge
  */
-public abstract class CentralityTest<T extends NodeBetweennessInfo> {
+public abstract class CentralityTest<V extends NodeBetweennessInfo> {
 
     /**
      * Used for printing out timing messages.
@@ -62,46 +59,46 @@ public abstract class CentralityTest<T extends NodeBetweennessInfo> {
      */
     protected abstract String getName();
 
-    /**
-     * Prints the results of graph analysis.
-     *
-     * @param result The result.
-     */
-    protected void printResults(Map<Integer, T> result) {
-        // Print results.
-        System.out.format("%-12s%-12s%-12s",
-                          "v",
-                          "Betweenness",
-                          "Closeness");
-        System.out.println("");
-        for (Map.Entry next : result.entrySet()) {
-            final Integer id = (Integer) next.getKey();
-            final T info = (T) next.getValue();
-            System.out.format("%-12d%-12f%-12f",
-                              next.getKey(),
-                              info.getBetweenness(),
-                              info.getCloseness());
-            System.out.println("");
-        }
-    }
+//    /**
+//     * Prints the results of graph analysis.
+//     *
+//     * @param result The result.
+//     */
+//    protected void printResults(Map<Integer, V> result) {
+//        // Print results.
+//        System.out.format("%-12s%-12s%-12s",
+//                          "v",
+//                          "Betweenness",
+//                          "Closeness");
+//        System.out.println("");
+//        for (Map.Entry<Integer, V> next : result.entrySet()) {
+//            final Integer id = next.getKey();
+//            final V info = next.getValue();
+//            System.out.format("%-12d%-12f%-12f",
+//                              next.getKey(),
+//                              info.getBetweenness(),
+//                              info.getCloseness());
+//            System.out.println("");
+//        }
+//    }
 
-    /**
-     * Prints the results of a closeness computation.
-     *
-     * @param result The result.
-     */
-    protected void printResults(TIntDoubleHashMap result) {
-        // Print results.
-        System.out.format("%-3s%-12s",
-                          "v",
-                          "Closeness");
-        System.out.println("");
-        for (TIntDoubleIterator it = result.iterator();
-                it.hasNext();) {
-            it.advance();
-            final int id = it.key();
-            final double closeness = it.value();
-            System.out.println(id + ",  " + closeness);
-        }
-    }
+//    /**
+//     * Prints the results of a closeness computation.
+//     *
+//     * @param result The result.
+//     */
+//    protected void printResults(TIntDoubleHashMap result) {
+//        // Print results.
+//        System.out.format("%-3s%-12s",
+//                          "v",
+//                          "Closeness");
+//        System.out.println("");
+//        for (TIntDoubleIterator it = result.iterator();
+//                it.hasNext();) {
+//            it.advance();
+//            final int id = it.key();
+//            final double closeness = it.value();
+//            System.out.println(id + ",  " + closeness);
+//        }
+//    }
 }
