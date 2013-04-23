@@ -24,15 +24,15 @@
  */
 package com.graphhopper.sna.analyzers;
 
-import com.graphhopper.sna.analyzers.GraphAnalyzer;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.sna.model.Edge;
-import com.graphhopper.sna.model.GraphCreator;
-import com.graphhopper.sna.model.UnweightedGraphCreator;
-import com.graphhopper.sna.model.WeightedGraphCreator;
+import com.graphhopper.sna.graphcreators.GraphCreator;
+import com.graphhopper.sna.graphcreators.UnweightedGraphCreator;
+import com.graphhopper.sna.graphcreators.WeightedGraphCreator;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import java.io.FileNotFoundException;
-import java.util.Map;
 import org.jgrapht.Graph;
 import org.junit.Test;
 
@@ -41,8 +41,8 @@ import org.junit.Test;
  *
  * @author Adam Gouge
  */
-public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
-        extends CentralityTest<T> {
+public abstract class GraphAnalyzerTest
+        extends CentralityTest {
 
     private static final String WEIGHTED = "Weighted";
     private static final String UNWEIGHTED = "Unweighted";
@@ -57,53 +57,68 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
     /**
      * Does unweighted graph analysis on the given graph.
      *
-     * @param graph The graph.
+     * @param graph       The graph.
      *
-     * @return The result.
+     * @param orientation The orientation.
      */
-    protected Map<Integer, NodeBetweennessInfo> doUnweightedAnalysis(
-            Graph<Integer, Edge> graph,
+    protected void doUnweightedAnalysis(
+            Graph<UnweightedNodeBetweennessInfo, Edge> graph,
             String orientation) {
-        return null;
-//        return doAnalysis(new UnweightedGraphAnalyzer(graph, progressMonitor()),
-//                          UNWEIGHTED + " " + orientation);
+        try {
+            doAnalysis(new UnweightedGraphAnalyzer(graph, progressMonitor()),
+                       UNWEIGHTED + " " + orientation);
+        } catch (Exception ex) {
+        }
+        if (printsResults()) {
+            printResults(graph);
+        }
     }
 
     /**
      * Does weighted graph analysis on the given graph.
      *
-     * @param graph The graph.
+     * @param graph       The graph.
      *
-     * @return The result.
+     * @param orientation The orientation.
      */
-    protected Map<Integer, NodeBetweennessInfo> doWeightedAnalysis(
-            Graph<Integer, Edge> graph,
+    protected void doWeightedAnalysis(
+            Graph<WeightedNodeBetweennessInfo, Edge> graph,
             String orientation) {
-        return null;
-//        return doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()),
-//                          WEIGHTED + " " + orientation);
+        try {
+            doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()),
+                       WEIGHTED + " " + orientation);
+        } catch (Exception ex) {
+        }
+        if (printsResults()) {
+            printResults(graph);
+        }
     }
 
     /**
      * Executes {@link GraphAnalyzer#computeAll()}.
      *
-     * @param analyzer The {@link GraphAnalyzer}.
-     *
-     * @return The results.
+     * @param analyzer     The {@link GraphAnalyzer}.
+     * @param analysisType Describes the type of analysis.
      */
-    private Map<Integer, NodeBetweennessInfo> doAnalysis(
-            GraphAnalyzer analyzer,
+    private void doAnalysis(
+            GraphAnalyzer<?, Edge, ?> analyzer,
             String analysisType) {
         // Do network analysis.
         System.out.println("    _" + analysisType + "_");
         long start = System.currentTimeMillis();
-//        Map<Integer, NodeBetweennessInfo> result = analyzer.computeAll();
-//        printTime(System.currentTimeMillis() - start, analysisType);
-//        if (printsResults()) {
-//            printResults(result);
-//        }
-//        return result;
-        return null;
+        try {
+            analyzer.computeAll();
+        } catch (Exception ex) {
+        }
+        printTime(System.currentTimeMillis() - start, analysisType);
+    }
+
+    private void printResults(Graph<? extends NodeBetweennessInfo, Edge> graph) {
+        for (NodeBetweennessInfo node : graph.vertexSet()) {
+            System.out.println(node.getID() + " "
+                    + node.getBetweenness()
+                    + " " + node.getCloseness());
+        }
     }
 
     /**
@@ -111,9 +126,11 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
      * {@link GraphAnalyzerTest#unweightedGraph(int)}.
      *
      * @throws FileNotFoundException
+     * @throws NoSuchMethodException
      */
     @Test
-    public void unweightedDirected() throws FileNotFoundException {
+    public void unweightedDirected() throws FileNotFoundException,
+            NoSuchMethodException {
         doUnweightedAnalysis(unweightedGraph(GraphCreator.DIRECTED),
                              DIRECTED);
     }
@@ -123,9 +140,11 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
      * {@link GraphAnalyzerTest#unweightedGraph(int)}.
      *
      * @throws FileNotFoundException
+     * @throws NoSuchMethodException
      */
     @Test
-    public void unweightedReversed() throws FileNotFoundException {
+    public void unweightedReversed() throws FileNotFoundException,
+            NoSuchMethodException {
         doUnweightedAnalysis(unweightedGraph(GraphCreator.REVERSED),
                              REVERSED);
     }
@@ -135,9 +154,11 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
      * {@link GraphAnalyzerTest#unweightedGraph(int)}.
      *
      * @throws FileNotFoundException
+     * @throws NoSuchMethodException
      */
     @Test
-    public void unweightedUndirected() throws FileNotFoundException {
+    public void unweightedUndirected() throws FileNotFoundException,
+            NoSuchMethodException {
         doUnweightedAnalysis(unweightedGraph(GraphCreator.UNDIRECTED),
                              UNDIRECTED);
     }
@@ -147,9 +168,11 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
      * {@link GraphAnalyzerTest#weightedGraph(int)}.
      *
      * @throws FileNotFoundException
+     * @throws NoSuchMethodException
      */
     @Test
-    public void weightedDirected() throws FileNotFoundException {
+    public void weightedDirected() throws FileNotFoundException,
+            NoSuchMethodException {
         doWeightedAnalysis(weightedGraph(GraphCreator.DIRECTED),
                            DIRECTED);
     }
@@ -159,9 +182,11 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
      * {@link GraphAnalyzerTest#weightedGraph(int)}.
      *
      * @throws FileNotFoundException
+     * @throws NoSuchMethodException
      */
     @Test
-    public void weightedReversed() throws FileNotFoundException {
+    public void weightedReversed() throws FileNotFoundException,
+            NoSuchMethodException {
         doWeightedAnalysis(weightedGraph(GraphCreator.REVERSED),
                            REVERSED);
     }
@@ -171,9 +196,11 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
      * {@link GraphAnalyzerTest#weightedGraph(int)}.
      *
      * @throws FileNotFoundException
+     * @throws NoSuchMethodException
      */
     @Test
-    public void weightedUndirected() throws FileNotFoundException {
+    public void weightedUndirected() throws FileNotFoundException,
+            NoSuchMethodException {
         doWeightedAnalysis(weightedGraph(GraphCreator.UNDIRECTED),
                            UNDIRECTED);
     }
@@ -192,9 +219,9 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
     public void undirectedComparison() throws FileNotFoundException {
 //        int orientation = GraphCreator.UNDIRECTED;
 //        
-//        Map<Integer, NodeBetweennessInfo> unweightedResults = 
+//        Map<UnweightedNodeBetweennessInfo, Edge> unweightedResults = 
 //                doUnweightedAnalysis(unweightedGraph(orientation));
-//        Map<Integer, NodeBetweennessInfo> weightedResults = 
+//        Map<WeightedNodeBetweennessInfo, Ege> weightedResults = 
 //                doWeightedAnalysis(weightedGraph(orientation));
     }
 
@@ -207,11 +234,13 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
      * @return The graph.
      *
      * @throws FileNotFoundException
+     * @throws NoSuchMethodException
      */
     protected Graph unweightedGraph(int orientation) throws
-            FileNotFoundException {
+            FileNotFoundException, NoSuchMethodException {
         return new UnweightedGraphCreator(getFilename(),
                                           orientation,
+                                          UnweightedNodeBetweennessInfo.class,
                                           Edge.class).loadGraph();
     }
 
@@ -224,12 +253,14 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
      * @return The graph.
      *
      * @throws FileNotFoundException
+     * @throws NoSuchMethodException
      */
     protected Graph weightedGraph(int orientation) throws
-            FileNotFoundException {
+            FileNotFoundException, NoSuchMethodException {
         return new WeightedGraphCreator(getFilename(),
                                         getWeightColumnName(),
                                         orientation,
+                                        WeightedNodeBetweennessInfo.class,
                                         Edge.class).loadGraph();
     }
 
@@ -265,6 +296,7 @@ public abstract class GraphAnalyzerTest<T extends NodeBetweennessInfo>
      * Prints the amount of time graph analysis took.
      *
      * @param time
+     * @param analysisType
      */
     protected void printTime(double time, String analysisType) {
         System.out.println(TIME + time + " ms: "
