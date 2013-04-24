@@ -25,11 +25,15 @@
 package com.graphhopper.sna.analyzers.examples;
 
 import com.graphhopper.sna.analyzers.ManuallyCreatedGraphAnalyzerTest;
+import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.model.Edge;
+import com.graphhopper.sna.model.KeyedGraph;
+import com.graphhopper.sna.model.WeightedKeyedGraph;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import org.jgrapht.Graph;
 import org.jgrapht.WeightedGraph;
+import org.junit.Test;
 
 /**
  * Tests graph analyzers on a simple example graph.
@@ -44,14 +48,16 @@ import org.jgrapht.WeightedGraph;
 //      \ |        |
 //       \|        |
 //        1------->3
-//      
+//           0.8
 public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
 
     private final static String EXAMPLE_GRAPH = "Example graph";
     private static final boolean PRINT_RESULTS = true;
+    private static final int numberOfNodes = 5;
 
     @Override
-    protected void addVertices(Graph<Integer, Edge> graph) {
+    protected void addVertices(
+            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
         graph.addVertex(1);
         graph.addVertex(2);
         graph.addVertex(3);
@@ -60,7 +66,8 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
     }
 
     @Override
-    protected void addEdges(Graph<Integer, Edge> graph) {
+    protected void addEdges(
+            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
         graph.addEdge(1, 2);
         graph.addEdge(1, 3);
         graph.addEdge(1, 5);
@@ -70,7 +77,8 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
     }
 
     @Override
-    protected void addWeightedEdges(WeightedGraph<Integer, Edge> graph) {
+    protected void addWeightedEdges(
+            WeightedKeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
         graph.addEdge(1, 2).setWeight(1.2);
         graph.addEdge(1, 3).setWeight(0.8);
         graph.addEdge(1, 5).setWeight(1.0);
@@ -79,27 +87,103 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
         graph.addEdge(3, 4).setWeight(1.3);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+//    @Test
+//    public void unweightedDirectedTest()
+//            throws FileNotFoundException, NoSuchMethodException {
+//        super.unweightedDirected();
+//    }
+//
+//    @Test
+//    public void unweightedReversedTest()
+//            throws FileNotFoundException, NoSuchMethodException {
+//        super.unweightedReversed();
+//    }
+//
+    @Test
+    public void unweightedUndirectedTest() {
+        NodeBetweennessInfo[] vertices = null;
+        try {
+            vertices = indexVertices(super.unweightedUndirected());
+        } catch (Exception ex) {
+        }
+        // Given that max = 3, min = 0, we use the dependencies
+        // to calculate normalized betweenness.
+        checkBetweenness(vertices, new double[]{
+            (double) (0.5 + 1.5 + 0 + 1) / 3,
+            (double) (0.5 + 0 + 1.5 + 1) / 3,
+            (double) (0.5 + 0 + 0.5 + 0) / 3,
+            (double) (0 + 0.5 + 0.5 + 0) / 3,
+            (double) (0 + 0 + 0 + 0) / 3,});
+        checkCloseness(vertices,
+                       new double[]{
+            (double) 4 / (1 + 1 + 2 + 1),
+            (double) 4 / (1 + 2 + 1 + 1),
+            (double) 4 / (1 + 2 + 1 + 2),
+            (double) 4 / (2 + 1 + 1 + 2),
+            (double) 4 / (1 + 1 + 2 + 2)
+        });
+    }
+//
+//    @Test
+//    public void weightedDirectedTest() {
+//        NodeBetweennessInfo[] vertices = null;
+//        try {
+//            vertices = indexVertices(super.weightedDirected());
+//        } catch (Exception ex) {
+//        }
+//    }
+//
+//    @Test
+//    public void weightedReversedTest()
+//            throws FileNotFoundException, NoSuchMethodException {
+//        super.weightedReversed();
+//    }
+//
+
+    @Test
+    public void weightedUndirectedTest() {
+        NodeBetweennessInfo[] vertices = null;
+        try {
+            vertices = indexVertices(super.weightedUndirected());
+        } catch (Exception ex) {
+        }
+        // Given that max = 4, min = 0, we use the dependencies
+        // to calculate normalized betweenness.
+        checkBetweenness(vertices, new double[]{
+            (double) (1 + 2 + 0 + 1) / 4,
+            (double) (0.5 + 0 + 1.5 + 1) / 4,
+            (double) (0.5 + 0 + 0.5 + 0) / 4,
+            (double) (0 + 1 + 0 + 0) / 4,
+            (double) (0 + 0 + 0 + 0) / 4,});
+        // We normalize closeness by multiplying by one less than
+        // the number of vertices.
+        checkCloseness(vertices,
+                       new double[]{
+            (double) 4 / (1.2 + 0.8 + 2.1 + 1.0),
+            (double) 4 / (1.2 + 2.0 + 0.9 + 0.3),
+            (double) 4 / (0.8 + 2.0 + 1.3 + 1.8),
+            (double) 4 / (2.1 + 0.9 + 1.3 + 1.2),
+            (double) 4 / (1.0 + 0.3 + 1.8 + 1.2)
+        });
+    }
+
     @Override
     protected ProgressMonitor progressMonitor() {
         return new NullProgressMonitor();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean printsResults() {
         return PRINT_RESULTS;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getName() {
         return EXAMPLE_GRAPH;
+    }
+
+    @Override
+    protected int getNumberOfNodes() {
+        return numberOfNodes;
     }
 }

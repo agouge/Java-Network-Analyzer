@@ -24,19 +24,20 @@
  */
 package com.graphhopper.sna.analyzers;
 
+import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.sna.model.Edge;
-import com.graphhopper.sna.model.GraphCreator;
-import static com.graphhopper.sna.model.GraphCreator.UNDIRECTED;
-import java.io.FileNotFoundException;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.Graph;
-import org.jgrapht.UndirectedGraph;
-import org.jgrapht.WeightedGraph;
-import org.jgrapht.graph.DirectedMultigraph;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
-import org.jgrapht.graph.EdgeReversedGraph;
-import org.jgrapht.graph.Multigraph;
-import org.jgrapht.graph.WeightedMultigraph;
+import com.graphhopper.sna.graphcreators.GraphCreator;
+import static com.graphhopper.sna.graphcreators.GraphCreator.UNDIRECTED;
+import com.graphhopper.sna.model.DirectedG;
+import com.graphhopper.sna.model.DirectedPseudoG;
+import com.graphhopper.sna.model.DirectedWeightedPseudoG;
+import com.graphhopper.sna.model.KeyedGraph;
+import com.graphhopper.sna.model.PseudoG;
+import com.graphhopper.sna.model.UndirectedG;
+import com.graphhopper.sna.model.WeightedKeyedGraph;
+import com.graphhopper.sna.model.WeightedPseudoG;
 
 /**
  *
@@ -52,21 +53,24 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
      *
      * @param graph The graph.
      */
-    protected abstract void addVertices(Graph<Integer, Edge> graph);
+    protected abstract void addVertices(
+            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph);
 
     /**
      * Manually adds edges to the graph.
      *
      * @param graph The graph.
      */
-    protected abstract void addEdges(Graph<Integer, Edge> graph);
+    protected abstract void addEdges(
+            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph);
 
     /**
      * Manually adds weighted edges to the graph.
      *
      * @param graph The graph.
      */
-    protected abstract void addWeightedEdges(WeightedGraph<Integer, Edge> graph);
+    protected abstract void addWeightedEdges(
+            WeightedKeyedGraph<? extends NodeBetweennessInfo, Edge> graph);
 
     /**
      * Loads an unweighted graph with the given orientation.
@@ -78,8 +82,8 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
      * @throws FileNotFoundException
      */
     @Override
-    protected Graph unweightedGraph(int orientation) throws
-            FileNotFoundException {
+    protected KeyedGraph<UnweightedNodeBetweennessInfo, Edge> unweightedGraph(
+            int orientation) {
         if (orientation == GraphCreator.DIRECTED) {
             return unweightedDirectedGraph();
         } else if (orientation == GraphCreator.REVERSED) {
@@ -101,8 +105,8 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
      * @throws FileNotFoundException
      */
     @Override
-    protected Graph weightedGraph(int orientation) throws
-            FileNotFoundException {
+    protected KeyedGraph<WeightedNodeBetweennessInfo, Edge> weightedGraph(
+            int orientation) {
         if (orientation == GraphCreator.DIRECTED) {
             return weightedDirectedGraph();
         } else if (orientation == GraphCreator.REVERSED) {
@@ -117,71 +121,91 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
     /**
      * Creates an unweighted directed graph.
      */
-    private DirectedGraph unweightedDirectedGraph() {
-
-        Graph<Integer, Edge> graph =
-                initializeGraph(null, GraphCreator.DIRECTED);
-
-        addVertices(graph);
-        addEdges(graph);
-
-        return (DirectedGraph) graph;
+    private DirectedG unweightedDirectedGraph() {
+        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph = null;
+        try {
+            graph = initializeGraph(null,
+                                    GraphCreator.DIRECTED);
+            addVertices(graph);
+            addEdges(graph);
+        } catch (NoSuchMethodException ex) {
+        }
+        return (DirectedG) graph;
     }
 
     /**
      * Creates an unweighted edge reversed graph.
      */
-    private DirectedGraph unweightedReversedGraph() {
-        return new EdgeReversedGraph(unweightedDirectedGraph());
+    private DirectedG unweightedReversedGraph() {
+        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph = null;
+        try {
+            graph = initializeGraph(null,
+                                    GraphCreator.REVERSED);
+            addVertices(graph);
+            addEdges(graph);
+        } catch (NoSuchMethodException ex) {
+        }
+        return (DirectedG) graph;
     }
 
     /**
      * Creates an unweighted undirected graph.
      */
-    private UndirectedGraph unweightedUndirectedGraph() {
-
-        Graph<Integer, Edge> graph =
-                initializeGraph(null, GraphCreator.UNDIRECTED);
-
-        addVertices(graph);
-        addEdges(graph);
-
-        return (UndirectedGraph) graph;
+    private UndirectedG unweightedUndirectedGraph() {
+        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph = null;
+        try {
+            graph = initializeGraph(null,
+                                    GraphCreator.UNDIRECTED);
+            addVertices(graph);
+            addEdges(graph);
+        } catch (NoSuchMethodException ex) {
+        }
+        return (UndirectedG) graph;
     }
 
     /**
      * Creates a weighted directed graph.
      */
-    private DirectedGraph weightedDirectedGraph() {
-
-        Graph<Integer, Edge> graph =
-                initializeGraph(getWeightColumnName(), GraphCreator.DIRECTED);
-
-        addVertices(graph);
-        addWeightedEdges((WeightedGraph) graph);
-
-        return (DirectedGraph) graph;
+    private DirectedG weightedDirectedGraph() {
+        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph = null;
+        try {
+            graph = initializeGraph(getWeightColumnName(),
+                                    GraphCreator.DIRECTED);
+            addVertices(graph);
+            addWeightedEdges((WeightedKeyedGraph) graph);
+        } catch (NoSuchMethodException ex) {
+        }
+        return (DirectedG) graph;
     }
 
     /**
      * Creates a weighted edge reversed graph.
      */
-    private DirectedGraph weightedReversedGraph() {
-        return new EdgeReversedGraph(weightedDirectedGraph());
+    private DirectedG weightedReversedGraph() {
+        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph = null;
+        try {
+            graph = initializeGraph(getWeightColumnName(),
+                                    GraphCreator.REVERSED);
+            addVertices(graph);
+            addWeightedEdges((WeightedKeyedGraph) graph);
+        } catch (NoSuchMethodException ex) {
+        }
+        return (DirectedG) graph;
     }
 
     /**
      * Creates a weighted undirected graph.
      */
-    private UndirectedGraph weightedUndirectedGraph() {
-
-        Graph<Integer, Edge> graph =
-                initializeGraph(getWeightColumnName(), GraphCreator.UNDIRECTED);
-
-        addVertices(graph);
-        addWeightedEdges((WeightedGraph) graph);
-
-        return (UndirectedGraph) graph;
+    private UndirectedG weightedUndirectedGraph() {
+        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph = null;
+        try {
+            graph = initializeGraph(getWeightColumnName(),
+                                    GraphCreator.UNDIRECTED);
+            addVertices(graph);
+            addWeightedEdges((WeightedKeyedGraph) graph);
+        } catch (NoSuchMethodException ex) {
+        }
+        return (UndirectedG) graph;
     }
 
     /**
@@ -193,22 +217,26 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
      *
      * @return The newly initialized graph.
      */
-    private Graph<Integer, Edge> initializeGraph(
+    private KeyedGraph<? extends NodeBetweennessInfo, Edge> initializeGraph(
             String weightColumnName,
-            int orientation) {
+            int orientation) throws NoSuchMethodException {
         // Unweighted
         if (weightColumnName == null) {
             if (orientation != UNDIRECTED) {
-                return new DirectedMultigraph<Integer, Edge>(Edge.class);
+                return new DirectedPseudoG<UnweightedNodeBetweennessInfo, Edge>(
+                        UnweightedNodeBetweennessInfo.class, Edge.class);
             } else {
-                return new Multigraph<Integer, Edge>(Edge.class);
+                return new PseudoG<UnweightedNodeBetweennessInfo, Edge>(
+                        UnweightedNodeBetweennessInfo.class, Edge.class);
             }
         } // Weighted
         else {
             if (orientation != UNDIRECTED) {
-                return new DirectedWeightedMultigraph<Integer, Edge>(Edge.class);
+                return new DirectedWeightedPseudoG<WeightedNodeBetweennessInfo, Edge>(
+                        WeightedNodeBetweennessInfo.class, Edge.class);
             } else {
-                return new WeightedMultigraph<Integer, Edge>(Edge.class);
+                return new WeightedPseudoG<WeightedNodeBetweennessInfo, Edge>(
+                        WeightedNodeBetweennessInfo.class, Edge.class);
             }
         }
     }
