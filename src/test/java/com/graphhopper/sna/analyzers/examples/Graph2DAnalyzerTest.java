@@ -26,12 +26,9 @@ package com.graphhopper.sna.analyzers.examples;
 
 import com.graphhopper.sna.analyzers.GraphAnalyzerTest;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
-import com.graphhopper.sna.model.Edge;
-import com.graphhopper.sna.model.KeyedGraph;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import java.io.FileNotFoundException;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -39,7 +36,6 @@ import org.junit.Test;
  *
  * @author Adam Gouge
  */
-// TODO: Write the tests for directed / reversed graphs.
 public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
 
     private final static String GRAPH2D = "2D Graph";
@@ -48,9 +44,6 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
     private static final boolean PRINT_RESULTS = false;
     private static final int numberOfNodes = 6;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ProgressMonitor progressMonitor() {
         return new NullProgressMonitor();
@@ -153,81 +146,28 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean printsResults() {
         return PRINT_RESULTS;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getFilename() {
         return FILENAME;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getWeightColumnName() {
         return LENGTH;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getName() {
         return GRAPH2D;
     }
-
-    /**
-     * Facilitates obtaining references to vertices.
-     *
-     * @param graph Input graph.
-     *
-     * @return An array with the vertex with index i is in position i-1.
-     */
-    protected NodeBetweennessInfo[] indexVertices(
-            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
-        NodeBetweennessInfo[] vertices = new NodeBetweennessInfo[numberOfNodes];
-        for (int i = 0; i < numberOfNodes; i++) {
-            vertices[i] = graph.getVertex(i + 1);
-        }
-        return vertices;
-    }
-
-    /**
-     * Checks the betweenness values of the given vertices against the given
-     * expected betweenness values.
-     *
-     * @param vertices            The vertices
-     * @param expectedBetweenness The expected betweenness values
-     */
-    private void checkBetweenness(NodeBetweennessInfo[] vertices,
-                                  double[] expectedBetweenness) {
-        for (int i = 0; i < numberOfNodes; i++) {
-            assertEquals(vertices[i].getBetweenness(), expectedBetweenness[i],
-                         TOLERANCE);
-        }
-    }
-
-    /**
-     * Checks the closeness values of the given vertices against the given
-     * expected closeness values.
-     *
-     * @param vertices          The vertices
-     * @param expectedCloseness The expected closeness values
-     */
-    private void checkCloseness(NodeBetweennessInfo[] vertices,
-                                double[] expectedCloseness) {
-        for (int i = 0; i < numberOfNodes; i++) {
-            assertEquals(vertices[i].getCloseness(), expectedCloseness[i],
-                         TOLERANCE);
-        }
+    
+    @Override
+    protected int getNumberOfNodes() {
+        return numberOfNodes;
     }
 }

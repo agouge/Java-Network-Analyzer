@@ -24,6 +24,7 @@
  */
 package com.graphhopper.sna.analyzers;
 
+import static com.graphhopper.sna.analyzers.CentralityTest.TOLERANCE;
 import com.graphhopper.sna.data.NodeBetweennessInfo;
 import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
@@ -35,6 +36,7 @@ import com.graphhopper.sna.model.KeyedGraph;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import java.io.FileNotFoundException;
 import org.jgrapht.Graph;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -264,6 +266,52 @@ public abstract class GraphAnalyzerTest
     }
 
     /**
+     * Facilitates obtaining references to vertices.
+     *
+     * @param graph Input graph.
+     *
+     * @return An array with the vertex with index i is in position i-1.
+     */
+    protected NodeBetweennessInfo[] indexVertices(
+            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
+        NodeBetweennessInfo[] vertices = new NodeBetweennessInfo[getNumberOfNodes()];
+        for (int i = 0; i < getNumberOfNodes(); i++) {
+            vertices[i] = graph.getVertex(i + 1);
+        }
+        return vertices;
+    }
+
+    /**
+     * Checks the betweenness values of the given vertices against the given
+     * expected betweenness values.
+     *
+     * @param vertices            The vertices
+     * @param expectedBetweenness The expected betweenness values
+     */
+    protected void checkBetweenness(NodeBetweennessInfo[] vertices,
+                                    double[] expectedBetweenness) {
+        for (int i = 0; i < getNumberOfNodes(); i++) {
+            assertEquals(vertices[i].getBetweenness(), expectedBetweenness[i],
+                         TOLERANCE);
+        }
+    }
+
+    /**
+     * Checks the closeness values of the given vertices against the given
+     * expected closeness values.
+     *
+     * @param vertices          The vertices
+     * @param expectedCloseness The expected closeness values
+     */
+    protected void checkCloseness(NodeBetweennessInfo[] vertices,
+                                  double[] expectedCloseness) {
+        for (int i = 0; i < getNumberOfNodes(); i++) {
+            assertEquals(vertices[i].getCloseness(), expectedCloseness[i],
+                         TOLERANCE);
+        }
+    }
+
+    /**
      * Returns a boolean indicating whether the results should be printed.
      *
      * @return A boolean indicating whether the results should be printed.
@@ -290,6 +338,13 @@ public abstract class GraphAnalyzerTest
      * @return The weight column name.
      */
     protected abstract String getWeightColumnName();
+
+    /**
+     * Returns the number of nodes in this graph.
+     *
+     * @return The number of nodes in this graph.
+     */
+    protected abstract int getNumberOfNodes();
 
     /**
      * Prints the amount of time graph analysis took.
