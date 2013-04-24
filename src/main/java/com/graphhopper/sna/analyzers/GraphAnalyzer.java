@@ -292,9 +292,8 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
         long start = System.currentTimeMillis();
         final double denominator = maxBetweenness - minBetweenness;
         for (V node : nodeSet) {
-            final double betweenness = node.getBetweenness();
             final double normalizedBetweenness =
-                    (betweenness - minBetweenness) / denominator;
+                    (node.getBetweenness() - minBetweenness) / denominator;
             node.setBetweenness(normalizedBetweenness);
         }
         long stop = System.currentTimeMillis();
