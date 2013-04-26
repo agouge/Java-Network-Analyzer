@@ -200,38 +200,33 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
             Stack<V> stack);
 
     /**
-     * Given a node and its {@link S} calculated in
-     * {@link #calculateCentralityMeasures(int)}, this method calculates
-     * closeness centrality for the given node.
+     * Given a node and its path length data calculated in
+     * {@link #calculateCentralityMeasures(int)}, this method calculates its
+     * closeness centrality (or "out" closeness centrality for digraphs).
      *
-     * @param startNode          The given node.
-     * @param pathsFromStartNode Its path length data.
+     * @param node  The given node.
+     * @param paths Its path length data.
      */
     protected void calculateClosenessForNode(
-            V startNode,
-            S pathsFromStartNode) {
-        // Get the average path length for the startNode.
-        final double avgPathLength = getAveragePathLength(pathsFromStartNode);
-        // Once we have the average path length for this node,
-        // we have the closeness centrality for this node.
-        final double startNodeCloseness = (avgPathLength > 0.0)
+            V node,
+            S paths) {
+        // Count the number of nodes reachable from the given node.
+        int reachableNodes = paths.getCount();
+        // If all other nodes are reachable, get the average path length
+        // for the node.
+        final double avgPathLength;
+        if (reachableNodes == nodeCount - 1) {
+            avgPathLength = paths.getAverageLength();
+        } else {
+            avgPathLength = -1;
+        }
+        // Once we have the average path length, we have the ("out") closeness.
+
+        final double closeness = (avgPathLength > 0.0)
                 ? 1 / avgPathLength
                 : 0.0;
         // Store it.
-        startNode.setCloseness(startNodeCloseness);
-    }
-
-    /**
-     * Returns the average path length from the given {@link S}.
-     *
-     * @param pathsFromStartNode The {@link S}.
-     *
-     * @return The average path length.
-     */
-    private double getAveragePathLength(S pathsFromStartNode) {
-        return (pathsFromStartNode.getCount() > 0)
-                ? pathsFromStartNode.getAverageLength()
-                : 0.0;
+        node.setCloseness(closeness);
     }
 
     /**
