@@ -25,6 +25,8 @@
 package com.graphhopper.sna.analyzers;
 
 import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.model.Edge;
+import org.jgrapht.Graph;
 
 /**
  * Parent class in the centrality tests hierarchy.
@@ -38,9 +40,10 @@ public abstract class CentralityTest<V extends NodeBetweennessInfo> {
      */
     protected final static String TIME = " [time] ";
     /**
-     * Used for checking results of centrality index computations.
+     * Used for checking results of centrality index computations. We guarantee
+     * the results to 10 decimal places.
      */
-    protected final static double TOLERANCE = 0.000000000001;
+    protected final static double TOLERANCE = 1E-10;
 
     /**
      * Prints the title of this test.
@@ -59,6 +62,18 @@ public abstract class CentralityTest<V extends NodeBetweennessInfo> {
      */
     protected abstract String getName();
 
+    protected void printResults(Graph<? extends NodeBetweennessInfo, Edge> graph) {
+        System.out.format("%-6s%-20s%-20s\n",
+                          "v",
+                          "Betweenness",
+                          "Closeness");
+        for (NodeBetweennessInfo node : graph.vertexSet()) {
+            System.out.format("%-6d%-20f%-20f\n",
+                              node.getID(),
+                              node.getBetweenness(),
+                              node.getCloseness());
+        }
+    }
 //    /**
 //     * Prints the results of graph analysis.
 //     *
@@ -79,26 +94,6 @@ public abstract class CentralityTest<V extends NodeBetweennessInfo> {
 //                              info.getBetweenness(),
 //                              info.getCloseness());
 //            System.out.println("");
-//        }
-//    }
-
-//    /**
-//     * Prints the results of a closeness computation.
-//     *
-//     * @param result The result.
-//     */
-//    protected void printResults(TIntDoubleHashMap result) {
-//        // Print results.
-//        System.out.format("%-3s%-12s",
-//                          "v",
-//                          "Closeness");
-//        System.out.println("");
-//        for (TIntDoubleIterator it = result.iterator();
-//                it.hasNext();) {
-//            it.advance();
-//            final int id = it.key();
-//            final double closeness = it.value();
-//            System.out.println(id + ",  " + closeness);
 //        }
 //    }
 }

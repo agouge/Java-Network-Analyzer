@@ -44,7 +44,7 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
     private final static String GRAPH2D = "2D Graph";
     private static final String FILENAME = "./files/graph2D.edges.csv";
     private static final String LENGTH = "length";
-    private static final boolean PRINT_RESULTS = true;
+    private static final boolean PRINT_RESULTS = false;
     private static final int numberOfNodes = 6;
 
     @Override
@@ -57,14 +57,12 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
         DirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
                 super.unweightedDirectedAnalysis();
 
-        checkBetweenness(graph,
-                         new double[]{
+        checkBetweenness(new double[]{
             1.0, 0.0, 1.0,
-            0.0, 0.0, 0.6666666666666666});
-        checkCloseness(graph,
-                       new double[]{
+            0.0, 0.0, 0.6666666666666666}, graph);
+        checkCloseness(new double[]{
             0.0, 0.4166666666666667, 0.0,
-            0.0, 0.0, 0.0});
+            0.0, 0.0, 0.0}, graph);
     }
 
     @Test
@@ -72,14 +70,12 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
         DirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
                 super.unweightedReversedAnalysis();
 
-        checkBetweenness(graph,
-                         new double[]{
+        checkBetweenness(new double[]{
             0.375, 0.0, 1.0,
-            0.0, 0.0, 1.0});
-        checkCloseness(graph,
-                       new double[]{
+            0.0, 0.0, 1.0}, graph);
+        checkCloseness(new double[]{
             0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0});
+            0.0, 0.0, 0.0}, graph);
     }
 
     @Test
@@ -87,14 +83,12 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
         UndirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
                 super.unweightedUndirectedAnalysis();
 
-        checkBetweenness(graph,
-                         new double[]{
+        checkBetweenness(new double[]{
             0.5, 0.0, 1.0,
-            0.0, 0.0, 0.75});
-        checkCloseness(graph,
-                       new double[]{
+            0.0, 0.0, 0.75}, graph);
+        checkCloseness(new double[]{
             0.5, 0.4166666666666667, 0.625,
-            0.35714285714285715, 0.4166666666666667, 0.625});
+            0.35714285714285715, 0.4166666666666667, 0.625}, graph);
     }
 
     @Test
@@ -102,14 +96,12 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
         DirectedG<WeightedNodeBetweennessInfo, Edge> graph =
                 super.weightedDirectedAnalysis();
 
-        checkBetweenness(graph,
-                         new double[]{
+        checkBetweenness(new double[]{
             0.75, 0.0, 1.0,
-            0.0, 0.0, 1.0});
-        checkCloseness(graph,
-                       new double[]{
+            0.0, 0.0, 1.0}, graph);
+        checkCloseness(new double[]{
             0.0, 0.0035327735482214143, 0.0,
-            0.0, 0.0, 0.0});
+            0.0, 0.0, 0.0}, graph);
     }
 
     @Test
@@ -117,14 +109,12 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
         DirectedG<WeightedNodeBetweennessInfo, Edge> graph =
                 super.weightedReversedAnalysis();
 
-        checkBetweenness(graph,
-                         new double[]{
+        checkBetweenness(new double[]{
             0.75, 0.0, 1.0,
-            0.0, 0.0, 1.0});
-        checkCloseness(graph,
-                       new double[]{
+            0.0, 0.0, 1.0}, graph);
+        checkCloseness(new double[]{
             0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0});
+            0.0, 0.0, 0.0}, graph);
     }
 
     @Test
@@ -132,16 +122,14 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
         UndirectedG<WeightedNodeBetweennessInfo, Edge> graph =
                 super.weightedUndirectedAnalysis();
 
-        checkBetweenness(graph,
-                         new double[]{
+        checkBetweenness(new double[]{
             0.5714285714285714, 0.0, 1.0,
-            0.0, 0.0, 0.8571428571428571});
+            0.0, 0.0, 0.8571428571428571}, graph);
 
-        checkCloseness(graph,
-                       new double[]{
+        checkCloseness(new double[]{
             0.003787491035823884, 0.0035327735482214143, 0.0055753940798198886,
             0.0032353723348164448, 0.003495002741097083, 0.0055753940798198886
-        });
+        }, graph);
     }
 
     @Override
