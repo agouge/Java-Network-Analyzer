@@ -30,7 +30,6 @@ import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.graphcreators.GraphCreator;
-import com.graphhopper.sna.graphcreators.UnweightedGraphCreator;
 import com.graphhopper.sna.graphcreators.WeightedGraphCreator;
 import com.graphhopper.sna.model.DirectedG;
 import com.graphhopper.sna.model.KeyedGraph;
@@ -245,10 +244,10 @@ public abstract class GraphAnalyzerTest
     protected KeyedGraph<UnweightedNodeBetweennessInfo, Edge> unweightedGraph(
             int orientation) {
         try {
-            return new UnweightedGraphCreator(getFilename(),
-                                              orientation,
-                                              UnweightedNodeBetweennessInfo.class,
-                                              Edge.class).loadGraph();
+            return new GraphCreator(getFilename(),
+                                    orientation,
+                                    UnweightedNodeBetweennessInfo.class,
+                                    Edge.class).loadGraph();
         } catch (Exception ex) {
         }
         return null;
@@ -267,10 +266,10 @@ public abstract class GraphAnalyzerTest
             int orientation) {
         try {
             return new WeightedGraphCreator(getFilename(),
-                                            getWeightColumnName(),
                                             orientation,
                                             WeightedNodeBetweennessInfo.class,
-                                            Edge.class).loadGraph();
+                                            Edge.class,
+                                            getWeightColumnName()).loadGraph();
         } catch (Exception ex) {
         }
         return null;

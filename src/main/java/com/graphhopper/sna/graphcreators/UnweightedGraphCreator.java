@@ -25,11 +25,7 @@
 package com.graphhopper.sna.graphcreators;
 
 import com.graphhopper.sna.data.IdInfo;
-import com.graphhopper.sna.model.DirectedG;
 import com.graphhopper.sna.model.Edge;
-import com.graphhopper.sna.model.KeyedGraph;
-import com.graphhopper.sna.model.UndirectedG;
-import java.util.Scanner;
 
 /**
  * Creates unweighted JGraphT graphs from a csv file produced by OrbisGIS.
@@ -49,64 +45,6 @@ public class UnweightedGraphCreator<V extends IdInfo, E extends Edge>
                                   int orientation,
                                   Class<? extends V> vertexClass,
                                   Class<? extends E> edgeClass) {
-        super(csvFile, null, orientation, vertexClass, edgeClass);
-    }
-
-    /**
-     * Loads unweighted edges.
-     *
-     * @param scanner The scanner that will parse the csv file.
-     * @param graph   The graph to which the edges will be added.
-     * @param reverse {@code true} iff the edge orientation should be reversed.
-     */
-    private void loadUnweightedEdges(Scanner scanner,
-                                     KeyedGraph<V, E> graph,
-                                     boolean reverse) {
-        // Go through the file and add each edge.
-        while (scanner.hasNextLine()) {
-            // Split the line.
-            String[] parts = scanner.nextLine().split(SEPARATOR);
-            // Note: We have to get rid of the quotation marks.
-            int startNode = Integer.parseInt(
-                    deleteDoubleQuotes(parts[startNodeIndex]));
-            int endNode = Integer.parseInt(
-                    deleteDoubleQuotes(parts[endNodeIndex]));
-            // Add the unweighted edge to the graph.
-            if (reverse) {
-                graph.addEdge(endNode, startNode);
-            } else {
-                graph.addEdge(startNode, endNode);
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void loadDirectedEdges(
-            Scanner scanner,
-            DirectedG<V, E> graph) {
-        loadUnweightedEdges(scanner, graph, false);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void loadReversedEdges(
-            Scanner scanner,
-            DirectedG<V, E> graph) {
-        loadUnweightedEdges(scanner, graph, true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void loadUndirectedEdges(
-            Scanner scanner,
-            UndirectedG<V, E> graph) {
-        loadUnweightedEdges(scanner, graph, false);
+        super(csvFile, orientation, vertexClass, edgeClass);
     }
 }

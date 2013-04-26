@@ -25,14 +25,10 @@
 package com.graphhopper.sna.graphcreators;
 
 import com.graphhopper.sna.data.IdInfo;
-import com.graphhopper.sna.model.DirectedG;
 import com.graphhopper.sna.model.DirectedPseudoG;
-import com.graphhopper.sna.model.DirectedWeightedPseudoG;
 import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.model.KeyedGraph;
 import com.graphhopper.sna.model.PseudoG;
-import com.graphhopper.sna.model.UndirectedG;
-import com.graphhopper.sna.model.WeightedPseudoG;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,34 +38,33 @@ import java.util.Scanner;
 /**
  * Creates JGraphT graphs from a csv file produced by OrbisGIS.
  *
+ * @param <V> Vertex
+ * @param <E> Edge
+ *
  * @author Adam Gouge
  */
-public abstract class GraphCreator<V extends IdInfo, E extends Edge> {
+public class GraphCreator<V extends IdInfo, E extends Edge> {
 
     /**
      * Start node column name.
      */
-    private static final String START_NODE = "start_node";
+    protected static final String START_NODE = "start_node";
     /**
      * End node column name.
      */
-    private static final String END_NODE = "end_node";
-    /**
-     * Weight column name.
-     */
-    private final String weightField;
+    protected static final String END_NODE = "end_node";
     /**
      * Orientation.
      */
-    private final int orientation;
+    protected final int orientation;
     /**
      * Vertex class used for initializing the graph.
      */
-    private final Class<? extends V> vertexClass;
+    protected final Class<? extends V> vertexClass;
     /**
      * Edge class used for initializing the graph.
      */
-    private final Class<? extends E> edgeClass;
+    protected final Class<? extends E> edgeClass;
     /**
      * CSV file from which to load the edges.
      */
@@ -102,8 +97,8 @@ public abstract class GraphCreator<V extends IdInfo, E extends Edge> {
      * The csv produced by OrbisGIS uses a semicolon delimiter.
      */
     protected static final String SEPARATOR = ";";
-    private static final String DOUBLE_QUOTES = "\"";
-    private static final String EMPTY_STRING = "";
+    protected static final String DOUBLE_QUOTES = "\"";
+    protected static final String EMPTY_STRING = "";
 
     /**
      * Initializes a new {@link GraphCreator}.
@@ -111,15 +106,15 @@ public abstract class GraphCreator<V extends IdInfo, E extends Edge> {
      * @param csvFile     CSV file containing the edge information.
      * @param weightField The weight column name.
      * @param orientation The desired graph orientation.
+     * @param vertexClass The vertex class
+     * @param edgeClass   The edge class
      */
     // TODO: Make sure the orientation is valid!
     public GraphCreator(String csvFile,
-                        String weightField,
                         int orientation,
                         Class<? extends V> vertexClass,
                         Class<? extends E> edgeClass) {
         this.csvFile = csvFile;
-        this.weightField = weightField;
         this.orientation = orientation;
         this.vertexClass = vertexClass;
         this.edgeClass = edgeClass;
@@ -129,13 +124,10 @@ public abstract class GraphCreator<V extends IdInfo, E extends Edge> {
      * Returns a new graph from a csv file produced in OrbisGIS as the
      * {@code output.edges} table given by {@code ST_Graph}.
      *
-     * @param csvFile     The file from which the graph is to be constructed.
-     * @param weightField The name of the weight column.
-     * @param orientation The orientation.
-     *
      * @return The graph.
      *
      * @throws FileNotFoundException
+     * @throws NoSuchMethodException
      */
     public KeyedGraph<V, E> loadGraph()
             throws FileNotFoundException, NoSuchMethodException {
@@ -146,10 +138,14 @@ public abstract class GraphCreator<V extends IdInfo, E extends Edge> {
         // Get a scanner on the csv file.
         Scanner scanner = getScannerOnCSVFile(csvFile);
 
-        // Initialize the indices of the start_node, end_node, and length.
+        // Initialize the indices of the start_node, end_node, and weight.
         initializeIndices(scanner);
+
+        // Initialize a graph.
+        KeyedGraph<V, E> graph = initializeGraph();
+
         // Load the edges from the input file.
-        KeyedGraph<V, E> graph = loadEdges(scanner);
+        loadEdges(scanner, graph);
 
         long stop = System.currentTimeMillis();
         System.out.println("Created graph in " + (stop - start) + " ms.");
@@ -186,25 +182,22 @@ public abstract class GraphCreator<V extends IdInfo, E extends Edge> {
     }
 
     /**
-     * Initialize the start node, end node, and weight indices by reading the
-     * first line of the csv file.
+     * Initialize the start node and end node indices by reading the first line
+     * of the csv file.
      *
      * @param scanner The scanner that will read the first line of the csv file.
      */
-    private void initializeIndices(Scanner scanner) {
-        String[] parts = scanner.nextLine().split(SEPARATOR);
+    protected void initializeIndices(Scanner scanner) {
+        String[] row = scanner.nextLine().split(SEPARATOR);
         // Go through the first line and recover the indices.
-        for (int i = 0; i < parts.length; i++) {
+        for (int i = 0; i < row.length; i++) {
             // Note: We have to get rid of the quotation marks.
-            if (parts[i].replace(DOUBLE_QUOTES, EMPTY_STRING)
+            if (row[i].replace(DOUBLE_QUOTES, EMPTY_STRING)
                     .equals(START_NODE)) {
                 startNodeIndex = i;
-            } else if (parts[i].replace(DOUBLE_QUOTES, EMPTY_STRING)
+            } else if (row[i].replace(DOUBLE_QUOTES, EMPTY_STRING)
                     .equals(END_NODE)) {
                 endNodeIndex = i;
-            } else if (parts[i].replace(DOUBLE_QUOTES, EMPTY_STRING)
-                    .equals(weightField)) {
-                weightFieldIndex = i;
             }
         }
     }
@@ -221,86 +214,71 @@ public abstract class GraphCreator<V extends IdInfo, E extends Edge> {
     }
 
     /**
-     * Loads the edges from the csv file into a graph.
+     * Initializes a graph.
      *
-     * @param scanner The scanner that will parse the csv file.
+     * @return The newly initialized graph
+     *
+     * @throws NoSuchMethodException If the vertex class does not have a
+     *                               constructor with just an Integer parameter.
      */
-    // TODO: A Multigraph does not allow loops!
-    private KeyedGraph<V, E> loadEdges(Scanner scanner) throws NoSuchMethodException {
-        // Unweighted
-        if (weightField == null) {
-            if (orientation != UNDIRECTED) {
-                DirectedPseudoG<V, E> graph =
-                        new DirectedPseudoG<V, E>(vertexClass, edgeClass);
-                loadDirectedOrReversedEdges(scanner, graph);
-                return graph;
-            } else {
-                PseudoG<V, E> graph =
-                        new PseudoG<V, E>(vertexClass, edgeClass);
-                loadUndirectedEdges(scanner, graph);
-                return graph;
-            }
-        } // Weighted
-        else {
-            if (orientation != UNDIRECTED) {
-                DirectedWeightedPseudoG<V, E> graph =
-                        new DirectedWeightedPseudoG<V, E>(vertexClass, edgeClass);
-                loadDirectedOrReversedEdges(scanner, graph);
-                return graph;
-            } else {
-                WeightedPseudoG<V, E> graph =
-                        new WeightedPseudoG<V, E>(vertexClass, edgeClass);
-                loadUndirectedEdges(scanner, graph);
-                return graph;
-            }
+    protected KeyedGraph<V, E> initializeGraph() throws NoSuchMethodException {
+        KeyedGraph<V, E> graph;
+        if (orientation != UNDIRECTED) {
+            // Unweighted Directed or Reversed
+            graph = new DirectedPseudoG<V, E>(vertexClass, edgeClass);
+        } else {
+            // Unweighted Undirected
+            graph = new PseudoG<V, E>(vertexClass, edgeClass);
         }
+        return graph;
     }
 
     /**
-     * Loads directed edges; the weight is decided by the implementation of this
-     * method.
+     * Loads all edges into the graph.
      *
      * @param scanner The scanner that will parse the csv file.
-     * @param graph   The graph to which the edges will be added.
-     */
-    protected abstract void loadDirectedEdges(
-            Scanner scanner,
-            DirectedG<V, E> graph);
-
-    /**
-     * Loads directed edges with orientations reversed; the weight is decided by
-     * the implementation of this method.
+     * @param graph   The graph.
      *
-     * @param scanner The scanner that will parse the csv file.
-     * @param graph   The graph to which the edges will be added.
+     * @return The graph.
      */
-    protected abstract void loadReversedEdges(
-            Scanner scanner,
-            DirectedG<V, E> graph);
-
-    /**
-     * Loads undirected edges; the weight is decided by the implementation of
-     * this method.
-     *
-     * @param scanner The scanner that will parse the csv file.
-     * @param graph   The graph to which the edges will be added.
-     */
-    protected abstract void loadUndirectedEdges(
-            Scanner scanner,
-            UndirectedG<V, E> graph);
-
-    /**
-     * Loads directed or reversed edges depending on the orientation.
-     *
-     * @param scanner The scanner that will parse the csv file.
-     * @param graph   The graph to which the edges will be added.
-     */
-    private void loadDirectedOrReversedEdges(Scanner scanner,
-                                             DirectedG<V, E> graph) {
-        if (orientation == DIRECTED) {
-            loadDirectedEdges(scanner, graph);
-        } else {
-            loadReversedEdges(scanner, graph);
+    private KeyedGraph<V, E> loadEdges(Scanner scanner,
+                                       KeyedGraph<V, E> graph) {
+        // Should we reverse the edge orientation?
+        boolean reverse = (orientation == REVERSED) ? true : false;
+        // Go through the file and add each edge.
+        while (scanner.hasNextLine()) {
+            // Split the line.
+            String[] row = scanner.nextLine().split(SEPARATOR);
+            loadEdge(row, graph, reverse);
         }
+        return graph;
+    }
+
+    /**
+     * Loads an edge into the graph.
+     *
+     * @param row     The row from which to load the edge.
+     * @param graph   The graph to which the edges will be added.
+     * @param reverse {@code true} iff the edge orientation should be reversed.
+     *
+     * @return The newly loaded edge.
+     */
+    protected E loadEdge(String[] row,
+                         KeyedGraph<V, E> graph,
+                         boolean reverse) {
+        // Note: We have to get rid of the quotation marks.
+        int startNode = Integer.parseInt(
+                deleteDoubleQuotes(row[startNodeIndex]));
+        int endNode = Integer.parseInt(
+                deleteDoubleQuotes(row[endNodeIndex]));
+        // Add the edge to the graph.
+        E edge;
+        if (reverse) {
+            edge = graph.addEdge(endNode, startNode);
+        } else {
+            edge = graph.addEdge(startNode, endNode);
+        }
+        // And return it.
+        return edge;
     }
 }

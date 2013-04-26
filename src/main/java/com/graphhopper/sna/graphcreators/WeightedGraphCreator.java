@@ -25,10 +25,13 @@
 package com.graphhopper.sna.graphcreators;
 
 import com.graphhopper.sna.data.IdInfo;
-import com.graphhopper.sna.model.DirectedG;
+import static com.graphhopper.sna.graphcreators.GraphCreator.UNDIRECTED;
+import static com.graphhopper.sna.graphcreators.GraphCreator.weightFieldIndex;
+import com.graphhopper.sna.model.DirectedWeightedPseudoG;
 import com.graphhopper.sna.model.Edge;
-import com.graphhopper.sna.model.UndirectedG;
+import com.graphhopper.sna.model.KeyedGraph;
 import com.graphhopper.sna.model.WeightedKeyedGraph;
+import com.graphhopper.sna.model.WeightedPseudoG;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
@@ -41,6 +44,11 @@ public class WeightedGraphCreator<V extends IdInfo, E extends Edge>
         extends GraphCreator<V, E> {
 
     /**
+     * Weight column name.
+     */
+    private final String weightField;
+
+    /**
      * Initializes a new {@link WeightedGraphCreator}.
      *
      * @param csvFile     CSV file containing the edge information.
@@ -48,81 +56,75 @@ public class WeightedGraphCreator<V extends IdInfo, E extends Edge>
      * @param orientation The desired graph orientation.
      */
     public WeightedGraphCreator(String csvFile,
-                                String weightField,
                                 int orientation,
                                 Class<? extends V> vertexClass,
-                                Class<? extends E> edgeClass) {
-        super(csvFile, weightField, orientation, vertexClass, edgeClass);
+                                Class<? extends E> edgeClass,
+                                String weightField) {
+        super(csvFile, orientation, vertexClass, edgeClass);
+        this.weightField = weightField;
     }
-
 
     @Override
     public WeightedKeyedGraph<V, E> loadGraph()
             throws FileNotFoundException, NoSuchMethodException {
         return (WeightedKeyedGraph<V, E>) super.loadGraph();
     }
-    
+
     /**
-     * Loads weighted edges.
+     * Initialize the start node, end node, and weight indices by reading the
+     * first line of the csv file.
      *
-     * @param scanner The scanner that will parse the csv file.
-     * @param graph   The graph to which the edges will be added.
-     * @param reverse {@code true} iff the edge orientation should be reversed.
+     * @param scanner The scanner that will read the first line of the csv file.
      */
-    private void loadWeightedEdges(
-            Scanner scanner,
-            WeightedKeyedGraph<V, E> graph,
-            boolean reverse) {
-        // Go through the file and add each edge.
-        while (scanner.hasNextLine()) {
-            // Split the line.
-            String[] parts = scanner.nextLine().split(SEPARATOR);
+    @Override
+    protected void initializeIndices(Scanner scanner) {
+        String[] row = scanner.nextLine().split(SEPARATOR);
+        // Go through the first line and recover the indices.
+        for (int i = 0; i < row.length; i++) {
             // Note: We have to get rid of the quotation marks.
-            int startNode = Integer.parseInt(
-                    deleteDoubleQuotes(parts[startNodeIndex]));
-            int endNode = Integer.parseInt(
-                    deleteDoubleQuotes(parts[endNodeIndex]));
-            double weight = Double.parseDouble(
-                    deleteDoubleQuotes(parts[weightFieldIndex]));
-            // Add the edge to the graph.
-            E edge;
-            if (reverse) {
-                edge = graph.addEdge(endNode, startNode);
-            } else {
-                edge = graph.addEdge(startNode, endNode);
+            if (row[i].replace(DOUBLE_QUOTES, EMPTY_STRING)
+                    .equals(START_NODE)) {
+                startNodeIndex = i;
+            } else if (row[i].replace(DOUBLE_QUOTES, EMPTY_STRING)
+                    .equals(END_NODE)) {
+                endNodeIndex = i;
+            } else if (row[i].replace(DOUBLE_QUOTES, EMPTY_STRING)
+                    .equals(weightField)) {
+                weightFieldIndex = i;
             }
-            // Set the edge weight.
-            graph.setEdgeWeight(edge, weight);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected void loadDirectedEdges(
-            Scanner scanner,
-            DirectedG<V, E> graph) {
-        loadWeightedEdges(scanner, (WeightedKeyedGraph) graph, false);
+    protected KeyedGraph<V, E> initializeGraph() throws NoSuchMethodException {
+        KeyedGraph<V, E> graph;
+        if (orientation != UNDIRECTED) {
+            // Weighted Directed or Reversed
+            graph = new DirectedWeightedPseudoG<V, E>(vertexClass, edgeClass);
+        } else {
+            // Weighted Undirected
+            graph = new WeightedPseudoG<V, E>(vertexClass, edgeClass);
+        }
+        return graph;
     }
 
     /**
-     * {@inheritDoc}
+     * Loads a weighted edge into the graph.
+     *
+     * @param row     The row from which to load the edge.
+     * @param graph   The graph to which the edges will be added.
+     * @param reverse {@code true} iff the edge orientation should be reversed.
+     *
+     * @return The newly loaded edge.
      */
     @Override
-    protected void loadReversedEdges(
-            Scanner scanner,
-            DirectedG<V, E> graph) {
-        loadWeightedEdges(scanner, (WeightedKeyedGraph) graph, true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void loadUndirectedEdges(
-            Scanner scanner,
-            UndirectedG<V, E> graph) {
-        loadWeightedEdges(scanner, (WeightedKeyedGraph) graph, false);
+    protected E loadEdge(String[] row,
+                         KeyedGraph<V, E> graph,
+                         boolean reverse) {
+        E edge = super.loadEdge(row, graph, reverse);
+        double weight = Double.parseDouble(
+                deleteDoubleQuotes(row[weightFieldIndex]));
+        edge.setWeight(weight);
+        return edge;
     }
 }

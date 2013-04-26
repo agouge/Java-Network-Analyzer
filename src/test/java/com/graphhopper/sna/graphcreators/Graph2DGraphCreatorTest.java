@@ -117,12 +117,12 @@ public class Graph2DGraphCreatorTest {
         if (weighted) {
             return new WeightedGraphCreator<WeightedNodeBetweennessInfo, Edge>(
                     FILENAME,
-                    WEIGHT,
                     orientation,
                     WeightedNodeBetweennessInfo.class,
-                    Edge.class).loadGraph();
+                    Edge.class,
+                    WEIGHT).loadGraph();
         } else {
-            return new UnweightedGraphCreator<UnweightedNodeBetweennessInfo, Edge>(
+            return new GraphCreator<UnweightedNodeBetweennessInfo, Edge>(
                     FILENAME,
                     orientation,
                     UnweightedNodeBetweennessInfo.class,
@@ -135,7 +135,8 @@ public class Graph2DGraphCreatorTest {
      *
      * @param graph The graph.
      */
-    private void printEdges(KeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
+    private void printEdges(
+            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
         for (Edge edge : graph.edgeSet()) {
             String edgeString = graph.getEdgeSource(edge).getID() + " ";
             if (graph instanceof UndirectedG) {
