@@ -37,7 +37,6 @@ import com.graphhopper.sna.model.KeyedGraph;
 import com.graphhopper.sna.model.UndirectedG;
 import com.graphhopper.sna.model.WeightedKeyedGraph;
 import com.graphhopper.sna.progress.ProgressMonitor;
-import org.jgrapht.Graph;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

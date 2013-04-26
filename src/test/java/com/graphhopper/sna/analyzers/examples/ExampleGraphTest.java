@@ -56,7 +56,8 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
 
     private final static String EXAMPLE_GRAPH = "Example graph";
     private static final boolean PRINT_RESULTS = false;
-    private static final int numberOfNodes = 5;
+    private static final boolean CHECK_RESULTS = true;
+    private static final int NUMBER_OF_NODES = 5;
 
     @Override
     protected void addEdges(
@@ -85,17 +86,19 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
             throws FileNotFoundException, NoSuchMethodException {
         DirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
                 super.unweightedDirectedAnalysis();
-        // Max = 1.5, min = 0
-        checkBetweenness(new double[]{
-            (double) (0 + 0 + 0 + 0) / 1.5,
-            (double) (0.5 + 0 + 0 + 1) / 1.5,
-            (double) (0.5 + 0 + 0 + 0) / 1.5,
-            (double) (0 + 0 + 0 + 0) / 1.5,
-            (double) (0 + 0 + 0 + 0) / 1.5}, graph);
-        checkCloseness(new double[]{
-            (double) (numberOfNodes - 1) / (1 + 1 + 2 + 1),
-            0.0, 0.0, 0.0, 0.0
-        }, graph);
+        if (CHECK_RESULTS) {
+            // Max = 1.5, min = 0
+            checkBetweenness(new double[]{
+                (double) (0 + 0 + 0 + 0) / 1.5,
+                (double) (0.5 + 0 + 0 + 1) / 1.5,
+                (double) (0.5 + 0 + 0 + 0) / 1.5,
+                (double) (0 + 0 + 0 + 0) / 1.5,
+                (double) (0 + 0 + 0 + 0) / 1.5}, graph);
+            checkCloseness(new double[]{
+                (double) (NUMBER_OF_NODES - 1) / (1 + 1 + 2 + 1),
+                0.0, 0.0, 0.0, 0.0
+            }, graph);
+        }
     }
 
     @Test
@@ -103,94 +106,104 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
             throws FileNotFoundException, NoSuchMethodException {
         DirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
                 super.unweightedReversedAnalysis();
-        // Max = 1.5, min = 0
-        checkBetweenness(new double[]{
-            (double) (0 + 0 + 0 + 0) / 1.5,
-            (double) (0 + 0 + 1.5 + 0) / 1.5,
-            (double) (0.5 + 0 + 0 + 0) / 1.5,
-            (double) (0 + 0 + 0 + 0) / 1.5,
-            (double) (0 + 0 + 0 + 0) / 1.5}, graph);
-        checkCloseness(
-                new double[]{
-            0.0, 0.0, 0.0,
-            (double) (numberOfNodes - 1) / (2 + 1 + 1 + 2),
-            0.0
-        }, graph);
+        if (CHECK_RESULTS) {
+            // Max = 1.5, min = 0
+            checkBetweenness(new double[]{
+                (double) (0 + 0 + 0 + 0) / 1.5,
+                (double) (0 + 0 + 1.5 + 0) / 1.5,
+                (double) (0.5 + 0 + 0 + 0) / 1.5,
+                (double) (0 + 0 + 0 + 0) / 1.5,
+                (double) (0 + 0 + 0 + 0) / 1.5}, graph);
+            checkCloseness(
+                    new double[]{
+                0.0, 0.0, 0.0,
+                (double) (NUMBER_OF_NODES - 1) / (2 + 1 + 1 + 2),
+                0.0
+            }, graph);
+        }
     }
 
     @Test
     public void unweightedUndirectedTest() {
         UndirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
                 super.unweightedUndirectedAnalysis();
-        // Max = 3, min = 0
-        checkBetweenness(new double[]{
-            (double) (0.5 + 1.5 + 0 + 1) / 3,
-            (double) (0.5 + 0 + 1.5 + 1) / 3,
-            (double) (0.5 + 0 + 0.5 + 0) / 3,
-            (double) (0 + 0.5 + 0.5 + 0) / 3,
-            (double) (0 + 0 + 0 + 0) / 3}, graph);
-        checkCloseness(new double[]{
-            (double) (numberOfNodes - 1) / (1 + 1 + 2 + 1),
-            (double) (numberOfNodes - 1) / (1 + 2 + 1 + 1),
-            (double) (numberOfNodes - 1) / (1 + 2 + 1 + 2),
-            (double) (numberOfNodes - 1) / (2 + 1 + 1 + 2),
-            (double) (numberOfNodes - 1) / (1 + 1 + 2 + 2)
-        }, graph);
+        if (CHECK_RESULTS) {
+            // Max = 3, min = 0
+            checkBetweenness(new double[]{
+                (double) (0.5 + 1.5 + 0 + 1) / 3,
+                (double) (0.5 + 0 + 1.5 + 1) / 3,
+                (double) (0.5 + 0 + 0.5 + 0) / 3,
+                (double) (0 + 0.5 + 0.5 + 0) / 3,
+                (double) (0 + 0 + 0 + 0) / 3}, graph);
+            checkCloseness(new double[]{
+                (double) (NUMBER_OF_NODES - 1) / (1 + 1 + 2 + 1),
+                (double) (NUMBER_OF_NODES - 1) / (1 + 2 + 1 + 1),
+                (double) (NUMBER_OF_NODES - 1) / (1 + 2 + 1 + 2),
+                (double) (NUMBER_OF_NODES - 1) / (2 + 1 + 1 + 2),
+                (double) (NUMBER_OF_NODES - 1) / (1 + 1 + 2 + 2)
+            }, graph);
+        }
     }
 
     @Test
     public void weightedDirectedTest() {
         DirectedG<WeightedNodeBetweennessInfo, Edge> graph =
                 super.weightedDirectedAnalysis();
-        // Max = 1.5, min = 0
-        checkBetweenness(new double[]{
-            (double) (0 + 0 + 0 + 0) / 1.5,
-            (double) (0.5 + 0 + 0 + 1) / 1.5,
-            (double) (0.5 + 0 + 0 + 0) / 1.5,
-            (double) (0 + 0 + 0 + 0) / 1.5,
-            (double) (0 + 0 + 0 + 0) / 1.5}, graph);
-        checkCloseness(new double[]{
-            (double) (numberOfNodes - 1) / (1.2 + 0.8 + 2.1 + 1),
-            0.0, 0.0, 0.0, 0.0
-        }, graph);
+        if (CHECK_RESULTS) {
+            // Max = 1.5, min = 0
+            checkBetweenness(new double[]{
+                (double) (0 + 0 + 0 + 0) / 1.5,
+                (double) (0.5 + 0 + 0 + 1) / 1.5,
+                (double) (0.5 + 0 + 0 + 0) / 1.5,
+                (double) (0 + 0 + 0 + 0) / 1.5,
+                (double) (0 + 0 + 0 + 0) / 1.5}, graph);
+            checkCloseness(new double[]{
+                (double) (NUMBER_OF_NODES - 1) / (1.2 + 0.8 + 2.1 + 1),
+                0.0, 0.0, 0.0, 0.0
+            }, graph);
+        }
     }
 
     @Test
     public void weightedReversedTest() {
         DirectedG<WeightedNodeBetweennessInfo, Edge> graph =
                 super.weightedReversedAnalysis();
-        // Max = 1.5, min = 0
-        checkBetweenness(new double[]{
-            (double) (0 + 0 + 0 + 0) / 1.5,
-            (double) (0 + 0 + 1.5 + 0) / 1.5,
-            (double) (0 + 0 + 0.5 + 0) / 1.5,
-            (double) (0 + 0 + 0 + 0) / 1.5,
-            (double) (0 + 0 + 0 + 0) / 1.5}, graph);
-        checkCloseness(new double[]{
-            0.0, 0.0, 0.0,
-            (double) (numberOfNodes - 1) / (2.1 + 0.9 + 1.3 + 1.2),
-            0.0
-        }, graph);
+        if (CHECK_RESULTS) {
+            // Max = 1.5, min = 0
+            checkBetweenness(new double[]{
+                (double) (0 + 0 + 0 + 0) / 1.5,
+                (double) (0 + 0 + 1.5 + 0) / 1.5,
+                (double) (0 + 0 + 0.5 + 0) / 1.5,
+                (double) (0 + 0 + 0 + 0) / 1.5,
+                (double) (0 + 0 + 0 + 0) / 1.5}, graph);
+            checkCloseness(new double[]{
+                0.0, 0.0, 0.0,
+                (double) (NUMBER_OF_NODES - 1) / (2.1 + 0.9 + 1.3 + 1.2),
+                0.0
+            }, graph);
+        }
     }
 
     @Test
     public void weightedUndirectedTest() {
         UndirectedG<WeightedNodeBetweennessInfo, Edge> graph =
                 super.weightedUndirectedAnalysis();
-        // Max = 4, min = 0
-        checkBetweenness(new double[]{
-            (double) (1 + 2 + 0 + 1) / 4,
-            (double) (0.5 + 0 + 1.5 + 1) / 4,
-            (double) (0.5 + 0 + 0.5 + 0) / 4,
-            (double) (0 + 1 + 0 + 0) / 4,
-            (double) (0 + 0 + 0 + 0) / 4}, graph);
-        checkCloseness(new double[]{
-            (double) (numberOfNodes - 1) / (1.2 + 0.8 + 2.1 + 1.0),
-            (double) (numberOfNodes - 1) / (1.2 + 2.0 + 0.9 + 0.3),
-            (double) (numberOfNodes - 1) / (0.8 + 2.0 + 1.3 + 1.8),
-            (double) (numberOfNodes - 1) / (2.1 + 0.9 + 1.3 + 1.2),
-            (double) (numberOfNodes - 1) / (1.0 + 0.3 + 1.8 + 1.2)
-        }, graph);
+        if (CHECK_RESULTS) {
+            // Max = 4, min = 0
+            checkBetweenness(new double[]{
+                (double) (1 + 2 + 0 + 1) / 4,
+                (double) (0.5 + 0 + 1.5 + 1) / 4,
+                (double) (0.5 + 0 + 0.5 + 0) / 4,
+                (double) (0 + 1 + 0 + 0) / 4,
+                (double) (0 + 0 + 0 + 0) / 4}, graph);
+            checkCloseness(new double[]{
+                (double) (NUMBER_OF_NODES - 1) / (1.2 + 0.8 + 2.1 + 1.0),
+                (double) (NUMBER_OF_NODES - 1) / (1.2 + 2.0 + 0.9 + 0.3),
+                (double) (NUMBER_OF_NODES - 1) / (0.8 + 2.0 + 1.3 + 1.8),
+                (double) (NUMBER_OF_NODES - 1) / (2.1 + 0.9 + 1.3 + 1.2),
+                (double) (NUMBER_OF_NODES - 1) / (1.0 + 0.3 + 1.8 + 1.2)
+            }, graph);
+        }
     }
 
     @Override
@@ -210,6 +223,6 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Override
     protected int getNumberOfNodes() {
-        return numberOfNodes;
+        return NUMBER_OF_NODES;
     }
 }

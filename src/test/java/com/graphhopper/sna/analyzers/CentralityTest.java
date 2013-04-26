@@ -68,32 +68,10 @@ public abstract class CentralityTest<V extends NodeBetweennessInfo> {
                           "Betweenness",
                           "Closeness");
         for (NodeBetweennessInfo node : graph.vertexSet()) {
-            System.out.format("%-6d%-20f%-20f\n",
+            System.out.format("%-6d%-20.11f%-20.11f\n",
                               node.getID(),
                               node.getBetweenness(),
                               node.getCloseness());
         }
     }
-//    /**
-//     * Prints the results of graph analysis.
-//     *
-//     * @param result The result.
-//     */
-//    protected void printResults(Map<Integer, V> result) {
-//        // Print results.
-//        System.out.format("%-12s%-12s%-12s",
-//                          "v",
-//                          "Betweenness",
-//                          "Closeness");
-//        System.out.println("");
-//        for (Map.Entry<Integer, V> next : result.entrySet()) {
-//            final Integer id = next.getKey();
-//            final V info = next.getValue();
-//            System.out.format("%-12d%-12f%-12f",
-//                              next.getKey(),
-//                              info.getBetweenness(),
-//                              info.getCloseness());
-//            System.out.println("");
-//        }
-//    }
 }
