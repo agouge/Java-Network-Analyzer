@@ -81,7 +81,7 @@ public class DijkstraForCentrality<E>
             stack.push(u);
         } else {
             throw new IllegalStateException(
-                    "Cannot push node " + u + " to the stack.");
+                    "Cannot push node " + u.getID() + " to the stack.");
         }
         // Record this shortest path length (for closeness).
         if (!u.equals(startNode)) {
