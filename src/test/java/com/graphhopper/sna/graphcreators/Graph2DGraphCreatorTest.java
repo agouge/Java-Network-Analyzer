@@ -31,7 +31,6 @@ import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.model.KeyedGraph;
 import com.graphhopper.sna.model.UndirectedG;
 import java.io.FileNotFoundException;
-import java.util.Set;
 import org.junit.Test;
 
 /**
