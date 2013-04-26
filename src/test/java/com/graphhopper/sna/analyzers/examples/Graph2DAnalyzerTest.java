@@ -25,10 +25,13 @@
 package com.graphhopper.sna.analyzers.examples;
 
 import com.graphhopper.sna.analyzers.GraphAnalyzerTest;
-import com.graphhopper.sna.data.NodeBetweennessInfo;
+import com.graphhopper.sna.data.UnweightedNodeBetweennessInfo;
+import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
+import com.graphhopper.sna.model.DirectedG;
+import com.graphhopper.sna.model.Edge;
+import com.graphhopper.sna.model.UndirectedG;
 import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
-import java.io.FileNotFoundException;
 import org.junit.Test;
 
 /**
@@ -41,7 +44,7 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
     private final static String GRAPH2D = "2D Graph";
     private static final String FILENAME = "./files/graph2D.edges.csv";
     private static final String LENGTH = "length";
-    private static final boolean PRINT_RESULTS = false;
+    private static final boolean PRINT_RESULTS = true;
     private static final int numberOfNodes = 6;
 
     @Override
@@ -50,97 +53,92 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
     }
 
     @Test
-    public void unweightedDirectedTest()
-            throws FileNotFoundException, NoSuchMethodException {
-        NodeBetweennessInfo[] vertices =
-                indexVertices(super.unweightedDirected());
+    public void unweightedDirectedTest() {
+        DirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
+                super.unweightedDirectedAnalysis();
 
-        checkBetweenness(vertices,
+        checkBetweenness(graph,
                          new double[]{
             1.0, 0.0, 1.0,
             0.0, 0.0, 0.6666666666666666});
-        checkCloseness(vertices,
+        checkCloseness(graph,
                        new double[]{
-            1.0, 0.4166666666666667, 0.5714285714285714,
-            0.0, 0.0, 0.6666666666666666});
+            0.0, 0.4166666666666667, 0.0,
+            0.0, 0.0, 0.0});
     }
 
     @Test
-    public void unweightedReversedTest()
-            throws FileNotFoundException, NoSuchMethodException {
-        NodeBetweennessInfo[] vertices =
-                indexVertices(super.unweightedReversed());
+    public void unweightedReversedTest() {
+        DirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
+                super.unweightedReversedAnalysis();
 
-        checkBetweenness(vertices,
+        checkBetweenness(graph,
                          new double[]{
             0.375, 0.0, 1.0,
             0.0, 0.0, 1.0});
-        checkCloseness(vertices,
+        checkCloseness(graph,
                        new double[]{
-            0.5, 0.0, 1.0,
-            0.4, 0.6666666666666666, 0.6666666666666666});
+            0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0});
     }
 
     @Test
-    public void unweightedUndirectedTest()
-            throws FileNotFoundException, NoSuchMethodException {
-        NodeBetweennessInfo[] vertices =
-                indexVertices(super.unweightedUndirected());
+    public void unweightedUndirectedTest() {
+        UndirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
+                super.unweightedUndirectedAnalysis();
 
-        checkBetweenness(vertices,
+        checkBetweenness(graph,
                          new double[]{
             0.5, 0.0, 1.0,
             0.0, 0.0, 0.75});
-        checkCloseness(vertices,
+        checkCloseness(graph,
                        new double[]{
             0.5, 0.4166666666666667, 0.625,
             0.35714285714285715, 0.4166666666666667, 0.625});
     }
 
     @Test
-    public void weightedDirectedTest()
-            throws FileNotFoundException, NoSuchMethodException {
-        NodeBetweennessInfo[] vertices =
-                indexVertices(super.weightedDirected());
+    public void weightedDirectedTest() {
+        DirectedG<WeightedNodeBetweennessInfo, Edge> graph =
+                super.weightedDirectedAnalysis();
 
-        checkBetweenness(vertices,
+        checkBetweenness(graph,
                          new double[]{
             0.75, 0.0, 1.0,
             0.0, 0.0, 1.0});
-        checkCloseness(vertices,
+        checkCloseness(graph,
                        new double[]{
-            0.017755520605710874, 0.0035327735482214143, 0.005213986222707472,
-            0.0, 0.0, 0.004169637060665741});
+            0.0, 0.0035327735482214143, 0.0,
+            0.0, 0.0, 0.0});
     }
 
     @Test
-    public void weightedReversedTest()
-            throws FileNotFoundException, NoSuchMethodException {
-        NodeBetweennessInfo[] vertices =
-                indexVertices(super.weightedReversed());
+    public void weightedReversedTest() {
+        DirectedG<WeightedNodeBetweennessInfo, Edge> graph =
+                super.weightedReversedAnalysis();
 
-        checkBetweenness(vertices,
+        checkBetweenness(graph,
                          new double[]{
             0.75, 0.0, 1.0,
             0.0, 0.0, 1.0});
-        checkCloseness(vertices,
+        checkCloseness(graph,
                        new double[]{
-            0.003458851142284291, 0.0, 0.007714249189763772,
-            0.0036609182136564987, 0.005043646871278617, 0.00860830779189523});
+            0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0});
     }
 
     @Test
-    public void weightedUndirectedTest()
-            throws FileNotFoundException, NoSuchMethodException {
-        NodeBetweennessInfo[] vertices =
-                indexVertices(super.weightedUndirected());
+    public void weightedUndirectedTest() {
+        UndirectedG<WeightedNodeBetweennessInfo, Edge> graph =
+                super.weightedUndirectedAnalysis();
 
-        checkBetweenness(vertices,
+        checkBetweenness(graph,
                          new double[]{
             0.5714285714285714, 0.0, 1.0,
             0.0, 0.0, 0.8571428571428571});
 
-        checkCloseness(vertices, new double[]{
+        checkCloseness(graph,
+                       new double[]{
             0.003787491035823884, 0.0035327735482214143, 0.0055753940798198886,
             0.0032353723348164448, 0.003495002741097083, 0.0055753940798198886
         });
@@ -165,7 +163,7 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
     protected String getName() {
         return GRAPH2D;
     }
-    
+
     @Override
     protected int getNumberOfNodes() {
         return numberOfNodes;

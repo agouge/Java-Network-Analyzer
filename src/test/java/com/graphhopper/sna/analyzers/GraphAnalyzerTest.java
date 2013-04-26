@@ -32,7 +32,10 @@ import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.graphcreators.GraphCreator;
 import com.graphhopper.sna.graphcreators.UnweightedGraphCreator;
 import com.graphhopper.sna.graphcreators.WeightedGraphCreator;
+import com.graphhopper.sna.model.DirectedG;
 import com.graphhopper.sna.model.KeyedGraph;
+import com.graphhopper.sna.model.UndirectedG;
+import com.graphhopper.sna.model.WeightedKeyedGraph;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import java.io.FileNotFoundException;
 import org.jgrapht.Graph;
@@ -74,6 +77,7 @@ public abstract class GraphAnalyzerTest
         }
         if (printsResults()) {
             printResults(graph);
+            System.out.println("");
         }
         return graph;
     }
@@ -85,8 +89,8 @@ public abstract class GraphAnalyzerTest
      *
      * @param orientation The orientation.
      */
-    protected KeyedGraph<WeightedNodeBetweennessInfo, Edge> doWeightedAnalysis(
-            KeyedGraph<WeightedNodeBetweennessInfo, Edge> graph,
+    protected WeightedKeyedGraph<WeightedNodeBetweennessInfo, Edge> doWeightedAnalysis(
+            WeightedKeyedGraph<WeightedNodeBetweennessInfo, Edge> graph,
             String orientation) {
         try {
             doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()),
@@ -95,6 +99,7 @@ public abstract class GraphAnalyzerTest
         }
         if (printsResults()) {
             printResults(graph);
+            System.out.println("");
         }
         return graph;
     }
@@ -133,10 +138,13 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    public KeyedGraph<UnweightedNodeBetweennessInfo, Edge> unweightedDirected()
-            throws FileNotFoundException, NoSuchMethodException {
-        return doUnweightedAnalysis(unweightedGraph(GraphCreator.DIRECTED),
-                                    DIRECTED);
+    public DirectedG<UnweightedNodeBetweennessInfo, Edge> unweightedDirectedAnalysis() {
+        try {
+            return (DirectedG) doUnweightedAnalysis(unweightedGraph(
+                    GraphCreator.DIRECTED), DIRECTED);
+        } catch (Exception ex) {
+        }
+        return null;
     }
 
     /**
@@ -146,10 +154,13 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    public KeyedGraph<UnweightedNodeBetweennessInfo, Edge> unweightedReversed()
-            throws FileNotFoundException, NoSuchMethodException {
-        return doUnweightedAnalysis(unweightedGraph(GraphCreator.REVERSED),
-                                    REVERSED);
+    public DirectedG<UnweightedNodeBetweennessInfo, Edge> unweightedReversedAnalysis() {
+        try {
+            return (DirectedG) doUnweightedAnalysis(unweightedGraph(
+                    GraphCreator.REVERSED), REVERSED);
+        } catch (Exception ex) {
+        }
+        return null;
     }
 
     /**
@@ -159,10 +170,13 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    public KeyedGraph<UnweightedNodeBetweennessInfo, Edge> unweightedUndirected()
-            throws FileNotFoundException, NoSuchMethodException {
-        return doUnweightedAnalysis(unweightedGraph(GraphCreator.UNDIRECTED),
-                                    UNDIRECTED);
+    public UndirectedG<UnweightedNodeBetweennessInfo, Edge> unweightedUndirectedAnalysis() {
+        try {
+            return (UndirectedG) doUnweightedAnalysis(unweightedGraph(
+                    GraphCreator.UNDIRECTED), UNDIRECTED);
+        } catch (Exception ex) {
+        }
+        return null;
     }
 
     /**
@@ -172,10 +186,13 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    public KeyedGraph<WeightedNodeBetweennessInfo, Edge> weightedDirected()
-            throws FileNotFoundException, NoSuchMethodException {
-        return doWeightedAnalysis(weightedGraph(GraphCreator.DIRECTED),
-                                  DIRECTED);
+    public DirectedG<WeightedNodeBetweennessInfo, Edge> weightedDirectedAnalysis() {
+        try {
+            return (DirectedG) doWeightedAnalysis(weightedGraph(
+                    GraphCreator.DIRECTED), DIRECTED);
+        } catch (Exception ex) {
+        }
+        return null;
     }
 
     /**
@@ -185,10 +202,13 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    public KeyedGraph<WeightedNodeBetweennessInfo, Edge> weightedReversed()
-            throws FileNotFoundException, NoSuchMethodException {
-        return doWeightedAnalysis(weightedGraph(GraphCreator.REVERSED),
-                                  REVERSED);
+    public DirectedG<WeightedNodeBetweennessInfo, Edge> weightedReversedAnalysis() {
+        try {
+            return (DirectedG) doWeightedAnalysis(weightedGraph(
+                    GraphCreator.REVERSED), REVERSED);
+        } catch (Exception ex) {
+        }
+        return null;
     }
 
     /**
@@ -198,10 +218,13 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    public KeyedGraph<WeightedNodeBetweennessInfo, Edge> weightedUndirected()
-            throws FileNotFoundException, NoSuchMethodException {
-        return doWeightedAnalysis(weightedGraph(GraphCreator.UNDIRECTED),
-                                  UNDIRECTED);
+    public UndirectedG<WeightedNodeBetweennessInfo, Edge> weightedUndirectedAnalysis() {
+        try {
+            return (UndirectedG) doWeightedAnalysis(weightedGraph(
+                    GraphCreator.UNDIRECTED), UNDIRECTED);
+        } catch (Exception ex) {
+        }
+        return null;
     }
 
     /**
@@ -236,12 +259,15 @@ public abstract class GraphAnalyzerTest
      * @throws NoSuchMethodException
      */
     protected KeyedGraph<UnweightedNodeBetweennessInfo, Edge> unweightedGraph(
-            int orientation)
-            throws FileNotFoundException, NoSuchMethodException {
-        return new UnweightedGraphCreator(getFilename(),
-                                          orientation,
-                                          UnweightedNodeBetweennessInfo.class,
-                                          Edge.class).loadGraph();
+            int orientation) {
+        try {
+            return new UnweightedGraphCreator(getFilename(),
+                                              orientation,
+                                              UnweightedNodeBetweennessInfo.class,
+                                              Edge.class).loadGraph();
+        } catch (Exception ex) {
+        }
+        return null;
     }
 
     /**
@@ -255,30 +281,17 @@ public abstract class GraphAnalyzerTest
      * @throws FileNotFoundException
      * @throws NoSuchMethodException
      */
-    protected KeyedGraph<WeightedNodeBetweennessInfo, Edge> weightedGraph(
-            int orientation)
-            throws FileNotFoundException, NoSuchMethodException {
-        return new WeightedGraphCreator(getFilename(),
-                                        getWeightColumnName(),
-                                        orientation,
-                                        WeightedNodeBetweennessInfo.class,
-                                        Edge.class).loadGraph();
-    }
-
-    /**
-     * Facilitates obtaining references to vertices.
-     *
-     * @param graph Input graph.
-     *
-     * @return An array with the vertex with index i is in position i-1.
-     */
-    protected NodeBetweennessInfo[] indexVertices(
-            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
-        NodeBetweennessInfo[] vertices = new NodeBetweennessInfo[getNumberOfNodes()];
-        for (int i = 0; i < getNumberOfNodes(); i++) {
-            vertices[i] = graph.getVertex(i + 1);
+    protected WeightedKeyedGraph<WeightedNodeBetweennessInfo, Edge> weightedGraph(
+            int orientation) {
+        try {
+            return new WeightedGraphCreator(getFilename(),
+                                            getWeightColumnName(),
+                                            orientation,
+                                            WeightedNodeBetweennessInfo.class,
+                                            Edge.class).loadGraph();
+        } catch (Exception ex) {
         }
-        return vertices;
+        return null;
     }
 
     /**
@@ -288,11 +301,21 @@ public abstract class GraphAnalyzerTest
      * @param vertices            The vertices
      * @param expectedBetweenness The expected betweenness values
      */
-    protected void checkBetweenness(NodeBetweennessInfo[] vertices,
-                                    double[] expectedBetweenness) {
+    protected void checkBetweenness(
+            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph,
+            double[] expectedBetweenness) {
+        if (graph == null) {
+            System.out.println("Null graph");
+        }
         for (int i = 0; i < getNumberOfNodes(); i++) {
-            assertEquals(vertices[i].getBetweenness(), expectedBetweenness[i],
-                         TOLERANCE);
+            NodeBetweennessInfo vertex = graph.getVertex(i + 1);
+            if (vertex != null) {
+                assertEquals(vertex.getBetweenness(),
+                             expectedBetweenness[i],
+                             TOLERANCE);
+            } else {
+                System.out.println("Null vertex " + (i + 1));
+            }
         }
     }
 
@@ -303,11 +326,21 @@ public abstract class GraphAnalyzerTest
      * @param vertices          The vertices
      * @param expectedCloseness The expected closeness values
      */
-    protected void checkCloseness(NodeBetweennessInfo[] vertices,
-                                  double[] expectedCloseness) {
+    protected void checkCloseness(
+            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph,
+            double[] expectedCloseness) {
+        if (graph == null) {
+            System.out.println("Null graph");
+        }
         for (int i = 0; i < getNumberOfNodes(); i++) {
-            assertEquals(vertices[i].getCloseness(), expectedCloseness[i],
-                         TOLERANCE);
+            NodeBetweennessInfo vertex = graph.getVertex(i + 1);
+            if (vertex != null) {
+                assertEquals(vertex.getCloseness(),
+                             expectedCloseness[i],
+                             TOLERANCE);
+            } else {
+                System.out.println("Null vertex " + (i + 1));
+            }
         }
     }
 
