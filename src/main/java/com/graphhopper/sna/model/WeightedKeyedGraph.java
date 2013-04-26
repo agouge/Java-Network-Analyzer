@@ -32,6 +32,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
  *
  * @author Adam Gouge
  */
-public interface WeightedKeyedGraph<V, E extends DefaultWeightedEdge> extends
-        KeyedGraph<V, E>, WeightedGraph<V, E> {
+public interface WeightedKeyedGraph<V, E> extends KeyedGraph<V, E>,
+        WeightedGraph<V, E> {
 }

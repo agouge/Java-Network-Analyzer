@@ -29,6 +29,7 @@ import com.graphhopper.sna.model.DirectedG;
 import com.graphhopper.sna.model.Edge;
 import com.graphhopper.sna.model.UndirectedG;
 import com.graphhopper.sna.model.WeightedKeyedGraph;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
@@ -54,6 +55,13 @@ public class WeightedGraphCreator<V extends IdInfo, E extends Edge>
         super(csvFile, weightField, orientation, vertexClass, edgeClass);
     }
 
+
+    @Override
+    public WeightedKeyedGraph<V, E> loadGraph()
+            throws FileNotFoundException, NoSuchMethodException {
+        return (WeightedKeyedGraph<V, E>) super.loadGraph();
+    }
+    
     /**
      * Loads weighted edges.
      *
