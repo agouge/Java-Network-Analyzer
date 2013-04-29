@@ -31,7 +31,7 @@ import com.graphhopper.sna.progress.NullProgressMonitor;
 import com.graphhopper.sna.progress.ProgressMonitor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Stack;
-import org.jgrapht.Graph;
+import org.jgrapht.WeightedGraph;
 
 /**
  * Calculates various centrality measures on weighted graphs which are
@@ -49,7 +49,7 @@ public class WeightedGraphAnalyzer<E>
      * @param graph The graph to be analyzed.
      * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public WeightedGraphAnalyzer(Graph<WeightedNodeBetweennessInfo, E> graph,
+    public WeightedGraphAnalyzer(WeightedGraph<WeightedNodeBetweennessInfo, E> graph,
                                  ProgressMonitor pm)
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
@@ -63,7 +63,7 @@ public class WeightedGraphAnalyzer<E>
      *
      * @param graph The graph to be analyzed.
      */
-    public WeightedGraphAnalyzer(Graph<WeightedNodeBetweennessInfo, E> graph)
+    public WeightedGraphAnalyzer(WeightedGraph<WeightedNodeBetweennessInfo, E> graph)
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
