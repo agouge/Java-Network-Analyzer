@@ -55,8 +55,8 @@ public class StrahlerTest {
 
         StrahlerTree<DefaultEdge> tree = prepareTree();
 
-        new DFSForStrahler<DefaultEdge>(tree, tree.getRootVertex())
-                .calculate();
+        new DFSForStrahler<DefaultEdge>(tree)
+                .calculate(tree.getRootVertex());
 
         // We know what the answers should be.
         Set<Integer> s1 = new HashSet<Integer>(
@@ -70,11 +70,11 @@ public class StrahlerTest {
             int id = node.getID();
             int strahlerNumber = node.getStrahlerNumber();
             if (s1.contains(id)) {
-                assertEquals(strahlerNumber, 1);
+                assertEquals(1, strahlerNumber);
             } else if (s2.contains(id)) {
-                assertEquals(strahlerNumber, 2);
+                assertEquals(2, strahlerNumber);
             } else if (s3.contains(id)) {
-                assertEquals(strahlerNumber, 3);
+                assertEquals(3, strahlerNumber);
             }
         }
     }

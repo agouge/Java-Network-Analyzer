@@ -42,7 +42,7 @@ public class BFSTest {
         PseudoG<UnweightedNodeBetweennessInfo, Edge> graph = prepareGraph();
 
         new BFS<UnweightedNodeBetweennessInfo, Edge>(
-                graph, graph.getVertex(3)).calculate();
+                graph).calculate(graph.getVertex(3));
 
         assertTrue(graph.getVertex(3).getDistance() == 0);
         assertTrue(graph.getVertex(2).getDistance() == 1);
@@ -59,7 +59,7 @@ public class BFSTest {
         PseudoG<UnweightedNodeBetweennessInfo, Edge> graph = prepareGraph();
 
         new BFS<UnweightedNodeBetweennessInfo, Edge>(
-                graph, graph.getVertex(8)).calculate();
+                graph).calculate(graph.getVertex(8));
 
         assertTrue(graph.getVertex(8).getDistance() == 0);
         assertTrue(graph.getVertex(5).getDistance() == 1);

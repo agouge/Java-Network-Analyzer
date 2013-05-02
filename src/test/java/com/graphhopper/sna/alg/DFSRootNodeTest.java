@@ -42,7 +42,7 @@ public class DFSRootNodeTest extends DFSTest {
     public void testDFSDirectedFromVertexOne() {
 
         DirectedPseudoG<DFSInfo, Edge> graph = prepareGraph();
-        new DFSRootNode<DFSInfo, Edge>(graph, graph.getVertex(1)).calculate();
+        new DFS<DFSInfo, Edge>(graph).calculate(graph.getVertex(1));
         DFSInfo[] vertices = indexVertices(graph);
 
         assertTrue(vertices[0].getDiscoveryTime() == 1);
@@ -63,7 +63,7 @@ public class DFSRootNodeTest extends DFSTest {
     public void testDFSDirectedFromVertexTwo() {
 
         DirectedPseudoG<DFSInfo, Edge> graph = prepareGraph();
-        new DFSRootNode<DFSInfo, Edge>(graph, graph.getVertex(2)).calculate();
+        new DFS<DFSInfo, Edge>(graph).calculate(graph.getVertex(2));
         DFSInfo[] vertices = indexVertices(graph);
 
         assertTrue(vertices[0].getDiscoveryTime() == -1);
@@ -84,7 +84,7 @@ public class DFSRootNodeTest extends DFSTest {
     public void testDFSDirectedFromVertexThree() {
 
         DirectedPseudoG<DFSInfo, Edge> graph = prepareGraph();
-        new DFSRootNode<DFSInfo, Edge>(graph, graph.getVertex(3)).calculate();
+        new DFS<DFSInfo, Edge>(graph).calculate(graph.getVertex(3));
         DFSInfo[] vertices = indexVertices(graph);
 
         assertTrue(vertices[0].getDiscoveryTime() == -1);
@@ -105,7 +105,7 @@ public class DFSRootNodeTest extends DFSTest {
     public void testDFSDirectedFromVertexFour() {
 
         DirectedPseudoG<DFSInfo, Edge> graph = prepareGraph();
-        new DFSRootNode<DFSInfo, Edge>(graph, graph.getVertex(4)).calculate();
+        new DFS<DFSInfo, Edge>(graph).calculate(graph.getVertex(4));
         DFSInfo[] vertices = indexVertices(graph);
 
         assertTrue(vertices[0].getDiscoveryTime() == -1);
@@ -126,7 +126,7 @@ public class DFSRootNodeTest extends DFSTest {
     public void testDFSDirectedFromVertexFive() {
 
         DirectedPseudoG<DFSInfo, Edge> graph = prepareGraph();
-        new DFSRootNode<DFSInfo, Edge>(graph, graph.getVertex(5)).calculate();
+        new DFS<DFSInfo, Edge>(graph).calculate(graph.getVertex(5));
         DFSInfo[] vertices = indexVertices(graph);
 
         assertTrue(vertices[0].getDiscoveryTime() == -1);
@@ -147,7 +147,7 @@ public class DFSRootNodeTest extends DFSTest {
     public void testDFSDirectedFromVertexSix() {
 
         DirectedPseudoG<DFSInfo, Edge> graph = prepareGraph();
-        new DFSRootNode<DFSInfo, Edge>(graph, graph.getVertex(6)).calculate();
+        new DFS<DFSInfo, Edge>(graph).calculate(graph.getVertex(6));
         DFSInfo[] vertices = indexVertices(graph);
 
         assertTrue(vertices[0].getDiscoveryTime() == -1);
