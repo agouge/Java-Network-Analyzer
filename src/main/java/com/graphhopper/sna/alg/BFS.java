@@ -42,6 +42,9 @@ import org.jgrapht.Graph;
 public class BFS<V extends SearchInfo<V, Integer>, E>
         extends GraphSearchAlgorithm<V, E> {
 
+    /**
+     * BFS queue.
+     */
     private final LinkedList<V> queue;
 
     /**

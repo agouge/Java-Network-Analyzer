@@ -41,6 +41,9 @@ import org.jgrapht.Graphs;
 public class Dijkstra<V extends SearchInfo<V, Double>, E>
         extends GraphSearchAlgorithm<V, E> {
 
+    /**
+     * Dijkstra queue.
+     */
     private final PriorityQueue<V> queue;
     /**
      * Tolerance to be used when determining if two potential shortest paths
