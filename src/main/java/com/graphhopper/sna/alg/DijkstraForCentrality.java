@@ -24,8 +24,8 @@
  */
 package com.graphhopper.sna.alg;
 
-import com.graphhopper.sna.data.PathLengthData;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
+import com.graphhopper.sna.data.WeightedPathLengthData;
 import java.util.PriorityQueue;
 import java.util.Stack;
 import org.jgrapht.Graph;
@@ -47,7 +47,7 @@ public class DijkstraForCentrality<E>
     /**
      * Data structure used to hold information used to calculate closeness.
      */
-    private final PathLengthData pathsFromStartNode;
+    private final WeightedPathLengthData pathsFromStartNode;
 
     /**
      * Constructs a new {@link DijkstraForCentrality} object.
@@ -60,12 +60,17 @@ public class DijkstraForCentrality<E>
      */
     public DijkstraForCentrality(
             Graph<WeightedNodeBetweennessInfo, E> graph,
-            WeightedNodeBetweennessInfo startNode,
-            PathLengthData pathsFromStartNode,
             Stack<WeightedNodeBetweennessInfo> stack) {
-        super(graph, startNode);
-        this.pathsFromStartNode = pathsFromStartNode;
+        super(graph);
         this.stack = stack;
+        this.pathsFromStartNode = new WeightedPathLengthData();
+    }
+
+    @Override
+    protected void init(WeightedNodeBetweennessInfo startNode) {
+        super.init(startNode);
+        stack.clear();
+        pathsFromStartNode.clear();
     }
 
     /**
@@ -75,7 +80,8 @@ public class DijkstraForCentrality<E>
      * @param u Vertex u.
      */
     @Override
-    protected void preRelaxStep(WeightedNodeBetweennessInfo u) {
+    protected void preRelaxStep(WeightedNodeBetweennessInfo startNode,
+                                WeightedNodeBetweennessInfo u) {
         // Push it to the stack.
         if (canPushToStack(u)) {
             stack.push(u);
@@ -149,5 +155,14 @@ public class DijkstraForCentrality<E>
         else {
             v.setSPCount(u.getSPCount());
         }
+    }
+
+    /**
+     * Returns the path length data.
+     *
+     * @return The path length data
+     */
+    public WeightedPathLengthData getPaths() {
+        return pathsFromStartNode;
     }
 }

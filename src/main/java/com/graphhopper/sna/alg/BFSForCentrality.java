@@ -55,12 +55,17 @@ public class BFSForCentrality<E> extends BFS<UnweightedNodeBetweennessInfo, E> {
      * @param nodeMap   Maps nodes to their info.
      */
     public BFSForCentrality(Graph<UnweightedNodeBetweennessInfo, E> graph,
-                            UnweightedNodeBetweennessInfo startNode,
-                            UnweightedPathLengthData pathsFromStartNode,
                             Stack<UnweightedNodeBetweennessInfo> stack) {
-        super(graph, startNode);
-        this.pathsFromStartNode = pathsFromStartNode;
+        super(graph);
         this.stack = stack;
+        this.pathsFromStartNode = new UnweightedPathLengthData();
+    }
+
+    @Override
+    protected void init(UnweightedNodeBetweennessInfo startNode) {
+        super.init(startNode);
+        stack.clear();
+        pathsFromStartNode.clear();
     }
 
     /**
@@ -96,5 +101,9 @@ public class BFSForCentrality<E> extends BFS<UnweightedNodeBetweennessInfo, E> {
         neighbor.accumulateSPCount(current.getSPCount());
         // Add currentNode to the set of predecessors of neighbor.
         neighbor.addPredecessor(current);
+    }
+
+    public UnweightedPathLengthData getPaths() {
+        return pathsFromStartNode;
     }
 }

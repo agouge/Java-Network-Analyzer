@@ -41,7 +41,7 @@ import org.jgrapht.alg.NeighborIndex;
  *
  * @author Adam Gouge
  */
-public class GraphSearchAlgorithm<V, E> {
+public abstract class GraphSearchAlgorithm<V, E> {
 
     /**
      * The graph on which to calculate shortest paths.
@@ -70,6 +70,21 @@ public class GraphSearchAlgorithm<V, E> {
             neighborIndex = new NeighborIndex<V, E>(graph);
         }
     }
+
+    /**
+     * Performs the graph search algorithm from the given start node.
+     *
+     * @param startNode Start node
+     */
+    protected abstract void calculate(V startNode);
+
+    /**
+     * Performs any initializations to be done at the start of the
+     * {@link #calculate(java.lang.Object)} method.
+     *
+     * @param startNode Start node
+     */
+    protected abstract void init(V startNode);
 
     /**
      * Returns the outgoing edges of a node for directed graphs and all edges of

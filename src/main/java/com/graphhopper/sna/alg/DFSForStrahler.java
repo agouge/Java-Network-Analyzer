@@ -38,7 +38,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class DFSForStrahler<E> extends DFSRootNode<StrahlerInfo, E> {
+public class DFSForStrahler<E> extends DFS<StrahlerInfo, E> {
 
     /**
      * Constructor.
@@ -46,9 +46,8 @@ public class DFSForStrahler<E> extends DFSRootNode<StrahlerInfo, E> {
      * @param graph    The graph.
      * @param rootNode The root node.
      */
-    public DFSForStrahler(Graph<StrahlerInfo, E> graph,
-                          StrahlerInfo rootNode) {
-        super(graph, rootNode);
+    public DFSForStrahler(Graph<StrahlerInfo, E> graph) {
+        super(graph);
     }
 
     /**

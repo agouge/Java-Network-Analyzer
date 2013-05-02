@@ -24,6 +24,7 @@
  */
 package com.graphhopper.sna.analyzers;
 
+import com.graphhopper.sna.alg.BFSForCentrality;
 import com.graphhopper.sna.alg.DijkstraForCentrality;
 import com.graphhopper.sna.data.WeightedNodeBetweennessInfo;
 import com.graphhopper.sna.data.WeightedPathLengthData;
@@ -42,6 +43,8 @@ import org.jgrapht.WeightedGraph;
 public class WeightedGraphAnalyzer<E>
         extends GraphAnalyzer<WeightedNodeBetweennessInfo, E, WeightedPathLengthData> {
 
+    private final DijkstraForCentrality<E> dijkstra;
+
     /**
      * Initializes a new instance of a weighted graph analyzer with the given
      * {@link ProgressMonitor}.
@@ -49,12 +52,14 @@ public class WeightedGraphAnalyzer<E>
      * @param graph The graph to be analyzed.
      * @param pm    The {@link ProgressMonitor} to be used.
      */
-    public WeightedGraphAnalyzer(WeightedGraph<WeightedNodeBetweennessInfo, E> graph,
-                                 ProgressMonitor pm)
+    public WeightedGraphAnalyzer(
+            WeightedGraph<WeightedNodeBetweennessInfo, E> graph,
+            ProgressMonitor pm)
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
-        super(graph, pm, WeightedPathLengthData.class);
+        super(graph, pm);
+        this.dijkstra = new DijkstraForCentrality<E>(graph, stack);
     }
 
     /**
@@ -63,7 +68,8 @@ public class WeightedGraphAnalyzer<E>
      *
      * @param graph The graph to be analyzed.
      */
-    public WeightedGraphAnalyzer(WeightedGraph<WeightedNodeBetweennessInfo, E> graph)
+    public WeightedGraphAnalyzer(
+            WeightedGraph<WeightedNodeBetweennessInfo, E> graph)
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
@@ -74,10 +80,8 @@ public class WeightedGraphAnalyzer<E>
      * {@inheritDoc}
      */
     @Override
-    protected void calculateShortestPathsFromNode(
-            WeightedNodeBetweennessInfo startNode,
-            WeightedPathLengthData pathsFromStartNode,
-            Stack<WeightedNodeBetweennessInfo> stack) {
+    protected WeightedPathLengthData calculateShortestPathsFromNode(
+            WeightedNodeBetweennessInfo startNode) {
         // Need to compute all shortest paths from s=startNode.
         //
         // Once a SP from s to a node "current"=w is found, we need to
@@ -92,9 +96,7 @@ public class WeightedGraphAnalyzer<E>
         // {@link GraphAnalyzer.accumulateDependencies(int, TIntArrayStack)},
         // the nodes are popped in order of non-increasing distance from s.
         // This is IMPORTANT.
-        new DijkstraForCentrality(graph,
-                                  startNode,
-                                  pathsFromStartNode,
-                                  stack).calculate();
+        dijkstra.calculate(startNode);
+        return dijkstra.getPaths();
     }
 }

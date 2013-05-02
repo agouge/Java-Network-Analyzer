@@ -43,6 +43,8 @@ import org.jgrapht.Graph;
 public class UnweightedGraphAnalyzer<E>
         extends GraphAnalyzer<UnweightedNodeBetweennessInfo, E, UnweightedPathLengthData> {
 
+    private final BFSForCentrality<E> bfs;
+
     /**
      * Initializes a new instance of an unweighted graph analyzer with the given
      * {@link ProgressMonitor}.
@@ -56,7 +58,8 @@ public class UnweightedGraphAnalyzer<E>
             NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
-        super(graph, pm, UnweightedPathLengthData.class);
+        super(graph, pm);
+        this.bfs = new BFSForCentrality<E>(graph, stack);
     }
 
     /**
@@ -86,13 +89,9 @@ public class UnweightedGraphAnalyzer<E>
      *                           network
      */
     @Override
-    protected void calculateShortestPathsFromNode(
-            UnweightedNodeBetweennessInfo startNode,
-            UnweightedPathLengthData pathsFromStartNode,
-            Stack<UnweightedNodeBetweennessInfo> stack) {
-        new BFSForCentrality(graph,
-                             startNode,
-                             pathsFromStartNode,
-                             stack).calculate();
+    protected UnweightedPathLengthData calculateShortestPathsFromNode(
+            UnweightedNodeBetweennessInfo startNode) {
+        bfs.calculate(startNode);
+        return bfs.getPaths();
     }
 }

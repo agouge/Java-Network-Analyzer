@@ -39,8 +39,9 @@ import org.jgrapht.Graphs;
  * @author Adam Gouge
  */
 public class Dijkstra<V extends SearchInfo<V, Double>, E>
-        extends GraphSearchAlgorithmStartNode<V, E> {
+        extends GraphSearchAlgorithm<V, E> {
 
+    private final PriorityQueue<V> queue;
     /**
      * Tolerance to be used when determining if two potential shortest paths
      * have the same length.
@@ -53,31 +54,36 @@ public class Dijkstra<V extends SearchInfo<V, Double>, E>
      * @param graph     The graph.
      * @param startNode The start node.
      */
-    public Dijkstra(Graph<V, E> graph, V startNode) {
-        super(graph, startNode);
+    public Dijkstra(Graph<V, E> graph) {
+        super(graph);
+        queue = createPriorityQueue();
     }
 
     /**
-     * Calculates the distance from startNode to all the other nodes, as well as
-     * the predecessor of each node on shortest paths from startNode.
+     * Do a Dijkstra search from the given start node.
      */
-    public void calculate() {
+    @Override
+    public void calculate(V startNode) {
 
-        startNode.setSource();
-
-        PriorityQueue<V> queue = createPriorityQueue();
-        queue.add(startNode);
+        init(startNode);
 
         while (!queue.isEmpty()) {
             // Extract the minimum element.
             V u = queue.poll();
             // Do any pre-relax step.
-            preRelaxStep(u);
+            preRelaxStep(startNode, u);
             // Relax all the outgoing edges of u.
             for (E e : outgoingEdgesOf(u)) {
                 relax(u, e, queue);
             }
         }
+    }
+
+    @Override
+    protected void init(V startNode) {
+        startNode.setSource();
+        queue.clear();
+        queue.add(startNode);
     }
 
     /**
@@ -86,7 +92,7 @@ public class Dijkstra<V extends SearchInfo<V, Double>, E>
      *
      * @param u Vertex u.
      */
-    protected void preRelaxStep(V u) {
+    protected void preRelaxStep(V startNode, V u) {
     }
 
     /**
@@ -155,7 +161,7 @@ public class Dijkstra<V extends SearchInfo<V, Double>, E>
      *
      * @return The priority queue used in Dijkstra's algorithm.
      */
-    protected PriorityQueue<V> createPriorityQueue() {
+    private PriorityQueue<V> createPriorityQueue() {
         return new PriorityQueue<V>(
                 graph.vertexSet().size(),
                 new Comparator<V>() {

@@ -55,10 +55,10 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
      * Progress monitor.
      */
     protected ProgressMonitor pm;
-    /**
-     * Constructor for {@link S} objects.
-     */
-    private final Constructor<? extends S> sConstructor;
+    
+            // When accumulating dependencies, this stack will return vertices
+        // in order of non-increasing distance from startNode.
+    protected final Stack<V> stack;
 
     /**
      * Initializes a new instance of a graph analyzer with the given
@@ -70,14 +70,13 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
      */
     // TODO: Do I need the wildcard on S?
     public GraphAnalyzer(Graph<V, E> graph,
-                         ProgressMonitor pm,
-                         Class<? extends S> pathClass)
+                         ProgressMonitor pm)
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
         super(graph);
         this.pm = pm;
-        this.sConstructor = pathClass.getConstructor();
+        this.stack = new Stack<V>();
         this.maxBetweenness = Double.NEGATIVE_INFINITY;
         this.minBetweenness = Double.POSITIVE_INFINITY;
     }
@@ -93,7 +92,7 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
-        this(graph, new NullProgressMonitor(), pathClass);
+        this(graph, new NullProgressMonitor());
     }
 
     /**
@@ -135,15 +134,6 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
     }
 
     /**
-     * Resets the node (except for betweenness and closeness).
-     */
-    private void resetBetweenness() {
-        for (V node : nodeSet) {
-            node.reset();
-        }
-    }
-
-    /**
      * Calculates the contribution of the given node to the betweenness and
      * closeness values of all the other nodes.
      *
@@ -154,32 +144,31 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
             InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
 
-        // ***** LOCAL INITIALIZATION *************************
-        // Set this as the source node.
-        startNode.setSource();
-        // When accumulating dependencies, this stack will return vertices
-        // in order of non-increasing distance from startNode.
-        Stack<V> stack = new Stack<V>();
-        // This will be used for the closeness centrality calculation.
-        S pathsFromStartNode = sConstructor.newInstance();
-        // ***** END LOCAL INITIALIZATION *********************
-
         // ***** CENTRALITY CONTRIBUTION CALCULATION **********
         // Calculate all the shortest paths from startNode.
-        calculateShortestPathsFromNode(startNode, pathsFromStartNode, stack);
+        S paths = calculateShortestPathsFromNode(startNode);
         // At this point, we have all information required to calculate
         // closeness for startNode.
-        calculateClosenessForNode(startNode, pathsFromStartNode);
+        calculateClosenessForNode(startNode, paths);
         // Use the recursion formula to calculate update the dependency
         // values and their contributions to betweenness values.
-        accumulateDependencies(startNode, stack);
+        accumulateDependencies(startNode);
         // ***** END CENTRALITY CONTRIBUTION CALCULATION ******
 //        debug(startNode);
 
         // ***** RESET HASH MAP VALUES IN PREPARATION FOR *****
         // *****          THE NEXT CALCULATION            *****
-        resetBetweenness();
+        resetNodes();
         // ***** END RESET ************************************
+    }
+
+    /**
+     * Resets all nodes (except for betweenness and closeness).
+     */
+    private void resetNodes() {
+        for (V node : nodeSet) {
+            node.reset();
+        }
     }
 
     /**
@@ -194,10 +183,8 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
      *                           from startNode to all the other nodes in the
      *                           network
      */
-    protected abstract void calculateShortestPathsFromNode(
-            V startNode,
-            S pathsFromStartNode,
-            Stack<V> stack);
+    protected abstract S calculateShortestPathsFromNode(
+            V startNode);
 
     /**
      * Given a node and its path length data calculated in
@@ -239,7 +226,7 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
      * @param stack     The stack that returns nodes ordered by non-increasing
      *                  distance from startNode.
      */
-    private void accumulateDependencies(V startNode, Stack<V> stack) {
+    private void accumulateDependencies(V startNode) {
 
         // *** Here we update
         // *** (A) the dependency of startNode on the other nodes.

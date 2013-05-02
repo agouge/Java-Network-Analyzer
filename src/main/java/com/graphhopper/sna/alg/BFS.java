@@ -40,7 +40,9 @@ import org.jgrapht.Graph;
  * @author Adam Gouge
  */
 public class BFS<V extends SearchInfo<V, Integer>, E>
-        extends GraphSearchAlgorithmStartNode<V, E> {
+        extends GraphSearchAlgorithm<V, E> {
+
+    private final LinkedList<V> queue;
 
     /**
      * Constructs a new {@link BFS} object.
@@ -49,21 +51,18 @@ public class BFS<V extends SearchInfo<V, Integer>, E>
      * @param startNode The start node.
      * @param nodeMap   Maps nodes to their info.
      */
-    public BFS(Graph<V, E> graph, V startNode) {
-        super(graph, startNode);
+    public BFS(Graph<V, E> graph) {
+        super(graph);
+        queue = new LinkedList<V>();
     }
 
     /**
      * Do the breadth first search.
      */
-    public void calculate() {
+    @Override
+    public void calculate(V startNode) {
 
-        startNode.setSource();
-
-        // Create the BFS traversal queue and enqueue startNode.
-        // ToDo: Make sure this is FIFO!
-        LinkedList<V> queue = new LinkedList<V>();
-        queue.add(startNode);
+        init(startNode);
 
         // While the queue is not empty ...
         while (!queue.isEmpty()) {
@@ -83,6 +82,13 @@ public class BFS<V extends SearchInfo<V, Integer>, E>
                 }
             }
         }
+    }
+
+    @Override
+    protected void init(V startNode) {
+        startNode.setSource();
+        queue.clear();
+        queue.add(startNode);
     }
 
     /**

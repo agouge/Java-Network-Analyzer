@@ -35,7 +35,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class DFS<V extends DFSInfo, E>  extends GraphSearchAlgorithm<V, E> {
+public class DFS<V extends DFSInfo, E> extends GraphSearchAlgorithm<V, E> {
 
     /**
      * For discovery and finishing times.
@@ -53,14 +53,27 @@ public class DFS<V extends DFSInfo, E>  extends GraphSearchAlgorithm<V, E> {
     }
 
     /**
-     * Do the depth first search for all nodes in the graph.
+     * Does the depth first search for all nodes in the graph.
      */
-    public void calculate() {
+    protected void calculate() {
         for (V node : graph.vertexSet()) {
             if (node.getDiscoveryTime() < 0) {
                 visit(node);
             }
         }
+    }
+
+    /**
+     * Does a depth first search from the given node.
+     */
+    @Override
+    public void calculate(V node) {
+        visit(node);
+    }
+
+    @Override
+    protected void init(V startNode) {
+        // Empty on purpose.
     }
 
     /**
@@ -74,7 +87,7 @@ public class DFS<V extends DFSInfo, E>  extends GraphSearchAlgorithm<V, E> {
         time++;
 
         node.setDiscoveryTime(time);
-        
+
         for (V neighbor : successorListOf(node)) {
             if (neighbor.getDiscoveryTime() < 0) {
                 neighbor.addPredecessor(node);
