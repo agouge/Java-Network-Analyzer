@@ -1,7 +1,8 @@
 Java Network Analyzer
 =====================
 
-Java Network Analyzer provides a collection of [social network
+Java Network Analyzer provides a collection of [graph
+theory](http://en.wikipedia.org/wiki/Graph_theory) and [social network
 analysis](http://en.wikipedia.org/wiki/Social_network_analysis) algorithms.
 These algorithms are implemented on mathematical graphs using the
 [JGraphT](https://github.com/jgrapht/jgrapht) library.
