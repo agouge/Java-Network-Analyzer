@@ -7,8 +7,8 @@ These algorithms are implemented on mathematical graphs using the
 [JGraphT](https://github.com/jgrapht/jgrapht) library.
 
 Currently supported:
-* [betweenness](http://en.wikipedia.org/wiki/Betweenness_centrality)
-* [closeness](http://en.wikipedia.org/wiki/Centrality#Closeness_centrality)
+* [Betweenness](http://en.wikipedia.org/wiki/Betweenness_centrality)
+* [Closeness](http://en.wikipedia.org/wiki/Centrality#Closeness_centrality)
 * [Strahler stream order](http://en.wikipedia.org/wiki/Strahler_number)
   calculated on mathematical trees.
 
