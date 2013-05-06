@@ -9,5 +9,9 @@ These algorithms are implemented on mathematical graphs using the
 Currently supported are
 [betweenness](http://en.wikipedia.org/wiki/Betweenness_centrality) and
 [closeness](http://en.wikipedia.org/wiki/Centrality#Closeness_centrality)
-centrality calculations. The underlying graph may be directed, edge-reversed or
-undirected, and edges may or may not have weights.
+centrality calculations, as well as the [Strahler stream
+order](http://en.wikipedia.org/wiki/Strahler_number) calculated on mathematical
+trees.
+
+The underlying graph may be directed, edge-reversed or undirected, and edges may
+or may not have weights.
