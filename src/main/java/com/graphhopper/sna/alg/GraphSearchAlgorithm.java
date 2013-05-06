@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.DirectedNeighborIndex;
 import org.jgrapht.alg.NeighborIndex;
@@ -47,14 +48,6 @@ public abstract class GraphSearchAlgorithm<V, E> {
      * The graph on which to calculate shortest paths.
      */
     protected final Graph<V, E> graph;
-    /**
-     * Neighbor index.
-     */
-    protected NeighborIndex<V, E> neighborIndex = null;
-    /**
-     * Directed neighbor index.
-     */
-    protected DirectedNeighborIndex<V, E> directedNeighborIndex = null;
 
     /**
      * Constructs a new {@link GraphSearchAlgorithm} object.
@@ -63,12 +56,6 @@ public abstract class GraphSearchAlgorithm<V, E> {
      */
     public GraphSearchAlgorithm(Graph<V, E> graph) {
         this.graph = graph;
-        if (graph instanceof DirectedGraph) {
-            directedNeighborIndex =
-                    new DirectedNeighborIndex<V, E>((DirectedGraph) graph);
-        } else {
-            neighborIndex = new NeighborIndex<V, E>(graph);
-        }
     }
 
     /**
@@ -104,7 +91,7 @@ public abstract class GraphSearchAlgorithm<V, E> {
 
     /**
      * Returns the successor list of a node for directed graphs or the neighbor
-     * list of a node for undirected graphs. Used in DFS.
+     * list of a node for undirected graphs. Used in BFS, DFS, Strahler.
      *
      * @param node The node.
      *
@@ -112,9 +99,9 @@ public abstract class GraphSearchAlgorithm<V, E> {
      */
     public List<V> successorListOf(V node) {
         if (graph instanceof DirectedGraph) {
-            return directedNeighborIndex.successorListOf(node);
+            return Graphs.successorListOf((DirectedGraph)graph, node);
         } else {
-            return neighborIndex.neighborListOf(node);
+            return Graphs.neighborListOf(graph, node);
         }
     }
 
