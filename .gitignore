@@ -4,6 +4,7 @@ files/nantes_1_edges_weighted.csv
 files/nantes.csv
 files/example.edges.csv
 src/test/java/com/graphhoppersna/centrality/NewClass.java.old
+nbactions.xml
 nb-configuration.xml
 files/pays_de_la_loire.edges.csv
 *.bak
