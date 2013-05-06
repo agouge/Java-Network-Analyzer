@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import org.javanetworkanalyzer.data.SearchInfo;
+import org.javanetworkanalyzer.data.VSearch;
 import java.util.LinkedList;
 import org.jgrapht.Graph;
 
@@ -39,7 +39,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class BFS<V extends SearchInfo<V, Integer>, E>
+public class BFS<V extends VSearch<V, Integer>, E>
         extends GraphSearchAlgorithm<V, E> {
 
     /**

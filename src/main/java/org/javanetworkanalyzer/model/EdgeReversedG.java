@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.model;
 
-import org.javanetworkanalyzer.data.IdInfo;
+import org.javanetworkanalyzer.data.VId;
 import org.jgrapht.graph.EdgeReversedGraph;
 
 /**
@@ -32,7 +32,7 @@ import org.jgrapht.graph.EdgeReversedGraph;
  *
  * @author Adam Gouge
  */
-public class EdgeReversedG<V extends IdInfo, E>
+public class EdgeReversedG<V extends VId, E>
         //        extends GraphDelegator<V, E>
         //        implements DirectedG<V, E> {
         extends EdgeReversedGraph<V, E>

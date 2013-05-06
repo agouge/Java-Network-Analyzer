@@ -25,8 +25,8 @@
 package org.javanetworkanalyzer.analyzers.examples;
 
 import org.javanetworkanalyzer.analyzers.GraphAnalyzerTest;
-import org.javanetworkanalyzer.data.UnweightedNodeBetweennessInfo;
-import org.javanetworkanalyzer.data.WeightedNodeBetweennessInfo;
+import org.javanetworkanalyzer.data.VUBetw;
+import org.javanetworkanalyzer.data.VWBetw;
 import org.javanetworkanalyzer.model.DirectedG;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.UndirectedG;
@@ -55,7 +55,7 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
 
     @Test
     public void unweightedDirectedTest() {
-        DirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
+        DirectedG<VUBetw, Edge> graph =
                 super.unweightedDirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -69,7 +69,7 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
 
     @Test
     public void unweightedReversedTest() {
-        DirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
+        DirectedG<VUBetw, Edge> graph =
                 super.unweightedReversedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -83,7 +83,7 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
 
     @Test
     public void unweightedUndirectedTest() {
-        UndirectedG<UnweightedNodeBetweennessInfo, Edge> graph =
+        UndirectedG<VUBetw, Edge> graph =
                 super.unweightedUndirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -97,7 +97,7 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
 
     @Test
     public void weightedDirectedTest() {
-        DirectedG<WeightedNodeBetweennessInfo, Edge> graph =
+        DirectedG<VWBetw, Edge> graph =
                 super.weightedDirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -111,7 +111,7 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
 
     @Test
     public void weightedReversedTest() {
-        DirectedG<WeightedNodeBetweennessInfo, Edge> graph =
+        DirectedG<VWBetw, Edge> graph =
                 super.weightedReversedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -125,7 +125,7 @@ public class Graph2DAnalyzerTest extends GraphAnalyzerTest {
 
     @Test
     public void weightedUndirectedTest() {
-        UndirectedG<WeightedNodeBetweennessInfo, Edge> graph =
+        UndirectedG<VWBetw, Edge> graph =
                 super.weightedUndirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{

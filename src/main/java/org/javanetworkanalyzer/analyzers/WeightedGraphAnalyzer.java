@@ -26,7 +26,7 @@ package org.javanetworkanalyzer.analyzers;
 
 import org.javanetworkanalyzer.alg.BFSForCentrality;
 import org.javanetworkanalyzer.alg.DijkstraForCentrality;
-import org.javanetworkanalyzer.data.WeightedNodeBetweennessInfo;
+import org.javanetworkanalyzer.data.VWBetw;
 import org.javanetworkanalyzer.data.WeightedPathLengthData;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
@@ -41,7 +41,7 @@ import org.jgrapht.WeightedGraph;
  * @author Adam Gouge
  */
 public class WeightedGraphAnalyzer<E>
-        extends GraphAnalyzer<WeightedNodeBetweennessInfo, E, WeightedPathLengthData> {
+        extends GraphAnalyzer<VWBetw, E, WeightedPathLengthData> {
 
     private final DijkstraForCentrality<E> dijkstra;
 
@@ -53,7 +53,7 @@ public class WeightedGraphAnalyzer<E>
      * @param pm    The {@link ProgressMonitor} to be used.
      */
     public WeightedGraphAnalyzer(
-            WeightedGraph<WeightedNodeBetweennessInfo, E> graph,
+            WeightedGraph<VWBetw, E> graph,
             ProgressMonitor pm)
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
@@ -69,7 +69,7 @@ public class WeightedGraphAnalyzer<E>
      * @param graph The graph to be analyzed.
      */
     public WeightedGraphAnalyzer(
-            WeightedGraph<WeightedNodeBetweennessInfo, E> graph)
+            WeightedGraph<VWBetw, E> graph)
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
@@ -81,7 +81,7 @@ public class WeightedGraphAnalyzer<E>
      */
     @Override
     protected WeightedPathLengthData calculateShortestPathsFromNode(
-            WeightedNodeBetweennessInfo startNode) {
+            VWBetw startNode) {
         // Need to compute all shortest paths from s=startNode.
         //
         // Once a SP from s to a node "current"=w is found, we need to

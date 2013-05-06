@@ -25,11 +25,58 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Root interface for node info for algorithms like BFS and Dijkstra that have a
- * source node, distance info and predecessor info.
+ * {@link VBetw} for weighted graphs.
+ *
+ * All distances are {@code double}s; we initialize them to
+ * {@link Double#POSITIVE_INFINITY}.
  *
  * @author Adam Gouge
  */
-public interface SearchInfo<V, T extends Number>
-        extends SourceInfo, DistanceInfo<T>, PredecessorInfo<V> {
+public class VWBetw
+        extends VBetw<VWBetw, Double> {
+
+    /**
+     * Length of a shortest path starting from a certain source leading to this
+     * node (Dijkstra).
+     */
+    private double distance;
+
+    public VWBetw(Integer id) {
+        super(id);
+        distance = Double.POSITIVE_INFINITY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void reset() {
+        super.reset();
+        distance = Double.POSITIVE_INFINITY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setSource() {
+        super.setSource();
+        distance = 0.0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Double getDistance() {
+        return distance;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDistance(Double newDistance) {
+        distance = newDistance;
+    }
 }

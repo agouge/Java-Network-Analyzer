@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import org.javanetworkanalyzer.data.DFSInfo;
+import org.javanetworkanalyzer.data.VDFS;
 import org.jgrapht.Graph;
 
 /**
@@ -35,7 +35,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class DFS<V extends DFSInfo, E> extends GraphSearchAlgorithm<V, E> {
+public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
 
     /**
      * For discovery and finishing times.

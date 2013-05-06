@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import org.javanetworkanalyzer.data.UnweightedNodeBetweennessInfo;
+import org.javanetworkanalyzer.data.VUBetw;
 import org.javanetworkanalyzer.data.UnweightedPathLengthData;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -35,13 +35,13 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class BFSForCentrality<E> extends BFS<UnweightedNodeBetweennessInfo, E> {
+public class BFSForCentrality<E> extends BFS<VUBetw, E> {
 
     /**
      * Stack that will return the nodes ordered by non-increasing distance from
      * the source node.
      */
-    private final Stack<UnweightedNodeBetweennessInfo> stack;
+    private final Stack<VUBetw> stack;
     /**
      * Data structure used to hold information used to calculate closeness.
      */
@@ -54,15 +54,15 @@ public class BFSForCentrality<E> extends BFS<UnweightedNodeBetweennessInfo, E> {
      * @param startNode The start node.
      * @param nodeMap   Maps nodes to their info.
      */
-    public BFSForCentrality(Graph<UnweightedNodeBetweennessInfo, E> graph,
-                            Stack<UnweightedNodeBetweennessInfo> stack) {
+    public BFSForCentrality(Graph<VUBetw, E> graph,
+                            Stack<VUBetw> stack) {
         super(graph);
         this.stack = stack;
         this.pathsFromStartNode = new UnweightedPathLengthData();
     }
 
     @Override
-    protected void init(UnweightedNodeBetweennessInfo startNode) {
+    protected void init(VUBetw startNode) {
         super.init(startNode);
         stack.clear();
         pathsFromStartNode.clear();
@@ -76,10 +76,10 @@ public class BFSForCentrality<E> extends BFS<UnweightedNodeBetweennessInfo, E> {
      * @return The newly dequeued node.
      */
     @Override
-    protected UnweightedNodeBetweennessInfo dequeueStep(
-            LinkedList<UnweightedNodeBetweennessInfo> queue) {
+    protected VUBetw dequeueStep(
+            LinkedList<VUBetw> queue) {
         // Dequeue a node.
-        UnweightedNodeBetweennessInfo current = queue.poll();
+        VUBetw current = queue.poll();
         // Push it to the stack.
         stack.push(current);
         // Return it.
@@ -88,15 +88,15 @@ public class BFSForCentrality<E> extends BFS<UnweightedNodeBetweennessInfo, E> {
 
     @Override
     protected void firstTimeFoundStep(
-            final UnweightedNodeBetweennessInfo current,
-            final UnweightedNodeBetweennessInfo neighbor) {
+            final VUBetw current,
+            final VUBetw neighbor) {
         // Add this to the path length data. (For closeness)
         pathsFromStartNode.addSPLength(neighbor.getDistance());
     }
 
     @Override
-    protected void shortestPathStep(UnweightedNodeBetweennessInfo current,
-                                    UnweightedNodeBetweennessInfo neighbor) {
+    protected void shortestPathStep(VUBetw current,
+                                    VUBetw neighbor) {
         // Update the number of shortest paths.
         neighbor.accumulateSPCount(current.getSPCount());
         // Add currentNode to the set of predecessors of neighbor.

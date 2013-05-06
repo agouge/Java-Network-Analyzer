@@ -24,41 +24,26 @@
  */
 package org.javanetworkanalyzer.data;
 
+import java.util.HashSet;
+
 /**
- * Node info for the Strahler algorithm.
+ * Interface for node info containing predecessors.
  *
  * @author Adam Gouge
  */
-public class StrahlerInfo extends DFSInfo {
+public interface VPred<V> {
 
     /**
-     * The Strahler number of this node.
-     */
-    private int strahlerNumber;
-
-    /**
-     * Constructor.
-     */
-    public StrahlerInfo(int id) {
-        super(id);
-        this.strahlerNumber = -1;
-    }
-
-    /**
-     * Gets the Strahler number of this node.
+     * Returns the predecessors.
      *
-     * @return The Strahler number of this node.
+     * @return The predecessors.
      */
-    public int getStrahlerNumber() {
-        return strahlerNumber;
-    }
+    HashSet<V> getPredecessors();
 
     /**
-     * Sets the Strahler number of this node.
+     * Adds a predecessor to the predecessor list of this node
      *
-     * @param strahlerNumber
+     * @param pred Node to be added since it is a predecessor of this node
      */
-    public void setStrahlerNumber(int strahlerNumber) {
-        this.strahlerNumber = strahlerNumber;
-    }
+    public void addPredecessor(V pred);
 }

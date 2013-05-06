@@ -25,14 +25,24 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Interface for node info with the ability to set this as the source node.
+ * Node info for nodes keyed by an id.
  *
  * @author Adam Gouge
  */
-public interface SourceInfo {
+public class VId {
+
+    private final int id;
+
+    public VId(Integer id) {
+        this.id = id;
+    }
 
     /**
-     * Sets this to be the source node.
+     * Returns the id of this node.
+     *
+     * @return The id of this node.
      */
-    void setSource();
+    public int getID() {
+        return id;
+    }
 }

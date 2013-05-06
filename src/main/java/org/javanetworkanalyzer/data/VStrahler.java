@@ -25,23 +25,40 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Interface for node info containing the distance from a source node.
+ * Node info for the Strahler algorithm.
  *
  * @author Adam Gouge
  */
-public interface DistanceInfo<T extends Number> {
+public class VStrahler extends VDFS {
 
     /**
-     * Returns the length of the shortest path from a source node to this node.
-     *
-     * @return The length of the shortest path from a source node to this node.
+     * The Strahler number of this node.
      */
-    T getDistance();
+    private int strahlerNumber;
 
     /**
-     * Sets the new length of a shortest path from a source node to this node.
-     *
-     * @param newDistance Length of a shortest path to this node.
+     * Constructor.
      */
-    void setDistance(T newDistance);
+    public VStrahler(int id) {
+        super(id);
+        this.strahlerNumber = -1;
+    }
+
+    /**
+     * Gets the Strahler number of this node.
+     *
+     * @return The Strahler number of this node.
+     */
+    public int getStrahlerNumber() {
+        return strahlerNumber;
+    }
+
+    /**
+     * Sets the Strahler number of this node.
+     *
+     * @param strahlerNumber
+     */
+    public void setStrahlerNumber(int strahlerNumber) {
+        this.strahlerNumber = strahlerNumber;
+    }
 }

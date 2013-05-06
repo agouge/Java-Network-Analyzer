@@ -33,11 +33,11 @@ import java.util.HashSet;
  *
  * @author Adam Gouge
  */
-public abstract class NodeBetweennessInfo<N, T extends Number>
-        extends IdInfo implements SearchInfo<N, T> {
+public abstract class VBetw<V, D extends Number>
+        extends VId implements VSearch<V, D> {
 
     /**
-     * IdInfo
+     * VId
      */
     protected int id;
     /**
@@ -45,7 +45,7 @@ public abstract class NodeBetweennessInfo<N, T extends Number>
      *
      * I.e., the nodes lying on the shortest path to this node
      */
-    protected HashSet<N> predecessors;
+    protected HashSet<V> predecessors;
     /**
      * Number of shortest paths leading to this node starting from a certain
      * source.
@@ -65,15 +65,15 @@ public abstract class NodeBetweennessInfo<N, T extends Number>
     private double closeness;
 
     /**
-     * Initializes a new instance of {@link NodeBetweennessInfo}, setting the
+     * Initializes a new instance of {@link VBetw}, setting the
      * predecessor list to be empty; the shortest paths count, dependency,
      * betweenness and closeness to 0; the distance variable is initialized in
      * the appropriate subclass.
      */
-    public NodeBetweennessInfo(int id) {
+    public VBetw(int id) {
 //        outedges = new TIntLinkedList();
         super(id);
-        predecessors = new HashSet<N>();
+        predecessors = new HashSet<V>();
         spCount = 0;
         betweenness = 0.0;
         dependency = 0.0;
@@ -101,12 +101,12 @@ public abstract class NodeBetweennessInfo<N, T extends Number>
 
 // ************************** PREDECESSORS **************************
     @Override
-    public HashSet<N> getPredecessors() {
+    public HashSet<V> getPredecessors() {
         return predecessors;
     }
 
     @Override
-    public void addPredecessor(N pred) {
+    public void addPredecessor(V pred) {
         predecessors.add(pred);
     }
 

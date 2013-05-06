@@ -25,7 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.alg.DFSForStrahler;
-import org.javanetworkanalyzer.data.StrahlerInfo;
+import org.javanetworkanalyzer.data.VStrahler;
 import org.javanetworkanalyzer.model.StrahlerTree;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -67,7 +67,7 @@ public class StrahlerTest {
         Set<Integer> s3 = new HashSet<Integer>(
                 Arrays.asList(1, 3, 4));
         // Check the Strahler numbers.
-        for (StrahlerInfo node : tree.vertexSet()) {
+        for (VStrahler node : tree.vertexSet()) {
             int id = node.getID();
             int strahlerNumber = node.getStrahlerNumber();
             if (s1.contains(id)) {

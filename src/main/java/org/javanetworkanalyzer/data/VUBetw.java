@@ -24,26 +24,58 @@
  */
 package org.javanetworkanalyzer.data;
 
-import java.util.HashSet;
-
 /**
- * Interface for node info containing predecessors.
+ * {@link VBetw} for unweighted graphs.
+ *
+ * All distances are {@code int}s; we initialize them to -1.
  *
  * @author Adam Gouge
  */
-public interface PredecessorInfo<V> {
+public class VUBetw
+        extends VBetw<VUBetw, Integer> {
 
     /**
-     * Returns the predecessors.
-     *
-     * @return The predecessors.
+     * Number of steps on a shortest path from a certain source leading to this
+     * node (BFS).
      */
-    HashSet<V> getPredecessors();
+    private int distance;
+
+    public VUBetw(Integer id) {
+        super(id);
+        this.distance = -1;
+    }
 
     /**
-     * Adds a predecessor to the predecessor list of this node
-     *
-     * @param pred Node to be added since it is a predecessor of this node
+     * {@inheritDoc}
      */
-    public void addPredecessor(V pred);
+    @Override
+    public void reset() {
+        super.reset();
+        distance = -1;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setSource() {
+        super.setSource();
+        distance = 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Integer getDistance() {
+        return distance;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDistance(Integer newDistance) {
+        distance = newDistance;
+    }
 }

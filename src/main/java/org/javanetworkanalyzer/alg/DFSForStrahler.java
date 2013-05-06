@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import org.javanetworkanalyzer.data.StrahlerInfo;
+import org.javanetworkanalyzer.data.VStrahler;
 import java.util.List;
 import org.jgrapht.Graph;
 
@@ -38,7 +38,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class DFSForStrahler<E> extends DFS<StrahlerInfo, E> {
+public class DFSForStrahler<E> extends DFS<VStrahler, E> {
 
     /**
      * Constructor.
@@ -46,7 +46,7 @@ public class DFSForStrahler<E> extends DFS<StrahlerInfo, E> {
      * @param graph    The graph.
      * @param rootNode The root node.
      */
-    public DFSForStrahler(Graph<StrahlerInfo, E> graph) {
+    public DFSForStrahler(Graph<VStrahler, E> graph) {
         super(graph);
     }
 
@@ -56,7 +56,7 @@ public class DFSForStrahler<E> extends DFS<StrahlerInfo, E> {
      * @param node The node.
      */
     @Override
-    protected void visit(StrahlerInfo node) {
+    protected void visit(VStrahler node) {
         super.visit(node);
         calculateStrahlerNumber(node);
     }
@@ -66,7 +66,7 @@ public class DFSForStrahler<E> extends DFS<StrahlerInfo, E> {
      *
      * @param node The node.
      */
-    private void calculateStrahlerNumber(StrahlerInfo node) {
+    private void calculateStrahlerNumber(VStrahler node) {
 
         if (node.getFinishingTime() == node.getDiscoveryTime() + 1) {
             // All leafs have a Strahler number of 1. 
@@ -80,8 +80,8 @@ public class DFSForStrahler<E> extends DFS<StrahlerInfo, E> {
             if (outDegree == 1) {
                 // If there is only one child, then the Strahler number is
                 // the same as that of the child.
-                StrahlerInfo child;
-                List<StrahlerInfo> neighborsOf = successorListOf(node);
+                VStrahler child;
+                List<VStrahler> neighborsOf = successorListOf(node);
                 if (neighborsOf.size() == 1) {
                     child = neighborsOf.iterator().next();
                 } else {
@@ -121,10 +121,10 @@ public class DFSForStrahler<E> extends DFS<StrahlerInfo, E> {
      *
      * @return The top two Strahler numbers of the node's children.
      */
-    private int[] topTwoStrahlerNumbers(StrahlerInfo node) {
+    private int[] topTwoStrahlerNumbers(VStrahler node) {
         int max = Integer.MIN_VALUE;
         int secondLargest = Integer.MIN_VALUE;
-        for (StrahlerInfo child : successorListOf(node)) {
+        for (VStrahler child : successorListOf(node)) {
             int s = child.getStrahlerNumber();
             if (s > max) {
                 secondLargest = max;
