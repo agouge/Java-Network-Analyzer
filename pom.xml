@@ -2,13 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.graphhopper.sna</groupId>
-    <artifactId>graphhopper-sna</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>org.javanetworkanalyzer</groupId>
+    <artifactId>java-network-analyzer</artifactId>
+    <version>0.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>Graphhopper-SNA</name>
-    <url>http://maven.apache.org</url>
+    <name>Java-Network-Analyzer</name>
+    <url>https://github.com/agouge/Java-Network-Analyzer</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,7 +46,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Vendor>IRSTV - FR CNRS 2488</Bundle-Vendor>
-                        <Export-Package>com.graphhopper.sna.*</Export-Package>
+                        <Export-Package>org.javanetworkanalyzer.*</Export-Package>
                         <Bundle-Category>Network Analysis</Bundle-Category>
                     </instructions>
                 </configuration>
