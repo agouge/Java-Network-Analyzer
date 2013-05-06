@@ -22,14 +22,19 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhopper.sna.data;
+package com.graphhopper.sna.model;
+
+import com.graphhopper.sna.data.IdInfo;
 
 /**
- * Root interface for node info for algorithms like BFS and Dijkstra that have a
- * source node, distance info and predecessor info.
- *
+ *Provides an edge-reversed view of a weighted directed graph.
  * @author Adam Gouge
  */
-public interface SearchInfo<V, T extends Number>
-        extends SourceInfo, DistanceInfo<T>, PredecessorInfo<V> {
+public class WeightedEdgeReversedG<V extends IdInfo, E>
+        extends EdgeReversedG<V, E> implements WeightedKeyedGraph<V, E> {
+
+    public WeightedEdgeReversedG(
+            DirectedG<V, E> g) throws NoSuchMethodException {
+        super(g);
+    }
 }

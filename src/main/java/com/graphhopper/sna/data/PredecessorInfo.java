@@ -24,26 +24,26 @@
  */
 package com.graphhopper.sna.data;
 
-import gnu.trove.set.hash.TIntHashSet;
+import java.util.HashSet;
 
 /**
  * Interface for node info containing predecessors.
  *
  * @author Adam Gouge
  */
-public interface PredecessorInfo {
+public interface PredecessorInfo<V> {
 
     /**
      * Returns the predecessors.
      *
      * @return The predecessors.
      */
-    TIntHashSet getPredecessors();
+    HashSet<V> getPredecessors();
 
     /**
      * Adds a predecessor to the predecessor list of this node
      *
      * @param pred Node to be added since it is a predecessor of this node
      */
-    public void addPredecessor(int pred);
+    public void addPredecessor(V pred);
 }

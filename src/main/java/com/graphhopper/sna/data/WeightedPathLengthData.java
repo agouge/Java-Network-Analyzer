@@ -52,6 +52,13 @@ public class WeightedPathLengthData extends PathLengthData<Double> {
     }
 
     @Override
+    public void clear() {
+        super.clear();
+        totalLength = 0.0;
+        maxLength = 0.0;
+    }
+
+    @Override
     public void addSPLength(Double length) {
         count++;
         totalLength += length;

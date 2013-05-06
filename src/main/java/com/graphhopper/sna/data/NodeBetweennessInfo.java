@@ -24,7 +24,7 @@
  */
 package com.graphhopper.sna.data;
 
-import gnu.trove.set.hash.TIntHashSet;
+import java.util.HashSet;
 
 /**
  * Node info needed by the node betweenness calculation. <p> An instance of this
@@ -33,15 +33,19 @@ import gnu.trove.set.hash.TIntHashSet;
  *
  * @author Adam Gouge
  */
-public abstract class NodeBetweennessInfo<T extends Number>
-        implements SearchInfo<T> {
+public abstract class NodeBetweennessInfo<N, T extends Number>
+        extends IdInfo implements SearchInfo<N, T> {
 
+    /**
+     * IdInfo
+     */
+    protected int id;
     /**
      * List of the predecessors of this node.
      *
      * I.e., the nodes lying on the shortest path to this node
      */
-    protected TIntHashSet predecessors;
+    protected HashSet<N> predecessors;
     /**
      * Number of shortest paths leading to this node starting from a certain
      * source.
@@ -66,9 +70,10 @@ public abstract class NodeBetweennessInfo<T extends Number>
      * betweenness and closeness to 0; the distance variable is initialized in
      * the appropriate subclass.
      */
-    public NodeBetweennessInfo() {
+    public NodeBetweennessInfo(int id) {
 //        outedges = new TIntLinkedList();
-        predecessors = new TIntHashSet();
+        super(id);
+        predecessors = new HashSet<N>();
         spCount = 0;
         betweenness = 0.0;
         dependency = 0.0;
@@ -96,12 +101,12 @@ public abstract class NodeBetweennessInfo<T extends Number>
 
 // ************************** PREDECESSORS **************************
     @Override
-    public TIntHashSet getPredecessors() {
+    public HashSet<N> getPredecessors() {
         return predecessors;
     }
 
     @Override
-    public void addPredecessor(int pred) {
+    public void addPredecessor(N pred) {
         predecessors.add(pred);
     }
 

@@ -22,14 +22,42 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhopper.sna.data;
+package com.graphhopper.sna.model;
+
+import org.jgrapht.Graph;
 
 /**
- * Root interface for node info for algorithms like BFS and Dijkstra that have a
- * source node, distance info and predecessor info.
+ * An interface for adding V vertices to a graph keyed by int ids.
  *
  * @author Adam Gouge
  */
-public interface SearchInfo<V, T extends Number>
-        extends SourceInfo, DistanceInfo<T>, PredecessorInfo<V> {
+public interface KeyedGraph<V, E> extends Graph<V, E> {
+
+    /**
+     * Add a vertex with the given id.
+     *
+     * @param id Id
+     *
+     * @return True if the vertex was added.
+     */
+    boolean addVertex(int id);
+
+    /**
+     * Get the vertex with the given id.
+     *
+     * @param id Id.
+     *
+     * @return The vertex with the given id.
+     */
+    V getVertex(int id);
+
+    /**
+     * Add an edge from the vertex with id source to the vertex with id target.
+     *
+     * @param source Source id.
+     * @param target Target Id.
+     *
+     * @return The newly added edge, or null if it was not added.
+     */
+    E addEdge(int source, int target);
 }

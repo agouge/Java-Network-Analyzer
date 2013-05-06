@@ -25,11 +25,24 @@
 package com.graphhopper.sna.data;
 
 /**
- * Root interface for node info for algorithms like BFS and Dijkstra that have a
- * source node, distance info and predecessor info.
+ * Node info for nodes keyed by an id.
  *
  * @author Adam Gouge
  */
-public interface SearchInfo<V, T extends Number>
-        extends SourceInfo, DistanceInfo<T>, PredecessorInfo<V> {
+public class IdInfo {
+
+    private final int id;
+
+    public IdInfo(Integer id) {
+        this.id = id;
+    }
+
+    /**
+     * Returns the id of this node.
+     *
+     * @return The id of this node.
+     */
+    public int getID() {
+        return id;
+    }
 }
