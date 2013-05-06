@@ -49,6 +49,13 @@ public class UnweightedPathLengthData extends PathLengthData<Integer> {
         totalLength = 0;
         maxLength = 0;
     }
+    
+    @Override
+    public void clear() {
+        super.clear();
+        totalLength = 0;
+        maxLength = 0;
+    }
 
     @Override
     public void addSPLength(Integer length) {

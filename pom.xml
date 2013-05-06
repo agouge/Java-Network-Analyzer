@@ -23,12 +23,19 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.graphhopper</groupId>
-            <artifactId>graphhopper</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>net.sf.jgrapht</groupId>
+            <artifactId>jgrapht</artifactId>
+            <version>0.8.3</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>irstv</id>
+            <name>IRSTV repository</name>
+            <url>http://repo.orbisgis.org</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>

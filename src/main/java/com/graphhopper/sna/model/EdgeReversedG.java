@@ -22,43 +22,47 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhopper.sna.data;
+package com.graphhopper.sna.model;
+
+import com.graphhopper.sna.data.IdInfo;
+import org.jgrapht.graph.EdgeReversedGraph;
 
 /**
- * Node info for the Strahler algorithm.
+ * Provides an edge-reversed view of a directed graph.
  *
  * @author Adam Gouge
  */
-public class StrahlerInfo extends DFSInfo {
+public class EdgeReversedG<V extends IdInfo, E>
+        //        extends GraphDelegator<V, E>
+        //        implements DirectedG<V, E> {
+        extends EdgeReversedGraph<V, E>
+        implements DirectedG<V, E> {
 
     /**
-     * The Strahler number of this node.
+     * The graph to which operations are delegated.
      */
-    private int strahlerNumber;
+    private DirectedG<V, E> delegate;
 
-    /**
-     * Constructor.
-     */
-    public StrahlerInfo(int id) {
-        super(id);
-        this.strahlerNumber = -1;
+    public EdgeReversedG(DirectedG<V, E> g)
+            throws NoSuchMethodException {
+        super(g);
+        this.delegate = g;
     }
 
-    /**
-     * Gets the Strahler number of this node.
-     *
-     * @return The Strahler number of this node.
-     */
-    public int getStrahlerNumber() {
-        return strahlerNumber;
+    @Override
+    public boolean addVertex(int id) {
+        throw new UnsupportedOperationException("Adding vertices to "
+                + " an edge-reversed graph is not currently supported.");
     }
 
-    /**
-     * Sets the Strahler number of this node.
-     *
-     * @param strahlerNumber
-     */
-    public void setStrahlerNumber(int strahlerNumber) {
-        this.strahlerNumber = strahlerNumber;
+    @Override
+    public V getVertex(int id) {
+        return delegate.getVertex(id);
+    }
+
+    @Override
+    public E addEdge(int source, int target) {
+        throw new UnsupportedOperationException("Adding edges to "
+                + " an edge-reversed graph is not currently supported.");
     }
 }

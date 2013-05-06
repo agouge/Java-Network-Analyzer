@@ -22,14 +22,29 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhopper.sna.data;
+package com.graphhopper.sna.graphcreators;
+
+import com.graphhopper.sna.data.IdInfo;
+import com.graphhopper.sna.model.Edge;
 
 /**
- * Root interface for node info for algorithms like BFS and Dijkstra that have a
- * source node, distance info and predecessor info.
+ * Creates unweighted JGraphT graphs from a csv file produced by OrbisGIS.
  *
  * @author Adam Gouge
  */
-public interface SearchInfo<V, T extends Number>
-        extends SourceInfo, DistanceInfo<T>, PredecessorInfo<V> {
+public class UnweightedGraphCreator<V extends IdInfo, E extends Edge>
+        extends GraphCreator<V, E> {
+
+    /**
+     * Initializes a new {@link UnweightedGraphCreator}.
+     *
+     * @param csvFile     CSV file containing the edge information.
+     * @param orientation The desired graph orientation.
+     */
+    public UnweightedGraphCreator(String csvFile,
+                                  int orientation,
+                                  Class<? extends V> vertexClass,
+                                  Class<? extends E> edgeClass) {
+        super(csvFile, orientation, vertexClass, edgeClass);
+    }
 }

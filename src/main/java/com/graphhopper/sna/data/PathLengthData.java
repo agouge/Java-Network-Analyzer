@@ -51,6 +51,13 @@ public abstract class PathLengthData<T extends Number> {
     }
 
     /**
+     * Clears all path length data information.
+     */
+    public void clear() {
+        count = 0;
+    }
+
+    /**
      * Gets the number of shortest path lengths.
      *
      * @return Number of shortest path lengths accumulated in this instance.

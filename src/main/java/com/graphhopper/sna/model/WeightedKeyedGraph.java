@@ -22,14 +22,16 @@
  * You should have received a copy of the GNU General Public License along with
  * GraphHopper-SNA. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.graphhopper.sna.data;
+package com.graphhopper.sna.model;
+
+import org.jgrapht.WeightedGraph;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 /**
- * Root interface for node info for algorithms like BFS and Dijkstra that have a
- * source node, distance info and predecessor info.
+ * A weighted keyed graph.
  *
  * @author Adam Gouge
  */
-public interface SearchInfo<V, T extends Number>
-        extends SourceInfo, DistanceInfo<T>, PredecessorInfo<V> {
+public interface WeightedKeyedGraph<V, E> extends KeyedGraph<V, E>,
+        WeightedGraph<V, E> {
 }
