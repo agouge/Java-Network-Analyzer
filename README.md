@@ -6,9 +6,9 @@ analysis](http://en.wikipedia.org/wiki/Social_network_analysis) algorithms.
 These algorithms are implemented on mathematical graphs using the
 [JGraphT](https://github.com/jgrapht/jgrapht) library.
 
-#### Currently supported Augmented
+#### Currently supported
 
-[BFS](http://en.wikipedia.org/wiki/Breadth-first_search),
+Augmented [BFS](http://en.wikipedia.org/wiki/Breadth-first_search),
 [DFS](http://en.wikipedia.org/wiki/Depth-first_search) and
 [Dijkstra](http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) algorithms are
 used to compute:
