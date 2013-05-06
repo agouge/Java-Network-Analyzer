@@ -1,5 +1,4 @@
-Java Network Analyzer
-=====================
+# Java Network Analyzer [![Build Status](https://travis-ci.org/agouge/Java-Network-Analyzer.png)](https://travis-ci.org/agouge/Java-Network-Analyzer)
 
 Java Network Analyzer provides a collection of [graph
 theory](http://en.wikipedia.org/wiki/Graph_theory) and [social network
