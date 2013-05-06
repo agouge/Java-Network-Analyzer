@@ -25,7 +25,7 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Interface for node info with the ability to set this as the source node.
+ * Interface for vertices that may be set as the source node.
  *
  * @author Adam Gouge
  */

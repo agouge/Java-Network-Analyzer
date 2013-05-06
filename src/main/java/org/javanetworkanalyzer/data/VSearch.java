@@ -25,8 +25,8 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Root interface for node info for algorithms like BFS and Dijkstra that have a
- * source node, distance info and predecessor info.
+ * Root interface for vertices which can be set as the source node, measure
+ * distance from a source vertex, and may have predecessor(s).
  *
  * @author Adam Gouge
  */

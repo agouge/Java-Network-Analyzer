@@ -25,7 +25,7 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Node info for nodes keyed by an id.
+ * Vertex keyed by an id.
  *
  * @author Adam Gouge
  */

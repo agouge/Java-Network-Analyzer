@@ -25,7 +25,7 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Node info for the Strahler algorithm.
+ * Vertex containing a Strahler number.
  *
  * @author Adam Gouge
  */

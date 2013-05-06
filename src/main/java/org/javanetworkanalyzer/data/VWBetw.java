@@ -25,7 +25,7 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * {@link VBetw} for weighted graphs.
+ * Weighted vertex to be used during the betweenness calculation.
  *
  * All distances are {@code double}s; we initialize them to
  * {@link Double#POSITIVE_INFINITY}.

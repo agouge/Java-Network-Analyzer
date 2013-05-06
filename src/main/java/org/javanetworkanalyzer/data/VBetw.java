@@ -27,9 +27,7 @@ package org.javanetworkanalyzer.data;
 import java.util.HashSet;
 
 /**
- * Node info needed by the node betweenness calculation. <p> An instance of this
- * class is assigned to every node during the computation of node betweenness.
- * </p>
+ * Vertex to be used during the betweenness calculation.
  *
  * @author Adam Gouge
  */

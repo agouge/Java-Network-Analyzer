@@ -27,7 +27,7 @@ package org.javanetworkanalyzer.data;
 import java.util.HashSet;
 
 /**
- * Node info for DFS algorithms containing the discovery and finishing times.
+ * Vertex containing discovery and finishing times for DFS.
  *
  * @author Adam Gouge
  */

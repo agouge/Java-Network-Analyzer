@@ -27,7 +27,7 @@ package org.javanetworkanalyzer.data;
 import java.util.HashSet;
 
 /**
- * Interface for node info containing predecessors.
+ * Interface for vertices which may have predecessor(s).
  *
  * @author Adam Gouge
  */

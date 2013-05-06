@@ -25,7 +25,7 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * {@link VBetw} for unweighted graphs.
+ * Unweighted vertex to be used during the betweenness calculation.
  *
  * All distances are {@code int}s; we initialize them to -1.
  *

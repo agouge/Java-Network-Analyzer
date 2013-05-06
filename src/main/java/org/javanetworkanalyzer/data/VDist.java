@@ -25,7 +25,7 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Interface for node info containing the distance from a source node.
+ * Interface vertices that measure the distance from a source node.
  *
  * @author Adam Gouge
  */
