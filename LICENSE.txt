@@ -22,28 +22,3 @@
  * You should have received a copy of the GNU General Public License along with
  * Java Network Analyzer. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.javanetworkanalyzer.data;
-
-import java.util.HashSet;
-
-/**
- * Interface for vertices which may have predecessor(s).
- *
- * @author Adam Gouge
- */
-public interface VPred<V> {
-
-    /**
-     * Returns the predecessors.
-     *
-     * @return The predecessors.
-     */
-    HashSet<V> getPredecessors();
-
-    /**
-     * Adds a predecessor to the predecessor list of this node
-     *
-     * @param pred Node to be added since it is a predecessor of this node
-     */
-    public void addPredecessor(V pred);
-}
