@@ -25,14 +25,14 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * {@link NodeBetweennessInfo} for unweighted graphs.
+ * Unweighted vertex to be used during the betweenness calculation.
  *
  * All distances are {@code int}s; we initialize them to -1.
  *
  * @author Adam Gouge
  */
-public class UnweightedNodeBetweennessInfo
-        extends NodeBetweennessInfo<UnweightedNodeBetweennessInfo, Integer> {
+public class VUBetw
+        extends VBetw<VUBetw, Integer> {
 
     /**
      * Number of steps on a shortest path from a certain source leading to this
@@ -40,7 +40,7 @@ public class UnweightedNodeBetweennessInfo
      */
     private int distance;
 
-    public UnweightedNodeBetweennessInfo(Integer id) {
+    public VUBetw(Integer id) {
         super(id);
         this.distance = -1;
     }

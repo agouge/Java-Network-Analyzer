@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.graphcreators;
 
-import org.javanetworkanalyzer.data.IdInfo;
+import org.javanetworkanalyzer.data.VId;
 import org.javanetworkanalyzer.model.DirectedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.KeyedGraph;
@@ -43,7 +43,7 @@ import java.util.Scanner;
  *
  * @author Adam Gouge
  */
-public class GraphCreator<V extends IdInfo, E extends Edge> {
+public class GraphCreator<V extends VId, E extends Edge> {
 
     /**
      * Start node column name.

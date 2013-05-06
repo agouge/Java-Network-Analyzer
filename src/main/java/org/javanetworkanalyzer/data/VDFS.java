@@ -27,18 +27,18 @@ package org.javanetworkanalyzer.data;
 import java.util.HashSet;
 
 /**
- * Node info for DFS algorithms containing the discovery and finishing times.
+ * Vertex containing discovery and finishing times for DFS.
  *
  * @author Adam Gouge
  */
-public class DFSInfo extends IdInfo implements PredecessorInfo<DFSInfo> {
+public class VDFS extends VId implements VPred<VDFS> {
 
     /**
      * List of the predecessors of this node.
      *
      * I.e., the nodes lying on the shortest path to this node
      */
-    protected HashSet<DFSInfo> predecessors;
+    protected HashSet<VDFS> predecessors;
     /**
      * The time this node was discovered.
      */
@@ -51,9 +51,9 @@ public class DFSInfo extends IdInfo implements PredecessorInfo<DFSInfo> {
     /**
      * Constructor.
      */
-    public DFSInfo(Integer id) {
+    public VDFS(Integer id) {
         super(id);
-        predecessors = new HashSet<DFSInfo>();
+        predecessors = new HashSet<VDFS>();
         this.discoveryTime = -1;
         this.finishingTime = -1;
     }
@@ -95,12 +95,12 @@ public class DFSInfo extends IdInfo implements PredecessorInfo<DFSInfo> {
     }
 
     @Override
-    public HashSet<DFSInfo> getPredecessors() {
+    public HashSet<VDFS> getPredecessors() {
         return predecessors;
     }
 
     @Override
-    public void addPredecessor(DFSInfo pred) {
+    public void addPredecessor(VDFS pred) {
         predecessors.add(pred);
     }
 }

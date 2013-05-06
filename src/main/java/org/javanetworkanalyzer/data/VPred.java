@@ -24,12 +24,26 @@
  */
 package org.javanetworkanalyzer.data;
 
+import java.util.HashSet;
+
 /**
- * Root interface for node info for algorithms like BFS and Dijkstra that have a
- * source node, distance info and predecessor info.
+ * Interface for vertices which may have predecessor(s).
  *
  * @author Adam Gouge
  */
-public interface SearchInfo<V, T extends Number>
-        extends SourceInfo, DistanceInfo<T>, PredecessorInfo<V> {
+public interface VPred<V> {
+
+    /**
+     * Returns the predecessors.
+     *
+     * @return The predecessors.
+     */
+    HashSet<V> getPredecessors();
+
+    /**
+     * Adds a predecessor to the predecessor list of this node
+     *
+     * @param pred Node to be added since it is a predecessor of this node
+     */
+    public void addPredecessor(V pred);
 }

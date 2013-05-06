@@ -25,7 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.alg.DFS;
-import org.javanetworkanalyzer.data.DFSInfo;
+import org.javanetworkanalyzer.data.VDFS;
 import org.javanetworkanalyzer.model.DirectedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
 import org.jgrapht.graph.AsUndirectedGraph;
@@ -45,12 +45,12 @@ public class DFSTest {
 
     @Test
     public void testDFSDirected() {
-        DirectedPseudoG<DFSInfo, Edge> graph =
+        DirectedPseudoG<VDFS, Edge> graph =
                 prepareGraph();
 
-        new DFS<DFSInfo, Edge>(graph).calculate();
+        new DFS<VDFS, Edge>(graph).calculate();
         
-        DFSInfo[] vertices = indexVertices(graph);
+        VDFS[] vertices = indexVertices(graph);
 
         assertTrue(vertices[0].getDiscoveryTime() == 1);
         assertTrue(vertices[0].getFinishingTime() == 8);
@@ -72,14 +72,14 @@ public class DFSTest {
         // Note: The traveral order is a little different than if we had
         // directly constructed a PseudoG, but traversal order is in general
         // not unique in DFS.
-        AsUndirectedGraph<DFSInfo, Edge> graph =
-                new AsUndirectedGraph<DFSInfo, Edge>(prepareGraph());
+        AsUndirectedGraph<VDFS, Edge> graph =
+                new AsUndirectedGraph<VDFS, Edge>(prepareGraph());
 
-        new DFS<DFSInfo, Edge>(graph).calculate();
+        new DFS<VDFS, Edge>(graph).calculate();
 
         // Note: Cannot use graph.getVertex(int) because AsUndirectedGraph
         // is not a keyed graph!
-        for (DFSInfo node : graph.vertexSet()) {
+        for (VDFS node : graph.vertexSet()) {
             if (node.getID() == 1) {
                 assertTrue(node.getDiscoveryTime() == 1);
                 assertTrue(node.getFinishingTime() == 12);
@@ -107,11 +107,11 @@ public class DFSTest {
      *
      * @return The graph.
      */
-    protected DirectedPseudoG<DFSInfo, Edge> prepareGraph() {
-        DirectedPseudoG<DFSInfo, Edge> graph = null;
+    protected DirectedPseudoG<VDFS, Edge> prepareGraph() {
+        DirectedPseudoG<VDFS, Edge> graph = null;
         try {
-            graph = new DirectedPseudoG<DFSInfo, Edge>(
-                    DFSInfo.class, Edge.class);
+            graph = new DirectedPseudoG<VDFS, Edge>(
+                    VDFS.class, Edge.class);
             graph.addEdge(1, 2);
             graph.addEdge(1, 3);
             graph.addEdge(2, 3);
@@ -132,9 +132,9 @@ public class DFSTest {
      *
      * @return An array with the vertex with index i is in position i-1.
      */
-    protected DFSInfo[] indexVertices(DirectedPseudoG<DFSInfo, Edge> graph) {
+    protected VDFS[] indexVertices(DirectedPseudoG<VDFS, Edge> graph) {
         int numberOfNodes = 6;
-        DFSInfo[] vertices = new DFSInfo[numberOfNodes];
+        VDFS[] vertices = new VDFS[numberOfNodes];
         for (int i = 0; i < numberOfNodes; i++) {
             vertices[i] = graph.getVertex(i + 1);
         }

@@ -26,9 +26,9 @@ package org.javanetworkanalyzer.graphcreators;
 
 import org.javanetworkanalyzer.graphcreators.WeightedGraphCreator;
 import org.javanetworkanalyzer.graphcreators.GraphCreator;
-import org.javanetworkanalyzer.data.NodeBetweennessInfo;
-import org.javanetworkanalyzer.data.UnweightedNodeBetweennessInfo;
-import org.javanetworkanalyzer.data.WeightedNodeBetweennessInfo;
+import org.javanetworkanalyzer.data.VBetw;
+import org.javanetworkanalyzer.data.VUBetw;
+import org.javanetworkanalyzer.data.VWBetw;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.KeyedGraph;
 import org.javanetworkanalyzer.model.UndirectedG;
@@ -50,7 +50,7 @@ public class Graph2DGraphCreatorTest {
     public void unweightedDirected() throws FileNotFoundException,
             NoSuchMethodException {
         System.out.println("\n***** 2D Unweighted Directed *****");
-        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph =
+        KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(false, GraphCreator.DIRECTED);
 //        printEdges(graph);
     }
@@ -59,7 +59,7 @@ public class Graph2DGraphCreatorTest {
     public void unweightedReversed() throws FileNotFoundException,
             NoSuchMethodException {
         System.out.println("***** 2D Unweighted Reversed *****");
-        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph =
+        KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(false, GraphCreator.REVERSED);
 //        printEdges(graph);
     }
@@ -68,7 +68,7 @@ public class Graph2DGraphCreatorTest {
     public void unweightedUndirected() throws FileNotFoundException,
             NoSuchMethodException {
         System.out.println("***** 2D Unweighted Undirected *****");
-        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph =
+        KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(false, GraphCreator.UNDIRECTED);
 //        printEdges(graph);
     }
@@ -77,7 +77,7 @@ public class Graph2DGraphCreatorTest {
     public void weightedDirected() throws FileNotFoundException,
             NoSuchMethodException {
         System.out.println("***** 2D Weighted Directed *****");
-        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph =
+        KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(true, GraphCreator.DIRECTED);
 //        printEdges(graph);
     }
@@ -86,7 +86,7 @@ public class Graph2DGraphCreatorTest {
     public void weightedReversed() throws FileNotFoundException,
             NoSuchMethodException {
         System.out.println("***** 2D Weighted Reversed *****");
-        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph =
+        KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(true, GraphCreator.REVERSED);
 //        printEdges(graph);
     }
@@ -95,7 +95,7 @@ public class Graph2DGraphCreatorTest {
     public void weightedUndirected() throws FileNotFoundException,
             NoSuchMethodException {
         System.out.println("***** 2D Weighted Undirected *****");
-        KeyedGraph<? extends NodeBetweennessInfo, Edge> graph =
+        KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(true, GraphCreator.UNDIRECTED);
 //        printEdges(graph);
     }
@@ -112,22 +112,22 @@ public class Graph2DGraphCreatorTest {
      *
      * @throws FileNotFoundException
      */
-    private KeyedGraph<? extends NodeBetweennessInfo, Edge> load2DGraph(
+    private KeyedGraph<? extends VBetw, Edge> load2DGraph(
             boolean weighted,
             int orientation) throws FileNotFoundException,
             NoSuchMethodException {
         if (weighted) {
-            return new WeightedGraphCreator<WeightedNodeBetweennessInfo, Edge>(
+            return new WeightedGraphCreator<VWBetw, Edge>(
                     FILENAME,
                     orientation,
-                    WeightedNodeBetweennessInfo.class,
+                    VWBetw.class,
                     Edge.class,
                     WEIGHT).loadGraph();
         } else {
-            return new GraphCreator<UnweightedNodeBetweennessInfo, Edge>(
+            return new GraphCreator<VUBetw, Edge>(
                     FILENAME,
                     orientation,
-                    UnweightedNodeBetweennessInfo.class,
+                    VUBetw.class,
                     Edge.class).loadGraph();
         }
     }
@@ -138,7 +138,7 @@ public class Graph2DGraphCreatorTest {
      * @param graph The graph.
      */
     private void printEdges(
-            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
+            KeyedGraph<? extends VBetw, Edge> graph) {
         for (Edge edge : graph.edgeSet()) {
             String edgeString = graph.getEdgeSource(edge).getID() + " ";
             if (graph instanceof UndirectedG) {

@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.analyzers;
 
-import org.javanetworkanalyzer.data.NodeBetweennessInfo;
+import org.javanetworkanalyzer.data.VBetw;
 import org.javanetworkanalyzer.model.Edge;
 import org.jgrapht.Graph;
 
@@ -33,7 +33,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public abstract class CentralityTest<V extends NodeBetweennessInfo> {
+public abstract class CentralityTest<V extends VBetw> {
 
     /**
      * Used for printing out timing messages.
@@ -62,12 +62,12 @@ public abstract class CentralityTest<V extends NodeBetweennessInfo> {
      */
     protected abstract String getName();
 
-    protected void printResults(Graph<? extends NodeBetweennessInfo, Edge> graph) {
+    protected void printResults(Graph<? extends VBetw, Edge> graph) {
         System.out.format("%-6s%-20s%-20s\n",
                           "v",
                           "Betweenness",
                           "Closeness");
-        for (NodeBetweennessInfo node : graph.vertexSet()) {
+        for (VBetw node : graph.vertexSet()) {
             System.out.format("%-6d%-20.11f%-20.11f\n",
                               node.getID(),
                               node.getBetweenness(),

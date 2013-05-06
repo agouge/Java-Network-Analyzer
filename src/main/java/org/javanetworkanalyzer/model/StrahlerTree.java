@@ -4,7 +4,7 @@
  */
 package org.javanetworkanalyzer.model;
 
-import org.javanetworkanalyzer.data.StrahlerInfo;
+import org.javanetworkanalyzer.data.VStrahler;
 import java.util.HashMap;
 import java.util.Map;
 import org.jgrapht.EdgeFactory;
@@ -17,31 +17,31 @@ import org.jgrapht.graph.DirectedPseudograph;
  *
  * @author Adam Gouge
  */
-public class StrahlerTree<E> extends DirectedPseudograph<StrahlerInfo, E> {
+public class StrahlerTree<E> extends DirectedPseudograph<VStrahler, E> {
 
     /**
      * The root vertex.
      */
-    private StrahlerInfo rootVertex = null;
+    private VStrahler rootVertex = null;
     /**
      * Map of ids to vertices.
      */
-    private final Map<Integer, StrahlerInfo> nodeMap;
+    private final Map<Integer, VStrahler> nodeMap;
 
     /**
      * @see AbstractBaseGraph
      */
     public StrahlerTree(Class<? extends E> edgeClass) {
         super(edgeClass);
-        this.nodeMap = new HashMap<Integer, StrahlerInfo>();
+        this.nodeMap = new HashMap<Integer, VStrahler>();
     }
 
     /**
      * @see AbstractBaseGraph
      */
-    public StrahlerTree(EdgeFactory<StrahlerInfo, E> ef) {
+    public StrahlerTree(EdgeFactory<VStrahler, E> ef) {
         super(ef);
-        this.nodeMap = new HashMap<Integer, StrahlerInfo>();
+        this.nodeMap = new HashMap<Integer, VStrahler>();
     }
 
     /**
@@ -53,7 +53,7 @@ public class StrahlerTree<E> extends DirectedPseudograph<StrahlerInfo, E> {
      */
     private boolean addVertex(int id) {
         if (!nodeMap.containsKey(id)) {
-            StrahlerInfo node = new StrahlerInfo(id);
+            VStrahler node = new VStrahler(id);
             nodeMap.put(id, node);
             return addVertex(node);
         } else {
@@ -69,7 +69,7 @@ public class StrahlerTree<E> extends DirectedPseudograph<StrahlerInfo, E> {
      *
      * @return The vertex with the given id.
      */
-    public StrahlerInfo getVertex(int id) {
+    public VStrahler getVertex(int id) {
         return nodeMap.get(id);
     }
 
@@ -79,7 +79,7 @@ public class StrahlerTree<E> extends DirectedPseudograph<StrahlerInfo, E> {
      * @param id Id.
      */
     public void setRootVertex(int id) {
-        StrahlerInfo candidate = getVertex(id);
+        VStrahler candidate = getVertex(id);
         if (candidate != null) {
             rootVertex = candidate;
         } else {
@@ -93,7 +93,7 @@ public class StrahlerTree<E> extends DirectedPseudograph<StrahlerInfo, E> {
      *
      * @return The root vertex.
      */
-    public StrahlerInfo getRootVertex() {
+    public VStrahler getRootVertex() {
         return rootVertex;
     }
 

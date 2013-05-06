@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import org.javanetworkanalyzer.data.WeightedNodeBetweennessInfo;
+import org.javanetworkanalyzer.data.VWBetw;
 import org.javanetworkanalyzer.data.WeightedPathLengthData;
 import java.util.PriorityQueue;
 import java.util.Stack;
@@ -37,13 +37,13 @@ import org.jgrapht.Graph;
  * @author Adam Gouge
  */
 public class DijkstraForCentrality<E>
-        extends Dijkstra<WeightedNodeBetweennessInfo, E> {
+        extends Dijkstra<VWBetw, E> {
 
     /**
      * Stack that will return the nodes ordered by non-increasing distance from
      * the source node.
      */
-    private final Stack<WeightedNodeBetweennessInfo> stack;
+    private final Stack<VWBetw> stack;
     /**
      * Data structure used to hold information used to calculate closeness.
      */
@@ -59,15 +59,15 @@ public class DijkstraForCentrality<E>
      *                           non-increasing distance from startNode.
      */
     public DijkstraForCentrality(
-            Graph<WeightedNodeBetweennessInfo, E> graph,
-            Stack<WeightedNodeBetweennessInfo> stack) {
+            Graph<VWBetw, E> graph,
+            Stack<VWBetw> stack) {
         super(graph);
         this.stack = stack;
         this.pathsFromStartNode = new WeightedPathLengthData();
     }
 
     @Override
-    protected void init(WeightedNodeBetweennessInfo startNode) {
+    protected void init(VWBetw startNode) {
         super.init(startNode);
         stack.clear();
         pathsFromStartNode.clear();
@@ -80,8 +80,8 @@ public class DijkstraForCentrality<E>
      * @param u Vertex u.
      */
     @Override
-    protected void preRelaxStep(WeightedNodeBetweennessInfo startNode,
-                                WeightedNodeBetweennessInfo u) {
+    protected void preRelaxStep(VWBetw startNode,
+                                VWBetw u) {
         // Push it to the stack.
         if (canPushToStack(u)) {
             stack.push(u);
@@ -103,7 +103,7 @@ public class DijkstraForCentrality<E>
      *
      * @return {@code true} if and only if the node can be pushed to the stack.
      */
-    private boolean canPushToStack(WeightedNodeBetweennessInfo node) {
+    private boolean canPushToStack(VWBetw node) {
         if (!(stack.size() == 0)) {
             if (node.getDistance() < stack.peek().getDistance()) {
                 return false;
@@ -123,10 +123,10 @@ public class DijkstraForCentrality<E>
      */
     @Override
     protected void updateNeighbor(
-            WeightedNodeBetweennessInfo u,
-            WeightedNodeBetweennessInfo v,
+            VWBetw u,
+            VWBetw v,
             Double uvWeight,
-            PriorityQueue<WeightedNodeBetweennessInfo> queue) {
+            PriorityQueue<VWBetw> queue) {
         updateSPCount(u, v, uvWeight);
         super.updateNeighbor(u, v, uvWeight, queue);
     }
@@ -141,8 +141,8 @@ public class DijkstraForCentrality<E>
      */
     // TODO: Maybe we test if v.getSPCount == 0 instead?
     // (Potentially more efficient.)
-    protected void updateSPCount(WeightedNodeBetweennessInfo u,
-                                 WeightedNodeBetweennessInfo v,
+    protected void updateSPCount(VWBetw u,
+                                 VWBetw v,
                                  double uvWeight) {
         // If the distance to v is just below the distance to u plus w(u,v)
         // (this situation is allowed by the tolerance), then this

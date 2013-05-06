@@ -28,9 +28,9 @@ import org.javanetworkanalyzer.analyzers.UnweightedGraphAnalyzer;
 import org.javanetworkanalyzer.analyzers.WeightedGraphAnalyzer;
 import org.javanetworkanalyzer.analyzers.GraphAnalyzer;
 import static org.javanetworkanalyzer.analyzers.CentralityTest.TOLERANCE;
-import org.javanetworkanalyzer.data.NodeBetweennessInfo;
-import org.javanetworkanalyzer.data.UnweightedNodeBetweennessInfo;
-import org.javanetworkanalyzer.data.WeightedNodeBetweennessInfo;
+import org.javanetworkanalyzer.data.VBetw;
+import org.javanetworkanalyzer.data.VUBetw;
+import org.javanetworkanalyzer.data.VWBetw;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.graphcreators.GraphCreator;
 import org.javanetworkanalyzer.graphcreators.WeightedGraphCreator;
@@ -69,8 +69,8 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    protected KeyedGraph<UnweightedNodeBetweennessInfo, Edge> doUnweightedAnalysis(
-            KeyedGraph<UnweightedNodeBetweennessInfo, Edge> graph,
+    protected KeyedGraph<VUBetw, Edge> doUnweightedAnalysis(
+            KeyedGraph<VUBetw, Edge> graph,
             String orientation) {
         try {
             doAnalysis(new UnweightedGraphAnalyzer(graph, progressMonitor()),
@@ -93,8 +93,8 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    protected WeightedKeyedGraph<WeightedNodeBetweennessInfo, Edge> doWeightedAnalysis(
-            WeightedKeyedGraph<WeightedNodeBetweennessInfo, Edge> graph,
+    protected WeightedKeyedGraph<VWBetw, Edge> doWeightedAnalysis(
+            WeightedKeyedGraph<VWBetw, Edge> graph,
             String orientation) {
         try {
             doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()),
@@ -133,7 +133,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<UnweightedNodeBetweennessInfo, Edge> unweightedDirectedAnalysis() {
+    public DirectedG<VUBetw, Edge> unweightedDirectedAnalysis() {
         try {
             return (DirectedG) doUnweightedAnalysis(unweightedGraph(
                     GraphCreator.DIRECTED), DIRECTED);
@@ -148,7 +148,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<UnweightedNodeBetweennessInfo, Edge> unweightedReversedAnalysis() {
+    public DirectedG<VUBetw, Edge> unweightedReversedAnalysis() {
         try {
             return (DirectedG) doUnweightedAnalysis(unweightedGraph(
                     GraphCreator.REVERSED), REVERSED);
@@ -163,7 +163,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public UndirectedG<UnweightedNodeBetweennessInfo, Edge> unweightedUndirectedAnalysis() {
+    public UndirectedG<VUBetw, Edge> unweightedUndirectedAnalysis() {
         try {
             return (UndirectedG) doUnweightedAnalysis(unweightedGraph(
                     GraphCreator.UNDIRECTED), UNDIRECTED);
@@ -178,7 +178,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<WeightedNodeBetweennessInfo, Edge> weightedDirectedAnalysis() {
+    public DirectedG<VWBetw, Edge> weightedDirectedAnalysis() {
         try {
             return (DirectedG) doWeightedAnalysis(weightedGraph(
                     GraphCreator.DIRECTED), DIRECTED);
@@ -193,7 +193,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<WeightedNodeBetweennessInfo, Edge> weightedReversedAnalysis() {
+    public DirectedG<VWBetw, Edge> weightedReversedAnalysis() {
         try {
             return (DirectedG) doWeightedAnalysis(weightedGraph(
                     GraphCreator.REVERSED), REVERSED);
@@ -208,7 +208,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public UndirectedG<WeightedNodeBetweennessInfo, Edge> weightedUndirectedAnalysis() {
+    public UndirectedG<VWBetw, Edge> weightedUndirectedAnalysis() {
         try {
             return (UndirectedG) doWeightedAnalysis(weightedGraph(
                     GraphCreator.UNDIRECTED), UNDIRECTED);
@@ -244,12 +244,12 @@ public abstract class GraphAnalyzerTest
      * @return The graph.
      *
      */
-    protected KeyedGraph<UnweightedNodeBetweennessInfo, Edge> unweightedGraph(
+    protected KeyedGraph<VUBetw, Edge> unweightedGraph(
             int orientation) {
         try {
             return new GraphCreator(getFilename(),
                                     orientation,
-                                    UnweightedNodeBetweennessInfo.class,
+                                    VUBetw.class,
                                     Edge.class).loadGraph();
         } catch (Exception ex) {
         }
@@ -265,12 +265,12 @@ public abstract class GraphAnalyzerTest
      * @return The graph.
      *
      */
-    protected WeightedKeyedGraph<WeightedNodeBetweennessInfo, Edge> weightedGraph(
+    protected WeightedKeyedGraph<VWBetw, Edge> weightedGraph(
             int orientation) {
         try {
             return new WeightedGraphCreator(getFilename(),
                                             orientation,
-                                            WeightedNodeBetweennessInfo.class,
+                                            VWBetw.class,
                                             Edge.class,
                                             getWeightColumnName()).loadGraph();
         } catch (Exception ex) {
@@ -287,9 +287,9 @@ public abstract class GraphAnalyzerTest
      */
     protected void checkBetweenness(
             double[] expectedBetweenness,
-            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
+            KeyedGraph<? extends VBetw, Edge> graph) {
         if (graph != null) {
-            NodeBetweennessInfo vertex;
+            VBetw vertex;
             for (int i = 0; i < getNumberOfNodes(); i++) {
                 vertex = graph.getVertex(i + 1);
                 if (vertex != null) {
@@ -314,9 +314,9 @@ public abstract class GraphAnalyzerTest
      */
     protected void checkCloseness(
             double[] expectedCloseness,
-            KeyedGraph<? extends NodeBetweennessInfo, Edge> graph) {
+            KeyedGraph<? extends VBetw, Edge> graph) {
         if (graph != null) {
-            NodeBetweennessInfo vertex;
+            VBetw vertex;
             for (int i = 0; i < getNumberOfNodes(); i++) {
                 vertex = graph.getVertex(i + 1);
                 if (vertex != null) {

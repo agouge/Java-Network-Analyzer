@@ -25,58 +25,14 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * {@link NodeBetweennessInfo} for weighted graphs.
- *
- * All distances are {@code double}s; we initialize them to
- * {@link Double#POSITIVE_INFINITY}.
+ * Interface for vertices that may be set as the source node.
  *
  * @author Adam Gouge
  */
-public class WeightedNodeBetweennessInfo
-        extends NodeBetweennessInfo<WeightedNodeBetweennessInfo, Double> {
+public interface VSource {
 
     /**
-     * Length of a shortest path starting from a certain source leading to this
-     * node (Dijkstra).
+     * Sets this to be the source node.
      */
-    private double distance;
-
-    public WeightedNodeBetweennessInfo(Integer id) {
-        super(id);
-        distance = Double.POSITIVE_INFINITY;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void reset() {
-        super.reset();
-        distance = Double.POSITIVE_INFINITY;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setSource() {
-        super.setSource();
-        distance = 0.0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Double getDistance() {
-        return distance;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setDistance(Double newDistance) {
-        distance = newDistance;
-    }
+    void setSource();
 }

@@ -25,23 +25,11 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Interface for node info containing the distance from a source node.
+ * Root interface for vertices which can be set as the source node, measure
+ * distance from a source vertex, and may have predecessor(s).
  *
  * @author Adam Gouge
  */
-public interface DistanceInfo<T extends Number> {
-
-    /**
-     * Returns the length of the shortest path from a source node to this node.
-     *
-     * @return The length of the shortest path from a source node to this node.
-     */
-    T getDistance();
-
-    /**
-     * Sets the new length of a shortest path from a source node to this node.
-     *
-     * @param newDistance Length of a shortest path to this node.
-     */
-    void setDistance(T newDistance);
+public interface VSearch<V, D extends Number>
+        extends VSource, VDist<D>, VPred<V> {
 }
