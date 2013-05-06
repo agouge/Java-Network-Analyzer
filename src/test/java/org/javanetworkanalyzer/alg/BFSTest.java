@@ -26,7 +26,7 @@ package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.alg.BFS;
 import org.javanetworkanalyzer.model.PseudoG;
-import org.javanetworkanalyzer.data.UnweightedNodeBetweennessInfo;
+import org.javanetworkanalyzer.data.VUBetw;
 import org.javanetworkanalyzer.model.Edge;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
@@ -40,9 +40,9 @@ public class BFSTest {
 
     @Test
     public void testBFSFromVertexThree() {
-        PseudoG<UnweightedNodeBetweennessInfo, Edge> graph = prepareGraph();
+        PseudoG<VUBetw, Edge> graph = prepareGraph();
 
-        new BFS<UnweightedNodeBetweennessInfo, Edge>(
+        new BFS<VUBetw, Edge>(
                 graph).calculate(graph.getVertex(3));
 
         assertTrue(graph.getVertex(3).getDistance() == 0);
@@ -57,9 +57,9 @@ public class BFSTest {
 
     @Test
     public void testBFSFromVertexEight() {
-        PseudoG<UnweightedNodeBetweennessInfo, Edge> graph = prepareGraph();
+        PseudoG<VUBetw, Edge> graph = prepareGraph();
 
-        new BFS<UnweightedNodeBetweennessInfo, Edge>(
+        new BFS<VUBetw, Edge>(
                 graph).calculate(graph.getVertex(8));
 
         assertTrue(graph.getVertex(8).getDistance() == 0);
@@ -77,11 +77,11 @@ public class BFSTest {
      *
      * @return The graph.
      */
-    protected PseudoG<UnweightedNodeBetweennessInfo, Edge> prepareGraph() {
-        PseudoG<UnweightedNodeBetweennessInfo, Edge> graph = null;
+    protected PseudoG<VUBetw, Edge> prepareGraph() {
+        PseudoG<VUBetw, Edge> graph = null;
         try {
-            graph = new PseudoG<UnweightedNodeBetweennessInfo, Edge>(
-                    UnweightedNodeBetweennessInfo.class, Edge.class);
+            graph = new PseudoG<VUBetw, Edge>(
+                    VUBetw.class, Edge.class);
             graph.addEdge(1, 2);
             graph.addEdge(2, 3);
             graph.addEdge(3, 4);

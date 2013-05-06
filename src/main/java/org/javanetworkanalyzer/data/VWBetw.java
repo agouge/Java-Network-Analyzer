@@ -24,26 +24,59 @@
  */
 package org.javanetworkanalyzer.data;
 
-import java.util.HashSet;
-
 /**
- * Interface for node info containing predecessors.
+ * Weighted vertex to be used during the betweenness calculation.
+ *
+ * All distances are {@code double}s; we initialize them to
+ * {@link Double#POSITIVE_INFINITY}.
  *
  * @author Adam Gouge
  */
-public interface PredecessorInfo<V> {
+public class VWBetw
+        extends VBetw<VWBetw, Double> {
 
     /**
-     * Returns the predecessors.
-     *
-     * @return The predecessors.
+     * Length of a shortest path starting from a certain source leading to this
+     * node (Dijkstra).
      */
-    HashSet<V> getPredecessors();
+    private double distance;
+
+    public VWBetw(Integer id) {
+        super(id);
+        distance = Double.POSITIVE_INFINITY;
+    }
 
     /**
-     * Adds a predecessor to the predecessor list of this node
-     *
-     * @param pred Node to be added since it is a predecessor of this node
+     * {@inheritDoc}
      */
-    public void addPredecessor(V pred);
+    @Override
+    public void reset() {
+        super.reset();
+        distance = Double.POSITIVE_INFINITY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setSource() {
+        super.setSource();
+        distance = 0.0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Double getDistance() {
+        return distance;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDistance(Double newDistance) {
+        distance = newDistance;
+    }
 }

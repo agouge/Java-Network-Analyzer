@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.model;
 
-import org.javanetworkanalyzer.data.IdInfo;
+import org.javanetworkanalyzer.data.VId;
 import org.jgrapht.EdgeFactory;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -34,7 +34,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
  *
  * @author Adam Gouge
  */
-public class WeightedPseudoG<V extends IdInfo, E extends Edge>
+public class WeightedPseudoG<V extends VId, E extends Edge>
         extends PseudoG<V, E>
         implements WeightedKeyedGraph<V, E> {
 

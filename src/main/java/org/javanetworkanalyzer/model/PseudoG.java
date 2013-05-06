@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.model;
 
-import org.javanetworkanalyzer.data.IdInfo;
+import org.javanetworkanalyzer.data.VId;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ import org.jgrapht.graph.Pseudograph;
  *
  * @author Adam Gouge
  */
-public class PseudoG<V extends IdInfo, E> extends Pseudograph<V, E>
+public class PseudoG<V extends VId, E> extends Pseudograph<V, E>
         implements UndirectedG<V, E> {
 
     /**

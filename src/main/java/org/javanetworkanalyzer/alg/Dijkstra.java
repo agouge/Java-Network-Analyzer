@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import org.javanetworkanalyzer.data.SearchInfo;
+import org.javanetworkanalyzer.data.VSearch;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import org.jgrapht.Graph;
@@ -38,7 +38,7 @@ import org.jgrapht.Graphs;
  *
  * @author Adam Gouge
  */
-public class Dijkstra<V extends SearchInfo<V, Double>, E>
+public class Dijkstra<V extends VSearch<V, Double>, E>
         extends GraphSearchAlgorithm<V, E> {
 
     /**

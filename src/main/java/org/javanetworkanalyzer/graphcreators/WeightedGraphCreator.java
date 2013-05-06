@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.graphcreators;
 
-import org.javanetworkanalyzer.data.IdInfo;
+import org.javanetworkanalyzer.data.VId;
 import static org.javanetworkanalyzer.graphcreators.GraphCreator.UNDIRECTED;
 import static org.javanetworkanalyzer.graphcreators.GraphCreator.weightFieldIndex;
 import org.javanetworkanalyzer.model.DirectedWeightedPseudoG;
@@ -40,7 +40,7 @@ import java.util.Scanner;
  *
  * @author Adam Gouge
  */
-public class WeightedGraphCreator<V extends IdInfo, E extends Edge>
+public class WeightedGraphCreator<V extends VId, E extends Edge>
         extends GraphCreator<V, E> {
 
     /**

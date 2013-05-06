@@ -25,40 +25,24 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Node info for the Strahler algorithm.
+ * Vertex keyed by an id.
  *
  * @author Adam Gouge
  */
-public class StrahlerInfo extends DFSInfo {
+public class VId {
 
-    /**
-     * The Strahler number of this node.
-     */
-    private int strahlerNumber;
+    private final int id;
 
-    /**
-     * Constructor.
-     */
-    public StrahlerInfo(int id) {
-        super(id);
-        this.strahlerNumber = -1;
+    public VId(Integer id) {
+        this.id = id;
     }
 
     /**
-     * Gets the Strahler number of this node.
+     * Returns the id of this node.
      *
-     * @return The Strahler number of this node.
+     * @return The id of this node.
      */
-    public int getStrahlerNumber() {
-        return strahlerNumber;
-    }
-
-    /**
-     * Sets the Strahler number of this node.
-     *
-     * @param strahlerNumber
-     */
-    public void setStrahlerNumber(int strahlerNumber) {
-        this.strahlerNumber = strahlerNumber;
+    public int getID() {
+        return id;
     }
 }

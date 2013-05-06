@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.analyzers;
 
-import org.javanetworkanalyzer.data.NodeBetweennessInfo;
+import org.javanetworkanalyzer.data.VBetw;
 import org.javanetworkanalyzer.data.PathLengthData;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
@@ -40,7 +40,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends PathLengthData>
+public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData>
         extends GeneralizedGraphAnalyzer<V, E> {
 
     /**
@@ -66,7 +66,7 @@ public abstract class GraphAnalyzer<V extends NodeBetweennessInfo, E, S extends 
      *
      * @param graph     The graph to be analyzed.
      * @param pm        The {@link ProgressMonitor} to be used.
-     * @param nodeClass The class of the {@link NodeBetweennessInfo} to use.
+     * @param nodeClass The class of the {@link VBetw} to use.
      */
     // TODO: Do I need the wildcard on S?
     public GraphAnalyzer(Graph<V, E> graph,

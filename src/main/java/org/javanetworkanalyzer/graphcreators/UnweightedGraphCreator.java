@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.graphcreators;
 
-import org.javanetworkanalyzer.data.IdInfo;
+import org.javanetworkanalyzer.data.VId;
 import org.javanetworkanalyzer.model.Edge;
 
 /**
@@ -32,7 +32,7 @@ import org.javanetworkanalyzer.model.Edge;
  *
  * @author Adam Gouge
  */
-public class UnweightedGraphCreator<V extends IdInfo, E extends Edge>
+public class UnweightedGraphCreator<V extends VId, E extends Edge>
         extends GraphCreator<V, E> {
 
     /**

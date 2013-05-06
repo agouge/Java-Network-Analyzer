@@ -25,24 +25,40 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Node info for nodes keyed by an id.
+ * Vertex containing a Strahler number.
  *
  * @author Adam Gouge
  */
-public class IdInfo {
+public class VStrahler extends VDFS {
 
-    private final int id;
+    /**
+     * The Strahler number of this node.
+     */
+    private int strahlerNumber;
 
-    public IdInfo(Integer id) {
-        this.id = id;
+    /**
+     * Constructor.
+     */
+    public VStrahler(int id) {
+        super(id);
+        this.strahlerNumber = -1;
     }
 
     /**
-     * Returns the id of this node.
+     * Gets the Strahler number of this node.
      *
-     * @return The id of this node.
+     * @return The Strahler number of this node.
      */
-    public int getID() {
-        return id;
+    public int getStrahlerNumber() {
+        return strahlerNumber;
+    }
+
+    /**
+     * Sets the Strahler number of this node.
+     *
+     * @param strahlerNumber
+     */
+    public void setStrahlerNumber(int strahlerNumber) {
+        this.strahlerNumber = strahlerNumber;
     }
 }
