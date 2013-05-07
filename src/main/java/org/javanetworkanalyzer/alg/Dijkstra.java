@@ -237,6 +237,8 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
      *
      * @param source  Source
      * @param targets Targets
+     *
+     * @return A map of distances from the source keyed by the target vertex.
      */
     public Map<V, Double> oneToMany(V source, final Set<V> targets) {
         if (targets.isEmpty()) {
@@ -277,6 +279,30 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
                         return false;
                     }
                 }.calculate(source);
+            }
+            return distances;
+        }
+    }
+
+    /**
+     * Performs a Dijkstra search from each source, each time stopping once the
+     * target has been found.
+     *
+     * @param sources Sources
+     * @param target  Target
+     *
+     * @return A map of the distance to the target keyed by the source vertex.
+     */
+    public Map<V, Double> manyToOne(final Set<V> sources, V target) {
+        if (sources.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Please specify at least one source.");
+        } else {
+            final Map<V, Double> distances = new HashMap<V, Double>();
+
+            for (V source : sources) {
+                double distance = oneToOne(source, target);
+                distances.put(source, distance);
             }
             return distances;
         }
