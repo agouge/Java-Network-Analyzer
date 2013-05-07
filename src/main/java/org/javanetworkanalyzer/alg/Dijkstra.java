@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 import org.javanetworkanalyzer.data.VSearch;
+import org.javanetworkanalyzer.data.VWBetw;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 
@@ -303,6 +304,35 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
             for (V source : sources) {
                 double distance = oneToOne(source, target);
                 distances.put(source, distance);
+            }
+            return distances;
+        }
+    }
+
+    /**
+     * Performs a Dijkstra search from each source to each target using a
+     * {@link #oneToMany(org.javanetworkanalyzer.data.VWBetw, java.util.Set)}
+     * search from each source.
+     *
+     * Note: Using oneToMany rather than manyToOne is more efficient.
+     *
+     * @param sources Sources
+     * @param targets Targets
+     *
+     * @return A map of maps of distances. The first V is keyed by the source
+     *         and the second V is keyed by the target.
+     */
+    public Map<V, Map<V, Double>> manyToMany(final Set<V> sources,
+                                             final Set<V> targets) {
+        if (sources.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Please specify at least one source.");
+        } else {
+            final Map<V, Map<V, Double>> distances =
+                    new HashMap<V, Map<V, Double>>();
+            for (V source : sources) {
+                Map<V, Double> oneToMany = oneToMany(source, targets);
+                distances.put(source, oneToMany);
             }
             return distances;
         }
