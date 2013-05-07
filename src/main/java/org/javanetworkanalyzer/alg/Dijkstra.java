@@ -26,6 +26,8 @@ package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VSearch;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -74,7 +76,9 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
             // Extract the minimum element.
             V u = queue.poll();
             // Do any pre-relax step.
-            preRelaxStep(startNode, u);
+            if (preRelaxStep(startNode, u)) {
+                break;
+            }
             // Relax all the outgoing edges of u.
             for (E e : outgoingEdgesOf(u)) {
                 relax(u, e, queue);
@@ -94,8 +98,11 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
      * u. In this class, it is empty on purpose.
      *
      * @param u Vertex u.
+     *
+     * @return false if we should stop the Dijkstra search.
      */
-    protected void preRelaxStep(V startNode, V u) {
+    protected boolean preRelaxStep(V startNode, V u) {
+        return false;
     }
 
     /**
@@ -175,5 +182,43 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
                         v2.getDistance());
             }
         });
+    }
+
+    /**
+     * Performs a Dijkstra search from the source, stopping once the target is
+     * found.
+     *
+     * @param source Source
+     * @param target Target
+     *
+     * @return A map of distances from the source keyed by the target.
+     */
+    public void oneToOne(V source, final V target) {
+        if (source == null) {
+            throw new IllegalArgumentException(
+                    "Please specify at least one source.");
+        } else if (target == null) {
+            throw new IllegalArgumentException(
+                    "Please specify at least one target.");
+        } else {
+            // If source=target, then no search is necessary.
+            if (source.equals(target)) {
+                // So just set the distance.
+                source.setSource();
+            } else {
+                // Otherwise we have to search.
+                new Dijkstra<V, E>(graph) {
+                    @Override
+                    protected boolean preRelaxStep(V startNode, V u) {
+                        // If we have reached the target, then stop the search.
+                        if (u.equals(target)) {
+                            return true;
+                        }
+                        // Otherwise we have to keep going.
+                        return false;
+                    }
+                }.calculate(source);
+            }
+        }
     }
 }
