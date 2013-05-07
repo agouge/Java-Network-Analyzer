@@ -27,8 +27,9 @@ package org.javanetworkanalyzer.alg;
 import org.javanetworkanalyzer.data.VSearch;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.Set;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 
@@ -219,6 +220,48 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
                     }
                 }.calculate(source);
             }
+        }
+    }
+
+    /**
+     * Performs a Dijkstra search from the source, stopping once the all the
+     * targets are found.
+     *
+     * @param source  Source
+     * @param targets Targets
+     */
+    public void oneToMany(V source, final Set<V> targets) {
+        if (targets.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Please specify at least one target.");
+        } else if (targets.size() == 1) {
+            oneToOne(source, targets.iterator().next());
+        } else {
+
+            // Use a copy of targets so that we can still refer
+            // to targets later to recover the distances.
+            final Set<V> destinations = new HashSet<V>(targets);
+
+            // Instead of looping through the targets and using oneToOne (which
+            // would require one search per target), we do just one search until
+            // all targets are found.
+            new Dijkstra<V, E>(graph) {
+                @Override
+                protected boolean preRelaxStep(V startNode, V u) {
+                    // If there are no more targets, then stop the search.
+                    if (destinations.isEmpty()) {
+                        return true;
+                    } else {
+                        // If u is  a target, then remove it.
+                        destinations.remove(u);
+                        // If there are no more targets, then stop the search.
+                        if (destinations.isEmpty()) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }.calculate(source);
         }
     }
 }
