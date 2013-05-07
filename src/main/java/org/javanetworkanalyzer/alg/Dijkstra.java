@@ -191,20 +191,22 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
      * @param source Source
      * @param target Target
      *
-     * @return A map of distances from the source keyed by the target.
+     * @return The distance from the source to the target.
      */
-    public void oneToOne(V source, final V target) {
+    public double oneToOne(V source, final V target) {
         if (source == null) {
             throw new IllegalArgumentException(
-                    "Please specify at least one source.");
+                    "Please specify a source.");
         } else if (target == null) {
             throw new IllegalArgumentException(
-                    "Please specify at least one target.");
+                    "Please specify a target.");
         } else {
             // If source=target, then no search is necessary.
             if (source.equals(target)) {
                 // So just set the distance.
                 source.setSource();
+                // and return it.
+                return source.getDistance();
             } else {
                 // Otherwise we have to search.
                 new Dijkstra<V, E>(graph) {
@@ -218,6 +220,8 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
                         return false;
                     }
                 }.calculate(source);
+                // Return the distance to the target.
+                return target.getDistance();
             }
         }
     }
