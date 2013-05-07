@@ -24,12 +24,11 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import org.javanetworkanalyzer.data.VSearch;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
+import org.javanetworkanalyzer.data.VSearch;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 
