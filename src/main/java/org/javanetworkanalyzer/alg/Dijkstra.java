@@ -68,8 +68,9 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
     }
 
     /**
-     * Do a Dijkstra search from the given start node.
+     * Do a Dijkstra search from the given start node to all other nodes.
      */
+    // TODO: Add a unit test for this.
     @Override
     public void calculate(V startNode) {
 
@@ -288,6 +289,9 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
     /**
      * Performs a Dijkstra search from each source, each time stopping once the
      * target has been found.
+     *
+     * Note: This is not very efficient since a separate search is required from
+     * each start node. TODO: Optimize!
      *
      * @param sources Sources
      * @param target  Target
