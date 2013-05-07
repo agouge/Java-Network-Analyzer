@@ -59,8 +59,7 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
     /**
      * Constructs a new {@link Dijkstra} object.
      *
-     * @param graph     The graph.
-     * @param startNode The start node.
+     * @param graph The graph.
      */
     public Dijkstra(Graph<V, E> graph) {
         super(graph);
@@ -287,8 +286,8 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
     }
 
     /**
-     * Performs a Dijkstra search from each source, each time stopping once the
-     * target has been found.
+     * Performs a Dijkstra search from each source to the given target using a
+     * {@link #oneToOne}.
      *
      * Note: This is not very efficient since a separate search is required from
      * each start node. TODO: Optimize!
@@ -315,8 +314,7 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
 
     /**
      * Performs a Dijkstra search from each source to each target using a
-     * {@link #oneToMany(org.javanetworkanalyzer.data.VWBetw, java.util.Set)}
-     * search from each source.
+     * {@link #oneToMany} search from each source.
      *
      * Note: Using oneToMany rather than manyToOne is more efficient.
      *
