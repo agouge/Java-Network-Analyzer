@@ -25,7 +25,9 @@
 package org.javanetworkanalyzer.alg;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 import org.javanetworkanalyzer.data.VSearch;
@@ -233,38 +235,47 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
      * @param source  Source
      * @param targets Targets
      */
-    public void oneToMany(V source, final Set<V> targets) {
+    public Map<V, Double> oneToMany(V source, final Set<V> targets) {
         if (targets.isEmpty()) {
             throw new IllegalArgumentException(
                     "Please specify at least one target.");
-        } else if (targets.size() == 1) {
-            oneToOne(source, targets.iterator().next());
         } else {
+            final Map<V, Double> distances = new HashMap<V, Double>();
 
-            // Use a copy of targets so that we can still refer
-            // to targets later to recover the distances.
-            final Set<V> destinations = new HashSet<V>(targets);
+            if (targets.size() == 1) {
+                V target = targets.iterator().next();
+                double distance = oneToOne(source, target);
+                distances.put(target, distance);
+            } else {
 
-            // Instead of looping through the targets and using oneToOne (which
-            // would require one search per target), we do just one search until
-            // all targets are found.
-            new Dijkstra<V, E>(graph) {
-                @Override
-                protected boolean preRelaxStep(V startNode, V u) {
-                    // If there are no more targets, then stop the search.
-                    if (destinations.isEmpty()) {
-                        return true;
-                    } else {
-                        // If u is  a target, then remove it.
-                        destinations.remove(u);
+                // Use a copy of targets.
+                final Set<V> remainingTargets = new HashSet<V>(targets);
+
+                // Instead of looping through the targets and using oneToOne (which
+                // would require one search per target), we do just one search until
+                // all targets are found.
+                new Dijkstra<V, E>(graph) {
+                    @Override
+                    protected boolean preRelaxStep(V startNode, V u) {
                         // If there are no more targets, then stop the search.
-                        if (destinations.isEmpty()) {
+                        if (remainingTargets.isEmpty()) {
                             return true;
+                        } else {
+                            // If u is  a target, then remove it from the
+                            // remaining targets and record its distance.
+                            if (remainingTargets.remove(u)) {
+                                distances.put(u, u.getDistance());
+                            }
+                            // If there are no more targets, then stop the search.
+                            if (remainingTargets.isEmpty()) {
+                                return true;
+                            }
                         }
+                        return false;
                     }
-                    return false;
-                }
-            }.calculate(source);
+                }.calculate(source);
+            }
+            return distances;
         }
     }
 }
