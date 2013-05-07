@@ -24,9 +24,14 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import org.javanetworkanalyzer.data.VSearch;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
+import org.javanetworkanalyzer.data.VSearch;
+import org.javanetworkanalyzer.data.VWBetw;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 
@@ -54,8 +59,7 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
     /**
      * Constructs a new {@link Dijkstra} object.
      *
-     * @param graph     The graph.
-     * @param startNode The start node.
+     * @param graph The graph.
      */
     public Dijkstra(Graph<V, E> graph) {
         super(graph);
@@ -63,8 +67,9 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
     }
 
     /**
-     * Do a Dijkstra search from the given start node.
+     * Do a Dijkstra search from the given start node to all other nodes.
      */
+    // TODO: Add a unit test for this.
     @Override
     public void calculate(V startNode) {
 
@@ -74,7 +79,9 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
             // Extract the minimum element.
             V u = queue.poll();
             // Do any pre-relax step.
-            preRelaxStep(startNode, u);
+            if (preRelaxStep(startNode, u)) {
+                break;
+            }
             // Relax all the outgoing edges of u.
             for (E e : outgoingEdgesOf(u)) {
                 relax(u, e, queue);
@@ -84,6 +91,9 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
 
     @Override
     protected void init(V startNode) {
+        for (V node : graph.vertexSet()) {
+            node.setDistance(Double.POSITIVE_INFINITY);
+        }
         startNode.setSource();
         queue.clear();
         queue.add(startNode);
@@ -94,8 +104,11 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
      * u. In this class, it is empty on purpose.
      *
      * @param u Vertex u.
+     *
+     * @return false if we should stop the Dijkstra search.
      */
-    protected void preRelaxStep(V startNode, V u) {
+    protected boolean preRelaxStep(V startNode, V u) {
+        return false;
     }
 
     /**
@@ -175,5 +188,155 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
                         v2.getDistance());
             }
         });
+    }
+
+    /**
+     * Performs a Dijkstra search from the source, stopping once the target is
+     * found.
+     *
+     * @param source Source
+     * @param target Target
+     *
+     * @return The distance from the source to the target.
+     */
+    public double oneToOne(V source, final V target) {
+        if (source == null) {
+            throw new IllegalArgumentException(
+                    "Please specify a source.");
+        } else if (target == null) {
+            throw new IllegalArgumentException(
+                    "Please specify a target.");
+        } else {
+            // If source=target, then no search is necessary.
+            if (source.equals(target)) {
+                // So just set the distance.
+                source.setSource();
+                // and return it.
+                return source.getDistance();
+            } else {
+                // Otherwise we have to search.
+                new Dijkstra<V, E>(graph) {
+                    @Override
+                    protected boolean preRelaxStep(V startNode, V u) {
+                        // If we have reached the target, then stop the search.
+                        if (u.equals(target)) {
+                            return true;
+                        }
+                        // Otherwise we have to keep going.
+                        return false;
+                    }
+                }.calculate(source);
+                // Return the distance to the target.
+                return target.getDistance();
+            }
+        }
+    }
+
+    /**
+     * Performs a Dijkstra search from the source, stopping once the all the
+     * targets are found.
+     *
+     * @param source  Source
+     * @param targets Targets
+     *
+     * @return A map of distances from the source keyed by the target vertex.
+     */
+    public Map<V, Double> oneToMany(V source, final Set<V> targets) {
+        if (targets.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Please specify at least one target.");
+        } else {
+            final Map<V, Double> distances = new HashMap<V, Double>();
+
+            if (targets.size() == 1) {
+                V target = targets.iterator().next();
+                double distance = oneToOne(source, target);
+                distances.put(target, distance);
+            } else {
+
+                // Use a copy of targets.
+                final Set<V> remainingTargets = new HashSet<V>(targets);
+
+                // Instead of looping through the targets and using oneToOne (which
+                // would require one search per target), we do just one search until
+                // all targets are found.
+                new Dijkstra<V, E>(graph) {
+                    @Override
+                    protected boolean preRelaxStep(V startNode, V u) {
+                        // If there are no more targets, then stop the search.
+                        if (remainingTargets.isEmpty()) {
+                            return true;
+                        } else {
+                            // If u is  a target, then remove it from the
+                            // remaining targets and record its distance.
+                            if (remainingTargets.remove(u)) {
+                                distances.put(u, u.getDistance());
+                            }
+                            // If there are no more targets, then stop the search.
+                            if (remainingTargets.isEmpty()) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                }.calculate(source);
+            }
+            return distances;
+        }
+    }
+
+    /**
+     * Performs a Dijkstra search from each source to the given target using a
+     * {@link #oneToOne}.
+     *
+     * Note: This is not very efficient since a separate search is required from
+     * each start node. TODO: Optimize!
+     *
+     * @param sources Sources
+     * @param target  Target
+     *
+     * @return A map of the distance to the target keyed by the source vertex.
+     */
+    public Map<V, Double> manyToOne(final Set<V> sources, V target) {
+        if (sources.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Please specify at least one source.");
+        } else {
+            final Map<V, Double> distances = new HashMap<V, Double>();
+
+            for (V source : sources) {
+                double distance = oneToOne(source, target);
+                distances.put(source, distance);
+            }
+            return distances;
+        }
+    }
+
+    /**
+     * Performs a Dijkstra search from each source to each target using a
+     * {@link #oneToMany} search from each source.
+     *
+     * Note: Using oneToMany rather than manyToOne is more efficient.
+     *
+     * @param sources Sources
+     * @param targets Targets
+     *
+     * @return A map of maps of distances. The first V is keyed by the source
+     *         and the second V is keyed by the target.
+     */
+    public Map<V, Map<V, Double>> manyToMany(final Set<V> sources,
+                                             final Set<V> targets) {
+        if (sources.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Please specify at least one source.");
+        } else {
+            final Map<V, Map<V, Double>> distances =
+                    new HashMap<V, Map<V, Double>>();
+            for (V source : sources) {
+                Map<V, Double> oneToMany = oneToMany(source, targets);
+                distances.put(source, oneToMany);
+            }
+            return distances;
+        }
     }
 }
