@@ -80,8 +80,7 @@ public class DijkstraForCentrality<E>
      * @param u Vertex u.
      */
     @Override
-    protected void preRelaxStep(VWBetw startNode,
-                                VWBetw u) {
+    protected boolean preRelaxStep(VWBetw startNode, VWBetw u) {
         // Push it to the stack.
         if (canPushToStack(u)) {
             stack.push(u);
@@ -93,6 +92,8 @@ public class DijkstraForCentrality<E>
         if (!u.equals(startNode)) {
             pathsFromStartNode.addSPLength(u.getDistance());
         }
+        // Don't stop the search.
+        return false;
     }
 
     /**
