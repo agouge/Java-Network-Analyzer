@@ -48,7 +48,7 @@ public class DFSTest {
                 prepareGraph();
 
         new DFS<VDFS, Edge>(graph).calculate();
-        
+
         VDFS[] vertices = indexVertices(graph);
 
         assertTrue(vertices[0].getDiscoveryTime() == 1);
@@ -107,20 +107,17 @@ public class DFSTest {
      * @return The graph.
      */
     protected DirectedPseudoG<VDFS, Edge> prepareGraph() {
-        DirectedPseudoG<VDFS, Edge> graph = null;
-        try {
-            graph = new DirectedPseudoG<VDFS, Edge>(
-                    VDFS.class, Edge.class);
-            graph.addEdge(1, 2);
-            graph.addEdge(1, 3);
-            graph.addEdge(2, 3);
-            graph.addEdge(3, 4);
-            graph.addEdge(4, 2);
-            graph.addEdge(5, 4);
-            graph.addEdge(5, 6);
-            graph.addEdge(6, 6);
-        } catch (NoSuchMethodException ex) {
-        }
+        DirectedPseudoG<VDFS, Edge> graph =
+                new DirectedPseudoG<VDFS, Edge>(
+                VDFS.class, Edge.class);
+        graph.addEdge(1, 2);
+        graph.addEdge(1, 3);
+        graph.addEdge(2, 3);
+        graph.addEdge(3, 4);
+        graph.addEdge(4, 2);
+        graph.addEdge(5, 4);
+        graph.addEdge(5, 6);
+        graph.addEdge(6, 6);
         return graph;
     }
 

@@ -77,22 +77,18 @@ public class BFSTest {
      * @return The graph.
      */
     protected PseudoG<VUBetw, Edge> prepareGraph() {
-        PseudoG<VUBetw, Edge> graph = null;
-        try {
-            graph = new PseudoG<VUBetw, Edge>(
-                    VUBetw.class, Edge.class);
-            graph.addEdge(1, 2);
-            graph.addEdge(2, 3);
-            graph.addEdge(3, 4);
-            graph.addEdge(4, 5);
-            graph.addEdge(4, 6);
-            graph.addEdge(5, 6);
-            graph.addEdge(5, 7);
-            graph.addEdge(5, 8);
-            graph.addEdge(6, 8);
-            graph.addEdge(7, 8);
-        } catch (NoSuchMethodException ex) {
-        }
+        PseudoG<VUBetw, Edge> graph = new PseudoG<VUBetw, Edge>(
+                VUBetw.class, Edge.class);
+        graph.addEdge(1, 2);
+        graph.addEdge(2, 3);
+        graph.addEdge(3, 4);
+        graph.addEdge(4, 5);
+        graph.addEdge(4, 6);
+        graph.addEdge(5, 6);
+        graph.addEdge(5, 7);
+        graph.addEdge(5, 8);
+        graph.addEdge(6, 8);
+        graph.addEdge(7, 8);
         return graph;
     }
 }
