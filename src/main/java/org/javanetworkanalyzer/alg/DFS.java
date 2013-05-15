@@ -55,7 +55,7 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
     /**
      * Does the depth first search for all nodes in the graph.
      */
-    protected void calculate() {
+    public void calculate() {
         for (V node : graph.vertexSet()) {
             if (node.getDiscoveryTime() < 0) {
                 visit(node);
