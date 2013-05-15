@@ -78,10 +78,6 @@ public class GraphCreator<V extends VId, E extends Edge> {
      */
     protected static int endNodeIndex = -1;
     /**
-     * Weight index.
-     */
-    protected static int weightFieldIndex = -1;
-    /**
      * Specifies a directed graph.
      */
     public static final int DIRECTED = 1;
