@@ -44,8 +44,7 @@ public class WeightedPseudoG<V extends VId, E extends Edge>
      * @param edgeClass class on which to base factory for edges
      */
     public WeightedPseudoG(Class<? extends V> vertexClass,
-                           Class<? extends E> edgeClass)
-            throws NoSuchMethodException {
+                           Class<? extends E> edgeClass) {
         this(vertexClass, new ClassBasedEdgeFactory<V, E>(edgeClass));
     }
 
@@ -55,8 +54,7 @@ public class WeightedPseudoG<V extends VId, E extends Edge>
      * @param ef the edge factory of the new graph.
      */
     public WeightedPseudoG(Class<? extends V> vertexClass,
-                           EdgeFactory<V, E> ef)
-            throws NoSuchMethodException {
+                           EdgeFactory<V, E> ef) {
         super(vertexClass, ef);
     }
 
