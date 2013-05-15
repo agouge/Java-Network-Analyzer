@@ -31,6 +31,8 @@ import java.util.Map;
 import org.jgrapht.EdgeFactory;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DirectedPseudograph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A keyed directed pseudograph.
@@ -48,7 +50,12 @@ public class DirectedPseudoG<V extends VId, E>
     /**
      * Constructor for {@link V} objects.
      */
-    private final Constructor<? extends V> vConstructor;
+    private Constructor<? extends V> vConstructor;
+    /**
+     * A logger.
+     */
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(DirectedPseudoG.class);
 
     /**
      * Creates a new directed pseudograph.
@@ -56,8 +63,7 @@ public class DirectedPseudoG<V extends VId, E>
      * @param edgeClass class on which to base factory for edges
      */
     public DirectedPseudoG(Class<? extends V> vertexClass,
-                           Class<? extends E> edgeClass) throws
-            NoSuchMethodException {
+                           Class<? extends E> edgeClass) {
         this(vertexClass, new ClassBasedEdgeFactory<V, E>(edgeClass));
     }
 
@@ -67,10 +73,16 @@ public class DirectedPseudoG<V extends VId, E>
      * @param ef the edge factory of the new graph.
      */
     public DirectedPseudoG(Class<? extends V> vertexClass,
-                           EdgeFactory<V, E> ef) throws NoSuchMethodException {
+                           EdgeFactory<V, E> ef) {
         super(ef);
         this.nodeMap = new HashMap<Integer, V>();
-        this.vConstructor = vertexClass.getConstructor(Integer.class);
+        try {
+            this.vConstructor = vertexClass.getConstructor(Integer.class);
+        } catch (NoSuchMethodException ex) {
+            LOGGER.error("The vertex must have a V(Integer) constructor.", ex);
+        } catch (SecurityException ex) {
+            LOGGER.trace(ex.toString());
+        }
     }
 
     @Override
