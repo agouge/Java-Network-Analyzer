@@ -26,7 +26,6 @@ package org.javanetworkanalyzer.graphcreators;
 
 import org.javanetworkanalyzer.data.VId;
 import static org.javanetworkanalyzer.graphcreators.GraphCreator.UNDIRECTED;
-import static org.javanetworkanalyzer.graphcreators.GraphCreator.weightFieldIndex;
 import org.javanetworkanalyzer.model.DirectedWeightedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.KeyedGraph;
@@ -47,6 +46,10 @@ public class WeightedGraphCreator<V extends VId, E extends Edge>
      * Weight column name.
      */
     private final String weightField;
+    /**
+     * Weight index.
+     */
+    protected static int weightFieldIndex = -1;
 
     /**
      * Initializes a new {@link WeightedGraphCreator}.
