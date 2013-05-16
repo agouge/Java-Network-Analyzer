@@ -34,6 +34,10 @@ import org.jgrapht.Graph;
  * <p> The graph passed to the constructor is assumed to be a tree. If is is not
  * a tree, this algorithm will return results, but they will be false.
  *
+ * <p> This function is executed by calling
+ * {@link #calculate(org.javanetworkanalyzer.data.VDFS)} on the tree's root
+ * node.
+ *
  * @see http://en.wikipedia.org/wiki/Strahler_number
  *
  * @author Adam Gouge
@@ -43,8 +47,7 @@ public class DFSForStrahler<E> extends DFS<VStrahler, E> {
     /**
      * Constructor.
      *
-     * @param graph    The graph.
-     * @param rootNode The root node.
+     * @param graph The graph.
      */
     public DFSForStrahler(Graph<VStrahler, E> graph) {
         super(graph);
