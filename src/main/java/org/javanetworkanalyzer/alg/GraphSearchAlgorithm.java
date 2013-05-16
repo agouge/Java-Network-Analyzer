@@ -30,8 +30,6 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.UndirectedGraph;
-import org.jgrapht.alg.DirectedNeighborIndex;
-import org.jgrapht.alg.NeighborIndex;
 
 /**
  * Root class for graph search algorithms, including BFS, DFS, Dijkstra, etc.,
