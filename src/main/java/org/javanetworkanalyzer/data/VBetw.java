@@ -35,7 +35,7 @@ public abstract class VBetw<V, D extends Number>
         extends VId implements VSearch<V, D> {
 
     /**
-     * VId
+     * Id
      */
     protected int id;
     /**

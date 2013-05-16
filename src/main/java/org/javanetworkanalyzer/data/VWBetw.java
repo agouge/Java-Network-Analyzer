@@ -32,8 +32,9 @@ package org.javanetworkanalyzer.data;
  *
  * @author Adam Gouge
  */
-public class VWBetw
-        extends VBetw<VWBetw, Double> {
+public class VWBetw extends VBetw<VWBetw, Double> {
+    
+    public static final Double DEFAULT_DISTANCE = Double.POSITIVE_INFINITY;
 
     /**
      * Length of a shortest path starting from a certain source leading to this
@@ -43,7 +44,7 @@ public class VWBetw
 
     public VWBetw(Integer id) {
         super(id);
-        distance = Double.POSITIVE_INFINITY;
+        distance = DEFAULT_DISTANCE;
     }
 
     /**
@@ -52,7 +53,7 @@ public class VWBetw
     @Override
     public void reset() {
         super.reset();
-        distance = Double.POSITIVE_INFINITY;
+        distance = DEFAULT_DISTANCE;
     }
 
     /**

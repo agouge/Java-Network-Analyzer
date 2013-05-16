@@ -31,8 +31,9 @@ package org.javanetworkanalyzer.data;
  *
  * @author Adam Gouge
  */
-public class VUBetw
-        extends VBetw<VUBetw, Integer> {
+public class VUBetw extends VBetw<VUBetw, Integer> {
+    
+    public static final int DEFAULT_DISTANCE = -1;
 
     /**
      * Number of steps on a shortest path from a certain source leading to this
@@ -42,7 +43,7 @@ public class VUBetw
 
     public VUBetw(Integer id) {
         super(id);
-        this.distance = -1;
+        this.distance = DEFAULT_DISTANCE;
     }
 
     /**
@@ -51,7 +52,7 @@ public class VUBetw
     @Override
     public void reset() {
         super.reset();
-        distance = -1;
+        distance = DEFAULT_DISTANCE;
     }
 
     /**
