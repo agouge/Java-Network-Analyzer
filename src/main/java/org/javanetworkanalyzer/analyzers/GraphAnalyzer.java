@@ -283,14 +283,17 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
      * set to 1.0.
      */
     private void normalizeBetweenness() {
-        findExtremeBetweennessValues();
-
         long start = System.currentTimeMillis();
+        findExtremeBetweennessValues();
         final double denominator = maxBetweenness - minBetweenness;
-        for (V node : nodeSet) {
-            final double normalizedBetweenness =
-                    (node.getBetweenness() - minBetweenness) / denominator;
-            node.setBetweenness(normalizedBetweenness);
+        if (denominator == 0.0) {
+            LOGGER.warn("All betweenness values are zero.");
+        } else {
+            for (V node : nodeSet) {
+                final double normalizedBetweenness =
+                        (node.getBetweenness() - minBetweenness) / denominator;
+                node.setBetweenness(normalizedBetweenness);
+            }
         }
         long stop = System.currentTimeMillis();
         LOGGER.info("({} ms) Betweenness normalization.", (stop - start));
