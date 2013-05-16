@@ -92,7 +92,8 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
     @Override
     protected void init(V startNode) {
         for (V node : graph.vertexSet()) {
-            node.setDistance(Double.POSITIVE_INFINITY);
+            node.setDistance(VWBetw.DEFAULT_DISTANCE);
+            node.getPredecessors().clear();
         }
         startNode.setSource();
         queue.clear();
