@@ -28,11 +28,12 @@ import org.javanetworkanalyzer.data.VBetw;
 import org.javanetworkanalyzer.data.PathLengthData;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Stack;
 import org.jgrapht.Graph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Calculates various centrality measures on the given graph, <b>assumed to be
@@ -55,9 +56,13 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
      * Progress monitor.
      */
     protected ProgressMonitor pm;
-    
-            // When accumulating dependencies, this stack will return vertices
-        // in order of non-increasing distance from startNode.
+    /**
+     * A logger.
+     */
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(GraphAnalyzer.class);
+    // When accumulating dependencies, this stack will return vertices
+    // in order of non-increasing distance from startNode.
     protected final Stack<V> stack;
 
     /**
@@ -154,7 +159,18 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
         // values and their contributions to betweenness values.
         accumulateDependencies(startNode);
         // ***** END CENTRALITY CONTRIBUTION CALCULATION ******
-//        debug(startNode);
+        if (LOGGER.isDebugEnabled()) {
+            for (V target : graph.vertexSet()) {
+                LOGGER.debug(
+                        "d({},{}) = {}\t spCount = {}\t preds={}\t dep = {}",
+                        startNode.getID(), target.getID(),
+                        target.getDistance(),
+                        target.getSPCount(),
+                        target.getPredecessors(),
+                        target.getDependency());
+            }
+            LOGGER.debug("");
+        }
 
         // ***** RESET HASH MAP VALUES IN PREPARATION FOR *****
         // *****          THE NEXT CALCULATION            *****
@@ -257,8 +273,6 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
                 // has finished calculating, so we can add it to
                 // the betweenness centrality of w.
                 w.accumulateBetweenness(w.getDependency());
-//                    printBetweennessContribution(w, betweenness, dependency,
-//                                                 updatedBetweenness);
             }
         } // ***** END STAGE 3, Stack iteration  **************
     }
@@ -279,8 +293,7 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
             node.setBetweenness(normalizedBetweenness);
         }
         long stop = System.currentTimeMillis();
-        System.out.println("Betweenness normalization took "
-                + (stop - start) + " ms.");
+        LOGGER.info("({} ms) Betweenness normalization.", (stop - start));
     }
 
     /**
@@ -298,51 +311,7 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
             }
         }
         long stop = System.currentTimeMillis();
-        System.out.println("Found extreme values ("
-                + minBetweenness + ", " + maxBetweenness
-                + ") in " + (stop - start) + " ms.");
-    }
-
-    /**
-     * Prints shortest path information from the given start node to all other
-     * nodes.
-     *
-     * @param startNode The start node.
-     */
-    protected void printSPInfo(V startNode) {
-        System.out.println("       d           SP    pred");
-        for (V node : nodeSet) {
-            System.out.print("(" + startNode + "," + node + ")  ");
-            String formatString = "%-12";
-            if (this instanceof UnweightedGraphAnalyzer) {
-                formatString += "d";
-            } else {
-                formatString += "f";
-            }
-            formatString += "%-6d%-12s";
-            System.out.format(formatString,
-                              node.getDistance(),
-                              node.getSPCount(),
-                              node.getPredecessors().toString());
-            System.out.println("");
-        }
-        System.out.println("");
-    }
-
-    /**
-     * Prints out debug information about shortest paths from the given start
-     * node.
-     *
-     * @param startNode The start node.
-     */
-    private void debug(V startNode) {
-        int id = startNode.getID();
-        for (V node : graph.vertexSet()) {
-            System.out.println("d(" + id + "," + node.getID()
-                    + ") = " + node.getDistance()
-                    + ", spCount = " + node.getSPCount()
-                    + ", dep = " + node.getDependency());
-        }
-        System.out.println("");
+        LOGGER.info("({} ms) Extreme betweenness values ({}, {}).",
+                    (stop - start), minBetweenness, maxBetweenness);
     }
 }
