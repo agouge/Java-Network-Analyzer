@@ -36,10 +36,6 @@ import org.jgrapht.Graph;
 public abstract class CentralityTest<V extends VBetw> {
 
     /**
-     * Used for printing out timing messages.
-     */
-    protected final static String TIME = " [time] ";
-    /**
      * Used for checking results of centrality index computations. We guarantee
      * the results to 10 decimal places.
      */

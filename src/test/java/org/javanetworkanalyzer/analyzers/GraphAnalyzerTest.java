@@ -38,6 +38,8 @@ import org.javanetworkanalyzer.model.WeightedKeyedGraph;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests weighted and unweighted graph analysis.
@@ -53,9 +55,10 @@ public abstract class GraphAnalyzerTest
     private static final String REVERSED = "Reversed";
     private static final String UNDIRECTED = "Undirected";
     /**
-     * The name of this test.
+     * A logger.
      */
-    protected final static String NAME = "Graph analysis";
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(GraphAnalyzerTest.class);
 
     /**
      * Does unweighted graph analysis on the given graph.
@@ -114,8 +117,6 @@ public abstract class GraphAnalyzerTest
     private void doAnalysis(
             GraphAnalyzer<?, Edge, ?> analyzer,
             String analysisType) {
-        // Do network analysis.
-        System.out.println("    _" + analysisType + "_");
         long start = System.currentTimeMillis();
         try {
             analyzer.computeAll();
@@ -371,8 +372,7 @@ public abstract class GraphAnalyzerTest
      * @param analysisType
      */
     protected void printTime(double time, String analysisType) {
-        System.out.println(TIME + time + " ms: "
-                + NAME + " - " + getName()
-                + " " + analysisType + ".");
+        LOGGER.info("({} ms) {} {} Graph Analysis",
+                    time, getName(), analysisType);
     }
 }

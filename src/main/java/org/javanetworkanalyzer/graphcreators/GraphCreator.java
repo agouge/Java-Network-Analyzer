@@ -34,6 +34,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates JGraphT graphs from a csv file produced by OrbisGIS.
@@ -95,6 +97,11 @@ public class GraphCreator<V extends VId, E extends Edge> {
     protected static final String SEPARATOR = ";";
     protected static final String DOUBLE_QUOTES = "\"";
     protected static final String EMPTY_STRING = "";
+    /**
+     * A logger.
+     */
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(GraphCreator.class);
 
     /**
      * Initializes a new {@link GraphCreator}.
@@ -129,7 +136,6 @@ public class GraphCreator<V extends VId, E extends Edge> {
             throws FileNotFoundException, NoSuchMethodException {
 
         long start = System.currentTimeMillis();
-        System.out.println("Creating a graph from CSV. ");
 
         // Get a scanner on the csv file.
         Scanner scanner = getScannerOnCSVFile(csvFile);
@@ -144,7 +150,7 @@ public class GraphCreator<V extends VId, E extends Edge> {
         loadEdges(scanner, graph);
 
         long stop = System.currentTimeMillis();
-        System.out.println("Created graph in " + (stop - start) + " ms.");
+        LOGGER.info("({} ms) Created graph from CSV.", (stop - start));
 
         // Close the scanner.
         scanner.close();

@@ -32,6 +32,8 @@ import org.javanetworkanalyzer.model.KeyedGraph;
 import org.javanetworkanalyzer.model.UndirectedG;
 import java.io.FileNotFoundException;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests loading the 2D graph under all possible configurations (weighted or
@@ -43,59 +45,49 @@ public class Graph2DGraphCreatorTest {
 
     private static final String FILENAME = "./files/graph2D.edges.csv";
     private static final String WEIGHT = "length";
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(Graph2DGraphCreatorTest.class);
 
     @Test
     public void unweightedDirected() throws FileNotFoundException,
             NoSuchMethodException {
-        System.out.println("\n***** 2D Unweighted Directed *****");
         KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(false, GraphCreator.DIRECTED);
-//        printEdges(graph);
     }
 
     @Test
     public void unweightedReversed() throws FileNotFoundException,
             NoSuchMethodException {
-        System.out.println("***** 2D Unweighted Reversed *****");
         KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(false, GraphCreator.REVERSED);
-//        printEdges(graph);
     }
 
     @Test
     public void unweightedUndirected() throws FileNotFoundException,
             NoSuchMethodException {
-        System.out.println("***** 2D Unweighted Undirected *****");
         KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(false, GraphCreator.UNDIRECTED);
-//        printEdges(graph);
     }
 
     @Test
     public void weightedDirected() throws FileNotFoundException,
             NoSuchMethodException {
-        System.out.println("***** 2D Weighted Directed *****");
         KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(true, GraphCreator.DIRECTED);
-//        printEdges(graph);
     }
 
     @Test
     public void weightedReversed() throws FileNotFoundException,
             NoSuchMethodException {
-        System.out.println("***** 2D Weighted Reversed *****");
         KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(true, GraphCreator.REVERSED);
-//        printEdges(graph);
     }
 
     @Test
     public void weightedUndirected() throws FileNotFoundException,
             NoSuchMethodException {
-        System.out.println("***** 2D Weighted Undirected *****");
         KeyedGraph<? extends VBetw, Edge> graph =
                 load2DGraph(true, GraphCreator.UNDIRECTED);
-//        printEdges(graph);
     }
 
     /**
@@ -114,20 +106,25 @@ public class Graph2DGraphCreatorTest {
             boolean weighted,
             int orientation) throws FileNotFoundException,
             NoSuchMethodException {
+        KeyedGraph<? extends VBetw, Edge> graph;
         if (weighted) {
-            return new WeightedGraphCreator<VWBetw, Edge>(
+            graph = new WeightedGraphCreator<VWBetw, Edge>(
                     FILENAME,
                     orientation,
                     VWBetw.class,
                     Edge.class,
                     WEIGHT).loadGraph();
         } else {
-            return new GraphCreator<VUBetw, Edge>(
+            graph = new GraphCreator<VUBetw, Edge>(
                     FILENAME,
                     orientation,
                     VUBetw.class,
                     Edge.class).loadGraph();
         }
+        if (LOGGER.isDebugEnabled()) {
+            printEdges(graph);
+        }
+        return graph;
     }
 
     /**
@@ -135,17 +132,20 @@ public class Graph2DGraphCreatorTest {
      *
      * @param graph The graph.
      */
-    private void printEdges(
-            KeyedGraph<? extends VBetw, Edge> graph) {
-        for (Edge edge : graph.edgeSet()) {
-            String edgeString = graph.getEdgeSource(edge).getID() + " ";
-            if (graph instanceof UndirectedG) {
-                edgeString += "<";
-            }
-            edgeString += "--> " + graph.getEdgeTarget(edge).getID()
-                    + " (" + graph.getEdgeWeight(edge) + ")";
-            System.out.println(edgeString);
+    private void printEdges(KeyedGraph<? extends VBetw, Edge> graph) {
+        String leftArrow;
+        if (graph instanceof UndirectedG) {
+            leftArrow = "<";
+        } else {
+            leftArrow = "";
         }
-        System.out.println("");
+        for (Edge edge : graph.edgeSet()) {
+            LOGGER.debug("{} {}--> {} ({})",
+                         graph.getEdgeSource(edge).getID(),
+                         leftArrow,
+                         graph.getEdgeTarget(edge).getID(),
+                         graph.getEdgeWeight(edge));
+        }
+        LOGGER.debug("");
     }
 }

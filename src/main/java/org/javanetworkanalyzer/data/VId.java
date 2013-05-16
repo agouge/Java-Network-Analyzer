@@ -45,4 +45,9 @@ public class VId {
     public int getID() {
         return id;
     }
+    
+    @Override
+    public String toString() {
+        return String.valueOf(getID());
+    }
 }
