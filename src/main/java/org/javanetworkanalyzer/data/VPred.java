@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.data;
 
-import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Interface for vertices which may have predecessor(s).
@@ -38,7 +38,7 @@ public interface VPred<V> {
      *
      * @return The predecessors.
      */
-    HashSet<V> getPredecessors();
+    Set<V> getPredecessors();
 
     /**
      * Adds a predecessor to the predecessor list of this node

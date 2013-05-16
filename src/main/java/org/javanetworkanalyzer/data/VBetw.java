@@ -25,6 +25,7 @@
 package org.javanetworkanalyzer.data;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Vertex to be used during the betweenness calculation.
@@ -43,7 +44,7 @@ public abstract class VBetw<V, D extends Number>
      *
      * I.e., the nodes lying on the shortest path to this node
      */
-    protected HashSet<V> predecessors;
+    protected Set<V> predecessors;
     /**
      * Number of shortest paths leading to this node starting from a certain
      * source.
@@ -71,7 +72,7 @@ public abstract class VBetw<V, D extends Number>
     public VBetw(int id) {
 //        outedges = new TIntLinkedList();
         super(id);
-        predecessors = new HashSet<V>();
+        predecessors = new HashSet();
         spCount = 0;
         betweenness = 0.0;
         dependency = 0.0;
@@ -99,7 +100,7 @@ public abstract class VBetw<V, D extends Number>
 
 // ************************** PREDECESSORS **************************
     @Override
-    public HashSet<V> getPredecessors() {
+    public Set<V> getPredecessors() {
         return predecessors;
     }
 
