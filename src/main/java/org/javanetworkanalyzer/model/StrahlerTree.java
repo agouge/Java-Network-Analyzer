@@ -29,15 +29,16 @@ import java.util.HashMap;
 import java.util.Map;
 import org.jgrapht.EdgeFactory;
 import org.jgrapht.graph.DirectedPseudograph;
+import org.jgrapht.graph.SimpleGraph;
 
 /**
- * A graph for use in the Strahler algorithm.
+ * A tree for use in the Strahler algorithm.
  *
  * @param <E> Edge class.
  *
  * @author Adam Gouge
  */
-public class StrahlerTree<E> extends DirectedPseudograph<VStrahler, E> {
+public class StrahlerTree<E> extends SimpleGraph<VStrahler, E> {
 
     /**
      * The root vertex.
