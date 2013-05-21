@@ -4,7 +4,7 @@
 
     <groupId>org.javanetworkanalyzer</groupId>
     <artifactId>java-network-analyzer</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>Java-Network-Analyzer</name>
@@ -20,7 +20,6 @@
             <artifactId>junit</artifactId>
             <version>4.10</version>
             <scope>test</scope>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>net.sf.jgrapht</groupId>
