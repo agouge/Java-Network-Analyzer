@@ -39,7 +39,7 @@ public class VStrahler extends VDFS {
     /**
      * Constructor.
      */
-    public VStrahler(int id) {
+    public VStrahler(Integer id) {
         super(id);
         this.strahlerNumber = -1;
     }
