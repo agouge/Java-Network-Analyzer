@@ -24,6 +24,9 @@
  */
 package org.javanetworkanalyzer.progress;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Default implementation of a progress monitor that prints a progress bar to
  * the console.
@@ -36,6 +39,8 @@ public class DefaultProgressMonitor implements ProgressMonitor {
     private int percentageComplete = 0;
     private long end;
     private ConsoleProgressBar consoleProgressBar;
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(DefaultProgressMonitor.class);
 
     /**
      * Sets the end and instantiates a {@link ConsoleProgressBar} for this task.
@@ -44,8 +49,7 @@ public class DefaultProgressMonitor implements ProgressMonitor {
      */
     @Override
     public void startTask(String taskName, long end) {
-        System.out.println("STARTING TASK \"" + taskName
-                + "\"");
+        LOGGER.info("STARTING TASK \"{}\"", taskName);
         this.end = end;
         // The console progress bar will have a width of 40 characters
         // and will update every second.
@@ -59,7 +63,7 @@ public class DefaultProgressMonitor implements ProgressMonitor {
      */
     @Override
     public void endTask() {
-        System.out.println("TASK FINISHED");
+        LOGGER.info("TASK FINISHED");
     }
 
     /**

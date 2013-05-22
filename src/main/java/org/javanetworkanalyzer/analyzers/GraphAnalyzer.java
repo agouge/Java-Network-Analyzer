@@ -110,8 +110,6 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
 
         long startTime = System.currentTimeMillis();
 
-        pm.startTask("Graph analysis", nodeCount);
-
         // ***** GLOBAL INITIALIZATION *************************
         long count = 0;
         pm.setProgress(count, startTime);
@@ -134,8 +132,6 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
 
         // ***** NORMALIZATION **********************************
         normalizeBetweenness();
-
-        pm.endTask();
     }
 
     /**

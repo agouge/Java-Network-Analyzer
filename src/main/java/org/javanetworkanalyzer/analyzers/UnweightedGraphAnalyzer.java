@@ -30,7 +30,6 @@ import org.javanetworkanalyzer.data.UnweightedPathLengthData;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Stack;
 import org.jgrapht.Graph;
 
 /**
@@ -93,5 +92,14 @@ public class UnweightedGraphAnalyzer<E>
             VUBetw startNode) {
         bfs.calculate(startNode);
         return bfs.getPaths();
+    }
+
+    @Override
+    public void computeAll() throws InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
+        pm.startTask("Unweighted graph analysis", nodeCount);
+        super.computeAll();
+        pm.endTask();
     }
 }
