@@ -24,14 +24,12 @@
  */
 package org.javanetworkanalyzer.analyzers;
 
-import org.javanetworkanalyzer.alg.BFSForCentrality;
 import org.javanetworkanalyzer.alg.DijkstraForCentrality;
 import org.javanetworkanalyzer.data.VWBetw;
 import org.javanetworkanalyzer.data.WeightedPathLengthData;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Stack;
 import org.jgrapht.WeightedGraph;
 
 /**
@@ -98,5 +96,14 @@ public class WeightedGraphAnalyzer<E>
         // This is IMPORTANT.
         dijkstra.calculate(startNode);
         return dijkstra.getPaths();
+    }
+
+    @Override
+    public void computeAll() throws InstantiationException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
+        pm.startTask("Weighted graph analysis", nodeCount);
+        super.computeAll();
+        pm.endTask();
     }
 }
