@@ -61,4 +61,16 @@ public abstract class GeneralizedGraphAnalyzer<V, E> {
         this.nodeSet = graph.vertexSet();
         this.nodeCount = this.nodeSet.size();
     }
+
+    /**
+     * Returns the graph this analyzer is using.
+     *
+     * This is often used for gaining access to the vertices which contain the
+     * results of the analysis.
+     *
+     * @return The graph
+     */
+    public Graph<V, E> getGraph() {
+        return graph;
+    }
 }
