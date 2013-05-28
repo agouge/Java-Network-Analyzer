@@ -201,12 +201,12 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
      * @return The distance from the source to the target.
      */
     public double oneToOne(V source, final V target) {
-        if (source == null) {
+        if (source == null || !graph.containsVertex(source)) {
             throw new IllegalArgumentException(
-                    "Please specify a source.");
-        } else if (target == null) {
+                    "Source vertex not found.");
+        } else if (target == null || !graph.containsVertex(target)) {
             throw new IllegalArgumentException(
-                    "Please specify a target.");
+                    "Target vertex not found.");
         } else {
             // If source=target, then no search is necessary.
             if (source.equals(target)) {
