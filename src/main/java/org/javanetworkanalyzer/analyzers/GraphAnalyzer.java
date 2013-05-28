@@ -155,18 +155,7 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
         // values and their contributions to betweenness values.
         accumulateDependencies(startNode);
         // ***** END CENTRALITY CONTRIBUTION CALCULATION ******
-        if (LOGGER.isDebugEnabled()) {
-            for (V target : graph.vertexSet()) {
-                LOGGER.debug(
-                        "d({},{}) = {}\t spCount = {}\t preds={}\t dep = {}",
-                        startNode.getID(), target.getID(),
-                        target.getDistance(),
-                        target.getSPCount(),
-                        target.getPredecessors(),
-                        target.getDependency());
-            }
-            LOGGER.debug("");
-        }
+        debug(startNode);
 
         // ***** RESET HASH MAP VALUES IN PREPARATION FOR *****
         // *****          THE NEXT CALCULATION            *****
@@ -258,7 +247,7 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
                 // on w to the dependency of startNode on v.
                 double depContribution =
                         ((double) predecessor.getSPCount()
-                        / w.getSPCount())
+                         / w.getSPCount())
                         * (1 + w.getDependency());
                 predecessor.accumulateDependency(depContribution);
             }
@@ -312,5 +301,28 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
         long stop = System.currentTimeMillis();
         LOGGER.info("({} ms) Extreme betweenness values ({}, {}).",
                     (stop - start), minBetweenness, maxBetweenness);
+    }
+
+    /**
+     * Prints out the distance, shortest path count, predecessors and
+     * dependency.
+     *
+     * <p> This is slowing down the calculation so we leave it out for now.
+     *
+     * @param startNode Start node
+     */
+    private void debug(V startNode) {
+//        if (LOGGER.isDebugEnabled()) {
+//            for (V target : graph.vertexSet()) {
+//                LOGGER.debug(
+//                        "d({},{}) = {}\t spCount = {}\t preds={}\t dep = {}",
+//                        startNode.getID(), target.getID(),
+//                        target.getDistance(),
+//                        target.getSPCount(),
+//                        target.getPredecessors(),
+//                        target.getDependency());
+//            }
+//            LOGGER.debug("");
+//        }
     }
 }
