@@ -32,8 +32,10 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import org.javanetworkanalyzer.data.VSearch;
 import org.javanetworkanalyzer.data.VWBetw;
+import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
+import org.jgrapht.graph.EdgeReversedGraph;
 
 /**
  * Home-brewed implementation of Dijkstra's algorithm.
@@ -303,13 +305,17 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
             throw new IllegalArgumentException(
                     "Please specify at least one source.");
         } else {
-            final Map<V, Double> distances = new HashMap<V, Double>();
-
-            for (V source : sources) {
-                double distance = oneToOne(source, target);
-                distances.put(source, distance);
+            // For directed graphs, we simply reverse the graph and do a 
+            // oneToMany from the target.
+            if (graph instanceof DirectedGraph) {
+                EdgeReversedGraph<V, E> reversedGraph =
+                        new EdgeReversedGraph<V, E>((DirectedGraph) graph);
+                return new Dijkstra<V, E>(reversedGraph)
+                        .oneToMany(target, sources);
+            } // For undirected graphs, there is no need to reverse the graph.
+            else {
+                return oneToMany(target, sources);
             }
-            return distances;
         }
     }
 
@@ -317,7 +323,8 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
      * Performs a Dijkstra search from each source to each target using a
      * {@link #oneToMany} search from each source.
      *
-     * Note: Using oneToMany rather than manyToOne is more efficient.
+     * Note: Using oneToMany rather than manyToOne is more efficient since we
+     * don't have to create an edge-reversed graph.
      *
      * @param sources Sources
      * @param targets Targets
