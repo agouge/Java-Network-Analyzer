@@ -25,59 +25,64 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Weighted vertex to be used during the betweenness calculation.
+ * Vertex to be used in the BFS algorithm.
  *
- * All distances are {@code double}s; we initialize them to
- * {@link Double#POSITIVE_INFINITY}.
+ * @param <V> Vertex
  *
  * @author Adam Gouge
  */
-public class VWBetw extends VBetw<VWBetw, Double> {
-    
-    public static final Double DEFAULT_DISTANCE = Double.POSITIVE_INFINITY;
+public class VBFS<V extends VBFS> extends VPred<V> implements VDist<Integer> {
 
     /**
-     * Length of a shortest path starting from a certain source leading to this
-     * node (Dijkstra).
+     * The default distance assigned to all nodes at the beginning of the BFS
+     * algorithm.
      */
-    private double distance;
+    public static final int DEFAULT_DISTANCE = -1;
+    /**
+     * Number of steps on a shortest path from a certain source leading to this
+     * node (BFS).
+     */
+    private int distance = DEFAULT_DISTANCE;
 
-    public VWBetw(Integer id) {
+    /**
+     * Constructor: sets the id.
+     *
+     * @param id Id
+     */
+    public VBFS(Integer id) {
         super(id);
-        distance = DEFAULT_DISTANCE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void reset() {
-        super.reset();
-        distance = DEFAULT_DISTANCE;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setSource() {
-        super.setSource();
-        distance = 0.0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Double getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 
+    @Override
+    public void setDistance(Integer newDistance) {
+        distance = newDistance;
+    }
+
     /**
-     * {@inheritDoc}
+     * Clears the predecessor list and resets the distance to the default
+     * distance.
      */
     @Override
-    public void setDistance(Double newDistance) {
-        distance = newDistance;
+    public void reset() {
+        // Clear the predecessor list.
+        super.clear();
+        // Reset the distance to the default distance.
+        distance = DEFAULT_DISTANCE;
+    }
+
+    /**
+     * Clears the predecessor list and sets the distance to zero.
+     */
+    @Override
+    public void setSource() {
+        // Clear the predecessor list.
+        super.clear();
+        // Set the distance to zero.
+        distance = 0;
     }
 }

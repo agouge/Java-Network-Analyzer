@@ -25,7 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.model.PseudoG;
-import org.javanetworkanalyzer.data.VUBetw;
+import org.javanetworkanalyzer.data.VUCent;
 import org.javanetworkanalyzer.model.Edge;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
@@ -39,9 +39,9 @@ public class BFSTest {
 
     @Test
     public void testBFSFromVertexThree() {
-        PseudoG<VUBetw, Edge> graph = prepareGraph();
+        PseudoG<VUCent, Edge> graph = prepareGraph();
 
-        new BFS<VUBetw, Edge>(
+        new BFS<VUCent, Edge>(
                 graph).calculate(graph.getVertex(3));
 
         assertTrue(graph.getVertex(3).getDistance() == 0);
@@ -56,9 +56,9 @@ public class BFSTest {
 
     @Test
     public void testBFSFromVertexEight() {
-        PseudoG<VUBetw, Edge> graph = prepareGraph();
+        PseudoG<VUCent, Edge> graph = prepareGraph();
 
-        new BFS<VUBetw, Edge>(
+        new BFS<VUCent, Edge>(
                 graph).calculate(graph.getVertex(8));
 
         assertTrue(graph.getVertex(8).getDistance() == 0);
@@ -76,9 +76,9 @@ public class BFSTest {
      *
      * @return The graph.
      */
-    protected PseudoG<VUBetw, Edge> prepareGraph() {
-        PseudoG<VUBetw, Edge> graph = new PseudoG<VUBetw, Edge>(
-                VUBetw.class, Edge.class);
+    protected PseudoG<VUCent, Edge> prepareGraph() {
+        PseudoG<VUCent, Edge> graph =
+                new PseudoG<VUCent, Edge>(VUCent.class, Edge.class);
         graph.addEdge(1, 2);
         graph.addEdge(2, 3);
         graph.addEdge(3, 4);

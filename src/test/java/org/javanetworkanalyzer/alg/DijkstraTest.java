@@ -27,7 +27,7 @@ package org.javanetworkanalyzer.alg;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.javanetworkanalyzer.data.VWBetw;
+import org.javanetworkanalyzer.data.VWCent;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.WeightedPseudoG;
 import org.junit.Test;
@@ -61,14 +61,14 @@ public class DijkstraTest {
     @Test
     public void testOneToOne() {
         try {
-            WeightedPseudoG<VWBetw, Edge> g = prepareGraph();
-            Map<VWBetw, Map<VWBetw, Double>> expectedDistances =
+            WeightedPseudoG<VWCent, Edge> g = prepareGraph();
+            Map<VWCent, Map<VWCent, Double>> expectedDistances =
                     expectedDistances(g);
 
-            Dijkstra<VWBetw, Edge> dijkstra = new Dijkstra<VWBetw, Edge>(g);
+            Dijkstra<VWCent, Edge> dijkstra = new Dijkstra<VWCent, Edge>(g);
 
-            for (VWBetw source : g.vertexSet()) {
-                for (VWBetw target : g.vertexSet()) {
+            for (VWCent source : g.vertexSet()) {
+                for (VWCent target : g.vertexSet()) {
                     double distance = dijkstra.oneToOne(source, target);
                     assertEquals(expectedDistances.get(source).get(target),
                                  distance, TOLERANCE);
@@ -81,19 +81,19 @@ public class DijkstraTest {
     @Test
     public void testOneToMany() {
         try {
-            WeightedPseudoG<VWBetw, Edge> g = prepareGraph();
-            Map<VWBetw, Map<VWBetw, Double>> expectedDistances =
+            WeightedPseudoG<VWCent, Edge> g = prepareGraph();
+            Map<VWCent, Map<VWCent, Double>> expectedDistances =
                     expectedDistances(g);
 
-            Dijkstra<VWBetw, Edge> dijkstra = new Dijkstra<VWBetw, Edge>(g);
+            Dijkstra<VWCent, Edge> dijkstra = new Dijkstra<VWCent, Edge>(g);
 
-            for (VWBetw source : g.vertexSet()) {
+            for (VWCent source : g.vertexSet()) {
                 // Note: This is a oneToAll. It should be equivalent to
                 // dijkstra.calculate(source);
-                Map<VWBetw, Double> distances =
+                Map<VWCent, Double> distances =
                         dijkstra.oneToMany(source, g.vertexSet());
-                for (Entry<VWBetw, Double> e : distances.entrySet()) {
-                    VWBetw target = e.getKey();
+                for (Entry<VWCent, Double> e : distances.entrySet()) {
+                    VWCent target = e.getKey();
                     Double distance = e.getValue();
                     assertEquals(expectedDistances.get(source).get(target),
                                  distance, TOLERANCE);
@@ -106,18 +106,18 @@ public class DijkstraTest {
     @Test
     public void testManyToOne() {
         try {
-            WeightedPseudoG<VWBetw, Edge> g = prepareGraph();
-            Map<VWBetw, Map<VWBetw, Double>> expectedDistances =
+            WeightedPseudoG<VWCent, Edge> g = prepareGraph();
+            Map<VWCent, Map<VWCent, Double>> expectedDistances =
                     expectedDistances(g);
 
-            Dijkstra<VWBetw, Edge> dijkstra = new Dijkstra<VWBetw, Edge>(g);
+            Dijkstra<VWCent, Edge> dijkstra = new Dijkstra<VWCent, Edge>(g);
 
-            for (VWBetw target : g.vertexSet()) {
+            for (VWCent target : g.vertexSet()) {
                 // Note: This is an allToOne.
-                Map<VWBetw, Double> distances =
+                Map<VWCent, Double> distances =
                         dijkstra.manyToOne(g.vertexSet(), target);
-                for (Entry<VWBetw, Double> e : distances.entrySet()) {
-                    VWBetw source = e.getKey();
+                for (Entry<VWCent, Double> e : distances.entrySet()) {
+                    VWCent source = e.getKey();
                     Double distance = e.getValue();
                     assertEquals(expectedDistances.get(source).get(target),
                                  distance, TOLERANCE);
@@ -130,20 +130,20 @@ public class DijkstraTest {
     @Test
     public void testManyToMany() {
         try {
-            WeightedPseudoG<VWBetw, Edge> g = prepareGraph();
-            Map<VWBetw, Map<VWBetw, Double>> expectedDistances =
+            WeightedPseudoG<VWCent, Edge> g = prepareGraph();
+            Map<VWCent, Map<VWCent, Double>> expectedDistances =
                     expectedDistances(g);
 
-            Dijkstra<VWBetw, Edge> dijkstra = new Dijkstra<VWBetw, Edge>(g);
+            Dijkstra<VWCent, Edge> dijkstra = new Dijkstra<VWCent, Edge>(g);
 
             // Note: This is an allToAll.
-            Map<VWBetw, Map<VWBetw, Double>> distances =
+            Map<VWCent, Map<VWCent, Double>> distances =
                     dijkstra.manyToMany(g.vertexSet(), g.vertexSet());
-            for (Entry<VWBetw, Map<VWBetw, Double>> e : distances.entrySet()) {
-                VWBetw source = e.getKey();
-                Map<VWBetw, Double> distancesKeyedByTarget = e.getValue();
-                for (Entry<VWBetw, Double> f : distancesKeyedByTarget.entrySet()) {
-                    VWBetw target = f.getKey();
+            for (Entry<VWCent, Map<VWCent, Double>> e : distances.entrySet()) {
+                VWCent source = e.getKey();
+                Map<VWCent, Double> distancesKeyedByTarget = e.getValue();
+                for (Entry<VWCent, Double> f : distancesKeyedByTarget.entrySet()) {
+                    VWCent target = f.getKey();
                     double distance = f.getValue();
                     assertEquals(expectedDistances.get(source).get(target),
                                  distance, TOLERANCE);
@@ -153,10 +153,10 @@ public class DijkstraTest {
         }
     }
 
-    private WeightedPseudoG<VWBetw, Edge> prepareGraph()
+    private WeightedPseudoG<VWCent, Edge> prepareGraph()
             throws NoSuchMethodException {
-        WeightedPseudoG<VWBetw, Edge> graph = new WeightedPseudoG<VWBetw, Edge>(
-                VWBetw.class, Edge.class);
+        WeightedPseudoG<VWCent, Edge> graph = new WeightedPseudoG<VWCent, Edge>(
+                VWCent.class, Edge.class);
         graph.addEdge(1, 2).setWeight(10);
         graph.addEdge(1, 4).setWeight(5);
         graph.addEdge(5, 1).setWeight(7);
@@ -170,40 +170,40 @@ public class DijkstraTest {
         return graph;
     }
 
-    private Map<VWBetw, Map<VWBetw, Double>> expectedDistances(
-            WeightedPseudoG<VWBetw, Edge> g) {
-        Map<VWBetw, Map<VWBetw, Double>> distances =
-                new HashMap<VWBetw, Map<VWBetw, Double>>();
+    private Map<VWCent, Map<VWCent, Double>> expectedDistances(
+            WeightedPseudoG<VWCent, Edge> g) {
+        Map<VWCent, Map<VWCent, Double>> distances =
+                new HashMap<VWCent, Map<VWCent, Double>>();
 
-        Map<VWBetw, Double> dFromOne = new HashMap<VWBetw, Double>();
+        Map<VWCent, Double> dFromOne = new HashMap<VWCent, Double>();
         dFromOne.put(g.getVertex(1), 0.0);
         dFromOne.put(g.getVertex(2), 7.0);
         dFromOne.put(g.getVertex(3), 8.0);
         dFromOne.put(g.getVertex(4), 5.0);
         dFromOne.put(g.getVertex(5), 7.0);
 
-        Map<VWBetw, Double> dFromTwo = new HashMap<VWBetw, Double>();
+        Map<VWCent, Double> dFromTwo = new HashMap<VWCent, Double>();
         dFromTwo.put(g.getVertex(1), 7.0);
         dFromTwo.put(g.getVertex(2), 0.0);
         dFromTwo.put(g.getVertex(3), 1.0);
         dFromTwo.put(g.getVertex(4), 2.0);
         dFromTwo.put(g.getVertex(5), 4.0);
 
-        Map<VWBetw, Double> dFromThree = new HashMap<VWBetw, Double>();
+        Map<VWCent, Double> dFromThree = new HashMap<VWCent, Double>();
         dFromThree.put(g.getVertex(1), 8.0);
         dFromThree.put(g.getVertex(2), 1.0);
         dFromThree.put(g.getVertex(3), 0.0);
         dFromThree.put(g.getVertex(4), 3.0);
         dFromThree.put(g.getVertex(5), 4.0);
 
-        Map<VWBetw, Double> dFromFour = new HashMap<VWBetw, Double>();
+        Map<VWCent, Double> dFromFour = new HashMap<VWCent, Double>();
         dFromFour.put(g.getVertex(1), 5.0);
         dFromFour.put(g.getVertex(2), 2.0);
         dFromFour.put(g.getVertex(3), 3.0);
         dFromFour.put(g.getVertex(4), 0.0);
         dFromFour.put(g.getVertex(5), 2.0);
 
-        Map<VWBetw, Double> dFromFive = new HashMap<VWBetw, Double>();
+        Map<VWCent, Double> dFromFive = new HashMap<VWCent, Double>();
         dFromFive.put(g.getVertex(1), 7.0);
         dFromFive.put(g.getVertex(2), 4.0);
         dFromFive.put(g.getVertex(3), 4.0);

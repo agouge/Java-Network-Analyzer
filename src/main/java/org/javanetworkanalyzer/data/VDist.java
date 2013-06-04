@@ -25,7 +25,9 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Interface vertices that measure the distance from a source node.
+ * Interface for vertices that measure the distance from a source node.
+ *
+ * @param <D> Distance type (usually Integer or Double)
  *
  * @author Adam Gouge
  */
@@ -44,4 +46,14 @@ public interface VDist<D extends Number> {
      * @param newDistance Length of a shortest path to this node.
      */
     void setDistance(D newDistance);
+
+    /**
+     * Resets this node's distance to the default distance value.
+     */
+    void reset();
+
+    /**
+     * Sets this node's distance to zero.
+     */
+    void setSource();
 }

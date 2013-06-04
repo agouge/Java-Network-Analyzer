@@ -25,9 +25,9 @@
 package org.javanetworkanalyzer.analyzers.examples;
 
 import org.javanetworkanalyzer.analyzers.ManuallyCreatedGraphAnalyzerTest;
-import org.javanetworkanalyzer.data.VBetw;
-import org.javanetworkanalyzer.data.VUBetw;
-import org.javanetworkanalyzer.data.VWBetw;
+import org.javanetworkanalyzer.data.VCent;
+import org.javanetworkanalyzer.data.VUCent;
+import org.javanetworkanalyzer.data.VWCent;
 import org.javanetworkanalyzer.model.DirectedG;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.KeyedGraph;
@@ -65,7 +65,7 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Override
     protected void addEdges(
-            KeyedGraph<? extends VBetw, Edge> graph) {
+            KeyedGraph<? extends VCent, Edge> graph) {
         graph.addEdge(1, 2);
         graph.addEdge(1, 4);
         graph.addEdge(5, 1);
@@ -80,7 +80,7 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Override
     protected void addWeightedEdges(
-            WeightedKeyedGraph<? extends VBetw, Edge> graph) {
+            WeightedKeyedGraph<? extends VCent, Edge> graph) {
         graph.addEdge(1, 2).setWeight(10);
         graph.addEdge(1, 4).setWeight(5);
         graph.addEdge(5, 1).setWeight(7);
@@ -95,7 +95,7 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Test
     public void unweightedDirectedTest() {
-        DirectedG<VUBetw, Edge> graph =
+        DirectedG<VUCent, Edge> graph =
                 super.unweightedDirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -116,7 +116,7 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Test
     public void unweightedReversedTest() {
-        DirectedG<VUBetw, Edge> graph =
+        DirectedG<VUCent, Edge> graph =
                 super.unweightedReversedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -138,7 +138,7 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Test
     public void unweightedUndirectedTest() {
-        UndirectedG<VUBetw, Edge> graph =
+        UndirectedG<VUCent, Edge> graph =
                 super.unweightedUndirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -160,7 +160,7 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Test
     public void weightedDirectedTest() {
-        DirectedG<VWBetw, Edge> graph =
+        DirectedG<VWCent, Edge> graph =
                 super.weightedDirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -182,7 +182,7 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Test
     public void weightedReversedTest() {
-        DirectedG<VWBetw, Edge> graph =
+        DirectedG<VWCent, Edge> graph =
                 super.weightedReversedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -204,7 +204,7 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Test
     public void weightedUndirectedTest() {
-        UndirectedG<VWBetw, Edge> graph =
+        UndirectedG<VWCent, Edge> graph =
                 super.weightedUndirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{

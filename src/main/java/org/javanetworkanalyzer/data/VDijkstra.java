@@ -25,58 +25,66 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Unweighted vertex to be used during the betweenness calculation.
+ * Vertex to be used in the Dijkstra algorithm.
  *
- * All distances are {@code int}s; we initialize them to -1.
+ * @param <V> Vertex
  *
  * @author Adam Gouge
  */
-public class VUBetw extends VBetw<VUBetw, Integer> {
-    
-    public static final int DEFAULT_DISTANCE = -1;
+public class VDijkstra<V extends VDijkstra>
+        extends VPred<V>
+        implements VDist<Double> {
 
     /**
-     * Number of steps on a shortest path from a certain source leading to this
-     * node (BFS).
+     * The default distance assigned to all nodes at the beginning of the
+     * Dijkstra algorithm.
      */
-    private int distance;
+    public static final Double DEFAULT_DISTANCE = Double.POSITIVE_INFINITY;
+    /**
+     * Length of a shortest path starting from a certain source leading to this
+     * node (Dijkstra).
+     */
+    private double distance;
 
-    public VUBetw(Integer id) {
+    /**
+     * Constructor: Sets the id.
+     *
+     * @param id Id
+     */
+    public VDijkstra(Integer id) {
         super(id);
-        this.distance = DEFAULT_DISTANCE;
+    }
+
+    @Override
+    public Double getDistance() {
+        return distance;
+    }
+
+    @Override
+    public void setDistance(Double newDistance) {
+        distance = newDistance;
     }
 
     /**
-     * {@inheritDoc}
+     * Clears the predecessor list and resets the distance to the default
+     * distance.
      */
     @Override
     public void reset() {
-        super.reset();
+        // Clear the predecessor list.
+        super.clear();
+        // Reset the distance to the default distance.
         distance = DEFAULT_DISTANCE;
     }
 
     /**
-     * {@inheritDoc}
+     * Clears the predecessor list and sets the distance to zero.
      */
     @Override
     public void setSource() {
-        super.setSource();
-        distance = 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Integer getDistance() {
-        return distance;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setDistance(Integer newDistance) {
-        distance = newDistance;
+        // Clear the predecessor list.
+        super.clear();
+        // Set the distance to zero.
+        distance = 0.0;
     }
 }
