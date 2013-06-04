@@ -25,9 +25,9 @@
 package org.javanetworkanalyzer.analyzers.examples;
 
 import org.javanetworkanalyzer.analyzers.ManuallyCreatedGraphAnalyzerTest;
-import org.javanetworkanalyzer.data.VBetw;
-import org.javanetworkanalyzer.data.VUBetw;
-import org.javanetworkanalyzer.data.VWBetw;
+import org.javanetworkanalyzer.data.VCent;
+import org.javanetworkanalyzer.data.VUCent;
+import org.javanetworkanalyzer.data.VWCent;
 import org.javanetworkanalyzer.model.DirectedG;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.KeyedGraph;
@@ -61,7 +61,7 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Override
     protected void addEdges(
-            KeyedGraph<? extends VBetw, Edge> graph) {
+            KeyedGraph<? extends VCent, Edge> graph) {
         graph.addEdge(1, 2);
         graph.addEdge(1, 3);
         graph.addEdge(1, 5);
@@ -72,7 +72,7 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Override
     protected void addWeightedEdges(
-            WeightedKeyedGraph<? extends VBetw, Edge> graph) {
+            WeightedKeyedGraph<? extends VCent, Edge> graph) {
         graph.addEdge(1, 2).setWeight(1.2);
         graph.addEdge(1, 3).setWeight(0.8);
         graph.addEdge(1, 5).setWeight(1.0);
@@ -84,7 +84,7 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
     @Test
     public void unweightedDirectedTest()
             throws FileNotFoundException, NoSuchMethodException {
-        DirectedG<VUBetw, Edge> graph =
+        DirectedG<VUCent, Edge> graph =
                 super.unweightedDirectedAnalysis();
         if (CHECK_RESULTS) {
             // Max = 1.5, min = 0
@@ -104,7 +104,7 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
     @Test
     public void unweightedReversedTest()
             throws FileNotFoundException, NoSuchMethodException {
-        DirectedG<VUBetw, Edge> graph =
+        DirectedG<VUCent, Edge> graph =
                 super.unweightedReversedAnalysis();
         if (CHECK_RESULTS) {
             // Max = 1.5, min = 0
@@ -125,7 +125,7 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Test
     public void unweightedUndirectedTest() {
-        UndirectedG<VUBetw, Edge> graph =
+        UndirectedG<VUCent, Edge> graph =
                 super.unweightedUndirectedAnalysis();
         if (CHECK_RESULTS) {
             // Max = 3, min = 0
@@ -147,7 +147,7 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Test
     public void weightedDirectedTest() {
-        DirectedG<VWBetw, Edge> graph =
+        DirectedG<VWCent, Edge> graph =
                 super.weightedDirectedAnalysis();
         if (CHECK_RESULTS) {
             // Max = 1.5, min = 0
@@ -166,7 +166,7 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Test
     public void weightedReversedTest() {
-        DirectedG<VWBetw, Edge> graph =
+        DirectedG<VWCent, Edge> graph =
                 super.weightedReversedAnalysis();
         if (CHECK_RESULTS) {
             // Max = 1.5, min = 0
@@ -186,7 +186,7 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Test
     public void weightedUndirectedTest() {
-        UndirectedG<VWBetw, Edge> graph =
+        UndirectedG<VWCent, Edge> graph =
                 super.weightedUndirectedAnalysis();
         if (CHECK_RESULTS) {
             // Max = 4, min = 0

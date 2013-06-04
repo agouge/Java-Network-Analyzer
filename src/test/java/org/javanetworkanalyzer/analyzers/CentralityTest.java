@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.analyzers;
 
-import org.javanetworkanalyzer.data.VBetw;
+import org.javanetworkanalyzer.data.VCent;
 import org.javanetworkanalyzer.model.Edge;
 import org.jgrapht.Graph;
 
@@ -33,7 +33,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public abstract class CentralityTest<V extends VBetw> {
+public abstract class CentralityTest<V extends VCent> {
 
     /**
      * Used for checking results of centrality index computations. We guarantee
@@ -58,12 +58,12 @@ public abstract class CentralityTest<V extends VBetw> {
      */
     protected abstract String getName();
 
-    protected void printResults(Graph<? extends VBetw, Edge> graph) {
+    protected void printResults(Graph<? extends VCent, Edge> graph) {
         System.out.format("%-6s%-20s%-20s\n",
                           "v",
                           "Betweenness",
                           "Closeness");
-        for (VBetw node : graph.vertexSet()) {
+        for (VCent node : graph.vertexSet()) {
             System.out.format("%-6d%-20.11f%-20.11f\n",
                               node.getID(),
                               node.getBetweenness(),

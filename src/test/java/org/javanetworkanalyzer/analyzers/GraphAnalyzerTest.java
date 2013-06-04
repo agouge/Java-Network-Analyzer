@@ -25,9 +25,9 @@
 package org.javanetworkanalyzer.analyzers;
 
 import static org.javanetworkanalyzer.analyzers.CentralityTest.TOLERANCE;
-import org.javanetworkanalyzer.data.VBetw;
-import org.javanetworkanalyzer.data.VUBetw;
-import org.javanetworkanalyzer.data.VWBetw;
+import org.javanetworkanalyzer.data.VCent;
+import org.javanetworkanalyzer.data.VUCent;
+import org.javanetworkanalyzer.data.VWCent;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.graphcreators.GraphCreator;
 import org.javanetworkanalyzer.graphcreators.WeightedGraphCreator;
@@ -69,8 +69,8 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    protected KeyedGraph<VUBetw, Edge> doUnweightedAnalysis(
-            KeyedGraph<VUBetw, Edge> graph,
+    protected KeyedGraph<VUCent, Edge> doUnweightedAnalysis(
+            KeyedGraph<VUCent, Edge> graph,
             String orientation) {
         try {
             doAnalysis(new UnweightedGraphAnalyzer(graph, progressMonitor()),
@@ -93,8 +93,8 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    protected WeightedKeyedGraph<VWBetw, Edge> doWeightedAnalysis(
-            WeightedKeyedGraph<VWBetw, Edge> graph,
+    protected WeightedKeyedGraph<VWCent, Edge> doWeightedAnalysis(
+            WeightedKeyedGraph<VWCent, Edge> graph,
             String orientation) {
         try {
             doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()),
@@ -131,7 +131,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<VUBetw, Edge> unweightedDirectedAnalysis() {
+    public DirectedG<VUCent, Edge> unweightedDirectedAnalysis() {
         try {
             return (DirectedG) doUnweightedAnalysis(unweightedGraph(
                     GraphCreator.DIRECTED), DIRECTED);
@@ -146,7 +146,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<VUBetw, Edge> unweightedReversedAnalysis() {
+    public DirectedG<VUCent, Edge> unweightedReversedAnalysis() {
         try {
             return (DirectedG) doUnweightedAnalysis(unweightedGraph(
                     GraphCreator.REVERSED), REVERSED);
@@ -161,7 +161,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public UndirectedG<VUBetw, Edge> unweightedUndirectedAnalysis() {
+    public UndirectedG<VUCent, Edge> unweightedUndirectedAnalysis() {
         try {
             return (UndirectedG) doUnweightedAnalysis(unweightedGraph(
                     GraphCreator.UNDIRECTED), UNDIRECTED);
@@ -176,7 +176,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<VWBetw, Edge> weightedDirectedAnalysis() {
+    public DirectedG<VWCent, Edge> weightedDirectedAnalysis() {
         try {
             return (DirectedG) doWeightedAnalysis(weightedGraph(
                     GraphCreator.DIRECTED), DIRECTED);
@@ -191,7 +191,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<VWBetw, Edge> weightedReversedAnalysis() {
+    public DirectedG<VWCent, Edge> weightedReversedAnalysis() {
         try {
             return (DirectedG) doWeightedAnalysis(weightedGraph(
                     GraphCreator.REVERSED), REVERSED);
@@ -206,7 +206,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public UndirectedG<VWBetw, Edge> weightedUndirectedAnalysis() {
+    public UndirectedG<VWCent, Edge> weightedUndirectedAnalysis() {
         try {
             return (UndirectedG) doWeightedAnalysis(weightedGraph(
                     GraphCreator.UNDIRECTED), UNDIRECTED);
@@ -242,12 +242,12 @@ public abstract class GraphAnalyzerTest
      * @return The graph.
      *
      */
-    protected KeyedGraph<VUBetw, Edge> unweightedGraph(
+    protected KeyedGraph<VUCent, Edge> unweightedGraph(
             int orientation) {
         try {
             return new GraphCreator(getFilename(),
                                     orientation,
-                                    VUBetw.class,
+                                    VUCent.class,
                                     Edge.class).loadGraph();
         } catch (Exception ex) {
         }
@@ -263,12 +263,12 @@ public abstract class GraphAnalyzerTest
      * @return The graph.
      *
      */
-    protected WeightedKeyedGraph<VWBetw, Edge> weightedGraph(
+    protected WeightedKeyedGraph<VWCent, Edge> weightedGraph(
             int orientation) {
         try {
             return new WeightedGraphCreator(getFilename(),
                                             orientation,
-                                            VWBetw.class,
+                                            VWCent.class,
                                             Edge.class,
                                             getWeightColumnName()).loadGraph();
         } catch (Exception ex) {
@@ -285,9 +285,9 @@ public abstract class GraphAnalyzerTest
      */
     protected void checkBetweenness(
             double[] expectedBetweenness,
-            KeyedGraph<? extends VBetw, Edge> graph) {
+            KeyedGraph<? extends VCent, Edge> graph) {
         if (graph != null) {
-            VBetw vertex;
+            VCent vertex;
             for (int i = 0; i < getNumberOfNodes(); i++) {
                 vertex = graph.getVertex(i + 1);
                 if (vertex != null) {
@@ -312,9 +312,9 @@ public abstract class GraphAnalyzerTest
      */
     protected void checkCloseness(
             double[] expectedCloseness,
-            KeyedGraph<? extends VBetw, Edge> graph) {
+            KeyedGraph<? extends VCent, Edge> graph) {
         if (graph != null) {
-            VBetw vertex;
+            VCent vertex;
             for (int i = 0; i < getNumberOfNodes(); i++) {
                 vertex = graph.getVertex(i + 1);
                 if (vertex != null) {

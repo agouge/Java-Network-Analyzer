@@ -24,10 +24,8 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import org.javanetworkanalyzer.data.VSearch;
 import java.util.LinkedList;
-import org.javanetworkanalyzer.data.VUBetw;
-import org.javanetworkanalyzer.data.VWBetw;
+import org.javanetworkanalyzer.data.VBFS;
 import org.jgrapht.Graph;
 
 /**
@@ -41,7 +39,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class BFS<V extends VSearch<V, Integer>, E>
+public class BFS<V extends VBFS, E>
         extends GraphSearchAlgorithm<V, E> {
 
     /**
@@ -92,8 +90,7 @@ public class BFS<V extends VSearch<V, Integer>, E>
     @Override
     protected void init(V startNode) {
         for (V node : graph.vertexSet()) {
-            node.setDistance(VUBetw.DEFAULT_DISTANCE);
-            node.getPredecessors().clear();
+            node.reset();
         }
         startNode.setSource();
         queue.clear();
@@ -122,10 +119,10 @@ public class BFS<V extends VSearch<V, Integer>, E>
     protected void enqueueAndUpdateDistance(final V current,
                                             final V neighbor,
                                             LinkedList<V> queue) {
-        // Enqueue the neighbor.
-        queue.add(neighbor);
         // Update the distance.
         neighbor.setDistance(current.getDistance() + 1);
+        // Enqueue the neighbor.
+        queue.add(neighbor);
     }
 
     /**

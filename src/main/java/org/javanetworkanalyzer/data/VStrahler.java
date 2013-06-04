@@ -25,23 +25,24 @@
 package org.javanetworkanalyzer.data;
 
 /**
- * Vertex containing a Strahler number.
+ * Vertex to be used during the Strahler stream order algorithm.
  *
  * @author Adam Gouge
  */
-public class VStrahler extends VDFS {
+public class VStrahler extends VDFS<VStrahler> {
 
     /**
      * The Strahler number of this node.
      */
-    private int strahlerNumber;
+    private int strahlerNumber = -1;
 
     /**
-     * Constructor.
+     * Constructor: sets the id.
+     *
+     * @param id Id
      */
     public VStrahler(Integer id) {
         super(id);
-        this.strahlerNumber = -1;
     }
 
     /**

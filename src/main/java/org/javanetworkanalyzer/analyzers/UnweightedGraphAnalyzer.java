@@ -25,7 +25,7 @@
 package org.javanetworkanalyzer.analyzers;
 
 import org.javanetworkanalyzer.alg.BFSForCentrality;
-import org.javanetworkanalyzer.data.VUBetw;
+import org.javanetworkanalyzer.data.VUCent;
 import org.javanetworkanalyzer.data.UnweightedPathLengthData;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
@@ -40,7 +40,7 @@ import org.jgrapht.Graph;
  * @author Adam Gouge
  */
 public class UnweightedGraphAnalyzer<E>
-        extends GraphAnalyzer<VUBetw, E, UnweightedPathLengthData> {
+        extends GraphAnalyzer<VUCent, E, UnweightedPathLengthData> {
 
     private final BFSForCentrality<E> bfs;
 
@@ -52,7 +52,7 @@ public class UnweightedGraphAnalyzer<E>
      * @param pm    The {@link ProgressMonitor} to be used.
      */
     public UnweightedGraphAnalyzer(
-            Graph<VUBetw, E> graph,
+            Graph<VUCent, E> graph,
             ProgressMonitor pm) throws
             NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
@@ -67,7 +67,7 @@ public class UnweightedGraphAnalyzer<E>
      *
      * @param graph The graph to be analyzed.
      */
-    public UnweightedGraphAnalyzer(Graph<VUBetw, E> graph)
+    public UnweightedGraphAnalyzer(Graph<VUCent, E> graph)
             throws NoSuchMethodException,
             InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
@@ -89,7 +89,7 @@ public class UnweightedGraphAnalyzer<E>
      */
     @Override
     protected UnweightedPathLengthData calculateShortestPathsFromNode(
-            VUBetw startNode) {
+            VUCent startNode) {
         bfs.calculate(startNode);
         return bfs.getPaths();
     }

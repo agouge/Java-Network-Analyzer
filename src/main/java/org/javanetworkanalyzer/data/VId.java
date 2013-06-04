@@ -31,8 +31,16 @@ package org.javanetworkanalyzer.data;
  */
 public class VId {
 
+    /**
+     * Id.
+     */
     private final int id;
 
+    /**
+     * Constructor: sets the id.
+     *
+     * @param id Id
+     */
     public VId(Integer id) {
         this.id = id;
     }
@@ -44,10 +52,5 @@ public class VId {
      */
     public int getID() {
         return id;
-    }
-    
-    @Override
-    public String toString() {
-        return String.valueOf(getID());
     }
 }
