@@ -24,7 +24,7 @@
  */
 package org.javanetworkanalyzer.analyzers;
 
-import org.javanetworkanalyzer.data.VBetw;
+import org.javanetworkanalyzer.data.VCent;
 import org.javanetworkanalyzer.data.PathLengthData;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Adam Gouge
  */
-public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData>
+public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData>
         extends GeneralizedGraphAnalyzer<V, E> {
 
     /**
@@ -71,7 +71,7 @@ public abstract class GraphAnalyzer<V extends VBetw, E, S extends PathLengthData
      *
      * @param graph     The graph to be analyzed.
      * @param pm        The {@link ProgressMonitor} to be used.
-     * @param nodeClass The class of the {@link VBetw} to use.
+     * @param nodeClass The class of the {@link VCent} to use.
      */
     // TODO: Do I need the wildcard on S?
     public GraphAnalyzer(Graph<V, E> graph,

@@ -30,8 +30,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
-import org.javanetworkanalyzer.data.VSearch;
-import org.javanetworkanalyzer.data.VWBetw;
+import org.javanetworkanalyzer.data.VDijkstra;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -45,7 +44,7 @@ import org.jgrapht.graph.EdgeReversedGraph;
  *
  * @author Adam Gouge
  */
-public class Dijkstra<V extends VSearch<V, Double>, E>
+public class Dijkstra<V extends VDijkstra, E>
         extends GraphSearchAlgorithm<V, E> {
 
     /**
@@ -94,8 +93,7 @@ public class Dijkstra<V extends VSearch<V, Double>, E>
     @Override
     protected void init(V startNode) {
         for (V node : graph.vertexSet()) {
-            node.setDistance(VWBetw.DEFAULT_DISTANCE);
-            node.getPredecessors().clear();
+            node.reset();
         }
         startNode.setSource();
         queue.clear();

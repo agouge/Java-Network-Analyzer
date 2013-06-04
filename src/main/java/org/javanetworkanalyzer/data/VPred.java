@@ -25,25 +25,56 @@
 package org.javanetworkanalyzer.data;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Interface for vertices which may have predecessor(s).
+ * Vertices which have an id and predecessor(s) on shortest paths from a source
+ * node.
+ *
+ * @param <V> Vertex
  *
  * @author Adam Gouge
  */
-public interface VPred<V> {
+public class VPred<V extends VPred> extends VId {
+
+    /**
+     * List of the predecessors of this node.
+     *
+     * I.e., the nodes lying on the shortest path to this node
+     */
+    private Set<V> predecessors = new HashSet<V>();
+
+    /**
+     * Constructor: sets the id.
+     *
+     * @param id Id
+     */
+    public VPred(Integer id) {
+        super(id);
+    }
 
     /**
      * Returns the predecessors.
      *
      * @return The predecessors.
      */
-    HashSet<V> getPredecessors();
+    public Set<V> getPredecessors() {
+        return predecessors;
+    }
 
     /**
      * Adds a predecessor to the predecessor list of this node
      *
      * @param pred Node to be added since it is a predecessor of this node
      */
-    public void addPredecessor(V pred);
+    public void addPredecessor(V pred) {
+        predecessors.add(pred);
+    }
+
+    /**
+     * Clears the predecessor list of this node.
+     */
+    public void clear() {
+        predecessors.clear();
+    }
 }

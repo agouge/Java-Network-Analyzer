@@ -24,9 +24,9 @@
  */
 package org.javanetworkanalyzer.graphcreators;
 
-import org.javanetworkanalyzer.data.VBetw;
-import org.javanetworkanalyzer.data.VUBetw;
-import org.javanetworkanalyzer.data.VWBetw;
+import org.javanetworkanalyzer.data.VCent;
+import org.javanetworkanalyzer.data.VUCent;
+import org.javanetworkanalyzer.data.VWCent;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.KeyedGraph;
 import org.javanetworkanalyzer.model.UndirectedG;
@@ -51,42 +51,42 @@ public class Graph2DGraphCreatorTest {
     @Test
     public void unweightedDirected() throws FileNotFoundException,
             NoSuchMethodException {
-        KeyedGraph<? extends VBetw, Edge> graph =
+        KeyedGraph<? extends VCent, Edge> graph =
                 load2DGraph(false, GraphCreator.DIRECTED);
     }
 
     @Test
     public void unweightedReversed() throws FileNotFoundException,
             NoSuchMethodException {
-        KeyedGraph<? extends VBetw, Edge> graph =
+        KeyedGraph<? extends VCent, Edge> graph =
                 load2DGraph(false, GraphCreator.REVERSED);
     }
 
     @Test
     public void unweightedUndirected() throws FileNotFoundException,
             NoSuchMethodException {
-        KeyedGraph<? extends VBetw, Edge> graph =
+        KeyedGraph<? extends VCent, Edge> graph =
                 load2DGraph(false, GraphCreator.UNDIRECTED);
     }
 
     @Test
     public void weightedDirected() throws FileNotFoundException,
             NoSuchMethodException {
-        KeyedGraph<? extends VBetw, Edge> graph =
+        KeyedGraph<? extends VCent, Edge> graph =
                 load2DGraph(true, GraphCreator.DIRECTED);
     }
 
     @Test
     public void weightedReversed() throws FileNotFoundException,
             NoSuchMethodException {
-        KeyedGraph<? extends VBetw, Edge> graph =
+        KeyedGraph<? extends VCent, Edge> graph =
                 load2DGraph(true, GraphCreator.REVERSED);
     }
 
     @Test
     public void weightedUndirected() throws FileNotFoundException,
             NoSuchMethodException {
-        KeyedGraph<? extends VBetw, Edge> graph =
+        KeyedGraph<? extends VCent, Edge> graph =
                 load2DGraph(true, GraphCreator.UNDIRECTED);
     }
 
@@ -102,23 +102,23 @@ public class Graph2DGraphCreatorTest {
      *
      * @throws FileNotFoundException
      */
-    private KeyedGraph<? extends VBetw, Edge> load2DGraph(
+    private KeyedGraph<? extends VCent, Edge> load2DGraph(
             boolean weighted,
             int orientation) throws FileNotFoundException,
             NoSuchMethodException {
-        KeyedGraph<? extends VBetw, Edge> graph;
+        KeyedGraph<? extends VCent, Edge> graph;
         if (weighted) {
-            graph = new WeightedGraphCreator<VWBetw, Edge>(
+            graph = new WeightedGraphCreator<VWCent, Edge>(
                     FILENAME,
                     orientation,
-                    VWBetw.class,
+                    VWCent.class,
                     Edge.class,
                     WEIGHT).loadGraph();
         } else {
-            graph = new GraphCreator<VUBetw, Edge>(
+            graph = new GraphCreator<VUCent, Edge>(
                     FILENAME,
                     orientation,
-                    VUBetw.class,
+                    VUCent.class,
                     Edge.class).loadGraph();
         }
         if (LOGGER.isDebugEnabled()) {
@@ -132,7 +132,7 @@ public class Graph2DGraphCreatorTest {
      *
      * @param graph The graph.
      */
-    private void printEdges(KeyedGraph<? extends VBetw, Edge> graph) {
+    private void printEdges(KeyedGraph<? extends VCent, Edge> graph) {
         String leftArrow;
         if (graph instanceof UndirectedG) {
             leftArrow = "<";

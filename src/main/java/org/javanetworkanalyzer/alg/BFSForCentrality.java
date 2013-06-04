@@ -24,10 +24,10 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import org.javanetworkanalyzer.data.VUBetw;
 import org.javanetworkanalyzer.data.UnweightedPathLengthData;
 import java.util.LinkedList;
 import java.util.Stack;
+import org.javanetworkanalyzer.data.VUCent;
 import org.jgrapht.Graph;
 
 /**
@@ -35,13 +35,13 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class BFSForCentrality<E> extends BFS<VUBetw, E> {
+public class BFSForCentrality<E> extends BFS<VUCent, E> {
 
     /**
      * Stack that will return the nodes ordered by non-increasing distance from
      * the source node.
      */
-    private final Stack<VUBetw> stack;
+    private final Stack<VUCent> stack;
     /**
      * Data structure used to hold information used to calculate closeness.
      */
@@ -54,15 +54,15 @@ public class BFSForCentrality<E> extends BFS<VUBetw, E> {
      * @param startNode The start node.
      * @param nodeMap   Maps nodes to their info.
      */
-    public BFSForCentrality(Graph<VUBetw, E> graph,
-                            Stack<VUBetw> stack) {
+    public BFSForCentrality(Graph<VUCent, E> graph,
+                            Stack<VUCent> stack) {
         super(graph);
         this.stack = stack;
         this.pathsFromStartNode = new UnweightedPathLengthData();
     }
 
     @Override
-    protected void init(VUBetw startNode) {
+    protected void init(VUCent startNode) {
         super.init(startNode);
         stack.clear();
         pathsFromStartNode.clear();
@@ -76,10 +76,10 @@ public class BFSForCentrality<E> extends BFS<VUBetw, E> {
      * @return The newly dequeued node.
      */
     @Override
-    protected VUBetw dequeueStep(
-            LinkedList<VUBetw> queue) {
+    protected VUCent dequeueStep(
+            LinkedList<VUCent> queue) {
         // Dequeue a node.
-        VUBetw current = queue.poll();
+        VUCent current = queue.poll();
         // Push it to the stack.
         stack.push(current);
         // Return it.
@@ -88,15 +88,15 @@ public class BFSForCentrality<E> extends BFS<VUBetw, E> {
 
     @Override
     protected void firstTimeFoundStep(
-            final VUBetw current,
-            final VUBetw neighbor) {
+            final VUCent current,
+            final VUCent neighbor) {
         // Add this to the path length data. (For closeness)
         pathsFromStartNode.addSPLength(neighbor.getDistance());
     }
 
     @Override
-    protected void shortestPathStep(VUBetw current,
-                                    VUBetw neighbor) {
+    protected void shortestPathStep(VUCent current,
+                                    VUCent neighbor) {
         // Update the number of shortest paths.
         neighbor.accumulateSPCount(current.getSPCount());
         // Add currentNode to the set of predecessors of neighbor.
