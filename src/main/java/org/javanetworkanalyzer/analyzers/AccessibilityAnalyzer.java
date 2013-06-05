@@ -53,6 +53,7 @@ public class AccessibilityAnalyzer<E> extends GeneralizedGraphAnalyzer<VAccess, 
                                  Set<VAccess> destinations) {
         super(graph);
         this.destinations = destinations;
+        verifyDestinations();
     }
 
     /**
@@ -79,6 +80,19 @@ public class AccessibilityAnalyzer<E> extends GeneralizedGraphAnalyzer<VAccess, 
             // Calculate all shortest paths from this destination and update
             // the closest destination accordingly.
             dijkstra.calculate(dest);
+        }
+    }
+
+    /**
+     * Makes sure that every requested destination is contained in the graph.
+     */
+    private void verifyDestinations() {
+        for (VAccess dest : destinations) {
+            if (!graph.containsVertex(dest)) {
+                throw new IllegalArgumentException(
+                        "Destination " + dest.getID() + " is not contained "
+                        + "in the graph.");
+            }
         }
     }
 }
