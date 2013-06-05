@@ -155,21 +155,8 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
         // values and their contributions to betweenness values.
         accumulateDependencies(startNode);
         // ***** END CENTRALITY CONTRIBUTION CALCULATION ******
+
         debug(startNode);
-
-        // ***** RESET HASH MAP VALUES IN PREPARATION FOR *****
-        // *****          THE NEXT CALCULATION            *****
-        resetNodes();
-        // ***** END RESET ************************************
-    }
-
-    /**
-     * Resets all nodes (except for betweenness and closeness).
-     */
-    private void resetNodes() {
-        for (V node : nodeSet) {
-            node.reset();
-        }
     }
 
     /**
