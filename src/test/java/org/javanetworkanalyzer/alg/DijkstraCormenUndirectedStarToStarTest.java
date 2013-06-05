@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.javanetworkanalyzer.data.VWCent;
+import org.javanetworkanalyzer.graphcreators.CormenGraph;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.WeightedPseudoG;
 import org.junit.Test;
@@ -54,7 +55,7 @@ import static org.junit.Assert.assertEquals;
 //         \ v| /    2     \v|
 //          > 4 -----------> 5
 //               CORMEN
-public class DijkstraTest {
+public class DijkstraCormenUndirectedStarToStarTest {
 
     private static final double TOLERANCE = 0.0;
 
