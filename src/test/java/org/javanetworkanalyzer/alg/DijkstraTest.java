@@ -25,7 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import java.util.Arrays;
-import org.javanetworkanalyzer.data.VAccess;
+import org.javanetworkanalyzer.data.VDijkstra;
 import org.javanetworkanalyzer.graphcreators.GraphPrep;
 import org.javanetworkanalyzer.model.DirectedG;
 import org.javanetworkanalyzer.model.DirectedWeightedPseudoG;
@@ -54,7 +54,7 @@ public abstract class DijkstraTest {
 
     @Test
     public void testWD() throws Exception {
-        DirectedWeightedPseudoG<VAccess, Edge> g =
+        DirectedWeightedPseudoG<VDijkstra, Edge> g =
                 getGraphPrep().weightedDirected();
         assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesWD(),
                                      actualDistances(g)));
@@ -62,7 +62,7 @@ public abstract class DijkstraTest {
 
     @Test
     public void testWR() throws Exception {
-        WeightedEdgeReversedG<VAccess, Edge> g =
+        WeightedEdgeReversedG<VDijkstra, Edge> g =
                 getGraphPrep().weightedReversed();
         assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesWR(),
                                      actualDistances(g)));
@@ -70,28 +70,28 @@ public abstract class DijkstraTest {
 
     @Test
     public void testWU() throws Exception {
-        UndirectedG<VAccess, Edge> g = getGraphPrep().weightedUndirected();
+        UndirectedG<VDijkstra, Edge> g = getGraphPrep().weightedUndirected();
         assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesWU(),
                                      actualDistances(g)));
     }
 
     @Test
     public void testD() throws Exception {
-        DirectedG<VAccess, Edge> g = getGraphPrep().directed();
+        DirectedG<VDijkstra, Edge> g = getGraphPrep().directed();
         assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesD(),
                                      actualDistances(g)));
     }
 
     @Test
     public void testR() throws Exception {
-        DirectedG<VAccess, Edge> g = getGraphPrep().reversed();
+        DirectedG<VDijkstra, Edge> g = getGraphPrep().reversed();
         assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesR(),
                                      actualDistances(g)));
     }
 
     @Test
     public void testU() throws Exception {
-        UndirectedG<VAccess, Edge> g = getGraphPrep().undirected();
+        UndirectedG<VDijkstra, Edge> g = getGraphPrep().undirected();
         assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesU(),
                                      actualDistances(g)));
     }
@@ -106,7 +106,7 @@ public abstract class DijkstraTest {
      *
      * @throws Exception
      */
-    public Double[][] actualDistances(KeyedGraph<VAccess, Edge> g)
+    public Double[][] actualDistances(KeyedGraph<VDijkstra, Edge> g)
             throws Exception {
         Double[][] d = new Double[getGraphPrep().getNumberOfVertices()][getGraphPrep().
                 getNumberOfVertices()];
