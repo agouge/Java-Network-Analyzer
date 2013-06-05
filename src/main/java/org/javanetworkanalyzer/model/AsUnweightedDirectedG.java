@@ -22,40 +22,48 @@
  * You should have received a copy of the GNU General Public License along with
  * Java Network Analyzer. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.javanetworkanalyzer.data;
+package org.javanetworkanalyzer.model;
+
+import org.javanetworkanalyzer.data.VId;
+import org.jgrapht.graph.AsUnweightedDirectedGraph;
 
 /**
- * Vertex keyed by an id.
  *
  * @author Adam Gouge
  */
-public class VId {
+public class AsUnweightedDirectedG<V extends VId, E>
+        //    extends GraphDelegator<V, E>
+        //    implements Serializable, DirectedGraph<V, E>
+        extends AsUnweightedDirectedGraph<V, E>
+        implements DirectedG<V, E> {
 
     /**
-     * Id.
+     * The graph to which operations are delegated.
      */
-    private final int id;
+    private DirectedG<V, E> delegate;
 
-    /**
-     * Constructor: sets the id.
-     *
-     * @param id Id
-     */
-    public VId(Integer id) {
-        this.id = id;
-    }
-
-    /**
-     * Returns the id of this node.
-     *
-     * @return The id of this node.
-     */
-    public int getID() {
-        return id;
+    public AsUnweightedDirectedG(DirectedG<V, E> g)
+            throws NoSuchMethodException {
+        super(g);
+        this.delegate = g;
     }
 
     @Override
-    public String toString() {
-        return String.valueOf(id);
+    public boolean addVertex(int id) {
+        throw new UnsupportedOperationException(
+                "Adding vertices to an as-unweighted-undirected graph is not "
+                + "currently supported.");
+    }
+
+    @Override
+    public V getVertex(int id) {
+        return delegate.getVertex(id);
+    }
+
+    @Override
+    public E addEdge(int source, int target) {
+        throw new UnsupportedOperationException(
+                "Adding edges to an as-unweighted-undirected graph is not "
+                + "currently supported.");
     }
 }

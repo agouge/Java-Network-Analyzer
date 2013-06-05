@@ -51,11 +51,9 @@ public class DijkstraForCentrality<E> extends Dijkstra<VWCent, E> {
     /**
      * Constructs a new {@link DijkstraForCentrality} object.
      *
-     * @param graph              The graph.
-     * @param startNode          The start node.
-     * @param pathsFromStartNode Information for calculating closeness.
-     * @param stack              The stack which will return nodes ordered by
-     *                           non-increasing distance from startNode.
+     * @param graph The graph.
+     * @param stack The stack which will return nodes ordered by non-increasing
+     *              distance from startNode.
      */
     public DijkstraForCentrality(
             Graph<VWCent, E> graph,
@@ -113,8 +111,9 @@ public class DijkstraForCentrality<E> extends Dijkstra<VWCent, E> {
     }
 
     /**
-     * Sets the predecessor of v to be u and updates the distance estimate on v
-     * to equal the distance to u plus w(u,v).
+     * Updates the shortest path count, Sets the predecessor of v to be u and
+     * updates the distance estimate on v to equal the distance to u plus
+     * w(u,v).
      *
      * @param u        Vertex u
      * @param v        Vertex v
@@ -122,13 +121,11 @@ public class DijkstraForCentrality<E> extends Dijkstra<VWCent, E> {
      * @param queue    Queue
      */
     @Override
-    protected void updateNeighbor(
-            VWCent u,
-            VWCent v,
-            Double uvWeight,
-            PriorityQueue<VWCent> queue) {
+    protected void updateNeighbor(VWCent startNode, VWCent u, VWCent v,
+                                  Double uvWeight,
+                                  PriorityQueue<VWCent> queue) {
         updateSPCount(u, v, uvWeight);
-        super.updateNeighbor(u, v, uvWeight, queue);
+        super.updateNeighbor(startNode, u, v, uvWeight, queue);
     }
 
     /**
