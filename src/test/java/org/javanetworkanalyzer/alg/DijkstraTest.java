@@ -24,198 +24,101 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import org.javanetworkanalyzer.data.VWCent;
+import java.util.Arrays;
+import org.javanetworkanalyzer.data.VDijkstra;
+import org.javanetworkanalyzer.graphcreators.GraphPrep;
+import org.javanetworkanalyzer.model.DirectedG;
+import org.javanetworkanalyzer.model.DirectedWeightedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
-import org.javanetworkanalyzer.model.WeightedPseudoG;
+import org.javanetworkanalyzer.model.KeyedGraph;
+import org.javanetworkanalyzer.model.UndirectedG;
+import org.javanetworkanalyzer.model.WeightedEdgeReversedG;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 /**
- * Tests one-to-one, one-to-many, many-to-one and many-to-many Dijkstra searches
- * on the Cormen graph.
- *
- * In each test we consider all possible combinations, so that all distances
- * between pairs of nodes are calculated.
+ * Tests {@link Dijkstra} on all possible graph configurations via a
+ * {@link GraphPrep}.
  *
  * @author Adam Gouge
  */
-//                   1
-//           >2 ------------>3
-//          / |^           ->|^
-//       10/ / |      9   / / |
-//        / 2| |3    -----  | |
-//       /   | |    /      4| |6
-//      1<---------------   | |
-//       \   | |  /     7\  | |
-//       5\  | / /        \ | /
-//         \ v| /    2     \v|
-//          > 4 -----------> 5
-//               CORMEN
-public class DijkstraTest {
+public abstract class DijkstraTest {
 
-    private static final double TOLERANCE = 0.0;
+    /**
+     * Returns the {@link GraphPrep} that prepares the graphs on which to
+     * perform the tests.
+     *
+     * @return The {@link GraphPrep}
+     */
+    public abstract GraphPrep getGraphPrep();
 
     @Test
-    public void testOneToOne() {
-        try {
-            WeightedPseudoG<VWCent, Edge> g = prepareGraph();
-            Map<VWCent, Map<VWCent, Double>> expectedDistances =
-                    expectedDistances(g);
-
-            Dijkstra<VWCent, Edge> dijkstra = new Dijkstra<VWCent, Edge>(g);
-
-            for (VWCent source : g.vertexSet()) {
-                for (VWCent target : g.vertexSet()) {
-                    double distance = dijkstra.oneToOne(source, target);
-                    assertEquals(expectedDistances.get(source).get(target),
-                                 distance, TOLERANCE);
-                }
-            }
-        } catch (NoSuchMethodException ex) {
-        }
+    public void testWD() throws Exception {
+        DirectedWeightedPseudoG<VDijkstra, Edge> g =
+                getGraphPrep().weightedDirected();
+        assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesWD(),
+                                     actualDistances(g)));
     }
 
     @Test
-    public void testOneToMany() {
-        try {
-            WeightedPseudoG<VWCent, Edge> g = prepareGraph();
-            Map<VWCent, Map<VWCent, Double>> expectedDistances =
-                    expectedDistances(g);
-
-            Dijkstra<VWCent, Edge> dijkstra = new Dijkstra<VWCent, Edge>(g);
-
-            for (VWCent source : g.vertexSet()) {
-                // Note: This is a oneToAll. It should be equivalent to
-                // dijkstra.calculate(source);
-                Map<VWCent, Double> distances =
-                        dijkstra.oneToMany(source, g.vertexSet());
-                for (Entry<VWCent, Double> e : distances.entrySet()) {
-                    VWCent target = e.getKey();
-                    Double distance = e.getValue();
-                    assertEquals(expectedDistances.get(source).get(target),
-                                 distance, TOLERANCE);
-                }
-            }
-        } catch (NoSuchMethodException ex) {
-        }
+    public void testWR() throws Exception {
+        WeightedEdgeReversedG<VDijkstra, Edge> g =
+                getGraphPrep().weightedReversed();
+        assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesWR(),
+                                     actualDistances(g)));
     }
 
     @Test
-    public void testManyToOne() {
-        try {
-            WeightedPseudoG<VWCent, Edge> g = prepareGraph();
-            Map<VWCent, Map<VWCent, Double>> expectedDistances =
-                    expectedDistances(g);
-
-            Dijkstra<VWCent, Edge> dijkstra = new Dijkstra<VWCent, Edge>(g);
-
-            for (VWCent target : g.vertexSet()) {
-                // Note: This is an allToOne.
-                Map<VWCent, Double> distances =
-                        dijkstra.manyToOne(g.vertexSet(), target);
-                for (Entry<VWCent, Double> e : distances.entrySet()) {
-                    VWCent source = e.getKey();
-                    Double distance = e.getValue();
-                    assertEquals(expectedDistances.get(source).get(target),
-                                 distance, TOLERANCE);
-                }
-            }
-        } catch (NoSuchMethodException ex) {
-        }
+    public void testWU() throws Exception {
+        UndirectedG<VDijkstra, Edge> g = getGraphPrep().weightedUndirected();
+        assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesWU(),
+                                     actualDistances(g)));
     }
 
     @Test
-    public void testManyToMany() {
-        try {
-            WeightedPseudoG<VWCent, Edge> g = prepareGraph();
-            Map<VWCent, Map<VWCent, Double>> expectedDistances =
-                    expectedDistances(g);
+    public void testD() throws Exception {
+        DirectedG<VDijkstra, Edge> g = getGraphPrep().directed();
+        assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesD(),
+                                     actualDistances(g)));
+    }
 
-            Dijkstra<VWCent, Edge> dijkstra = new Dijkstra<VWCent, Edge>(g);
+    @Test
+    public void testR() throws Exception {
+        DirectedG<VDijkstra, Edge> g = getGraphPrep().reversed();
+        assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesR(),
+                                     actualDistances(g)));
+    }
 
-            // Note: This is an allToAll.
-            Map<VWCent, Map<VWCent, Double>> distances =
-                    dijkstra.manyToMany(g.vertexSet(), g.vertexSet());
-            for (Entry<VWCent, Map<VWCent, Double>> e : distances.entrySet()) {
-                VWCent source = e.getKey();
-                Map<VWCent, Double> distancesKeyedByTarget = e.getValue();
-                for (Entry<VWCent, Double> f : distancesKeyedByTarget.entrySet()) {
-                    VWCent target = f.getKey();
-                    double distance = f.getValue();
-                    assertEquals(expectedDistances.get(source).get(target),
-                                 distance, TOLERANCE);
-                }
+    @Test
+    public void testU() throws Exception {
+        UndirectedG<VDijkstra, Edge> g = getGraphPrep().undirected();
+        assertTrue(Arrays.deepEquals(getGraphPrep().expectedDistancesU(),
+                                     actualDistances(g)));
+    }
+
+    /**
+     * Executes {@link Dijkstra} on the given graph and returns the distance
+     * matrix.
+     *
+     * @param g Graph
+     *
+     * @return Distance matrix
+     *
+     * @throws Exception
+     */
+    public Double[][] actualDistances(KeyedGraph<VDijkstra, Edge> g)
+            throws Exception {
+        Double[][] d = new Double[getGraphPrep().getNumberOfVertices()][getGraphPrep().
+                getNumberOfVertices()];
+
+        Dijkstra dijkstra = new Dijkstra(g);
+        for (int i = 1; i < getGraphPrep().getNumberOfVertices() + 1; i++) {
+            for (int j = 1; j < getGraphPrep().getNumberOfVertices() + 1; j++) {
+                dijkstra.calculate(g.getVertex(i));
+                d[i - 1][j - 1] = g.getVertex(j).getDistance();
             }
-        } catch (NoSuchMethodException ex) {
         }
-    }
 
-    private WeightedPseudoG<VWCent, Edge> prepareGraph()
-            throws NoSuchMethodException {
-        WeightedPseudoG<VWCent, Edge> graph = new WeightedPseudoG<VWCent, Edge>(
-                VWCent.class, Edge.class);
-        graph.addEdge(1, 2).setWeight(10);
-        graph.addEdge(1, 4).setWeight(5);
-        graph.addEdge(5, 1).setWeight(7);
-        graph.addEdge(2, 4).setWeight(2);
-        graph.addEdge(4, 2).setWeight(3);
-        graph.addEdge(3, 5).setWeight(4);
-        graph.addEdge(2, 3).setWeight(1);
-        graph.addEdge(4, 3).setWeight(9);
-        graph.addEdge(5, 3).setWeight(6);
-        graph.addEdge(4, 5).setWeight(2);
-        return graph;
-    }
-
-    private Map<VWCent, Map<VWCent, Double>> expectedDistances(
-            WeightedPseudoG<VWCent, Edge> g) {
-        Map<VWCent, Map<VWCent, Double>> distances =
-                new HashMap<VWCent, Map<VWCent, Double>>();
-
-        Map<VWCent, Double> dFromOne = new HashMap<VWCent, Double>();
-        dFromOne.put(g.getVertex(1), 0.0);
-        dFromOne.put(g.getVertex(2), 7.0);
-        dFromOne.put(g.getVertex(3), 8.0);
-        dFromOne.put(g.getVertex(4), 5.0);
-        dFromOne.put(g.getVertex(5), 7.0);
-
-        Map<VWCent, Double> dFromTwo = new HashMap<VWCent, Double>();
-        dFromTwo.put(g.getVertex(1), 7.0);
-        dFromTwo.put(g.getVertex(2), 0.0);
-        dFromTwo.put(g.getVertex(3), 1.0);
-        dFromTwo.put(g.getVertex(4), 2.0);
-        dFromTwo.put(g.getVertex(5), 4.0);
-
-        Map<VWCent, Double> dFromThree = new HashMap<VWCent, Double>();
-        dFromThree.put(g.getVertex(1), 8.0);
-        dFromThree.put(g.getVertex(2), 1.0);
-        dFromThree.put(g.getVertex(3), 0.0);
-        dFromThree.put(g.getVertex(4), 3.0);
-        dFromThree.put(g.getVertex(5), 4.0);
-
-        Map<VWCent, Double> dFromFour = new HashMap<VWCent, Double>();
-        dFromFour.put(g.getVertex(1), 5.0);
-        dFromFour.put(g.getVertex(2), 2.0);
-        dFromFour.put(g.getVertex(3), 3.0);
-        dFromFour.put(g.getVertex(4), 0.0);
-        dFromFour.put(g.getVertex(5), 2.0);
-
-        Map<VWCent, Double> dFromFive = new HashMap<VWCent, Double>();
-        dFromFive.put(g.getVertex(1), 7.0);
-        dFromFive.put(g.getVertex(2), 4.0);
-        dFromFive.put(g.getVertex(3), 4.0);
-        dFromFive.put(g.getVertex(4), 2.0);
-        dFromFive.put(g.getVertex(5), 0.0);
-
-        distances.put(g.getVertex(1), dFromOne);
-        distances.put(g.getVertex(2), dFromTwo);
-        distances.put(g.getVertex(3), dFromThree);
-        distances.put(g.getVertex(4), dFromFour);
-        distances.put(g.getVertex(5), dFromFive);
-
-        return distances;
+        return d;
     }
 }

@@ -22,40 +22,22 @@
  * You should have received a copy of the GNU General Public License along with
  * Java Network Analyzer. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.javanetworkanalyzer.data;
+package org.javanetworkanalyzer.alg;
+
+import org.javanetworkanalyzer.graphcreators.CormenGraphPrep;
+import org.javanetworkanalyzer.graphcreators.GraphPrep;
 
 /**
- * Vertex keyed by an id.
+ * Tests {@link Dijkstra} on all possible configurations of the Cormen graph.
  *
  * @author Adam Gouge
  */
-public class VId {
+public class DijkstraCormenTest extends DijkstraTest {
 
-    /**
-     * Id.
-     */
-    private final int id;
-
-    /**
-     * Constructor: sets the id.
-     *
-     * @param id Id
-     */
-    public VId(Integer id) {
-        this.id = id;
-    }
-
-    /**
-     * Returns the id of this node.
-     *
-     * @return The id of this node.
-     */
-    public int getID() {
-        return id;
-    }
+    private static final GraphPrep CORMEN = new CormenGraphPrep();
 
     @Override
-    public String toString() {
-        return String.valueOf(id);
+    public GraphPrep getGraphPrep() {
+        return CORMEN;
     }
 }

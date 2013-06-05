@@ -85,7 +85,7 @@ public class Dijkstra<V extends VDijkstra, E>
             }
             // Relax all the outgoing edges of u.
             for (E e : outgoingEdgesOf(u)) {
-                relax(u, e, queue);
+                relax(startNode, u, e, queue);
             }
         }
     }
@@ -119,7 +119,7 @@ public class Dijkstra<V extends VDijkstra, E>
      * @param e     Edge e.
      * @param queue The queue.
      */
-    protected void relax(V u, E e, PriorityQueue<V> queue) {
+    protected void relax(V startNode, V u, E e, PriorityQueue<V> queue) {
         // Get the target vertex.
         V v = Graphs.getOppositeVertex(graph, e, u);
         // Get the weight.
@@ -127,7 +127,7 @@ public class Dijkstra<V extends VDijkstra, E>
         // If a smaller distance estimate is available, make the necessary
         // updates.
         if (smallerEstimateExists(u, v, uvWeight)) {
-            updateNeighbor(u, v, uvWeight, queue);
+            updateNeighbor(startNode, u, v, uvWeight, queue);
         }
     }
 
@@ -163,7 +163,7 @@ public class Dijkstra<V extends VDijkstra, E>
      * @param uvWeight w(u,v)
      * @param queue    Queue
      */
-    protected void updateNeighbor(V u, V v, Double uvWeight,
+    protected void updateNeighbor(V startNode, V u, V v, Double uvWeight,
                                   PriorityQueue<V> queue) {
         // Set the predecessor and the distance.
         v.addPredecessor(u);
