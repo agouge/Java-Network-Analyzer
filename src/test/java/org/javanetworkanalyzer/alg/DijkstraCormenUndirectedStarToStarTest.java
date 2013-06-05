@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.javanetworkanalyzer.data.VWCent;
-import org.javanetworkanalyzer.graphcreators.CormenGraph;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.WeightedPseudoG;
 import org.junit.Test;
