@@ -28,15 +28,14 @@ import org.javanetworkanalyzer.analyzers.ManuallyCreatedGraphAnalyzerTest;
 import org.javanetworkanalyzer.data.VCent;
 import org.javanetworkanalyzer.data.VUCent;
 import org.javanetworkanalyzer.data.VWCent;
-import org.javanetworkanalyzer.model.DirectedG;
-import org.javanetworkanalyzer.model.Edge;
-import org.javanetworkanalyzer.model.KeyedGraph;
-import org.javanetworkanalyzer.model.UndirectedG;
-import org.javanetworkanalyzer.model.WeightedKeyedGraph;
+import org.javanetworkanalyzer.model.*;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
-import java.io.FileNotFoundException;
 import org.junit.Test;
+
+import java.io.FileNotFoundException;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests graph analyzers on a simple example graph.
@@ -58,6 +57,7 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
     private static final boolean PRINT_RESULTS = false;
     private static final boolean CHECK_RESULTS = true;
     private static final int NUMBER_OF_NODES = 5;
+    private static final double N_MINUS_ONE = NUMBER_OF_NODES - 1;
 
     @Override
     protected void addEdges(
@@ -190,19 +190,17 @@ public class ExampleGraphTest extends ManuallyCreatedGraphAnalyzerTest {
                 super.weightedUndirectedAnalysis();
         if (CHECK_RESULTS) {
             // Max = 4, min = 0
-            checkBetweenness(new double[]{
-                (double) (1 + 2 + 0 + 1) / 4,
-                (double) (0.5 + 0 + 1.5 + 1) / 4,
-                (double) (0.5 + 0 + 0.5 + 0) / 4,
-                (double) (0 + 1 + 0 + 0) / 4,
-                (double) (0 + 0 + 0 + 0) / 4}, graph);
-            checkCloseness(new double[]{
-                (double) (NUMBER_OF_NODES - 1) / (1.2 + 0.8 + 2.1 + 1.0),
-                (double) (NUMBER_OF_NODES - 1) / (1.2 + 2.0 + 0.9 + 0.3),
-                (double) (NUMBER_OF_NODES - 1) / (0.8 + 2.0 + 1.3 + 1.8),
-                (double) (NUMBER_OF_NODES - 1) / (2.1 + 0.9 + 1.3 + 1.2),
-                (double) (NUMBER_OF_NODES - 1) / (1.0 + 0.3 + 1.8 + 1.2)
-            }, graph);
+            assertEquals((1.0 + 2 + 0 + 1) / N_MINUS_ONE, graph.getVertex(1).getBetweenness(), TOLERANCE);
+            assertEquals((0.5 + 0 + 1.5 + 1) / N_MINUS_ONE, graph.getVertex(2).getBetweenness(), TOLERANCE);
+            assertEquals((0.5 + 0 + 0.5 + 0) / N_MINUS_ONE, graph.getVertex(3).getBetweenness(), TOLERANCE);
+            assertEquals((0.0 + 0 + 0 + 0) / N_MINUS_ONE, graph.getVertex(4).getBetweenness(), TOLERANCE);
+            assertEquals((0.0 + 0 + 0 + 0) / N_MINUS_ONE, graph.getVertex(5).getBetweenness(), TOLERANCE);
+
+            assertEquals(N_MINUS_ONE / (1.2 + 0.8 + 2.1 + 1.0), graph.getVertex(1).getCloseness(), TOLERANCE);
+            assertEquals(N_MINUS_ONE / (1.2 + 2.0 + 0.9 + 0.3), graph.getVertex(2).getCloseness(), TOLERANCE);
+            assertEquals(N_MINUS_ONE / (0.8 + 2.0 + 1.3 + 1.8), graph.getVertex(3).getCloseness(), TOLERANCE);
+            assertEquals(N_MINUS_ONE / (2.1 + 0.9 + 1.3 + 1.2), graph.getVertex(4).getCloseness(), TOLERANCE);
+            assertEquals(N_MINUS_ONE / (1.0 + 0.3 + 1.8 + 1.2), graph.getVertex(5).getCloseness(), TOLERANCE);
         }
     }
 

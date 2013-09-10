@@ -110,48 +110,20 @@ public class DijkstraForCentrality<E> extends Dijkstra<VWCent, E> {
         return true;
     }
 
-    /**
-     * Updates the shortest path count, Sets the predecessor of v to be u and
-     * updates the distance estimate on v to equal the distance to u plus
-     * w(u,v).
-     *
-     * @param u        Vertex u
-     * @param v        Vertex v
-     * @param uvWeight w(u,v)
-     * @param queue    Queue
-     */
     @Override
-    protected void updateNeighbor(VWCent startNode, VWCent u, VWCent v,
-                                  Double uvWeight,
-                                  PriorityQueue<VWCent> queue) {
-        updateSPCount(u, v, uvWeight);
-        super.updateNeighbor(startNode, u, v, uvWeight, queue);
+    protected void shortestPathSoFarUpdate(VWCent startNode, VWCent u, VWCent v,
+                                           Double uvWeight,
+                                           PriorityQueue<VWCent> queue) {
+        // Reset the number of shortest paths
+        v.setSPCount(u.getSPCount());
+        super.shortestPathSoFarUpdate(startNode, u, v, uvWeight, queue);
     }
 
-    /**
-     * Updates the number of shortest paths leading to v when relaxing the edge
-     * (u,v).
-     *
-     * @param u        Node u.
-     * @param v        Node v.
-     * @param uvWeight w(u,v).
-     */
-    // TODO: Maybe we test if v.getSPCount == 0 instead?
-    // (Potentially more efficient.)
-    protected void updateSPCount(VWCent u,
-                                 VWCent v,
-                                 double uvWeight) {
-        // If the distance to v is just below the distance to u plus w(u,v)
-        // (this situation is allowed by the tolerance), then this
-        // is one of multiple shortest paths. As such, we add the number
-        // of shortest paths to u.
-        if (v.getDistance() <= u.getDistance() + uvWeight) {
-            v.accumulateSPCount(u.getSPCount());
-        } // Otherwise this is the first shortest path found to v so far,
-        // so we set the number of shortest paths to that of u.
-        else {
-            v.setSPCount(u.getSPCount());
-        }
+    @Override
+    protected void multipleShortestPathUpdate(VWCent u, VWCent v) {
+        // Accumulate the number of shortest paths
+        v.accumulateSPCount(u.getSPCount());
+        super.multipleShortestPathUpdate(u, v);
     }
 
     /**
