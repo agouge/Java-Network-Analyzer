@@ -52,14 +52,13 @@ import org.junit.Test;
 //      1<---------------   | |
 //       \   | |  /     7\  | |
 //       5\  | / /        \ | /
-//         \ v| /          \v|
+//         \ v| /    2     \v|
 //          > 4 -----------> 5
 //
 public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
 
     private final static String CORMEN_GRAPH = "Cormen graph";
     private static final boolean PRINT_RESULTS = false;
-    private static final int numberOfNodes = 5;
     private static final boolean CHECK_RESULTS = true;
     private static final int NUMBER_OF_NODES = 5;
 
@@ -164,11 +163,11 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 super.weightedDirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
-                0.57142857143,
-                0.00000000000,
-                0.00000000000,
-                1.00000000000,
-                0.85714285714
+                4.0 / 7,
+                2.0 / 7,
+                0.0,
+                1.0,
+                5.0 / 7
             }, graph);
             checkCloseness(new double[]{
                 0.13793103448,
@@ -186,11 +185,11 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 super.weightedReversedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
-                0.57142857143,
-                0.42857142857,
-                0.00000000000,
-                1.00000000000,
-                0.71428571429
+                4.0 / 7,
+                2.0 / 7,
+                0.0,
+                1.0,
+                5.0 / 7
             }, graph);
             checkCloseness(new double[]{
                 0.10526315789,
@@ -208,11 +207,11 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 super.weightedUndirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
-                0.00000000000,
-                0.62500000000,
-                0.12500000000,
-                1.00000000000,
-                0.00000000000
+                0.0,
+                4.0 / 7,
+                0.0,
+                1.0,
+                0.0
             }, graph);
             checkCloseness(new double[]{
                 0.14814814815,
@@ -241,6 +240,6 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
 
     @Override
     protected int getNumberOfNodes() {
-        return numberOfNodes;
+        return NUMBER_OF_NODES;
     }
 }

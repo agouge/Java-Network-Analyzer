@@ -35,6 +35,8 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.EdgeReversedGraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Home-brewed implementation of Dijkstra's algorithm.
@@ -56,6 +58,8 @@ public class Dijkstra<V extends VDijkstra, E>
      * have the same length.
      */
     protected static final double TOLERANCE = 0.000000001;
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(Dijkstra.class);
 
     /**
      * Constructs a new {@link Dijkstra} object.
@@ -102,11 +106,11 @@ public class Dijkstra<V extends VDijkstra, E>
 
     /**
      * Any work to be done using vertex u before relaxing the outgoing edges of
-     * u. In this class, it is empty on purpose.
+     * u. Must return true if the search should be stopped.
      *
      * @param u Vertex u.
      *
-     * @return false if we should stop the Dijkstra search.
+     * @return true if we should stop the Dijkstra search.
      */
     protected boolean preRelaxStep(V startNode, V u) {
         return false;
@@ -126,51 +130,50 @@ public class Dijkstra<V extends VDijkstra, E>
         double uvWeight = graph.getEdgeWeight(e);
         // If a smaller distance estimate is available, make the necessary
         // updates.
-        if (smallerEstimateExists(u, v, uvWeight)) {
-            updateNeighbor(startNode, u, v, uvWeight, queue);
+        if (v.getDistance() > u.getDistance() + uvWeight) {
+            shortestPathSoFarUpdate(startNode, u, v, uvWeight, queue);
+            LOGGER.debug("\tNew SP: d({},{}) = {}",
+                    startNode.getID(), v.getID(), v.getDistance());
+        } else if (Math.abs(v.getDistance() - (u.getDistance() + uvWeight))
+                < TOLERANCE) {
+            multipleShortestPathUpdate(u, v);
+            LOGGER.debug("\tMultiple SP: d({},{}) = {}",
+                    startNode.getID(), v.getID(), v.getDistance());
         }
     }
 
     /**
-     * Returns {@code true} iff the current distance estimate on v is greater
-     * than OR EQUAL TO (this corresponds to multiple shortest paths) the length
-     * of the path to u plus w(u,v).
-     *
-     * @param u        Vertex u
-     * @param v        Vertex v
-     * @param uvWeight w(u,v)
-     *
-     * @return {@code true} iff a smaller distance estimate exists.
-     */
-    protected boolean smallerEstimateExists(V u, V v, Double uvWeight) {
-        // The TOLERANCE takes care of the "or equal to" part.
-        // (If the distance to v is "just a little bit" less than
-        // the distance to u plus w(u,v), then we consider this to be
-        // a new shortest path to v through u.)
-        // Without the tolerance, this would just be "greater".
-        if (v.getDistance() > u.getDistance() + uvWeight - TOLERANCE) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Sets the predecessor of v to be u and updates the distance estimate on v
-     * to equal the distance to u plus w(u,v).
+     * Updates to be performed if the path to v through u is the shortest
+     * path to v found so far.
      *
      * @param u        Vertex u
      * @param v        Vertex v
      * @param uvWeight w(u,v)
      * @param queue    Queue
      */
-    protected void updateNeighbor(V startNode, V u, V v, Double uvWeight,
-                                  PriorityQueue<V> queue) {
-        // Set the predecessor and the distance.
+    protected void shortestPathSoFarUpdate(V startNode, V u, V v, Double uvWeight,
+                                           PriorityQueue<V> queue) {
+        // Reset the predecessors
+        v.getPredecessors().clear();
         v.addPredecessor(u);
+        // Set the distance
         v.setDistance(u.getDistance() + uvWeight);
         // Update the queue.
         queue.remove(v);
         queue.add(v);
+    }
+
+    /**
+     * Updates to be performed if the path to v through u is a new multiple
+     * shortest path.
+     *
+     * @param u Vertex u
+     * @param v Vertex v
+     */
+    protected void multipleShortestPathUpdate(V u, V v) {
+        // There is no need to set the distance on v since it this is a
+        // multiple shortest path.
+        v.addPredecessor(u);
     }
 
     /**
