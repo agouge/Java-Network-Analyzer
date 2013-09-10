@@ -24,8 +24,6 @@
  */
 package org.javanetworkanalyzer.data;
 
-import static org.javanetworkanalyzer.data.PathLengthData.SPL_ERROR;
-
 /**
  * {@link PathLengthData} for weighted graphs.
  *
@@ -82,6 +80,6 @@ public class WeightedPathLengthData extends PathLengthData<Double> {
         if (getCount() == 0) {
             throw new IllegalStateException(SPL_ERROR);
         }
-        return ((double) getTotalLength()) / getCount();
+        return getTotalLength() / getCount();
     }
 }

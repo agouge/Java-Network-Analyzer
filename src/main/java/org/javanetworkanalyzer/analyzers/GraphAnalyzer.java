@@ -26,6 +26,7 @@ package org.javanetworkanalyzer.analyzers;
 
 import org.javanetworkanalyzer.data.VCent;
 import org.javanetworkanalyzer.data.PathLengthData;
+import org.javanetworkanalyzer.data.VDist;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
 import java.lang.reflect.InvocationTargetException;
@@ -71,7 +72,6 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
      *
      * @param graph     The graph to be analyzed.
      * @param pm        The {@link ProgressMonitor} to be used.
-     * @param nodeClass The class of the {@link VCent} to use.
      */
     // TODO: Do I need the wildcard on S?
     public GraphAnalyzer(Graph<V, E> graph,
@@ -151,7 +151,7 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
         // At this point, we have all information required to calculate
         // closeness for startNode.
         calculateClosenessForNode(startNode, paths);
-        // Use the recursion formula to calculate update the dependency
+        // Use the recursion formula to update the dependency
         // values and their contributions to betweenness values.
         accumulateDependencies(startNode);
         // ***** END CENTRALITY CONTRIBUTION CALCULATION ******
@@ -165,11 +165,6 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
      * updates the predecessor sets.
      *
      * @param startNode          The start node.
-     * @param stack              The stack which will return nodes ordered by
-     *                           non-increasing distance from startNode.
-     * @param pathsFromStartNode Holds information about shortest path lengths
-     *                           from startNode to all the other nodes in the
-     *                           network
      */
     protected abstract S calculateShortestPathsFromNode(
             V startNode);
@@ -211,8 +206,6 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
      * in the appropriate {@link V} of {@link #nodeBetweenness}.
      *
      * @param startNode The start node.
-     * @param stack     The stack that returns nodes ordered by non-increasing
-     *                  distance from startNode.
      */
     private void accumulateDependencies(V startNode) {
 
@@ -225,10 +218,13 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
         // startNode, do:
         while (!stack.empty()) {
             final V w = stack.pop();
+            LOGGER.debug("Popped {} ", w.getID());
 
             // For every predecessor v of w on shortest paths from
             // startNode, do:
             for (V predecessor : (HashSet<V>) w.getPredecessors()) {
+
+                final double oldDep = predecessor.getDependency();
 
                 // (A) Add the contribution of the dependency of startNode
                 // on w to the dependency of startNode on v.
@@ -237,6 +233,11 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
                          / w.getSPCount())
                         * (1 + w.getDependency());
                 predecessor.accumulateDependency(depContribution);
+                LOGGER.debug("--- {} contributed {} = ({}/{})*(1 + {}) to {} ({} --> {})",
+                        w.getID(), depContribution,
+                        predecessor.getSPCount(), w.getSPCount(), w.getDependency(),
+                        predecessor.getID(),
+                        oldDep, predecessor.getDependency());
             }
             // (The betweenness of w cannot receive contributions from
             // the dependency of w on w, by the definition of dependency.)
@@ -304,7 +305,7 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
 //                LOGGER.debug(
 //                        "d({},{}) = {}\t spCount = {}\t preds={}\t dep = {}",
 //                        startNode.getID(), target.getID(),
-//                        target.getDistance(),
+//                        ((VDist) target).getDistance(),
 //                        target.getSPCount(),
 //                        target.getPredecessors(),
 //                        target.getDependency());

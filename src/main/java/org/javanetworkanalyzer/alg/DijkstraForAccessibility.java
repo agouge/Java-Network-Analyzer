@@ -35,6 +35,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
+// TODO: Enable **multiple** "closest" destinations within a given tolerance.
 public class DijkstraForAccessibility<E> extends Dijkstra<VAccess, E> {
 
     /**
@@ -56,21 +57,17 @@ public class DijkstraForAccessibility<E> extends Dijkstra<VAccess, E> {
      * @param queue    Queue
      */
     @Override
-    protected void updateNeighbor(VAccess startNode, VAccess u, VAccess v,
-                                  Double uvWeight, PriorityQueue<VAccess> queue) {
+    protected void shortestPathSoFarUpdate(VAccess startNode, VAccess u, VAccess v,
+                                           Double uvWeight, PriorityQueue<VAccess> queue) {
         // If the distance from the start node to v (so the distance *from* v
         // *to* the destination represented by the start node in a reversed
         // graph) is less than the distance to any previously found closest
         // destination, then update v.
-        double dist = u.getDistance() + uvWeight;
-        // TODO: Enable **multiple** "closest" destinations within a given
-        // tolerance.
-        if (dist < v.getDistanceToClosestDestination()) {
-            v.setDistanceToClosestDestination(dist);
+        final double distance = u.getDistance() + uvWeight;
+        if (v.getDistanceToClosestDestination() > distance) {
+            v.setDistanceToClosestDestination(distance);
             v.setClosestDestinationId(startNode.getID());
         }
-        // Sets the predecessor of v to be u and updates the distance estimate
-        // on v to equal the distance to u plus w(u,v).
-        super.updateNeighbor(startNode, u, v, uvWeight, queue);
+        super.shortestPathSoFarUpdate(startNode, u, v, uvWeight, queue);
     }
 }
