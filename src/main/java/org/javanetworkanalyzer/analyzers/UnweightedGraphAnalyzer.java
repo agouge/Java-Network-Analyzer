@@ -25,8 +25,10 @@
 package org.javanetworkanalyzer.analyzers;
 
 import org.javanetworkanalyzer.alg.BFSForCentrality;
+import org.javanetworkanalyzer.alg.GraphSearchAlgorithm;
 import org.javanetworkanalyzer.data.VUCent;
 import org.javanetworkanalyzer.data.UnweightedPathLengthData;
+import org.javanetworkanalyzer.model.EdgeCent;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
 import java.lang.reflect.InvocationTargetException;
@@ -39,7 +41,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class UnweightedGraphAnalyzer<E>
+public class UnweightedGraphAnalyzer<E extends EdgeCent>
         extends GraphAnalyzer<VUCent, E, UnweightedPathLengthData> {
 
     private final BFSForCentrality<E> bfs;
@@ -81,17 +83,13 @@ public class UnweightedGraphAnalyzer<E>
      * also updates the predecessor sets.
      *
      * @param startNode          The start node.
-     * @param stack              The stack which will return nodes ordered by
-     *                           non-increasing distance from startNode.
-     * @param pathsFromStartNode Holds information about shortest path lengths
-     *                           from startNode to the other nodes in the
-     *                           network
+     *
      */
     @Override
-    protected UnweightedPathLengthData calculateShortestPathsFromNode(
+    protected BFSForCentrality<E> calculateShortestPathsFromNode(
             VUCent startNode) {
         bfs.calculate(startNode);
-        return bfs.getPaths();
+        return bfs;
     }
 
     @Override

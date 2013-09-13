@@ -24,17 +24,22 @@
  */
 package org.javanetworkanalyzer.analyzers;
 
-import org.javanetworkanalyzer.data.VCent;
+import org.javanetworkanalyzer.alg.CentralityAlg;
+import org.javanetworkanalyzer.alg.GraphSearchAlgorithm;
 import org.javanetworkanalyzer.data.PathLengthData;
+import org.javanetworkanalyzer.data.VCent;
 import org.javanetworkanalyzer.data.VDist;
+import org.javanetworkanalyzer.model.EdgeCent;
+import org.javanetworkanalyzer.model.TraversalGraph;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
-import java.util.Stack;
 import org.jgrapht.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * Calculates various centrality measures on the given graph, <b>assumed to be
@@ -42,7 +47,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Adam Gouge
  */
-public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData>
+public abstract class GraphAnalyzer<V extends VCent, E extends EdgeCent, S extends PathLengthData>
         extends GeneralizedGraphAnalyzer<V, E> {
 
     /**
@@ -70,8 +75,8 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
      * Initializes a new instance of a graph analyzer with the given
      * {@link ProgressMonitor}.
      *
-     * @param graph     The graph to be analyzed.
-     * @param pm        The {@link ProgressMonitor} to be used.
+     * @param graph The graph to be analyzed.
+     * @param pm    The {@link ProgressMonitor} to be used.
      */
     // TODO: Do I need the wildcard on S?
     public GraphAnalyzer(Graph<V, E> graph,
@@ -147,16 +152,15 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
 
         // ***** CENTRALITY CONTRIBUTION CALCULATION **********
         // Calculate all the shortest paths from startNode.
-        S paths = calculateShortestPathsFromNode(startNode);
+        CentralityAlg<V, E, S> alg = calculateShortestPathsFromNode(startNode);
         // At this point, we have all information required to calculate
         // closeness for startNode.
-        calculateClosenessForNode(startNode, paths);
+        calculateClosenessForNode(startNode, alg.getPaths());
         // Use the recursion formula to update the dependency
         // values and their contributions to betweenness values.
-        accumulateDependencies(startNode);
+        TraversalGraph<V, E> sPT = alg.reconstructTraversalGraph();
+        accumulateDependencies(startNode, sPT);
         // ***** END CENTRALITY CONTRIBUTION CALCULATION ******
-
-        debug(startNode);
     }
 
     /**
@@ -164,10 +168,10 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
      * startNode to every other node in the {@link V} of every other node; also
      * updates the predecessor sets.
      *
-     * @param startNode          The start node.
+     * @param startNode Start node
+     * @return The {@link GraphSearchAlgorithm} used to find the shortest paths.
      */
-    protected abstract S calculateShortestPathsFromNode(
-            V startNode);
+    protected abstract CentralityAlg<V, E, S> calculateShortestPathsFromNode(V startNode);
 
     /**
      * Given a node and its path length data calculated in
@@ -177,9 +181,7 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
      * @param node  The given node.
      * @param paths Its path length data.
      */
-    protected void calculateClosenessForNode(
-            V node,
-            S paths) {
+    protected void calculateClosenessForNode(V node, S paths) {
         // Count the number of nodes reachable from the given node.
         int reachableNodes = paths.getCount();
         // If all other nodes are reachable, get the average path length
@@ -207,7 +209,9 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
      *
      * @param startNode The start node.
      */
-    private void accumulateDependencies(V startNode) {
+    private void accumulateDependencies(
+            V startNode,
+            TraversalGraph<V, E> shortestPathTree) {
 
         // *** Here we update
         // *** (A) the dependency of startNode on the other nodes.
@@ -218,36 +222,75 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
         // startNode, do:
         while (!stack.empty()) {
             final V w = stack.pop();
-            LOGGER.debug("Popped {} ", w.getID());
 
             // For every predecessor v of w on shortest paths from
             // startNode, do:
-            for (V predecessor : (HashSet<V>) w.getPredecessors()) {
+
+            for (V predecessor : (Set<V>) w.getPredecessors()) {
 
                 final double oldDep = predecessor.getDependency();
 
                 // (A) Add the contribution of the dependency of startNode
                 // on w to the dependency of startNode on v.
-                double depContribution =
-                        ((double) predecessor.getSPCount()
-                         / w.getSPCount())
-                        * (1 + w.getDependency());
+                final double sigmaFactor = ((double) predecessor.getSPCount()
+                        / w.getSPCount());
+                final double depContribution = sigmaFactor * (1 + w.getDependency());
                 predecessor.accumulateDependency(depContribution);
-                LOGGER.debug("--- {} contributed {} = ({}/{})*(1 + {}) to {} ({} --> {})",
-                        w.getID(), depContribution,
-                        predecessor.getSPCount(), w.getSPCount(), w.getDependency(),
-                        predecessor.getID(),
-                        oldDep, predecessor.getDependency());
+
+                // EDGE BETWEENNESS
+                accumEdgeBetw(predecessor, w, sigmaFactor, shortestPathTree);
             }
+
             // (The betweenness of w cannot receive contributions from
             // the dependency of w on w, by the definition of dependency.)
             if (w != startNode) {
                 // (B) At this point, the dependency of startNode on w
                 // has finished calculating, so we can add it to
                 // the betweenness centrality of w.
+                final double oldBetw = w.getBetweenness();
                 w.accumulateBetweenness(w.getDependency());
             }
         } // ***** END STAGE 3, Stack iteration  **************
+    }
+
+    /**
+     * Accumulate edge dependencies and betweenness.
+     *
+     * @param predecessor      Predecessor of vertex w
+     * @param w                Vertex w
+     * @param sigmaFactor      Sigma factor for weighting
+     * @param shortestPathTree SP"T"
+     */
+    private void accumEdgeBetw(
+            V predecessor,
+            V w,
+            double sigmaFactor,
+            TraversalGraph<V, E> shortestPathTree) {
+
+        E sPTEdge = shortestPathTree.getEdge(predecessor, w);
+
+        // If w is "leaf" in the SP"T" (its outdegree is 0) ...
+        if (shortestPathTree.outDegreeOf(w) == 0) {
+            // TODO: We should allow for multiple (equal weight) edges (pred, w).
+//            for (E edgeLeadingToLeaf : shortestPathTree.getAllEdges(predecessor, w)) {
+//                edgeLeadingToLeaf.accumulateDependency(1);
+//            }
+            sPTEdge.accumulateDependency(1);
+        } // Otherwise accumulate the dependencies of the outgoing edges of w.
+        else {
+            double depSumFromOutgoing = 0.0;
+            for (E outEdge : shortestPathTree.outgoingEdgesOf(w)) {
+                depSumFromOutgoing += outEdge.getDependency();
+            }
+            sPTEdge.accumulateDependency(sigmaFactor * (1 + depSumFromOutgoing));
+        }
+
+        // This is an edge in the SPT, but we need to accumulate
+        // the dependency to the edge betweenness for the corresponding edge in
+        // the base graph. It's okay to accumulate dependencies in the SPT,
+        // but the betweenness values have to be accumulated to the base graph!
+        E baseEdge = graph.getEdge(predecessor, w);
+        baseEdge.accumulateBetweenness(sPTEdge.getDependency());
     }
 
     /**
@@ -288,29 +331,6 @@ public abstract class GraphAnalyzer<V extends VCent, E, S extends PathLengthData
         }
         long stop = System.currentTimeMillis();
         LOGGER.info("({} ms) Extreme betweenness values ({}, {}).",
-                    (stop - start), minBetweenness, maxBetweenness);
-    }
-
-    /**
-     * Prints out the distance, shortest path count, predecessors and
-     * dependency.
-     *
-     * <p> This is slowing down the calculation so we leave it out for now.
-     *
-     * @param startNode Start node
-     */
-    private void debug(V startNode) {
-//        if (LOGGER.isDebugEnabled()) {
-//            for (V target : graph.vertexSet()) {
-//                LOGGER.debug(
-//                        "d({},{}) = {}\t spCount = {}\t preds={}\t dep = {}",
-//                        startNode.getID(), target.getID(),
-//                        ((VDist) target).getDistance(),
-//                        target.getSPCount(),
-//                        target.getPredecessors(),
-//                        target.getDependency());
-//            }
-//            LOGGER.debug("");
-//        }
+                (stop - start), minBetweenness, maxBetweenness);
     }
 }

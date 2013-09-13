@@ -35,7 +35,8 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class BFSForCentrality<E> extends BFS<VUCent, E> {
+public class BFSForCentrality<E> extends BFS<VUCent, E>
+        implements CentralityAlg<VUCent, E, UnweightedPathLengthData> {
 
     /**
      * Stack that will return the nodes ordered by non-increasing distance from
@@ -102,6 +103,7 @@ public class BFSForCentrality<E> extends BFS<VUCent, E> {
         neighbor.accumulateSPCount(current.getSPCount());
     }
 
+    @Override
     public UnweightedPathLengthData getPaths() {
         return pathsFromStartNode;
     }

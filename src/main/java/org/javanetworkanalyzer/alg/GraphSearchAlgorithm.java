@@ -42,7 +42,8 @@ import java.util.Set;
  * @param <E> Edges
  * @author Adam Gouge
  */
-public abstract class GraphSearchAlgorithm<V extends VPred, E> {
+public abstract class GraphSearchAlgorithm<V extends VPred, E>
+        implements TraversalAlg<V, E> {
 
     /**
      * The graph on which to calculate shortest paths.
@@ -57,28 +58,24 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
      * Constructor. The user can specify whether SPTs/traversal graphs are
      * calculated.
      *
-     * @param graph     The graph
+     * @param graph The graph
      */
     public GraphSearchAlgorithm(Graph<V, E> graph) {
         this.graph = graph;
     }
 
     /**
-     * Performs the graph search algorithm from the given start node.
+     * Performs any initializations to be done at the start of the
+     * {@link #calculate} method.
      *
      * @param startNode Start node
      */
-    protected abstract void calculate(V startNode);
+    protected void init(V startNode) {
+        this.currentStartNode = startNode;
+    }
 
-    /**
-     * Returns the SPT (BFS/Dijkstra) or traversal graph (DFS) from the last
-     * start node {@link #calculate} was called on. For BFS/Dijkstra, the
-     * shortest path "tree" we return may contain multiple shortest paths.
-     *
-     * @return The SPT/traversal graph from the last start node {@link #calculate}
-     *         was called on
-     */
-    protected TraversalGraph<V, E> reconstructTraversalGraph() {
+    @Override
+    public TraversalGraph<V, E> reconstructTraversalGraph() {
 
         if (currentStartNode == null) {
             throw new IllegalStateException("You must call #calculate before " +
@@ -108,16 +105,6 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
     }
 
     /**
-     * Performs any initializations to be done at the start of the
-     * {@link #calculate} method.
-     *
-     * @param startNode Start node
-     */
-    protected void init(V startNode) {
-        this.currentStartNode = startNode;
-    }
-
-    /**
      * Returns the outgoing edges of a node for directed graphs and all edges of
      * a node for undirected graphs. Used in Dijkstra.
      *
@@ -125,10 +112,14 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
      * @return The outgoing edges of the node.
      */
     public Set<E> outgoingEdgesOf(V node) {
-        if (graph instanceof DirectedGraph) {
-            return ((DirectedGraph) graph).outgoingEdgesOf(node);
+        return outgoingEdgesOf(graph, node);
+    }
+
+    public static Set outgoingEdgesOf(Graph g, Object node) {
+        if (g instanceof DirectedGraph) {
+            return ((DirectedGraph) g).outgoingEdgesOf(node);
         } else {
-            return graph.edgesOf(node);
+            return g.edgesOf(node);
         }
     }
 

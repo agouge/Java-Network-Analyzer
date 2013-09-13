@@ -36,7 +36,8 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class DijkstraForCentrality<E> extends Dijkstra<VWCent, E> {
+public class DijkstraForCentrality<E> extends Dijkstra<VWCent, E>
+        implements CentralityAlg<VWCent, E, WeightedPathLengthData> {
 
     /**
      * Stack that will return the nodes ordered by non-increasing distance from
@@ -126,11 +127,7 @@ public class DijkstraForCentrality<E> extends Dijkstra<VWCent, E> {
         super.multipleShortestPathUpdate(u, v, e);
     }
 
-    /**
-     * Returns the path length data.
-     *
-     * @return The path length data
-     */
+    @Override
     public WeightedPathLengthData getPaths() {
         return pathsFromStartNode;
     }

@@ -39,8 +39,9 @@ public class Edge extends DefaultWeightedEdge {
     /**
      * Sets the weight of this edge.
      */
-    public void setWeight(double newWeight) {
+    public Edge setWeight(double newWeight) {
         weight = newWeight;
+        return this;
     }
 
     @Override

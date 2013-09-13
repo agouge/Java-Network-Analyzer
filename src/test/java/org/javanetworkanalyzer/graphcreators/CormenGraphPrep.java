@@ -27,6 +27,7 @@ package org.javanetworkanalyzer.graphcreators;
 import org.javanetworkanalyzer.data.VAccess;
 import org.javanetworkanalyzer.model.DirectedWeightedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
+import org.javanetworkanalyzer.model.EdgeCent;
 
 /**
  * Prepares the Cormen graph.
@@ -45,7 +46,7 @@ import org.javanetworkanalyzer.model.Edge;
 //         \ v| /    2     \v|
 //          > 4 -----------> 5
 //               CORMEN
-public class CormenGraphPrep extends GraphPrep<VAccess, Edge> {
+public class CormenGraphPrep extends GraphPrep<VAccess, EdgeCent> {
 
     @Override
     public int getNumberOfVertices() {
@@ -53,10 +54,10 @@ public class CormenGraphPrep extends GraphPrep<VAccess, Edge> {
     }
 
     @Override
-    public DirectedWeightedPseudoG<VAccess, Edge> weightedDirected() throws
+    public DirectedWeightedPseudoG<VAccess, EdgeCent> weightedDirected() throws
             NoSuchMethodException {
-        DirectedWeightedPseudoG<VAccess, Edge> g =
-                new DirectedWeightedPseudoG<VAccess, Edge>(VAccess.class, Edge.class);
+        DirectedWeightedPseudoG<VAccess, EdgeCent> g =
+                new DirectedWeightedPseudoG<VAccess, EdgeCent>(VAccess.class, EdgeCent.class);
         g.addEdge(1, 2).setWeight(10);
         g.addEdge(1, 4).setWeight(5);
         g.addEdge(5, 1).setWeight(7);
