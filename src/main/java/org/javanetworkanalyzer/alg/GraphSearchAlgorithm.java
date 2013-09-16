@@ -30,6 +30,7 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.UndirectedGraph;
+import org.jgrapht.graph.Subgraph;
 
 /**
  * Root class for graph search algorithms, including BFS, DFS, Dijkstra, etc.,
@@ -61,7 +62,7 @@ public abstract class GraphSearchAlgorithm<V, E> {
      *
      * @param startNode Start node
      */
-    protected abstract void calculate(V startNode);
+    protected abstract Subgraph<V, E, Graph<V, E>> calculate(V startNode);
 
     /**
      * Performs any initializations to be done at the start of the

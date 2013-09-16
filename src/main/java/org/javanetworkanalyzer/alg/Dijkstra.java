@@ -34,7 +34,11 @@ import org.javanetworkanalyzer.data.VDijkstra;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
+import org.jgrapht.UndirectedGraph;
+import org.jgrapht.graph.DirectedSubgraph;
 import org.jgrapht.graph.EdgeReversedGraph;
+import org.jgrapht.graph.Subgraph;
+import org.jgrapht.graph.UndirectedSubgraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +65,8 @@ public class Dijkstra<V extends VDijkstra, E>
     private static final Logger LOGGER =
             LoggerFactory.getLogger(Dijkstra.class);
 
+    private Subgraph shortestPathTree;
+
     /**
      * Constructs a new {@link Dijkstra} object.
      *
@@ -76,13 +82,14 @@ public class Dijkstra<V extends VDijkstra, E>
      */
     // TODO: Add a unit test for this.
     @Override
-    public void calculate(V startNode) {
+    public Subgraph calculate(V startNode) {
 
         init(startNode);
 
         while (!queue.isEmpty()) {
             // Extract the minimum element.
             V u = queue.poll();
+//            shortestPathTree.addVertex(u);
             // Do any pre-relax step.
             if (preRelaxStep(startNode, u)) {
                 break;
@@ -92,6 +99,11 @@ public class Dijkstra<V extends VDijkstra, E>
                 relax(startNode, u, e, queue);
             }
         }
+
+        LOGGER.info("------ " + startNode.getID() + " ------ "
+                + shortestPathTree.toString());
+
+        return shortestPathTree;
     }
 
     @Override
@@ -100,6 +112,14 @@ public class Dijkstra<V extends VDijkstra, E>
             node.reset();
         }
         startNode.setSource();
+        if (graph instanceof DirectedGraph) {
+            shortestPathTree = new DirectedSubgraph<V, E>(
+                    (DirectedGraph<V, E>) graph, new HashSet<V>(), null);
+        } else if (graph instanceof UndirectedGraph) {
+            shortestPathTree = new UndirectedSubgraph<V, E>(
+                    (UndirectedGraph<V, E>) graph, new HashSet<V>(), null);
+        }
+
         queue.clear();
         queue.add(startNode);
     }
@@ -131,14 +151,14 @@ public class Dijkstra<V extends VDijkstra, E>
         // If a smaller distance estimate is available, make the necessary
         // updates.
         if (v.getDistance() > u.getDistance() + uvWeight) {
-            shortestPathSoFarUpdate(startNode, u, v, uvWeight, queue);
             LOGGER.debug("\tNew SP: d({},{}) = {}",
-                    startNode.getID(), v.getID(), v.getDistance());
+                    startNode.getID(), v.getID(), u.getDistance() + uvWeight);
+            shortestPathSoFarUpdate(startNode, u, v, uvWeight, e, queue);
         } else if (Math.abs(v.getDistance() - (u.getDistance() + uvWeight))
                 < TOLERANCE) {
-            multipleShortestPathUpdate(u, v);
             LOGGER.debug("\tMultiple SP: d({},{}) = {}",
-                    startNode.getID(), v.getID(), v.getDistance());
+                    startNode.getID(), v.getID(), u.getDistance() + uvWeight);
+            multipleShortestPathUpdate(u, v, e);
         }
     }
 
@@ -149,11 +169,23 @@ public class Dijkstra<V extends VDijkstra, E>
      * @param u        Vertex u
      * @param v        Vertex v
      * @param uvWeight w(u,v)
+     * @param e        Edge e
      * @param queue    Queue
      */
     protected void shortestPathSoFarUpdate(V startNode, V u, V v, Double uvWeight,
-                                           PriorityQueue<V> queue) {
-        // Reset the predecessors
+                                           E e, PriorityQueue<V> queue) {
+        // Remove all the edges from the shortest path tree
+        for (V pred : (Set<V>) v.getPredecessors()) {
+            // TODO: Get all edges?
+            E edgeToRemove = (E) shortestPathTree.getEdge(pred, v);
+            boolean removedEdge = shortestPathTree.removeEdge(edgeToRemove);
+            LOGGER.debug("Removed edge {} [{}]", edgeToRemove, removedEdge);
+        }
+        // Add this edge to the SPT
+        shortestPathTree.addVertex(u);
+        shortestPathTree.addVertex(v);
+        addSPTEdge(u, v, e);
+        // Reset the predecessors and add u as a predecessor
         v.getPredecessors().clear();
         v.addPredecessor(u);
         // Set the distance
@@ -163,6 +195,17 @@ public class Dijkstra<V extends VDijkstra, E>
         queue.add(v);
     }
 
+    private void addSPTEdge(V u, V v, E e) {
+        boolean edgeAdded;
+        try {
+            edgeAdded = shortestPathTree.addEdge(u, v, e);
+        } catch (AssertionError ex) {
+            // In undirected graphs, sometimes u and v are switched.
+            edgeAdded = shortestPathTree.addEdge(v, u, e);
+        }
+        LOGGER.debug("Added edge ({},{}) [{}]", u.getID(), v.getID(), edgeAdded);
+    }
+
     /**
      * Updates to be performed if the path to v through u is a new multiple
      * shortest path.
@@ -170,9 +213,11 @@ public class Dijkstra<V extends VDijkstra, E>
      * @param u Vertex u
      * @param v Vertex v
      */
-    protected void multipleShortestPathUpdate(V u, V v) {
+    protected void multipleShortestPathUpdate(V u, V v, E e) {
         // There is no need to set the distance on v since it this is a
         // multiple shortest path.
+        // Add this edge to the SPT.
+        addSPTEdge(u, v, e);
         v.addPredecessor(u);
     }
 
