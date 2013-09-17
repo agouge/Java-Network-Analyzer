@@ -25,6 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDFS;
+import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.Subgraph;
 
@@ -68,7 +69,7 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
      * Does a depth first search from the given node.
      */
     @Override
-    public Subgraph<V, E, Graph<V, E>> calculate(V node) {
+    public DirectedGraph<V, E> calculate(V node) {
         visit(node);
         // TODO: Make this return the correct subgraph
         return null;

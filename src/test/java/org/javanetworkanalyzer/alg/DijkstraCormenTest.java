@@ -28,9 +28,6 @@ import org.javanetworkanalyzer.data.VDijkstra;
 import org.javanetworkanalyzer.graphcreators.CormenGraphPrep;
 import org.javanetworkanalyzer.graphcreators.GraphPrep;
 import org.javanetworkanalyzer.model.*;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DirectedSubgraph;
-import org.jgrapht.graph.Subgraph;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -61,7 +58,7 @@ public class DijkstraCormenTest extends DijkstraTest {
 
         Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
 
-        DirectedSubgraph<VDijkstra, Edge> sPT;
+        ShortestPathTree<VDijkstra, Edge> sPT;
 
         VDijkstra v1 = g.getVertex(1);
         VDijkstra v2 = g.getVertex(2);
@@ -69,24 +66,26 @@ public class DijkstraCormenTest extends DijkstraTest {
         VDijkstra v4 = g.getVertex(4);
         VDijkstra v5 = g.getVertex(5);
 
-        sPT = (DirectedSubgraph<VDijkstra, Edge>) dijkstra.calculate(v1);
+        sPT = dijkstra.calculate(v1);
+        assertTrue(sPT.getRoot().equals(v1));
         assertTrue(sPT.edgeSet().size() == 4);
-        assertTrue(sPT.containsEdge(getEdge(g, 1, 4)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 5)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 2)));
-        assertTrue(sPT.containsEdge(getEdge(g, 2, 3)));
+        assertTrue(sPT.containsEdge(v1, v4));
+        assertTrue(sPT.containsEdge(v4, v5));
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.containsEdge(v2, v3));
         assertTrue(sPT.outDegreeOf(v1) == 1);
         assertTrue(sPT.outDegreeOf(v2) == 1);
         assertTrue(sPT.outDegreeOf(v3) == 0);
         assertTrue(sPT.outDegreeOf(v4) == 2);
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
-        sPT = (DirectedSubgraph<VDijkstra, Edge>) dijkstra.calculate(v2);
+        sPT = dijkstra.calculate(v2);
+        assertTrue(sPT.getRoot().equals(v2));
         assertTrue(sPT.edgeSet().size() == 4);
-        assertTrue(sPT.containsEdge(getEdge(g, 2, 3)));
-        assertTrue(sPT.containsEdge(getEdge(g, 2, 4)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 5)));
-        assertTrue(sPT.containsEdge(getEdge(g, 5, 1)));
+        assertTrue(sPT.containsEdge(v2, v3));
+        assertTrue(sPT.containsEdge(v2, v4));
+        assertTrue(sPT.containsEdge(v4, v5));
+        assertTrue(sPT.containsEdge(v5, v1));
         assertTrue(sPT.outDegreeOf(v1) == 0);
         assertTrue(sPT.outDegreeOf(v2) == 2);
         assertTrue(sPT.outDegreeOf(v3) == 0);
@@ -94,12 +93,13 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
 
-        sPT = (DirectedSubgraph<VDijkstra, Edge>) dijkstra.calculate(v3);
+        sPT = dijkstra.calculate(v3);
+        assertTrue(sPT.getRoot().equals(v3));
         assertTrue(sPT.edgeSet().size() == 4);
-        assertTrue(sPT.containsEdge(getEdge(g, 3, 5)));
-        assertTrue(sPT.containsEdge(getEdge(g, 5, 1)));
-        assertTrue(sPT.containsEdge(getEdge(g, 1, 4)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 2)));
+        assertTrue(sPT.containsEdge(v3, v5));
+        assertTrue(sPT.containsEdge(v5, v1));
+        assertTrue(sPT.containsEdge(v1, v4));
+        assertTrue(sPT.containsEdge(v4, v2));
         assertTrue(sPT.outDegreeOf(v1) == 1);
         assertTrue(sPT.outDegreeOf(v2) == 0);
         assertTrue(sPT.outDegreeOf(v3) == 1);
@@ -107,24 +107,26 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
 
-        sPT = (DirectedSubgraph<VDijkstra, Edge>) dijkstra.calculate(v4);
+        sPT = dijkstra.calculate(v4);
+        assertTrue(sPT.getRoot().equals(v4));
         assertTrue(sPT.edgeSet().size() == 4);
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 5)));
-        assertTrue(sPT.containsEdge(getEdge(g, 5, 1)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 2)));
-        assertTrue(sPT.containsEdge(getEdge(g, 2, 3)));
+        assertTrue(sPT.containsEdge(v4, v5));
+        assertTrue(sPT.containsEdge(v5, v1));
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.containsEdge(v2, v3));
         assertTrue(sPT.outDegreeOf(v1) == 0);
         assertTrue(sPT.outDegreeOf(v2) == 1);
         assertTrue(sPT.outDegreeOf(v3) == 0);
         assertTrue(sPT.outDegreeOf(v4) == 2);
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
-        sPT = (DirectedSubgraph<VDijkstra, Edge>) dijkstra.calculate(v5);
+        sPT = dijkstra.calculate(v5);
+        assertTrue(sPT.getRoot().equals(v5));
         assertTrue(sPT.edgeSet().size() == 4);
-        assertTrue(sPT.containsEdge(getEdge(g, 5, 3)));
-        assertTrue(sPT.containsEdge(getEdge(g, 5, 1)));
-        assertTrue(sPT.containsEdge(getEdge(g, 1, 4)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 2)));
+        assertTrue(sPT.containsEdge(v5, v3));
+        assertTrue(sPT.containsEdge(v5, v1));
+        assertTrue(sPT.containsEdge(v1, v4));
+        assertTrue(sPT.containsEdge(v4, v2));
         assertTrue(sPT.outDegreeOf(v1) == 1);
         assertTrue(sPT.outDegreeOf(v2) == 0);
         assertTrue(sPT.outDegreeOf(v3) == 0);
@@ -139,7 +141,7 @@ public class DijkstraCormenTest extends DijkstraTest {
 
         Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
 
-        DirectedSubgraph<VDijkstra, Edge> sPT;
+        ShortestPathTree<VDijkstra, Edge> sPT;
 
         VDijkstra v1 = g.getVertex(1);
         VDijkstra v2 = g.getVertex(2);
@@ -147,24 +149,26 @@ public class DijkstraCormenTest extends DijkstraTest {
         VDijkstra v4 = g.getVertex(4);
         VDijkstra v5 = g.getVertex(5);
 
-        sPT = (DirectedSubgraph<VDijkstra, Edge>) dijkstra.calculate(v1);
+        sPT = dijkstra.calculate(v1);
+        assertTrue(sPT.getRoot().equals(v1));
         assertTrue(sPT.edgeSet().size() == 4);
-        assertTrue(sPT.containsEdge(getEdge(g, 1, 5)));
-        assertTrue(sPT.containsEdge(getEdge(g, 5, 3)));
-        assertTrue(sPT.containsEdge(getEdge(g, 5, 4)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 2)));
+        assertTrue(sPT.containsEdge(v1, v5));
+        assertTrue(sPT.containsEdge(v5, v3));
+        assertTrue(sPT.containsEdge(v5, v4));
+        assertTrue(sPT.containsEdge(v4, v2));
         assertTrue(sPT.outDegreeOf(v1) == 1);
         assertTrue(sPT.outDegreeOf(v2) == 0);
         assertTrue(sPT.outDegreeOf(v3) == 0);
         assertTrue(sPT.outDegreeOf(v4) == 1);
         assertTrue(sPT.outDegreeOf(v5) == 2);
 
-        sPT = (DirectedSubgraph<VDijkstra, Edge>) dijkstra.calculate(v2);
+        sPT = dijkstra.calculate(v2);
+        assertTrue(sPT.getRoot().equals(v2));
         assertTrue(sPT.edgeSet().size() == 4);
-        assertTrue(sPT.containsEdge(getEdge(g, 2, 4)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 1)));
-        assertTrue(sPT.containsEdge(getEdge(g, 1, 5)));
-        assertTrue(sPT.containsEdge(getEdge(g, 5, 3)));
+        assertTrue(sPT.containsEdge(v2, v4));
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v1, v5));
+        assertTrue(sPT.containsEdge(v5, v3));
         assertTrue(sPT.outDegreeOf(v1) == 1);
         assertTrue(sPT.outDegreeOf(v2) == 1);
         assertTrue(sPT.outDegreeOf(v3) == 0);
@@ -172,12 +176,13 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
 
-        sPT = (DirectedSubgraph<VDijkstra, Edge>) dijkstra.calculate(v3);
+        sPT = dijkstra.calculate(v3);
+        assertTrue(sPT.getRoot().equals(v3));
         assertTrue(sPT.edgeSet().size() == 4);
-        assertTrue(sPT.containsEdge(getEdge(g, 3, 2)));
-        assertTrue(sPT.containsEdge(getEdge(g, 2, 4)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 1)));
-        assertTrue(sPT.containsEdge(getEdge(g, 3, 5)));
+        assertTrue(sPT.containsEdge(v3, v2));
+        assertTrue(sPT.containsEdge(v2, v4));
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v3, v5));
         assertTrue(sPT.outDegreeOf(v1) == 0);
         assertTrue(sPT.outDegreeOf(v2) == 1);
         assertTrue(sPT.outDegreeOf(v3) == 2);
@@ -185,28 +190,113 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
 
-        sPT = (DirectedSubgraph<VDijkstra, Edge>) dijkstra.calculate(v4);
+        sPT = dijkstra.calculate(v4);
+        assertTrue(sPT.getRoot().equals(v4));
         assertTrue(sPT.edgeSet().size() == 4);
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 1)));
-        assertTrue(sPT.containsEdge(getEdge(g, 1, 5)));
-        assertTrue(sPT.containsEdge(getEdge(g, 5, 3)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 2)));
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v1, v5));
+        assertTrue(sPT.containsEdge(v5, v3));
+        assertTrue(sPT.containsEdge(v4, v2));
         assertTrue(sPT.outDegreeOf(v1) == 1);
         assertTrue(sPT.outDegreeOf(v2) == 0);
         assertTrue(sPT.outDegreeOf(v3) == 0);
         assertTrue(sPT.outDegreeOf(v4) == 2);
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
-        sPT = (DirectedSubgraph<VDijkstra, Edge>) dijkstra.calculate(v5);
+        sPT = dijkstra.calculate(v5);
+        assertTrue(sPT.getRoot().equals(v5));
         assertTrue(sPT.edgeSet().size() == 4);
-        assertTrue(sPT.containsEdge(getEdge(g, 5, 4)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 1)));
-        assertTrue(sPT.containsEdge(getEdge(g, 4, 2)));
-        assertTrue(sPT.containsEdge(getEdge(g, 5, 3)));
+        assertTrue(sPT.containsEdge(v5, v4));
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.containsEdge(v5, v3));
         assertTrue(sPT.outDegreeOf(v1) == 0);
         assertTrue(sPT.outDegreeOf(v2) == 0);
         assertTrue(sPT.outDegreeOf(v3) == 0);
         assertTrue(sPT.outDegreeOf(v4) == 2);
         assertTrue(sPT.outDegreeOf(v5) == 2);
+    }
+
+    @Test
+    public void testWUSPT() throws Exception {
+
+        UndirectedG<VDijkstra, Edge> g = CORMEN.weightedUndirected();
+
+        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
+
+        ShortestPathTree<VDijkstra, Edge> sPT;
+
+        VDijkstra v1 = g.getVertex(1);
+        VDijkstra v2 = g.getVertex(2);
+        VDijkstra v3 = g.getVertex(3);
+        VDijkstra v4 = g.getVertex(4);
+        VDijkstra v5 = g.getVertex(5);
+
+        sPT = dijkstra.calculate(v1);
+        assertTrue(sPT.getRoot().equals(v1));
+        assertTrue(sPT.edgeSet().size() == 5);
+        assertTrue(sPT.containsEdge(v1, v4));
+        assertTrue(sPT.containsEdge(v1, v5));
+        assertTrue(sPT.containsEdge(v4, v5));
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.containsEdge(v2, v3));
+        assertTrue(sPT.outDegreeOf(v1) == 2);
+        assertTrue(sPT.outDegreeOf(v2) == 1);
+        assertTrue(sPT.outDegreeOf(v3) == 0);
+        assertTrue(sPT.outDegreeOf(v4) == 2);
+        assertTrue(sPT.outDegreeOf(v5) == 0);
+
+        sPT = dijkstra.calculate(v2);
+        assertTrue(sPT.getRoot().equals(v2));
+        assertTrue(sPT.edgeSet().size() == 4);
+        assertTrue(sPT.containsEdge(v2, v3));
+        assertTrue(sPT.containsEdge(v2, v4));
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v4, v5));
+        assertTrue(sPT.outDegreeOf(v1) == 0);
+        assertTrue(sPT.outDegreeOf(v2) == 2);
+        assertTrue(sPT.outDegreeOf(v3) == 0);
+        assertTrue(sPT.outDegreeOf(v4) == 2);
+        assertTrue(sPT.outDegreeOf(v5) == 0);
+
+        sPT = dijkstra.calculate(v3);
+        assertTrue(sPT.getRoot().equals(v3));
+        assertTrue(sPT.edgeSet().size() == 4);
+        assertTrue(sPT.containsEdge(v3, v2));
+        assertTrue(sPT.containsEdge(v2, v4));
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v3, v5));
+        assertTrue(sPT.outDegreeOf(v1) == 0);
+        assertTrue(sPT.outDegreeOf(v2) == 1);
+        assertTrue(sPT.outDegreeOf(v3) == 2);
+        assertTrue(sPT.outDegreeOf(v4) == 1);
+        assertTrue(sPT.outDegreeOf(v5) == 0);
+
+        sPT = dijkstra.calculate(v4);
+        assertTrue(sPT.getRoot().equals(v4));
+        assertTrue(sPT.edgeSet().size() == 4);
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.containsEdge(v2, v3));
+        assertTrue(sPT.containsEdge(v4, v5));
+        assertTrue(sPT.outDegreeOf(v1) == 0);
+        assertTrue(sPT.outDegreeOf(v2) == 1);
+        assertTrue(sPT.outDegreeOf(v3) == 0);
+        assertTrue(sPT.outDegreeOf(v4) == 3);
+        assertTrue(sPT.outDegreeOf(v5) == 0);
+
+        sPT = dijkstra.calculate(v5);
+        assertTrue(sPT.getRoot().equals(v5));
+        assertTrue(sPT.edgeSet().size() == 5);
+        assertTrue(sPT.containsEdge(v5, v1));
+        assertTrue(sPT.containsEdge(v5, v4));
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.containsEdge(v5, v3));
+        assertTrue(sPT.outDegreeOf(v1) == 0);
+        assertTrue(sPT.outDegreeOf(v2) == 0);
+        assertTrue(sPT.outDegreeOf(v3) == 0);
+        assertTrue(sPT.outDegreeOf(v4) == 2);
+        assertTrue(sPT.outDegreeOf(v5) == 3);
     }
 }

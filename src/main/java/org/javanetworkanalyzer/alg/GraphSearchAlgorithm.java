@@ -62,7 +62,7 @@ public abstract class GraphSearchAlgorithm<V, E> {
      *
      * @param startNode Start node
      */
-    protected abstract Subgraph<V, E, Graph<V, E>> calculate(V startNode);
+    protected abstract DirectedGraph<V, E> calculate(V startNode);
 
     /**
      * Performs any initializations to be done at the start of the

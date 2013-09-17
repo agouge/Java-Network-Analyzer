@@ -26,6 +26,7 @@ package org.javanetworkanalyzer.alg;
 
 import java.util.LinkedList;
 import org.javanetworkanalyzer.data.VBFS;
+import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.Subgraph;
 
@@ -64,7 +65,7 @@ public class BFS<V extends VBFS, E>
      * Do the breadth first search.
      */
     @Override
-    public Subgraph<V, E, Graph<V, E>> calculate(V startNode) {
+    public DirectedGraph<V, E> calculate(V startNode) {
 
         init(startNode);
 
