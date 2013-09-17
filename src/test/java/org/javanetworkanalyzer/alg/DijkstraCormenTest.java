@@ -56,7 +56,7 @@ public class DijkstraCormenTest extends DijkstraTest {
 
         DirectedWeightedPseudoG<VDijkstra, Edge> g = CORMEN.weightedDirected();
 
-        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
+        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g, true);
 
         ShortestPathTree<VDijkstra, Edge> sPT;
 
@@ -139,7 +139,7 @@ public class DijkstraCormenTest extends DijkstraTest {
 
         WeightedEdgeReversedG<VDijkstra, Edge> g = CORMEN.weightedReversed();
 
-        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
+        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g, true);
 
         ShortestPathTree<VDijkstra, Edge> sPT;
 
@@ -222,7 +222,7 @@ public class DijkstraCormenTest extends DijkstraTest {
 
         UndirectedG<VDijkstra, Edge> g = CORMEN.weightedUndirected();
 
-        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
+        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g, true);
 
         ShortestPathTree<VDijkstra, Edge> sPT;
 

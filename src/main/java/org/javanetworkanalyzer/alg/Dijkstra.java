@@ -55,25 +55,37 @@ public class Dijkstra<V extends VDijkstra, E>
      * have the same length.
      */
     protected static final double TOLERANCE = 0.000000001;
-    private static final Logger LOGGER =
-            LoggerFactory.getLogger(Dijkstra.class);
-
-    private final EdgeFactory<V, E> edgeFactory;
-    private ShortestPathTree<V, E> shortestPathTree;
+    /**
+     * True iff {@link #calculate} returns the SPT for the start node.
+     */
+    private final boolean returnSPT;
 
     /**
-     * Constructs a new {@link Dijkstra} object.
+     * Constructor. By default, does not calculate SPTs.
      *
      * @param graph The graph.
      */
     public Dijkstra(Graph<V, E> graph) {
-        super(graph);
-        edgeFactory = graph.getEdgeFactory();
-        queue = createPriorityQueue();
+        this(graph, false);
     }
 
     /**
-     * Do a Dijkstra search from the given start node to all other nodes.
+     * Constructor. The user can specify whether SPTs are calculated.
+     *
+     * @param graph     The graph.
+     * @param returnSPT True iff the SPT is to be calculated.
+     */
+    public Dijkstra(Graph<V, E> graph, boolean returnSPT) {
+        super(graph);
+        queue = createPriorityQueue();
+        this.returnSPT = returnSPT;
+    }
+
+    /**
+     * Does a Dijkstra search from the given start node to all other nodes.
+     *
+     * @param startNode Start node
+     * @return The SPT, or null if we are not calculating SPTs.
      */
     @Override
     public ShortestPathTree<V, E> calculate(V startNode) {
@@ -83,7 +95,6 @@ public class Dijkstra<V extends VDijkstra, E>
         while (!queue.isEmpty()) {
             // Extract the minimum element.
             V u = queue.poll();
-            shortestPathTree.addVertex(u);
             // Do any pre-relax step.
             if (preRelaxStep(startNode, u)) {
                 break;
@@ -94,7 +105,21 @@ public class Dijkstra<V extends VDijkstra, E>
             }
         }
 
-        return shortestPathTree;
+        // Reconstruct the SPT
+        if (returnSPT) {
+            ShortestPathTree<V, E> shortestPathTree =
+                    new ShortestPathTree<V, E>(graph.getEdgeFactory(), startNode);
+            for (V v : graph.vertexSet()) {
+                shortestPathTree.addVertex(v);
+                for (V pred : (Set<V>) v.getPredecessors()) {
+                    shortestPathTree.addVertex(pred);
+                    shortestPathTree.addEdge(pred, v);
+                }
+            }
+            return shortestPathTree;
+        }
+
+        return null;
     }
 
     @Override
@@ -103,7 +128,6 @@ public class Dijkstra<V extends VDijkstra, E>
             node.reset();
         }
         startNode.setSource();
-        shortestPathTree = new ShortestPathTree<V, E>(edgeFactory, startNode);
         queue.clear();
         queue.add(startNode);
     }
@@ -153,8 +177,6 @@ public class Dijkstra<V extends VDijkstra, E>
      */
     protected void shortestPathSoFarUpdate(V startNode, V u, V v, Double uvWeight,
                                            E e, PriorityQueue<V> queue) {
-        // Update the SPT
-        updateSPT(u, v);
         // Reset the predecessors and add u as a predecessor
         v.getPredecessors().clear();
         v.addPredecessor(u);
@@ -166,34 +188,14 @@ public class Dijkstra<V extends VDijkstra, E>
     }
 
     /**
-     * Adds a new edge (u,v) to the SPT after removing any (p,v) edges, where p
-     * is a former  predecessor of v on shortest paths from u.
-     *
-     * @param u Vertex u
-     * @param v Vertex v
-     */
-    private void updateSPT(V u, V v) {
-        // Remove previous predecessor edges from the SPT
-        for (V pred : (Set<V>) v.getPredecessors()) {
-            E edgeToRemove = shortestPathTree.getEdge(pred, v);
-            shortestPathTree.removeEdge(edgeToRemove);
-        }
-        // Add this edge to the SPT
-        shortestPathTree.addVertex(v);
-        shortestPathTree.addEdge(u, v);
-    }
-
-    /**
      * Updates to be performed if the path to v through u is a new multiple
-     * shortest path. There is no need to set the distance on v since it this
+     * shortest path. There is no need to set the distance on v since this
      * is a multiple shortest path.
      *
      * @param u Vertex u
      * @param v Vertex v
      */
     protected void multipleShortestPathUpdate(V u, V v, E e) {
-        // Add this edge to the SPT.
-        shortestPathTree.addEdge(u, v, e);
         // Add u to the list of predecessors.
         v.addPredecessor(u);
     }
