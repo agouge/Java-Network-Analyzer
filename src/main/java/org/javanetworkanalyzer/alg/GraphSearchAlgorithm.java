@@ -26,6 +26,9 @@ package org.javanetworkanalyzer.alg;
 
 import java.util.List;
 import java.util.Set;
+
+import org.javanetworkanalyzer.data.VPred;
+import org.javanetworkanalyzer.model.ShortestPathTree;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -41,28 +44,56 @@ import org.jgrapht.graph.Subgraph;
  *
  * @author Adam Gouge
  */
-public abstract class GraphSearchAlgorithm<V, E> {
+public abstract class GraphSearchAlgorithm<V extends VPred, E> {
 
     /**
      * The graph on which to calculate shortest paths.
      */
     protected final Graph<V, E> graph;
+    /**
+     * True iff {@link #calculate} returns the SPT for the start node.
+     */
+    protected final boolean returnSPT;
 
     /**
-     * Constructs a new {@link GraphSearchAlgorithm} object.
+     * Constructor. The user can specify whether SPTs are calculated.
      *
-     * @param graph The graph.
+     * @param graph     The graph.
+     * @param returnSPT True iff the SPT is to be calculated.
      */
-    public GraphSearchAlgorithm(Graph<V, E> graph) {
+    public GraphSearchAlgorithm(Graph<V, E> graph, boolean returnSPT) {
         this.graph = graph;
+        this.returnSPT = returnSPT;
     }
 
     /**
-     * Performs the graph search algorithm from the given start node.
+     * Performs the graph search algorithm from the given start node and
+     * returns the SPT, or null if {@link #returnSPT} is false.
      *
      * @param startNode Start node
+     * @return The SPT, or null if {@link #returnSPT} is false
      */
-    protected abstract DirectedGraph<V, E> calculate(V startNode);
+    protected abstract ShortestPathTree<V, E> calculate(V startNode);
+
+    /**
+     * Returns the SPT from the given start node.
+     *
+     * @param startNode Start node
+     * @return The SPT from the given start node
+     */
+    protected ShortestPathTree<V, E> reconstructSPT(V startNode) {
+
+        ShortestPathTree<V, E> shortestPathTree =
+                new ShortestPathTree<V, E>(graph.getEdgeFactory(), startNode);
+        for (V v : graph.vertexSet()) {
+            shortestPathTree.addVertex(v);
+            for (V pred : (Set<V>) v.getPredecessors()) {
+                shortestPathTree.addVertex(pred);
+                shortestPathTree.addEdge(pred, v);
+            }
+        }
+        return shortestPathTree;
+    }
 
     /**
      * Performs any initializations to be done at the start of the

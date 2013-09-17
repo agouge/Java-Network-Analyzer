@@ -55,10 +55,6 @@ public class Dijkstra<V extends VDijkstra, E>
      * have the same length.
      */
     protected static final double TOLERANCE = 0.000000001;
-    /**
-     * True iff {@link #calculate} returns the SPT for the start node.
-     */
-    private final boolean returnSPT;
 
     /**
      * Constructor. By default, does not calculate SPTs.
@@ -76,9 +72,8 @@ public class Dijkstra<V extends VDijkstra, E>
      * @param returnSPT True iff the SPT is to be calculated.
      */
     public Dijkstra(Graph<V, E> graph, boolean returnSPT) {
-        super(graph);
+        super(graph, returnSPT);
         queue = createPriorityQueue();
-        this.returnSPT = returnSPT;
     }
 
     /**
@@ -105,20 +100,9 @@ public class Dijkstra<V extends VDijkstra, E>
             }
         }
 
-        // Reconstruct the SPT
         if (returnSPT) {
-            ShortestPathTree<V, E> shortestPathTree =
-                    new ShortestPathTree<V, E>(graph.getEdgeFactory(), startNode);
-            for (V v : graph.vertexSet()) {
-                shortestPathTree.addVertex(v);
-                for (V pred : (Set<V>) v.getPredecessors()) {
-                    shortestPathTree.addVertex(pred);
-                    shortestPathTree.addEdge(pred, v);
-                }
-            }
-            return shortestPathTree;
+            return reconstructSPT(startNode);
         }
-
         return null;
     }
 

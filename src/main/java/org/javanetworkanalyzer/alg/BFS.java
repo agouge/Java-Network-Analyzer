@@ -53,12 +53,22 @@ public class BFS<V extends VBFS, E>
     private final LinkedList<V> queue;
 
     /**
-     * Constructs a new {@link BFS} object.
+     * Constructor. By default, does not calculate SPTs.
      *
      * @param graph     The graph.
      */
     public BFS(Graph<V, E> graph) {
-        super(graph);
+        this(graph, false);
+    }
+
+    /**
+     * Constructor. The user can specify whether SPTs are calculated.
+     *
+     * @param graph     The graph.
+     * @param returnSPT True iff the SPT is to be calculated.
+     */
+    public BFS(Graph<V, E> graph, boolean returnSPT) {
+        super(graph, returnSPT);
         queue = new LinkedList<V>();
     }
 
@@ -66,7 +76,7 @@ public class BFS<V extends VBFS, E>
      * Do the breadth first search.
      */
     @Override
-    public DirectedGraph<V, E> calculate(V startNode) {
+    public ShortestPathTree<V, E> calculate(V startNode) {
 
         init(startNode);
 
@@ -89,7 +99,9 @@ public class BFS<V extends VBFS, E>
             }
         }
 
-        // TODO: Make this return the correct subgraph
+        if (returnSPT) {
+            return reconstructSPT(startNode);
+        }
         return null;
     }
 

@@ -25,6 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDFS;
+import org.javanetworkanalyzer.model.ShortestPathTree;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.Subgraph;
@@ -45,13 +46,22 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
     private int time = 0;
 
     /**
-     * Constructs a new {@link DFS} object.
+     * Constructor. By default, does not calculate SPTs.
      *
      * @param graph   The graph.
-     * @param nodeMap Maps nodes to their info.
      */
     public DFS(Graph<V, E> graph) {
-        super(graph);
+        this(graph, false);
+    }
+
+    /**
+     * Constructor. The user can specify whether SPTs are calculated.
+     *
+     * @param graph     The graph.
+     * @param returnSPT True iff the SPT is to be calculated.
+     */
+    public DFS(Graph<V, E> graph, boolean returnSPT) {
+        super(graph, returnSPT);
     }
 
     /**
@@ -66,12 +76,17 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
     }
 
     /**
-     * Does a depth first search from the given node.
+     * Does a depth first search from the given start node.
+     *
+     * @param startNode Start node
      */
     @Override
-    public DirectedGraph<V, E> calculate(V node) {
-        visit(node);
-        // TODO: Make this return the correct subgraph
+    public ShortestPathTree<V, E> calculate(V startNode) {
+        visit(startNode);
+
+        if (returnSPT) {
+            return reconstructSPT(startNode);
+        }
         return null;
     }
 
