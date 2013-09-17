@@ -25,7 +25,10 @@
 package org.javanetworkanalyzer.alg;
 
 import java.util.LinkedList;
+import java.util.Set;
+
 import org.javanetworkanalyzer.data.VBFS;
+import org.javanetworkanalyzer.model.ShortestPathTree;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.Subgraph;
@@ -53,8 +56,6 @@ public class BFS<V extends VBFS, E>
      * Constructs a new {@link BFS} object.
      *
      * @param graph     The graph.
-     * @param startNode The start node.
-     * @param nodeMap   Maps nodes to their info.
      */
     public BFS(Graph<V, E> graph) {
         super(graph);
@@ -137,8 +138,7 @@ public class BFS<V extends VBFS, E>
      * @param neighbor Neighbor node
      */
     protected void firstTimeFoundStep(final V current, final V neighbor) {
-        // Set the predecessor.
-        neighbor.addPredecessor(current);
+        // Empty on purpose
     }
 
     /**
@@ -149,6 +149,7 @@ public class BFS<V extends VBFS, E>
      * @param neighbor Neighbor node
      */
     protected void shortestPathStep(V current, V neighbor) {
-        // This is empty here on purpose.
+        // Set the predecessor.
+        neighbor.addPredecessor(current);
     }
 }
