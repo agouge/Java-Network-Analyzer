@@ -58,7 +58,6 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
      * calculated.
      *
      * @param graph     The graph
-     *
      */
     public GraphSearchAlgorithm(Graph<V, E> graph) {
         this.graph = graph;

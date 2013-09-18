@@ -50,9 +50,9 @@ public class BFSForCentrality<E> extends BFS<VUCent, E> {
     /**
      * Constructs a new {@link BFSForCentrality} object.
      *
-     * @param graph     The graph.
-     * @param startNode The start node.
-     * @param nodeMap   Maps nodes to their info.
+     * @param graph The graph.
+     * @param stack Stack which returns nodes in order of non-increasing
+     *              distance from the start node
      */
     public BFSForCentrality(Graph<VUCent, E> graph,
                             Stack<VUCent> stack) {
@@ -76,8 +76,7 @@ public class BFSForCentrality<E> extends BFS<VUCent, E> {
      * @return The newly dequeued node.
      */
     @Override
-    protected VUCent dequeueStep(
-            LinkedList<VUCent> queue) {
+    protected VUCent dequeueStep(LinkedList<VUCent> queue) {
         // Dequeue a node.
         VUCent current = queue.poll();
         // Push it to the stack.
