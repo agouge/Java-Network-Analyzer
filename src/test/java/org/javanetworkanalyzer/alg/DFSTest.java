@@ -28,8 +28,8 @@ import org.javanetworkanalyzer.data.VDFS;
 import org.javanetworkanalyzer.model.AsUndirectedG;
 import org.javanetworkanalyzer.model.DirectedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
-import org.jgrapht.graph.AsUndirectedGraph;
 import org.junit.Test;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -37,69 +37,69 @@ import static org.junit.Assert.assertTrue;
  * start vertex and the order in which neighbors are visited depend on the
  * underlying graph structure. (In the below examples, the start node seems to
  * be the first node added to the graph when the graph is created.) To specify
- * the start vertex, use {@link DFSRootNode}.
+ * the start vertex, use {@link DFS#calculate(org.javanetworkanalyzer.data.VDFS)}.
  *
  * @author Adam Gouge
  */
 public class DFSTest {
 
+    protected VDFS v1;
+    protected VDFS v2;
+    protected VDFS v3;
+    protected VDFS v4;
+    protected VDFS v5;
+    protected VDFS v6;
+
     @Test
     public void testDFSDirected() {
-        DirectedPseudoG<VDFS, Edge> graph =
-                prepareGraph();
+        DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
 
         new DFS<VDFS, Edge>(graph).calculate();
 
-        assertTrue(graph.getVertex(1).getDiscoveryTime() == 1);
-        assertTrue(graph.getVertex(1).getFinishingTime() == 8);
-        assertTrue(graph.getVertex(2).getDiscoveryTime() == 2);
-        assertTrue(graph.getVertex(2).getFinishingTime() == 7);
-        assertTrue(graph.getVertex(3).getDiscoveryTime() == 3);
-        assertTrue(graph.getVertex(3).getFinishingTime() == 6);
-        assertTrue(graph.getVertex(4).getDiscoveryTime() == 4);
-        assertTrue(graph.getVertex(4).getFinishingTime() == 5);
-        assertTrue(graph.getVertex(5).getDiscoveryTime() == 9);
-        assertTrue(graph.getVertex(5).getFinishingTime() == 12);
-        assertTrue(graph.getVertex(6).getDiscoveryTime() == 10);
-        assertTrue(graph.getVertex(6).getFinishingTime() == 11);
+        assertTrue(v1.getDiscoveryTime() == 1);
+        assertTrue(v1.getFinishingTime() == 8);
+        assertTrue(v2.getDiscoveryTime() == 2);
+        assertTrue(v2.getFinishingTime() == 7);
+        assertTrue(v3.getDiscoveryTime() == 3);
+        assertTrue(v3.getFinishingTime() == 6);
+        assertTrue(v4.getDiscoveryTime() == 4);
+        assertTrue(v4.getFinishingTime() == 5);
+        assertTrue(v5.getDiscoveryTime() == 9);
+        assertTrue(v5.getFinishingTime() == 12);
+        assertTrue(v6.getDiscoveryTime() == 10);
+        assertTrue(v6.getFinishingTime() == 11);
     }
 
     @Test
     public void testDFSUndirected() throws NoSuchMethodException {
 
-        // Note: The traversal order is a little different than if we had
-        // directly constructed a PseudoG, but traversal order is in general
-        // not unique in DFS.
         AsUndirectedG<VDFS, Edge> graph =
                 new AsUndirectedG<VDFS, Edge>(prepareGraph());
 
         new DFS<VDFS, Edge>(graph).calculate();
 
-        // Note: Cannot use graph.getVertex(int) because AsUndirectedGraph
-        // is not a keyed graph!
-        assertTrue(graph.getVertex(1).getDiscoveryTime() == 1);
-        assertTrue(graph.getVertex(1).getFinishingTime() == 12);
-        assertTrue(graph.getVertex(2).getDiscoveryTime() == 2);
-        assertTrue(graph.getVertex(2).getFinishingTime() == 11);
-        assertTrue(graph.getVertex(3).getDiscoveryTime() == 4);
-        assertTrue(graph.getVertex(3).getFinishingTime() == 5);
-        assertTrue(graph.getVertex(4).getDiscoveryTime() == 3);
-        assertTrue(graph.getVertex(4).getFinishingTime() == 10);
-        assertTrue(graph.getVertex(5).getDiscoveryTime() == 6);
-        assertTrue(graph.getVertex(5).getFinishingTime() == 9);
-        assertTrue(graph.getVertex(6).getDiscoveryTime() == 7);
-        assertTrue(graph.getVertex(6).getFinishingTime() == 8);
+        assertTrue(v1.getDiscoveryTime() == 1);
+        assertTrue(v1.getFinishingTime() == 12);
+        assertTrue(v2.getDiscoveryTime() == 2);
+        assertTrue(v2.getFinishingTime() == 11);
+        assertTrue(v3.getDiscoveryTime() == 4);
+        assertTrue(v3.getFinishingTime() == 5);
+        assertTrue(v4.getDiscoveryTime() == 3);
+        assertTrue(v4.getFinishingTime() == 10);
+        assertTrue(v5.getDiscoveryTime() == 6);
+        assertTrue(v5.getFinishingTime() == 9);
+        assertTrue(v6.getDiscoveryTime() == 7);
+        assertTrue(v6.getFinishingTime() == 8);
     }
 
     /**
-     * Prepares the graph to be used in BFS tests.
+     * Prepares the graph to be used in DFS tests.
      *
      * @return The graph.
      */
     protected DirectedPseudoG<VDFS, Edge> prepareGraph() {
         DirectedPseudoG<VDFS, Edge> graph =
-                new DirectedPseudoG<VDFS, Edge>(
-                VDFS.class, Edge.class);
+                new DirectedPseudoG<VDFS, Edge>(VDFS.class, Edge.class);
         graph.addEdge(1, 2);
         graph.addEdge(1, 3);
         graph.addEdge(2, 3);
@@ -108,6 +108,13 @@ public class DFSTest {
         graph.addEdge(5, 4);
         graph.addEdge(5, 6);
         graph.addEdge(6, 6);
+
+        v1 = graph.getVertex(1);
+        v2 = graph.getVertex(2);
+        v3 = graph.getVertex(3);
+        v4 = graph.getVertex(4);
+        v5 = graph.getVertex(5);
+        v6 = graph.getVertex(6);
         return graph;
     }
 }
