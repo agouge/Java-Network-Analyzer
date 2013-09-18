@@ -27,7 +27,9 @@ package org.javanetworkanalyzer.alg;
 import org.javanetworkanalyzer.data.VDFS;
 import org.javanetworkanalyzer.model.DirectedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
+import org.javanetworkanalyzer.model.TraversalGraph;
 import org.junit.Test;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -42,7 +44,9 @@ public class DFSRootNodeTest extends DFSTest {
     public void testDFSDirectedFromVertexOne() {
 
         DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(v1);
+
+        DFS<VDFS, Edge> dfs = new DFS<VDFS, Edge>(graph, true);
+        TraversalGraph<VDFS, Edge> traverse = dfs.calculate(v1);
 
         assertTrue(v1.getDiscoveryTime() == 1);
         assertTrue(v1.getFinishingTime() == 8);
@@ -56,13 +60,20 @@ public class DFSRootNodeTest extends DFSTest {
         assertTrue(v5.getFinishingTime() == -1);
         assertTrue(v6.getDiscoveryTime() == -1);
         assertTrue(v6.getFinishingTime() == -1);
+
+        assertTrue(traverse.getRoot().equals(v1));
+        assertTrue(traverse.edgeSet().size() == 3);
+        assertTrue(traverse.containsEdge(v1, v2));
+        assertTrue(traverse.containsEdge(v2, v3));
+        assertTrue(traverse.containsEdge(v3, v4));
     }
 
     @Test
     public void testDFSDirectedFromVertexTwo() {
 
         DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(v2);
+        DFS<VDFS, Edge> dfs = new DFS<VDFS, Edge>(graph, true);
+        TraversalGraph<VDFS, Edge> traverse = dfs.calculate(v2);
 
         assertTrue(v1.getDiscoveryTime() == -1);
         assertTrue(v1.getFinishingTime() == -1);
@@ -76,13 +87,19 @@ public class DFSRootNodeTest extends DFSTest {
         assertTrue(v5.getFinishingTime() == -1);
         assertTrue(v6.getDiscoveryTime() == -1);
         assertTrue(v6.getFinishingTime() == -1);
+
+        assertTrue(traverse.getRoot().equals(v2));
+        assertTrue(traverse.edgeSet().size() == 2);
+        assertTrue(traverse.containsEdge(v2, v3));
+        assertTrue(traverse.containsEdge(v3, v4));
     }
 
     @Test
     public void testDFSDirectedFromVertexThree() {
 
         DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(v3);
+        DFS<VDFS, Edge> dfs = new DFS<VDFS, Edge>(graph, true);
+        TraversalGraph<VDFS, Edge> traverse = dfs.calculate(v3);
 
         assertTrue(v1.getDiscoveryTime() == -1);
         assertTrue(v1.getFinishingTime() == -1);
@@ -96,13 +113,19 @@ public class DFSRootNodeTest extends DFSTest {
         assertTrue(v5.getFinishingTime() == -1);
         assertTrue(v6.getDiscoveryTime() == -1);
         assertTrue(v6.getFinishingTime() == -1);
+
+        assertTrue(traverse.getRoot().equals(v3));
+        assertTrue(traverse.edgeSet().size() == 2);
+        assertTrue(traverse.containsEdge(v3, v4));
+        assertTrue(traverse.containsEdge(v4, v2));
     }
 
     @Test
     public void testDFSDirectedFromVertexFour() {
 
         DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(v4);
+        DFS<VDFS, Edge> dfs = new DFS<VDFS, Edge>(graph, true);
+        TraversalGraph<VDFS, Edge> traverse = dfs.calculate(v4);
 
         assertTrue(v1.getDiscoveryTime() == -1);
         assertTrue(v1.getFinishingTime() == -1);
@@ -116,13 +139,19 @@ public class DFSRootNodeTest extends DFSTest {
         assertTrue(v5.getFinishingTime() == -1);
         assertTrue(v6.getDiscoveryTime() == -1);
         assertTrue(v6.getFinishingTime() == -1);
+
+        assertTrue(traverse.getRoot().equals(v4));
+        assertTrue(traverse.edgeSet().size() == 2);
+        assertTrue(traverse.containsEdge(v4, v2));
+        assertTrue(traverse.containsEdge(v2, v3));
     }
 
     @Test
     public void testDFSDirectedFromVertexFive() {
 
         DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(v5);
+        DFS<VDFS, Edge> dfs = new DFS<VDFS, Edge>(graph, true);
+        TraversalGraph<VDFS, Edge> traverse = dfs.calculate(v5);
 
         assertTrue(v1.getDiscoveryTime() == -1);
         assertTrue(v1.getFinishingTime() == -1);
@@ -136,13 +165,21 @@ public class DFSRootNodeTest extends DFSTest {
         assertTrue(v5.getFinishingTime() == 10);
         assertTrue(v6.getDiscoveryTime() == 8);
         assertTrue(v6.getFinishingTime() == 9);
+
+        assertTrue(traverse.getRoot().equals(v5));
+        assertTrue(traverse.edgeSet().size() == 4);
+        assertTrue(traverse.containsEdge(v5, v4));
+        assertTrue(traverse.containsEdge(v4, v2));
+        assertTrue(traverse.containsEdge(v2, v3));
+        assertTrue(traverse.containsEdge(v5, v6));
     }
 
     @Test
     public void testDFSDirectedFromVertexSix() {
 
         DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(v6);
+        DFS<VDFS, Edge> dfs = new DFS<VDFS, Edge>(graph, true);
+        TraversalGraph<VDFS, Edge> traverse = dfs.calculate(v6);
 
         assertTrue(v1.getDiscoveryTime() == -1);
         assertTrue(v1.getFinishingTime() == -1);
@@ -156,5 +193,8 @@ public class DFSRootNodeTest extends DFSTest {
         assertTrue(v5.getFinishingTime() == -1);
         assertTrue(v6.getDiscoveryTime() == 1);
         assertTrue(v6.getFinishingTime() == 2);
+
+        assertTrue(traverse.getRoot().equals(v6));
+        assertTrue(traverse.edgeSet().size() == 0);
     }
 }
