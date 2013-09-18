@@ -24,13 +24,12 @@
  */
 package org.javanetworkanalyzer.alg;
 
+import junit.framework.TestCase;
 import org.javanetworkanalyzer.data.VDFS;
 import org.javanetworkanalyzer.model.AsUndirectedG;
 import org.javanetworkanalyzer.model.DirectedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the DFS algorithm on a(n) (un)directed graph. Note: Both the choice of
@@ -41,8 +40,10 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Adam Gouge
  */
-public class DFSTest {
+public class DFSTest extends TestCase {
 
+    protected DirectedPseudoG<VDFS, Edge> graph;
+    protected DFS<VDFS, Edge> dfs;
     protected VDFS v1;
     protected VDFS v2;
     protected VDFS v3;
@@ -52,9 +53,7 @@ public class DFSTest {
 
     @Test
     public void testDFSDirected() {
-        DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-
-        new DFS<VDFS, Edge>(graph).calculate();
+        dfs.calculate();
 
         assertTrue(v1.getDiscoveryTime() == 1);
         assertTrue(v1.getFinishingTime() == 8);
@@ -73,10 +72,10 @@ public class DFSTest {
     @Test
     public void testDFSUndirected() throws NoSuchMethodException {
 
-        AsUndirectedG<VDFS, Edge> graph =
-                new AsUndirectedG<VDFS, Edge>(prepareGraph());
+        AsUndirectedG<VDFS, Edge> g =
+                new AsUndirectedG<VDFS, Edge>(graph);
 
-        new DFS<VDFS, Edge>(graph).calculate();
+        new DFS<VDFS, Edge>(g).calculate();
 
         assertTrue(v1.getDiscoveryTime() == 1);
         assertTrue(v1.getFinishingTime() == 12);
@@ -92,14 +91,9 @@ public class DFSTest {
         assertTrue(v6.getFinishingTime() == 8);
     }
 
-    /**
-     * Prepares the graph to be used in DFS tests.
-     *
-     * @return The graph.
-     */
-    protected DirectedPseudoG<VDFS, Edge> prepareGraph() {
-        DirectedPseudoG<VDFS, Edge> graph =
-                new DirectedPseudoG<VDFS, Edge>(VDFS.class, Edge.class);
+    @Override
+    public void setUp() {
+        graph = new DirectedPseudoG<VDFS, Edge>(VDFS.class, Edge.class);
         graph.addEdge(1, 2);
         graph.addEdge(1, 3);
         graph.addEdge(2, 3);
@@ -109,12 +103,13 @@ public class DFSTest {
         graph.addEdge(5, 6);
         graph.addEdge(6, 6);
 
+        dfs = new DFS<VDFS, Edge>(graph);
+
         v1 = graph.getVertex(1);
         v2 = graph.getVertex(2);
         v3 = graph.getVertex(3);
         v4 = graph.getVertex(4);
         v5 = graph.getVertex(5);
         v6 = graph.getVertex(6);
-        return graph;
     }
 }
