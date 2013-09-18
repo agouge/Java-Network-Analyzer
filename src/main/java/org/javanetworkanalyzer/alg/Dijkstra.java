@@ -140,10 +140,10 @@ public class Dijkstra<V extends VDijkstra, E>
         // If a smaller distance estimate is available, make the necessary
         // updates.
         if (v.getDistance() > u.getDistance() + uvWeight) {
-            shortestPathSoFarUpdate(startNode, u, v, uvWeight, e, queue);
+            shortestPathSoFarUpdate(startNode, u, v, uvWeight, queue);
         } else if (Math.abs(v.getDistance() - (u.getDistance() + uvWeight))
                 < TOLERANCE) {
-            multipleShortestPathUpdate(u, v, e);
+            multipleShortestPathUpdate(u, v);
         }
     }
 
@@ -154,11 +154,10 @@ public class Dijkstra<V extends VDijkstra, E>
      * @param u        Vertex u
      * @param v        Vertex v
      * @param uvWeight w(u,v)
-     * @param e        Edge e
      * @param queue    Queue
      */
     protected void shortestPathSoFarUpdate(V startNode, V u, V v, Double uvWeight,
-                                           E e, PriorityQueue<V> queue) {
+                                           PriorityQueue<V> queue) {
         // Reset the predecessors and add u as a predecessor
         v.getPredecessors().clear();
         v.addPredecessor(u);
@@ -177,7 +176,7 @@ public class Dijkstra<V extends VDijkstra, E>
      * @param u Vertex u
      * @param v Vertex v
      */
-    protected void multipleShortestPathUpdate(V u, V v, E e) {
+    protected void multipleShortestPathUpdate(V u, V v) {
         // Add u to the list of predecessors.
         v.addPredecessor(u);
     }
