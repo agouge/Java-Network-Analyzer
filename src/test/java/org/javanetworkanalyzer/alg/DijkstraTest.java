@@ -25,6 +25,8 @@
 package org.javanetworkanalyzer.alg;
 
 import java.util.Arrays;
+
+import junit.framework.TestCase;
 import org.javanetworkanalyzer.data.VDijkstra;
 import org.javanetworkanalyzer.graphcreators.GraphPrep;
 import org.javanetworkanalyzer.model.DirectedG;
@@ -113,8 +115,8 @@ public abstract class DijkstraTest {
 
         Dijkstra dijkstra = new Dijkstra(g);
         for (int i = 1; i < getGraphPrep().getNumberOfVertices() + 1; i++) {
+            dijkstra.calculate(g.getVertex(i));
             for (int j = 1; j < getGraphPrep().getNumberOfVertices() + 1; j++) {
-                dijkstra.calculate(g.getVertex(i));
                 d[i - 1][j - 1] = g.getVertex(j).getDistance();
             }
         }

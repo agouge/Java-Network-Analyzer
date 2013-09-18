@@ -32,7 +32,6 @@ import org.jgrapht.Graph;
  *
  * @param <V> The data structure to hold node information during the execution
  *            of DFS.
- *
  * @author Adam Gouge
  */
 public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
@@ -43,10 +42,9 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
     private int time = 0;
 
     /**
-     * Constructs a new {@link DFS} object.
+     * Constructor.
      *
-     * @param graph   The graph.
-     * @param nodeMap Maps nodes to their info.
+     * @param graph The graph.
      */
     public DFS(Graph<V, E> graph) {
         super(graph);
@@ -64,16 +62,19 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
     }
 
     /**
-     * Does a depth first search from the given node.
+     * Does a depth first search from the given start node.
+     *
+     * @param startNode Start node
      */
     @Override
-    public void calculate(V node) {
-        visit(node);
+    public void calculate(V startNode) {
+        init(startNode);
+        visit(startNode);
     }
 
     @Override
     protected void init(V startNode) {
-        // Empty on purpose.
+        super.init(startNode);
     }
 
     /**

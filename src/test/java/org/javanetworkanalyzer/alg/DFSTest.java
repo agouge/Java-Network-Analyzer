@@ -24,92 +24,77 @@
  */
 package org.javanetworkanalyzer.alg;
 
+import junit.framework.TestCase;
 import org.javanetworkanalyzer.data.VDFS;
+import org.javanetworkanalyzer.model.AsUndirectedG;
 import org.javanetworkanalyzer.model.DirectedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
-import org.jgrapht.graph.AsUndirectedGraph;
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the DFS algorithm on a(n) (un)directed graph. Note: Both the choice of
  * start vertex and the order in which neighbors are visited depend on the
  * underlying graph structure. (In the below examples, the start node seems to
  * be the first node added to the graph when the graph is created.) To specify
- * the start vertex, use {@link DFSRootNode}.
+ * the start vertex, use {@link DFS#calculate(org.javanetworkanalyzer.data.VDFS)}.
  *
  * @author Adam Gouge
  */
-public class DFSTest {
+public class DFSTest extends TestCase {
+
+    protected DirectedPseudoG<VDFS, Edge> graph;
+    protected DFS<VDFS, Edge> dfs;
+    protected VDFS v1;
+    protected VDFS v2;
+    protected VDFS v3;
+    protected VDFS v4;
+    protected VDFS v5;
+    protected VDFS v6;
 
     @Test
     public void testDFSDirected() {
-        DirectedPseudoG<VDFS, Edge> graph =
-                prepareGraph();
+        dfs.calculate();
 
-        new DFS<VDFS, Edge>(graph).calculate();
-
-        VDFS[] vertices = indexVertices(graph);
-
-        assertTrue(vertices[0].getDiscoveryTime() == 1);
-        assertTrue(vertices[0].getFinishingTime() == 8);
-        assertTrue(vertices[1].getDiscoveryTime() == 2);
-        assertTrue(vertices[1].getFinishingTime() == 7);
-        assertTrue(vertices[2].getDiscoveryTime() == 3);
-        assertTrue(vertices[2].getFinishingTime() == 6);
-        assertTrue(vertices[3].getDiscoveryTime() == 4);
-        assertTrue(vertices[3].getFinishingTime() == 5);
-        assertTrue(vertices[4].getDiscoveryTime() == 9);
-        assertTrue(vertices[4].getFinishingTime() == 12);
-        assertTrue(vertices[5].getDiscoveryTime() == 10);
-        assertTrue(vertices[5].getFinishingTime() == 11);
+        assertTrue(v1.getDiscoveryTime() == 1);
+        assertTrue(v1.getFinishingTime() == 8);
+        assertTrue(v2.getDiscoveryTime() == 2);
+        assertTrue(v2.getFinishingTime() == 7);
+        assertTrue(v3.getDiscoveryTime() == 3);
+        assertTrue(v3.getFinishingTime() == 6);
+        assertTrue(v4.getDiscoveryTime() == 4);
+        assertTrue(v4.getFinishingTime() == 5);
+        assertTrue(v5.getDiscoveryTime() == 9);
+        assertTrue(v5.getFinishingTime() == 12);
+        assertTrue(v6.getDiscoveryTime() == 10);
+        assertTrue(v6.getFinishingTime() == 11);
     }
 
     @Test
-    public void testDFSUndirected() {
+    public void testDFSUndirected() throws NoSuchMethodException {
 
-        // Note: The traveral order is a little different than if we had
-        // directly constructed a PseudoG, but traversal order is in general
-        // not unique in DFS.
-        AsUndirectedGraph<VDFS, Edge> graph =
-                new AsUndirectedGraph<VDFS, Edge>(prepareGraph());
+        AsUndirectedG<VDFS, Edge> g =
+                new AsUndirectedG<VDFS, Edge>(graph);
 
-        new DFS<VDFS, Edge>(graph).calculate();
+        new DFS<VDFS, Edge>(g).calculate();
 
-        // Note: Cannot use graph.getVertex(int) because AsUndirectedGraph
-        // is not a keyed graph!
-        for (VDFS node : graph.vertexSet()) {
-            if (node.getID() == 1) {
-                assertTrue(node.getDiscoveryTime() == 1);
-                assertTrue(node.getFinishingTime() == 12);
-            } else if (node.getID() == 2) {
-                assertTrue(node.getDiscoveryTime() == 2);
-                assertTrue(node.getFinishingTime() == 11);
-            } else if (node.getID() == 3) {
-                assertTrue(node.getDiscoveryTime() == 4);
-                assertTrue(node.getFinishingTime() == 5);
-            } else if (node.getID() == 4) {
-                assertTrue(node.getDiscoveryTime() == 3);
-                assertTrue(node.getFinishingTime() == 10);
-            } else if (node.getID() == 5) {
-                assertTrue(node.getDiscoveryTime() == 6);
-                assertTrue(node.getFinishingTime() == 9);
-            } else if (node.getID() == 6) {
-                assertTrue(node.getDiscoveryTime() == 7);
-                assertTrue(node.getFinishingTime() == 8);
-            }
-        }
+        // TODO: These vertex references for graph work for g!
+        assertTrue(v1.getDiscoveryTime() == 1);
+        assertTrue(v1.getFinishingTime() == 12);
+        assertTrue(v2.getDiscoveryTime() == 2);
+        assertTrue(v2.getFinishingTime() == 11);
+        assertTrue(v3.getDiscoveryTime() == 4);
+        assertTrue(v3.getFinishingTime() == 5);
+        assertTrue(v4.getDiscoveryTime() == 3);
+        assertTrue(v4.getFinishingTime() == 10);
+        assertTrue(v5.getDiscoveryTime() == 6);
+        assertTrue(v5.getFinishingTime() == 9);
+        assertTrue(v6.getDiscoveryTime() == 7);
+        assertTrue(v6.getFinishingTime() == 8);
     }
 
-    /**
-     * Prepares the graph to be used in BFS tests.
-     *
-     * @return The graph.
-     */
-    protected DirectedPseudoG<VDFS, Edge> prepareGraph() {
-        DirectedPseudoG<VDFS, Edge> graph =
-                new DirectedPseudoG<VDFS, Edge>(
-                VDFS.class, Edge.class);
+    @Override
+    public void setUp() {
+        graph = new DirectedPseudoG<VDFS, Edge>(VDFS.class, Edge.class);
         graph.addEdge(1, 2);
         graph.addEdge(1, 3);
         graph.addEdge(2, 3);
@@ -118,22 +103,14 @@ public class DFSTest {
         graph.addEdge(5, 4);
         graph.addEdge(5, 6);
         graph.addEdge(6, 6);
-        return graph;
-    }
 
-    /**
-     * Facilitates obtaining references to vertices.
-     *
-     * @param graph Input graph.
-     *
-     * @return An array with the vertex with index i is in position i-1.
-     */
-    protected VDFS[] indexVertices(DirectedPseudoG<VDFS, Edge> graph) {
-        int numberOfNodes = 6;
-        VDFS[] vertices = new VDFS[numberOfNodes];
-        for (int i = 0; i < numberOfNodes; i++) {
-            vertices[i] = graph.getVertex(i + 1);
-        }
-        return vertices;
+        dfs = new DFS<VDFS, Edge>(graph);
+
+        v1 = graph.getVertex(1);
+        v2 = graph.getVertex(2);
+        v3 = graph.getVertex(3);
+        v4 = graph.getVertex(4);
+        v5 = graph.getVertex(5);
+        v6 = graph.getVertex(6);
     }
 }
