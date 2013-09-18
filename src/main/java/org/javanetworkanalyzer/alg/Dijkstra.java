@@ -25,7 +25,6 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDijkstra;
-import org.javanetworkanalyzer.model.TraversalGraph;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -54,22 +53,12 @@ public class Dijkstra<V extends VDijkstra, E>
     protected static final double TOLERANCE = 0.000000001;
 
     /**
-     * Constructor. By default, does not calculate SPTs.
+     * Constructor.
      *
      * @param graph The graph.
      */
     public Dijkstra(Graph<V, E> graph) {
-        this(graph, false);
-    }
-
-    /**
-     * Constructor. The user can specify whether SPTs are calculated.
-     *
-     * @param graph     The graph.
-     * @param returnSPT True iff the SPT is to be calculated.
-     */
-    public Dijkstra(Graph<V, E> graph, boolean returnSPT) {
-        super(graph, returnSPT);
+        super(graph);
         queue = createPriorityQueue();
     }
 
@@ -77,11 +66,12 @@ public class Dijkstra<V extends VDijkstra, E>
      * Does a Dijkstra search from the given start node to all other nodes.
      * The shortest path "tree" we return may contain multiple shortest paths.
      *
+     *
      * @param startNode Start node
      * @return The SPT if {@link #returnSPT} is true; null otherwise.
      */
     @Override
-    public TraversalGraph<V, E> calculate(V startNode) {
+    public void calculate(V startNode) {
 
         init(startNode);
 
@@ -97,15 +87,11 @@ public class Dijkstra<V extends VDijkstra, E>
                 relax(startNode, u, e, queue);
             }
         }
-
-        if (returnSPT) {
-            return reconstructTraversalGraph(startNode);
-        }
-        return null;
     }
 
     @Override
     protected void init(V startNode) {
+        super.init(startNode);
         for (V node : graph.vertexSet()) {
             node.reset();
         }

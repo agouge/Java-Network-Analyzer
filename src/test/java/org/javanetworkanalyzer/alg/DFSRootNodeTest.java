@@ -42,7 +42,8 @@ public class DFSRootNodeTest extends DFSTest {
     @Test
     public void testDFSDirectedFromVertexOne() {
 
-        traverse = dfs.calculate(v1);
+        dfs.calculate(v1);
+        traverse = dfs.reconstructTraversalGraph();
 
         assertTrue(v1.getDiscoveryTime() == 1);
         assertTrue(v1.getFinishingTime() == 8);
@@ -67,7 +68,8 @@ public class DFSRootNodeTest extends DFSTest {
     @Test
     public void testDFSDirectedFromVertexTwo() {
 
-        traverse = dfs.calculate(v2);
+        dfs.calculate(v2);
+        traverse = dfs.reconstructTraversalGraph();
 
         assertTrue(v1.getDiscoveryTime() == -1);
         assertTrue(v1.getFinishingTime() == -1);
@@ -91,7 +93,8 @@ public class DFSRootNodeTest extends DFSTest {
     @Test
     public void testDFSDirectedFromVertexThree() {
 
-        traverse = dfs.calculate(v3);
+        dfs.calculate(v3);
+        traverse = dfs.reconstructTraversalGraph();
 
         assertTrue(v1.getDiscoveryTime() == -1);
         assertTrue(v1.getFinishingTime() == -1);
@@ -115,7 +118,8 @@ public class DFSRootNodeTest extends DFSTest {
     @Test
     public void testDFSDirectedFromVertexFour() {
 
-        traverse = dfs.calculate(v4);
+        dfs.calculate(v4);
+        traverse = dfs.reconstructTraversalGraph();
 
         assertTrue(v1.getDiscoveryTime() == -1);
         assertTrue(v1.getFinishingTime() == -1);
@@ -139,7 +143,8 @@ public class DFSRootNodeTest extends DFSTest {
     @Test
     public void testDFSDirectedFromVertexFive() {
 
-        traverse = dfs.calculate(v5);
+        dfs.calculate(v5);
+        traverse = dfs.reconstructTraversalGraph();
 
         assertTrue(v1.getDiscoveryTime() == -1);
         assertTrue(v1.getFinishingTime() == -1);
@@ -165,7 +170,8 @@ public class DFSRootNodeTest extends DFSTest {
     @Test
     public void testDFSDirectedFromVertexSix() {
 
-        traverse = dfs.calculate(v6);
+        dfs.calculate(v6);
+        traverse = dfs.reconstructTraversalGraph();
 
         assertTrue(v1.getDiscoveryTime() == -1);
         assertTrue(v1.getFinishingTime() == -1);
@@ -187,6 +193,6 @@ public class DFSRootNodeTest extends DFSTest {
     @Override
     public void setUp() {
         super.setUp();
-        dfs = new DFS<VDFS, Edge>(graph, true);
+        dfs = new DFS<VDFS, Edge>(graph);
     }
 }

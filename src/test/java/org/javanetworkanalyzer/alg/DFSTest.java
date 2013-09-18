@@ -77,6 +77,7 @@ public class DFSTest extends TestCase {
 
         new DFS<VDFS, Edge>(g).calculate();
 
+        // TODO: These vertex references for graph work for g!
         assertTrue(v1.getDiscoveryTime() == 1);
         assertTrue(v1.getFinishingTime() == 12);
         assertTrue(v2.getDiscoveryTime() == 2);

@@ -40,7 +40,6 @@ import java.util.Set;
  *
  * @param <V> Vertices
  * @param <E> Edges
- *
  * @author Adam Gouge
  */
 public abstract class GraphSearchAlgorithm<V extends VPred, E> {
@@ -50,42 +49,45 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
      */
     protected final Graph<V, E> graph;
     /**
-     * True iff {@link #calculate} returns the SPT/traversal graph from the
-     * start node.
+     * Current start node
      */
-    protected final boolean returnSPT;
+    private V currentStartNode;
 
     /**
      * Constructor. The user can specify whether SPTs/traversal graphs are
      * calculated.
      *
      * @param graph     The graph
-     * @param returnSPT True iff the SPT/traversal graph is to be calculated
+     *
      */
-    public GraphSearchAlgorithm(Graph<V, E> graph, boolean returnSPT) {
+    public GraphSearchAlgorithm(Graph<V, E> graph) {
         this.graph = graph;
-        this.returnSPT = returnSPT;
     }
 
     /**
-     * Performs the graph search algorithm from the given start node and
-     * returns the SPT or traversal graph, or null if {@link #returnSPT} is false.
+     * Performs the graph search algorithm from the given start node.
      *
      * @param startNode Start node
-     * @return The SPT or traversal graph, or null if {@link #returnSPT} is false
      */
-    protected abstract TraversalGraph<V, E> calculate(V startNode);
+    protected abstract void calculate(V startNode);
 
     /**
-     * Returns the SPT/traversal graph from the given start node.
+     * Returns the SPT (BFS/Dijkstra) or traversal graph (DFS) from the last
+     * start node {@link #calculate} was called on. For BFS/Dijkstra, the
+     * shortest path "tree" we return may contain multiple shortest paths.
      *
-     * @param startNode Start node
-     * @return The SPT/traversal graph from the given start node
+     * @return The SPT/traversal graph from the last start node {@link #calculate}
+     *         was called on
      */
-    protected TraversalGraph<V, E> reconstructTraversalGraph(V startNode) {
+    protected TraversalGraph<V, E> reconstructTraversalGraph() {
 
-        TraversalGraph<V, E> traversalGraph =
-                new TraversalGraph<V, E>(graph.getEdgeFactory(), startNode);
+        if (currentStartNode == null) {
+            throw new IllegalStateException("You must call #calculate before " +
+                    "reconstructing the traversal graph.");
+        }
+
+        TraversalGraph<V, E> traversalGraph = new TraversalGraph<V, E>(
+                graph.getEdgeFactory(), currentStartNode);
         for (V v : graph.vertexSet()) {
             traversalGraph.addVertex(v);
             for (V pred : (Set<V>) v.getPredecessors()) {
@@ -93,6 +95,7 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
                 traversalGraph.addEdge(pred, v);
             }
         }
+
         return traversalGraph;
     }
 
@@ -102,14 +105,15 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
      *
      * @param startNode Start node
      */
-    protected abstract void init(V startNode);
+    protected void init(V startNode) {
+        this.currentStartNode = startNode;
+    }
 
     /**
      * Returns the outgoing edges of a node for directed graphs and all edges of
      * a node for undirected graphs. Used in Dijkstra.
      *
      * @param node The node.
-     *
      * @return The outgoing edges of the node.
      */
     public Set<E> outgoingEdgesOf(V node) {
@@ -125,12 +129,11 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
      * list of a node for undirected graphs. Used in BFS, DFS, Strahler.
      *
      * @param node The node.
-     *
      * @return The outgoing edges of the node.
      */
     public List<V> successorListOf(V node) {
         if (graph instanceof DirectedGraph) {
-            return Graphs.successorListOf((DirectedGraph)graph, node);
+            return Graphs.successorListOf((DirectedGraph) graph, node);
         } else {
             return Graphs.neighborListOf(graph, node);
         }
@@ -141,7 +144,6 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
      * node. Used in Strahler.
      *
      * @param node The node.
-     *
      * @return The outdegree (or degree for undirected graphs) of the given
      *         node.
      */

@@ -56,7 +56,7 @@ public class DijkstraCormenTest extends DijkstraTest {
 
         DirectedWeightedPseudoG<VDijkstra, Edge> g = CORMEN.weightedDirected();
 
-        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g, true);
+        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
 
         TraversalGraph<VDijkstra, Edge> sPT;
 
@@ -66,7 +66,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         VDijkstra v4 = g.getVertex(4);
         VDijkstra v5 = g.getVertex(5);
 
-        sPT = dijkstra.calculate(v1);
+        dijkstra.calculate(v1);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v1));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v1, v4));
@@ -79,7 +80,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v4) == 2);
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
-        sPT = dijkstra.calculate(v2);
+        dijkstra.calculate(v2);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v2));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v2, v3));
@@ -93,7 +95,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
 
-        sPT = dijkstra.calculate(v3);
+        dijkstra.calculate(v3);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v3));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v3, v5));
@@ -107,7 +110,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
 
-        sPT = dijkstra.calculate(v4);
+        dijkstra.calculate(v4);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v4));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v4, v5));
@@ -120,7 +124,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v4) == 2);
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
-        sPT = dijkstra.calculate(v5);
+        dijkstra.calculate(v5);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v5));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v5, v3));
@@ -139,7 +144,7 @@ public class DijkstraCormenTest extends DijkstraTest {
 
         WeightedEdgeReversedG<VDijkstra, Edge> g = CORMEN.weightedReversed();
 
-        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g, true);
+        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
 
         TraversalGraph<VDijkstra, Edge> sPT;
 
@@ -149,7 +154,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         VDijkstra v4 = g.getVertex(4);
         VDijkstra v5 = g.getVertex(5);
 
-        sPT = dijkstra.calculate(v1);
+        dijkstra.calculate(v1);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v1));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v1, v5));
@@ -162,7 +168,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v4) == 1);
         assertTrue(sPT.outDegreeOf(v5) == 2);
 
-        sPT = dijkstra.calculate(v2);
+        dijkstra.calculate(v2);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v2));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v2, v4));
@@ -176,7 +183,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
 
-        sPT = dijkstra.calculate(v3);
+        dijkstra.calculate(v3);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v3));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v3, v2));
@@ -190,7 +198,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
 
-        sPT = dijkstra.calculate(v4);
+        dijkstra.calculate(v4);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v4));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v4, v1));
@@ -203,7 +212,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v4) == 2);
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
-        sPT = dijkstra.calculate(v5);
+        dijkstra.calculate(v5);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v5));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v5, v4));
@@ -222,7 +232,7 @@ public class DijkstraCormenTest extends DijkstraTest {
 
         UndirectedG<VDijkstra, Edge> g = CORMEN.weightedUndirected();
 
-        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g, true);
+        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
 
         TraversalGraph<VDijkstra, Edge> sPT;
 
@@ -232,7 +242,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         VDijkstra v4 = g.getVertex(4);
         VDijkstra v5 = g.getVertex(5);
 
-        sPT = dijkstra.calculate(v1);
+        dijkstra.calculate(v1);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v1));
         assertTrue(sPT.edgeSet().size() == 5);
         assertTrue(sPT.containsEdge(v1, v4));
@@ -246,7 +257,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v4) == 2);
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
-        sPT = dijkstra.calculate(v2);
+        dijkstra.calculate(v2);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v2));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v2, v3));
@@ -259,7 +271,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v4) == 2);
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
-        sPT = dijkstra.calculate(v3);
+        dijkstra.calculate(v3);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v3));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v3, v2));
@@ -272,7 +285,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v4) == 1);
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
-        sPT = dijkstra.calculate(v4);
+        dijkstra.calculate(v4);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v4));
         assertTrue(sPT.edgeSet().size() == 4);
         assertTrue(sPT.containsEdge(v4, v1));
@@ -285,7 +299,8 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v4) == 3);
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
-        sPT = dijkstra.calculate(v5);
+        dijkstra.calculate(v5);
+        sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v5));
         assertTrue(sPT.edgeSet().size() == 5);
         assertTrue(sPT.containsEdge(v5, v1));

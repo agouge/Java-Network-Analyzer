@@ -25,7 +25,6 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDFS;
-import org.javanetworkanalyzer.model.TraversalGraph;
 import org.jgrapht.Graph;
 
 /**
@@ -43,22 +42,12 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
     private int time = 0;
 
     /**
-     * Constructor. By default, does not calculate traversal graphs.
+     * Constructor.
      *
      * @param graph The graph.
      */
     public DFS(Graph<V, E> graph) {
-        this(graph, false);
-    }
-
-    /**
-     * Constructor. The user can specify whether traversal graphs are calculated.
-     *
-     * @param graph     The graph.
-     * @param returnSPT True iff the traversal graph is to be calculated.
-     */
-    public DFS(Graph<V, E> graph, boolean returnSPT) {
-        super(graph, returnSPT);
+        super(graph);
     }
 
     /**
@@ -78,18 +67,14 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
      * @param startNode Start node
      */
     @Override
-    public TraversalGraph<V, E> calculate(V startNode) {
+    public void calculate(V startNode) {
+        init(startNode);
         visit(startNode);
-
-        if (returnSPT) {
-            return reconstructTraversalGraph(startNode);
-        }
-        return null;
     }
 
     @Override
     protected void init(V startNode) {
-        // Empty on purpose.
+        super.init(startNode);
     }
 
     /**
