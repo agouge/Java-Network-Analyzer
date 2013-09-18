@@ -25,6 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDFS;
+import org.javanetworkanalyzer.model.AsUndirectedG;
 import org.javanetworkanalyzer.model.DirectedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
 import org.jgrapht.graph.AsUndirectedGraph;
@@ -49,56 +50,45 @@ public class DFSTest {
 
         new DFS<VDFS, Edge>(graph).calculate();
 
-        VDFS[] vertices = indexVertices(graph);
-
-        assertTrue(vertices[0].getDiscoveryTime() == 1);
-        assertTrue(vertices[0].getFinishingTime() == 8);
-        assertTrue(vertices[1].getDiscoveryTime() == 2);
-        assertTrue(vertices[1].getFinishingTime() == 7);
-        assertTrue(vertices[2].getDiscoveryTime() == 3);
-        assertTrue(vertices[2].getFinishingTime() == 6);
-        assertTrue(vertices[3].getDiscoveryTime() == 4);
-        assertTrue(vertices[3].getFinishingTime() == 5);
-        assertTrue(vertices[4].getDiscoveryTime() == 9);
-        assertTrue(vertices[4].getFinishingTime() == 12);
-        assertTrue(vertices[5].getDiscoveryTime() == 10);
-        assertTrue(vertices[5].getFinishingTime() == 11);
+        assertTrue(graph.getVertex(1).getDiscoveryTime() == 1);
+        assertTrue(graph.getVertex(1).getFinishingTime() == 8);
+        assertTrue(graph.getVertex(2).getDiscoveryTime() == 2);
+        assertTrue(graph.getVertex(2).getFinishingTime() == 7);
+        assertTrue(graph.getVertex(3).getDiscoveryTime() == 3);
+        assertTrue(graph.getVertex(3).getFinishingTime() == 6);
+        assertTrue(graph.getVertex(4).getDiscoveryTime() == 4);
+        assertTrue(graph.getVertex(4).getFinishingTime() == 5);
+        assertTrue(graph.getVertex(5).getDiscoveryTime() == 9);
+        assertTrue(graph.getVertex(5).getFinishingTime() == 12);
+        assertTrue(graph.getVertex(6).getDiscoveryTime() == 10);
+        assertTrue(graph.getVertex(6).getFinishingTime() == 11);
     }
 
     @Test
-    public void testDFSUndirected() {
+    public void testDFSUndirected() throws NoSuchMethodException {
 
-        // Note: The traveral order is a little different than if we had
+        // Note: The traversal order is a little different than if we had
         // directly constructed a PseudoG, but traversal order is in general
         // not unique in DFS.
-        AsUndirectedGraph<VDFS, Edge> graph =
-                new AsUndirectedGraph<VDFS, Edge>(prepareGraph());
+        AsUndirectedG<VDFS, Edge> graph =
+                new AsUndirectedG<VDFS, Edge>(prepareGraph());
 
         new DFS<VDFS, Edge>(graph).calculate();
 
         // Note: Cannot use graph.getVertex(int) because AsUndirectedGraph
         // is not a keyed graph!
-        for (VDFS node : graph.vertexSet()) {
-            if (node.getID() == 1) {
-                assertTrue(node.getDiscoveryTime() == 1);
-                assertTrue(node.getFinishingTime() == 12);
-            } else if (node.getID() == 2) {
-                assertTrue(node.getDiscoveryTime() == 2);
-                assertTrue(node.getFinishingTime() == 11);
-            } else if (node.getID() == 3) {
-                assertTrue(node.getDiscoveryTime() == 4);
-                assertTrue(node.getFinishingTime() == 5);
-            } else if (node.getID() == 4) {
-                assertTrue(node.getDiscoveryTime() == 3);
-                assertTrue(node.getFinishingTime() == 10);
-            } else if (node.getID() == 5) {
-                assertTrue(node.getDiscoveryTime() == 6);
-                assertTrue(node.getFinishingTime() == 9);
-            } else if (node.getID() == 6) {
-                assertTrue(node.getDiscoveryTime() == 7);
-                assertTrue(node.getFinishingTime() == 8);
-            }
-        }
+        assertTrue(graph.getVertex(1).getDiscoveryTime() == 1);
+        assertTrue(graph.getVertex(1).getFinishingTime() == 12);
+        assertTrue(graph.getVertex(2).getDiscoveryTime() == 2);
+        assertTrue(graph.getVertex(2).getFinishingTime() == 11);
+        assertTrue(graph.getVertex(3).getDiscoveryTime() == 4);
+        assertTrue(graph.getVertex(3).getFinishingTime() == 5);
+        assertTrue(graph.getVertex(4).getDiscoveryTime() == 3);
+        assertTrue(graph.getVertex(4).getFinishingTime() == 10);
+        assertTrue(graph.getVertex(5).getDiscoveryTime() == 6);
+        assertTrue(graph.getVertex(5).getFinishingTime() == 9);
+        assertTrue(graph.getVertex(6).getDiscoveryTime() == 7);
+        assertTrue(graph.getVertex(6).getFinishingTime() == 8);
     }
 
     /**
@@ -119,21 +109,5 @@ public class DFSTest {
         graph.addEdge(5, 6);
         graph.addEdge(6, 6);
         return graph;
-    }
-
-    /**
-     * Facilitates obtaining references to vertices.
-     *
-     * @param graph Input graph.
-     *
-     * @return An array with the vertex with index i is in position i-1.
-     */
-    protected VDFS[] indexVertices(DirectedPseudoG<VDFS, Edge> graph) {
-        int numberOfNodes = 6;
-        VDFS[] vertices = new VDFS[numberOfNodes];
-        for (int i = 0; i < numberOfNodes; i++) {
-            vertices[i] = graph.getVertex(i + 1);
-        }
-        return vertices;
     }
 }
