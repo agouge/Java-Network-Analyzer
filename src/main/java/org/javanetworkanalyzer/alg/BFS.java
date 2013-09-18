@@ -24,19 +24,19 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import java.util.LinkedList;
 import org.javanetworkanalyzer.data.VBFS;
 import org.jgrapht.Graph;
 
+import java.util.LinkedList;
+
 /**
  * Root Breadth First Search (BFS) class.
- *
- * The {@link #calculate()} method can be overridden in subclasses in order to
+ * <p/>
+ * The {@link #calculate} method can be overridden in subclasses in order to
  * do graph analysis (e.g., calculating betweenness centrality).
  *
  * @param <V> The data structure to hold node information during the execution
  *            of BFS.
- *
  * @author Adam Gouge
  */
 public class BFS<V extends VBFS, E>
@@ -48,11 +48,9 @@ public class BFS<V extends VBFS, E>
     private final LinkedList<V> queue;
 
     /**
-     * Constructs a new {@link BFS} object.
+     * Constructor.
      *
-     * @param graph     The graph.
-     * @param startNode The start node.
-     * @param nodeMap   Maps nodes to their info.
+     * @param graph The graph.
      */
     public BFS(Graph<V, E> graph) {
         super(graph);
@@ -60,7 +58,9 @@ public class BFS<V extends VBFS, E>
     }
 
     /**
-     * Do the breadth first search.
+     * Does a breadth first search from the given start node to all other nodes.
+     *
+     * @param startNode Start node
      */
     @Override
     public void calculate(V startNode) {
@@ -89,6 +89,7 @@ public class BFS<V extends VBFS, E>
 
     @Override
     protected void init(V startNode) {
+        super.init(startNode);
         for (V node : graph.vertexSet()) {
             node.reset();
         }
@@ -101,7 +102,6 @@ public class BFS<V extends VBFS, E>
      * Dequeues a node from the given queue.
      *
      * @param queue The queue.
-     *
      * @return The newly dequeued node.
      */
     protected V dequeueStep(LinkedList<V> queue) {
@@ -132,8 +132,7 @@ public class BFS<V extends VBFS, E>
      * @param neighbor Neighbor node
      */
     protected void firstTimeFoundStep(final V current, final V neighbor) {
-        // Set the predecessor.
-        neighbor.addPredecessor(current);
+        // Empty on purpose
     }
 
     /**
@@ -144,6 +143,7 @@ public class BFS<V extends VBFS, E>
      * @param neighbor Neighbor node
      */
     protected void shortestPathStep(V current, V neighbor) {
-        // This is empty here on purpose.
+        // Set the predecessor.
+        neighbor.addPredecessor(current);
     }
 }

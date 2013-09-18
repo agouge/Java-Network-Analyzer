@@ -25,10 +25,9 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDFS;
-import org.javanetworkanalyzer.model.DirectedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
+import org.javanetworkanalyzer.model.TraversalGraph;
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the DFS algorithm from all possible start vertices on a directed graph.
@@ -38,129 +37,162 @@ import static org.junit.Assert.assertTrue;
 // TODO: Write the tests for undirected graphs as well.
 public class DFSRootNodeTest extends DFSTest {
 
+    private TraversalGraph<VDFS, Edge> traverse;
+
     @Test
     public void testDFSDirectedFromVertexOne() {
 
-        DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(graph.getVertex(1));
-        VDFS[] vertices = indexVertices(graph);
+        dfs.calculate(v1);
+        traverse = dfs.reconstructTraversalGraph();
 
-        assertTrue(vertices[0].getDiscoveryTime() == 1);
-        assertTrue(vertices[0].getFinishingTime() == 8);
-        assertTrue(vertices[1].getDiscoveryTime() == 2);
-        assertTrue(vertices[1].getFinishingTime() == 7);
-        assertTrue(vertices[2].getDiscoveryTime() == 3);
-        assertTrue(vertices[2].getFinishingTime() == 6);
-        assertTrue(vertices[3].getDiscoveryTime() == 4);
-        assertTrue(vertices[3].getFinishingTime() == 5);
-        assertTrue(vertices[4].getDiscoveryTime() == -1);
-        assertTrue(vertices[4].getFinishingTime() == -1);
-        assertTrue(vertices[5].getDiscoveryTime() == -1);
-        assertTrue(vertices[5].getFinishingTime() == -1);
+        assertTrue(v1.getDiscoveryTime() == 1);
+        assertTrue(v1.getFinishingTime() == 8);
+        assertTrue(v2.getDiscoveryTime() == 2);
+        assertTrue(v2.getFinishingTime() == 7);
+        assertTrue(v3.getDiscoveryTime() == 3);
+        assertTrue(v3.getFinishingTime() == 6);
+        assertTrue(v4.getDiscoveryTime() == 4);
+        assertTrue(v4.getFinishingTime() == 5);
+        assertTrue(v5.getDiscoveryTime() == -1);
+        assertTrue(v5.getFinishingTime() == -1);
+        assertTrue(v6.getDiscoveryTime() == -1);
+        assertTrue(v6.getFinishingTime() == -1);
+
+        assertTrue(traverse.getRoot().equals(v1));
+        assertTrue(traverse.edgeSet().size() == 3);
+        assertTrue(traverse.containsEdge(v1, v2));
+        assertTrue(traverse.containsEdge(v2, v3));
+        assertTrue(traverse.containsEdge(v3, v4));
     }
 
     @Test
     public void testDFSDirectedFromVertexTwo() {
 
-        DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(graph.getVertex(2));
-        VDFS[] vertices = indexVertices(graph);
+        dfs.calculate(v2);
+        traverse = dfs.reconstructTraversalGraph();
 
-        assertTrue(vertices[0].getDiscoveryTime() == -1);
-        assertTrue(vertices[0].getFinishingTime() == -1);
-        assertTrue(vertices[1].getDiscoveryTime() == 1);
-        assertTrue(vertices[1].getFinishingTime() == 6);
-        assertTrue(vertices[2].getDiscoveryTime() == 2);
-        assertTrue(vertices[2].getFinishingTime() == 5);
-        assertTrue(vertices[3].getDiscoveryTime() == 3);
-        assertTrue(vertices[3].getFinishingTime() == 4);
-        assertTrue(vertices[4].getDiscoveryTime() == -1);
-        assertTrue(vertices[4].getFinishingTime() == -1);
-        assertTrue(vertices[5].getDiscoveryTime() == -1);
-        assertTrue(vertices[5].getFinishingTime() == -1);
+        assertTrue(v1.getDiscoveryTime() == -1);
+        assertTrue(v1.getFinishingTime() == -1);
+        assertTrue(v2.getDiscoveryTime() == 1);
+        assertTrue(v2.getFinishingTime() == 6);
+        assertTrue(v3.getDiscoveryTime() == 2);
+        assertTrue(v3.getFinishingTime() == 5);
+        assertTrue(v4.getDiscoveryTime() == 3);
+        assertTrue(v4.getFinishingTime() == 4);
+        assertTrue(v5.getDiscoveryTime() == -1);
+        assertTrue(v5.getFinishingTime() == -1);
+        assertTrue(v6.getDiscoveryTime() == -1);
+        assertTrue(v6.getFinishingTime() == -1);
+
+        assertTrue(traverse.getRoot().equals(v2));
+        assertTrue(traverse.edgeSet().size() == 2);
+        assertTrue(traverse.containsEdge(v2, v3));
+        assertTrue(traverse.containsEdge(v3, v4));
     }
 
     @Test
     public void testDFSDirectedFromVertexThree() {
 
-        DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(graph.getVertex(3));
-        VDFS[] vertices = indexVertices(graph);
+        dfs.calculate(v3);
+        traverse = dfs.reconstructTraversalGraph();
 
-        assertTrue(vertices[0].getDiscoveryTime() == -1);
-        assertTrue(vertices[0].getFinishingTime() == -1);
-        assertTrue(vertices[1].getDiscoveryTime() == 3);
-        assertTrue(vertices[1].getFinishingTime() == 4);
-        assertTrue(vertices[2].getDiscoveryTime() == 1);
-        assertTrue(vertices[2].getFinishingTime() == 6);
-        assertTrue(vertices[3].getDiscoveryTime() == 2);
-        assertTrue(vertices[3].getFinishingTime() == 5);
-        assertTrue(vertices[4].getDiscoveryTime() == -1);
-        assertTrue(vertices[4].getFinishingTime() == -1);
-        assertTrue(vertices[5].getDiscoveryTime() == -1);
-        assertTrue(vertices[5].getFinishingTime() == -1);
+        assertTrue(v1.getDiscoveryTime() == -1);
+        assertTrue(v1.getFinishingTime() == -1);
+        assertTrue(v2.getDiscoveryTime() == 3);
+        assertTrue(v2.getFinishingTime() == 4);
+        assertTrue(v3.getDiscoveryTime() == 1);
+        assertTrue(v3.getFinishingTime() == 6);
+        assertTrue(v4.getDiscoveryTime() == 2);
+        assertTrue(v4.getFinishingTime() == 5);
+        assertTrue(v5.getDiscoveryTime() == -1);
+        assertTrue(v5.getFinishingTime() == -1);
+        assertTrue(v6.getDiscoveryTime() == -1);
+        assertTrue(v6.getFinishingTime() == -1);
+
+        assertTrue(traverse.getRoot().equals(v3));
+        assertTrue(traverse.edgeSet().size() == 2);
+        assertTrue(traverse.containsEdge(v3, v4));
+        assertTrue(traverse.containsEdge(v4, v2));
     }
 
     @Test
     public void testDFSDirectedFromVertexFour() {
 
-        DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(graph.getVertex(4));
-        VDFS[] vertices = indexVertices(graph);
+        dfs.calculate(v4);
+        traverse = dfs.reconstructTraversalGraph();
 
-        assertTrue(vertices[0].getDiscoveryTime() == -1);
-        assertTrue(vertices[0].getFinishingTime() == -1);
-        assertTrue(vertices[1].getDiscoveryTime() == 2);
-        assertTrue(vertices[1].getFinishingTime() == 5);
-        assertTrue(vertices[2].getDiscoveryTime() == 3);
-        assertTrue(vertices[2].getFinishingTime() == 4);
-        assertTrue(vertices[3].getDiscoveryTime() == 1);
-        assertTrue(vertices[3].getFinishingTime() == 6);
-        assertTrue(vertices[4].getDiscoveryTime() == -1);
-        assertTrue(vertices[4].getFinishingTime() == -1);
-        assertTrue(vertices[5].getDiscoveryTime() == -1);
-        assertTrue(vertices[5].getFinishingTime() == -1);
+        assertTrue(v1.getDiscoveryTime() == -1);
+        assertTrue(v1.getFinishingTime() == -1);
+        assertTrue(v2.getDiscoveryTime() == 2);
+        assertTrue(v2.getFinishingTime() == 5);
+        assertTrue(v3.getDiscoveryTime() == 3);
+        assertTrue(v3.getFinishingTime() == 4);
+        assertTrue(v4.getDiscoveryTime() == 1);
+        assertTrue(v4.getFinishingTime() == 6);
+        assertTrue(v5.getDiscoveryTime() == -1);
+        assertTrue(v5.getFinishingTime() == -1);
+        assertTrue(v6.getDiscoveryTime() == -1);
+        assertTrue(v6.getFinishingTime() == -1);
+
+        assertTrue(traverse.getRoot().equals(v4));
+        assertTrue(traverse.edgeSet().size() == 2);
+        assertTrue(traverse.containsEdge(v4, v2));
+        assertTrue(traverse.containsEdge(v2, v3));
     }
 
     @Test
     public void testDFSDirectedFromVertexFive() {
 
-        DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(graph.getVertex(5));
-        VDFS[] vertices = indexVertices(graph);
+        dfs.calculate(v5);
+        traverse = dfs.reconstructTraversalGraph();
 
-        assertTrue(vertices[0].getDiscoveryTime() == -1);
-        assertTrue(vertices[0].getFinishingTime() == -1);
-        assertTrue(vertices[1].getDiscoveryTime() == 3);
-        assertTrue(vertices[1].getFinishingTime() == 6);
-        assertTrue(vertices[2].getDiscoveryTime() == 4);
-        assertTrue(vertices[2].getFinishingTime() == 5);
-        assertTrue(vertices[3].getDiscoveryTime() == 2);
-        assertTrue(vertices[3].getFinishingTime() == 7);
-        assertTrue(vertices[4].getDiscoveryTime() == 1);
-        assertTrue(vertices[4].getFinishingTime() == 10);
-        assertTrue(vertices[5].getDiscoveryTime() == 8);
-        assertTrue(vertices[5].getFinishingTime() == 9);
+        assertTrue(v1.getDiscoveryTime() == -1);
+        assertTrue(v1.getFinishingTime() == -1);
+        assertTrue(v2.getDiscoveryTime() == 3);
+        assertTrue(v2.getFinishingTime() == 6);
+        assertTrue(v3.getDiscoveryTime() == 4);
+        assertTrue(v3.getFinishingTime() == 5);
+        assertTrue(v4.getDiscoveryTime() == 2);
+        assertTrue(v4.getFinishingTime() == 7);
+        assertTrue(v5.getDiscoveryTime() == 1);
+        assertTrue(v5.getFinishingTime() == 10);
+        assertTrue(v6.getDiscoveryTime() == 8);
+        assertTrue(v6.getFinishingTime() == 9);
+
+        assertTrue(traverse.getRoot().equals(v5));
+        assertTrue(traverse.edgeSet().size() == 4);
+        assertTrue(traverse.containsEdge(v5, v4));
+        assertTrue(traverse.containsEdge(v4, v2));
+        assertTrue(traverse.containsEdge(v2, v3));
+        assertTrue(traverse.containsEdge(v5, v6));
     }
 
     @Test
     public void testDFSDirectedFromVertexSix() {
 
-        DirectedPseudoG<VDFS, Edge> graph = prepareGraph();
-        new DFS<VDFS, Edge>(graph).calculate(graph.getVertex(6));
-        VDFS[] vertices = indexVertices(graph);
+        dfs.calculate(v6);
+        traverse = dfs.reconstructTraversalGraph();
 
-        assertTrue(vertices[0].getDiscoveryTime() == -1);
-        assertTrue(vertices[0].getFinishingTime() == -1);
-        assertTrue(vertices[1].getDiscoveryTime() == -1);
-        assertTrue(vertices[1].getFinishingTime() == -1);
-        assertTrue(vertices[2].getDiscoveryTime() == -1);
-        assertTrue(vertices[2].getFinishingTime() == -1);
-        assertTrue(vertices[3].getDiscoveryTime() == -1);
-        assertTrue(vertices[3].getFinishingTime() == -1);
-        assertTrue(vertices[4].getDiscoveryTime() == -1);
-        assertTrue(vertices[4].getFinishingTime() == -1);
-        assertTrue(vertices[5].getDiscoveryTime() == 1);
-        assertTrue(vertices[5].getFinishingTime() == 2);
+        assertTrue(v1.getDiscoveryTime() == -1);
+        assertTrue(v1.getFinishingTime() == -1);
+        assertTrue(v2.getDiscoveryTime() == -1);
+        assertTrue(v2.getFinishingTime() == -1);
+        assertTrue(v3.getDiscoveryTime() == -1);
+        assertTrue(v3.getFinishingTime() == -1);
+        assertTrue(v4.getDiscoveryTime() == -1);
+        assertTrue(v4.getFinishingTime() == -1);
+        assertTrue(v5.getDiscoveryTime() == -1);
+        assertTrue(v5.getFinishingTime() == -1);
+        assertTrue(v6.getDiscoveryTime() == 1);
+        assertTrue(v6.getFinishingTime() == 2);
+
+        assertTrue(traverse.getRoot().equals(v6));
+        assertTrue(traverse.edgeSet().size() == 0);
+    }
+
+    @Override
+    public void setUp() {
+        super.setUp();
+        dfs = new DFS<VDFS, Edge>(graph);
     }
 }

@@ -24,26 +24,19 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
 import org.javanetworkanalyzer.data.VDijkstra;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.EdgeReversedGraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Home-brewed implementation of Dijkstra's algorithm.
  *
  * @param <V> Vertices
  * @param <E> Edges
- *
  * @author Adam Gouge
  */
 public class Dijkstra<V extends VDijkstra, E>
@@ -58,11 +51,9 @@ public class Dijkstra<V extends VDijkstra, E>
      * have the same length.
      */
     protected static final double TOLERANCE = 0.000000001;
-    private static final Logger LOGGER =
-            LoggerFactory.getLogger(Dijkstra.class);
 
     /**
-     * Constructs a new {@link Dijkstra} object.
+     * Constructor.
      *
      * @param graph The graph.
      */
@@ -72,9 +63,13 @@ public class Dijkstra<V extends VDijkstra, E>
     }
 
     /**
-     * Do a Dijkstra search from the given start node to all other nodes.
+     * Does a Dijkstra search from the given start node to all other nodes.
+     * The shortest path "tree" we return may contain multiple shortest paths.
+     *
+     *
+     * @param startNode Start node
+     * @return The SPT if {@link #returnSPT} is true; null otherwise.
      */
-    // TODO: Add a unit test for this.
     @Override
     public void calculate(V startNode) {
 
@@ -96,6 +91,7 @@ public class Dijkstra<V extends VDijkstra, E>
 
     @Override
     protected void init(V startNode) {
+        super.init(startNode);
         for (V node : graph.vertexSet()) {
             node.reset();
         }
@@ -109,7 +105,6 @@ public class Dijkstra<V extends VDijkstra, E>
      * u. Must return true if the search should be stopped.
      *
      * @param u Vertex u.
-     *
      * @return true if we should stop the Dijkstra search.
      */
     protected boolean preRelaxStep(V startNode, V u) {
@@ -132,13 +127,9 @@ public class Dijkstra<V extends VDijkstra, E>
         // updates.
         if (v.getDistance() > u.getDistance() + uvWeight) {
             shortestPathSoFarUpdate(startNode, u, v, uvWeight, queue);
-            LOGGER.debug("\tNew SP: d({},{}) = {}",
-                    startNode.getID(), v.getID(), v.getDistance());
         } else if (Math.abs(v.getDistance() - (u.getDistance() + uvWeight))
                 < TOLERANCE) {
             multipleShortestPathUpdate(u, v);
-            LOGGER.debug("\tMultiple SP: d({},{}) = {}",
-                    startNode.getID(), v.getID(), v.getDistance());
         }
     }
 
@@ -153,7 +144,7 @@ public class Dijkstra<V extends VDijkstra, E>
      */
     protected void shortestPathSoFarUpdate(V startNode, V u, V v, Double uvWeight,
                                            PriorityQueue<V> queue) {
-        // Reset the predecessors
+        // Reset the predecessors and add u as a predecessor
         v.getPredecessors().clear();
         v.addPredecessor(u);
         // Set the distance
@@ -165,14 +156,14 @@ public class Dijkstra<V extends VDijkstra, E>
 
     /**
      * Updates to be performed if the path to v through u is a new multiple
-     * shortest path.
+     * shortest path. There is no need to set the distance on v since this
+     * is a multiple shortest path.
      *
      * @param u Vertex u
      * @param v Vertex v
      */
     protected void multipleShortestPathUpdate(V u, V v) {
-        // There is no need to set the distance on v since it this is a
-        // multiple shortest path.
+        // Add u to the list of predecessors.
         v.addPredecessor(u);
     }
 
@@ -185,13 +176,13 @@ public class Dijkstra<V extends VDijkstra, E>
         return new PriorityQueue<V>(
                 graph.vertexSet().size(),
                 new Comparator<V>() {
-            @Override
-            public int compare(V v1, V v2) {
-                return Double.compare(
-                        v1.getDistance(),
-                        v2.getDistance());
-            }
-        });
+                    @Override
+                    public int compare(V v1, V v2) {
+                        return Double.compare(
+                                v1.getDistance(),
+                                v2.getDistance());
+                    }
+                });
     }
 
     /**
@@ -200,7 +191,6 @@ public class Dijkstra<V extends VDijkstra, E>
      *
      * @param source Source
      * @param target Target
-     *
      * @return The distance from the source to the target.
      */
     public double oneToOne(V source, final V target) {
@@ -237,12 +227,11 @@ public class Dijkstra<V extends VDijkstra, E>
     }
 
     /**
-     * Performs a Dijkstra search from the source, stopping once the all the
+     * Performs a Dijkstra search from the source, stopping once all the
      * targets are found.
      *
      * @param source  Source
      * @param targets Targets
-     *
      * @return A map of distances from the source keyed by the target vertex.
      */
     public Map<V, Double> oneToMany(V source, final Set<V> targets) {
@@ -290,15 +279,13 @@ public class Dijkstra<V extends VDijkstra, E>
     }
 
     /**
-     * Performs a Dijkstra search from each source to the given target using a
-     * {@link #oneToOne}.
-     *
-     * Note: This is not very efficient since a separate search is required from
-     * each start node. TODO: Optimize!
+     * Performs a Dijkstra search from each source to the given target by
+     * reversing the graph and using a {@link #oneToMany} from the target
+     * to all the sources. If the graph is undirected, there is no need
+     * to reverse the graph.
      *
      * @param sources Sources
      * @param target  Target
-     *
      * @return A map of the distance to the target keyed by the source vertex.
      */
     public Map<V, Double> manyToOne(final Set<V> sources, V target) {
@@ -323,13 +310,12 @@ public class Dijkstra<V extends VDijkstra, E>
     /**
      * Performs a Dijkstra search from each source to each target using a
      * {@link #oneToMany} search from each source.
-     *
+     * <p/>
      * Note: Using oneToMany rather than manyToOne is more efficient since we
      * don't have to create an edge-reversed graph.
      *
      * @param sources Sources
      * @param targets Targets
-     *
      * @return A map of maps of distances. The first V is keyed by the source
      *         and the second V is keyed by the target.
      */

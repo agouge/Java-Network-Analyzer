@@ -24,12 +24,15 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import java.util.List;
-import java.util.Set;
+import org.javanetworkanalyzer.data.VPred;
+import org.javanetworkanalyzer.model.TraversalGraph;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.UndirectedGraph;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Root class for graph search algorithms, including BFS, DFS, Dijkstra, etc.,
@@ -37,20 +40,24 @@ import org.jgrapht.UndirectedGraph;
  *
  * @param <V> Vertices
  * @param <E> Edges
- *
  * @author Adam Gouge
  */
-public abstract class GraphSearchAlgorithm<V, E> {
+public abstract class GraphSearchAlgorithm<V extends VPred, E> {
 
     /**
      * The graph on which to calculate shortest paths.
      */
     protected final Graph<V, E> graph;
+    /**
+     * Current start node
+     */
+    private V currentStartNode;
 
     /**
-     * Constructs a new {@link GraphSearchAlgorithm} object.
+     * Constructor. The user can specify whether SPTs/traversal graphs are
+     * calculated.
      *
-     * @param graph The graph.
+     * @param graph     The graph
      */
     public GraphSearchAlgorithm(Graph<V, E> graph) {
         this.graph = graph;
@@ -64,19 +71,48 @@ public abstract class GraphSearchAlgorithm<V, E> {
     protected abstract void calculate(V startNode);
 
     /**
+     * Returns the SPT (BFS/Dijkstra) or traversal graph (DFS) from the last
+     * start node {@link #calculate} was called on. For BFS/Dijkstra, the
+     * shortest path "tree" we return may contain multiple shortest paths.
+     *
+     * @return The SPT/traversal graph from the last start node {@link #calculate}
+     *         was called on
+     */
+    protected TraversalGraph<V, E> reconstructTraversalGraph() {
+
+        if (currentStartNode == null) {
+            throw new IllegalStateException("You must call #calculate before " +
+                    "reconstructing the traversal graph.");
+        }
+
+        TraversalGraph<V, E> traversalGraph = new TraversalGraph<V, E>(
+                graph.getEdgeFactory(), currentStartNode);
+        for (V v : graph.vertexSet()) {
+            traversalGraph.addVertex(v);
+            for (V pred : (Set<V>) v.getPredecessors()) {
+                traversalGraph.addVertex(pred);
+                traversalGraph.addEdge(pred, v);
+            }
+        }
+
+        return traversalGraph;
+    }
+
+    /**
      * Performs any initializations to be done at the start of the
-     * {@link #calculate(java.lang.Object)} method.
+     * {@link #calculate} method.
      *
      * @param startNode Start node
      */
-    protected abstract void init(V startNode);
+    protected void init(V startNode) {
+        this.currentStartNode = startNode;
+    }
 
     /**
      * Returns the outgoing edges of a node for directed graphs and all edges of
      * a node for undirected graphs. Used in Dijkstra.
      *
      * @param node The node.
-     *
      * @return The outgoing edges of the node.
      */
     public Set<E> outgoingEdgesOf(V node) {
@@ -92,12 +128,11 @@ public abstract class GraphSearchAlgorithm<V, E> {
      * list of a node for undirected graphs. Used in BFS, DFS, Strahler.
      *
      * @param node The node.
-     *
      * @return The outgoing edges of the node.
      */
     public List<V> successorListOf(V node) {
         if (graph instanceof DirectedGraph) {
-            return Graphs.successorListOf((DirectedGraph)graph, node);
+            return Graphs.successorListOf((DirectedGraph) graph, node);
         } else {
             return Graphs.neighborListOf(graph, node);
         }
@@ -108,7 +143,6 @@ public abstract class GraphSearchAlgorithm<V, E> {
      * node. Used in Strahler.
      *
      * @param node The node.
-     *
      * @return The outdegree (or degree for undirected graphs) of the given
      *         node.
      */
