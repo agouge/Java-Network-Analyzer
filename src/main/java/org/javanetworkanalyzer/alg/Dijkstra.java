@@ -25,14 +25,11 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDijkstra;
-import org.javanetworkanalyzer.model.ShortestPathTree;
+import org.javanetworkanalyzer.model.TraversalGraph;
 import org.jgrapht.DirectedGraph;
-import org.jgrapht.EdgeFactory;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.EdgeReversedGraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -78,12 +75,13 @@ public class Dijkstra<V extends VDijkstra, E>
 
     /**
      * Does a Dijkstra search from the given start node to all other nodes.
+     * The shortest path "tree" we return may contain multiple shortest paths.
      *
      * @param startNode Start node
-     * @return The SPT, or null if we are not calculating SPTs.
+     * @return The SPT if {@link #returnSPT} is true; null otherwise.
      */
     @Override
-    public ShortestPathTree<V, E> calculate(V startNode) {
+    public TraversalGraph<V, E> calculate(V startNode) {
 
         init(startNode);
 
@@ -101,7 +99,7 @@ public class Dijkstra<V extends VDijkstra, E>
         }
 
         if (returnSPT) {
-            return reconstructSPT(startNode);
+            return reconstructTraversalGraph(startNode);
         }
         return null;
     }

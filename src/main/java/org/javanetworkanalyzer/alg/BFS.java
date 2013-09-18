@@ -24,24 +24,20 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import java.util.LinkedList;
-import java.util.Set;
-
 import org.javanetworkanalyzer.data.VBFS;
-import org.javanetworkanalyzer.model.ShortestPathTree;
-import org.jgrapht.DirectedGraph;
+import org.javanetworkanalyzer.model.TraversalGraph;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.Subgraph;
+
+import java.util.LinkedList;
 
 /**
  * Root Breadth First Search (BFS) class.
- *
- * The {@link #calculate()} method can be overridden in subclasses in order to
+ * <p/>
+ * The {@link #calculate} method can be overridden in subclasses in order to
  * do graph analysis (e.g., calculating betweenness centrality).
  *
  * @param <V> The data structure to hold node information during the execution
  *            of BFS.
- *
  * @author Adam Gouge
  */
 public class BFS<V extends VBFS, E>
@@ -55,7 +51,7 @@ public class BFS<V extends VBFS, E>
     /**
      * Constructor. By default, does not calculate SPTs.
      *
-     * @param graph     The graph.
+     * @param graph The graph.
      */
     public BFS(Graph<V, E> graph) {
         this(graph, false);
@@ -73,10 +69,14 @@ public class BFS<V extends VBFS, E>
     }
 
     /**
-     * Do the breadth first search.
+     * Does a breadth first search from the given start node to all other nodes.
+     * The shortest path "tree" we return may contain multiple shortest paths.
+     *
+     * @param startNode Start node
+     * @return The SPT if {@link #returnSPT} is true; null otherwise
      */
     @Override
-    public ShortestPathTree<V, E> calculate(V startNode) {
+    public TraversalGraph<V, E> calculate(V startNode) {
 
         init(startNode);
 
@@ -100,7 +100,7 @@ public class BFS<V extends VBFS, E>
         }
 
         if (returnSPT) {
-            return reconstructSPT(startNode);
+            return reconstructTraversalGraph(startNode);
         }
         return null;
     }
@@ -119,7 +119,6 @@ public class BFS<V extends VBFS, E>
      * Dequeues a node from the given queue.
      *
      * @param queue The queue.
-     *
      * @return The newly dequeued node.
      */
     protected V dequeueStep(LinkedList<V> queue) {

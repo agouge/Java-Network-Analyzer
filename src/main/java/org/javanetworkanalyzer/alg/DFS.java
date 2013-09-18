@@ -25,17 +25,14 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDFS;
-import org.javanetworkanalyzer.model.ShortestPathTree;
-import org.jgrapht.DirectedGraph;
+import org.javanetworkanalyzer.model.TraversalGraph;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.Subgraph;
 
 /**
  * Root Depth First Search (DFS) class.
  *
  * @param <V> The data structure to hold node information during the execution
  *            of DFS.
- *
  * @author Adam Gouge
  */
 public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
@@ -46,19 +43,19 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
     private int time = 0;
 
     /**
-     * Constructor. By default, does not calculate SPTs.
+     * Constructor. By default, does not calculate traversal graphs.
      *
-     * @param graph   The graph.
+     * @param graph The graph.
      */
     public DFS(Graph<V, E> graph) {
         this(graph, false);
     }
 
     /**
-     * Constructor. The user can specify whether SPTs are calculated.
+     * Constructor. The user can specify whether traversal graphs are calculated.
      *
      * @param graph     The graph.
-     * @param returnSPT True iff the SPT is to be calculated.
+     * @param returnSPT True iff the traversal graph is to be calculated.
      */
     public DFS(Graph<V, E> graph, boolean returnSPT) {
         super(graph, returnSPT);
@@ -81,11 +78,11 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
      * @param startNode Start node
      */
     @Override
-    public ShortestPathTree<V, E> calculate(V startNode) {
+    public TraversalGraph<V, E> calculate(V startNode) {
         visit(startNode);
 
         if (returnSPT) {
-            return reconstructSPT(startNode);
+            return reconstructTraversalGraph(startNode);
         }
         return null;
     }

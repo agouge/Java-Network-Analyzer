@@ -4,12 +4,14 @@ import org.jgrapht.EdgeFactory;
 import org.jgrapht.graph.SimpleDirectedGraph;
 
 /**
- * Shortest path "tree" (multiple shortest paths are allowed) for use in
- * {@link org.javanetworkanalyzer.alg.Dijkstra}.
+ * A simple directed graph for shortest path "trees" (multiple shortest paths
+ * are allowed) in {@link org.javanetworkanalyzer.alg.Dijkstra} and {@link
+ * org.javanetworkanalyzer.alg.BFS} as well as {@link
+ * org.javanetworkanalyzer.alg.DFS} traversal graphs.
  *
  * @author Adam Gouge
  */
-public class ShortestPathTree<V, E> extends SimpleDirectedGraph<V, E> {
+public class TraversalGraph<V, E> extends SimpleDirectedGraph<V, E> {
 
     private V root;
 
@@ -19,7 +21,7 @@ public class ShortestPathTree<V, E> extends SimpleDirectedGraph<V, E> {
      * @param edgeClass class on which to base factory for edges
      * @param root      Root
      */
-    public ShortestPathTree(Class<? extends E> edgeClass, V root) {
+    public TraversalGraph(Class<? extends E> edgeClass, V root) {
         super(edgeClass);
         this.root = root;
     }
@@ -30,15 +32,15 @@ public class ShortestPathTree<V, E> extends SimpleDirectedGraph<V, E> {
      * @param ef   the edge factory of the new graph.
      * @param root Root
      */
-    public ShortestPathTree(EdgeFactory<V, E> ef, V root) {
+    public TraversalGraph(EdgeFactory<V, E> ef, V root) {
         super(ef);
         this.root = root;
     }
 
     /**
-     * Return the root of this shortest path tree.
+     * Return the root.
      *
-     * @return The root of this shortest path tree
+     * @return The root
      */
     public V getRoot() {
         return root;

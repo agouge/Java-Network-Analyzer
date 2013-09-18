@@ -24,16 +24,15 @@
  */
 package org.javanetworkanalyzer.alg;
 
-import java.util.List;
-import java.util.Set;
-
 import org.javanetworkanalyzer.data.VPred;
-import org.javanetworkanalyzer.model.ShortestPathTree;
+import org.javanetworkanalyzer.model.TraversalGraph;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.UndirectedGraph;
-import org.jgrapht.graph.Subgraph;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Root class for graph search algorithms, including BFS, DFS, Dijkstra, etc.,
@@ -51,15 +50,17 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
      */
     protected final Graph<V, E> graph;
     /**
-     * True iff {@link #calculate} returns the SPT for the start node.
+     * True iff {@link #calculate} returns the SPT/traversal graph from the
+     * start node.
      */
     protected final boolean returnSPT;
 
     /**
-     * Constructor. The user can specify whether SPTs are calculated.
+     * Constructor. The user can specify whether SPTs/traversal graphs are
+     * calculated.
      *
-     * @param graph     The graph.
-     * @param returnSPT True iff the SPT is to be calculated.
+     * @param graph     The graph
+     * @param returnSPT True iff the SPT/traversal graph is to be calculated
      */
     public GraphSearchAlgorithm(Graph<V, E> graph, boolean returnSPT) {
         this.graph = graph;
@@ -68,36 +69,36 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
 
     /**
      * Performs the graph search algorithm from the given start node and
-     * returns the SPT, or null if {@link #returnSPT} is false.
+     * returns the SPT or traversal graph, or null if {@link #returnSPT} is false.
      *
      * @param startNode Start node
-     * @return The SPT, or null if {@link #returnSPT} is false
+     * @return The SPT or traversal graph, or null if {@link #returnSPT} is false
      */
-    protected abstract ShortestPathTree<V, E> calculate(V startNode);
+    protected abstract TraversalGraph<V, E> calculate(V startNode);
 
     /**
-     * Returns the SPT from the given start node.
+     * Returns the SPT/traversal graph from the given start node.
      *
      * @param startNode Start node
-     * @return The SPT from the given start node
+     * @return The SPT/traversal graph from the given start node
      */
-    protected ShortestPathTree<V, E> reconstructSPT(V startNode) {
+    protected TraversalGraph<V, E> reconstructTraversalGraph(V startNode) {
 
-        ShortestPathTree<V, E> shortestPathTree =
-                new ShortestPathTree<V, E>(graph.getEdgeFactory(), startNode);
+        TraversalGraph<V, E> traversalGraph =
+                new TraversalGraph<V, E>(graph.getEdgeFactory(), startNode);
         for (V v : graph.vertexSet()) {
-            shortestPathTree.addVertex(v);
+            traversalGraph.addVertex(v);
             for (V pred : (Set<V>) v.getPredecessors()) {
-                shortestPathTree.addVertex(pred);
-                shortestPathTree.addEdge(pred, v);
+                traversalGraph.addVertex(pred);
+                traversalGraph.addEdge(pred, v);
             }
         }
-        return shortestPathTree;
+        return traversalGraph;
     }
 
     /**
      * Performs any initializations to be done at the start of the
-     * {@link #calculate(java.lang.Object)} method.
+     * {@link #calculate} method.
      *
      * @param startNode Start node
      */

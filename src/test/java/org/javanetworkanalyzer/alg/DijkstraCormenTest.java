@@ -58,7 +58,7 @@ public class DijkstraCormenTest extends DijkstraTest {
 
         Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g, true);
 
-        ShortestPathTree<VDijkstra, Edge> sPT;
+        TraversalGraph<VDijkstra, Edge> sPT;
 
         VDijkstra v1 = g.getVertex(1);
         VDijkstra v2 = g.getVertex(2);
@@ -141,7 +141,7 @@ public class DijkstraCormenTest extends DijkstraTest {
 
         Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g, true);
 
-        ShortestPathTree<VDijkstra, Edge> sPT;
+        TraversalGraph<VDijkstra, Edge> sPT;
 
         VDijkstra v1 = g.getVertex(1);
         VDijkstra v2 = g.getVertex(2);
@@ -224,7 +224,7 @@ public class DijkstraCormenTest extends DijkstraTest {
 
         Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g, true);
 
-        ShortestPathTree<VDijkstra, Edge> sPT;
+        TraversalGraph<VDijkstra, Edge> sPT;
 
         VDijkstra v1 = g.getVertex(1);
         VDijkstra v2 = g.getVertex(2);
