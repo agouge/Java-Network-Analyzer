@@ -123,6 +123,16 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.66666666667
             }, graph);
         }
+        assertEquals(4, e1.getBetweenness(), TOLERANCE);
+        assertEquals(5, e2.getBetweenness(), TOLERANCE);
+        assertEquals(8, e3.getBetweenness(), TOLERANCE);
+        assertEquals(2, e4.getBetweenness(), TOLERANCE);
+        assertEquals(1, e5.getBetweenness(), TOLERANCE);
+        assertEquals(3, e6.getBetweenness(), TOLERANCE);
+        assertEquals(2, e7.getBetweenness(), TOLERANCE);
+        assertEquals(5, e8.getBetweenness(), TOLERANCE);
+        assertEquals(1, e9.getBetweenness(), TOLERANCE);
+        assertEquals(4, e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
@@ -145,6 +155,16 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.66666666667
             }, graph);
         }
+        assertEquals(4, e1.getBetweenness(), TOLERANCE);
+        assertEquals(5, e2.getBetweenness(), TOLERANCE);
+        assertEquals(9, e3.getBetweenness(), TOLERANCE);
+        assertEquals(3, e4.getBetweenness(), TOLERANCE);
+        assertEquals(1, e5.getBetweenness(), TOLERANCE);
+        assertEquals(4, e6.getBetweenness(), TOLERANCE);
+        assertEquals(2, e7.getBetweenness(), TOLERANCE);
+        assertEquals(6, e8.getBetweenness(), TOLERANCE);
+        assertEquals(1, e9.getBetweenness(), TOLERANCE);
+        assertEquals(5, e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
@@ -167,6 +187,16 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.80000000000
             }, graph);
         }
+        assertEquals(6, e1.getBetweenness(), TOLERANCE);
+        assertEquals(4, e2.getBetweenness(), TOLERANCE);
+        assertEquals(6, e3.getBetweenness(), TOLERANCE);
+        assertEquals(3, e4.getBetweenness(), TOLERANCE);
+        assertEquals(0, e5.getBetweenness(), TOLERANCE);
+        assertEquals(6, e6.getBetweenness(), TOLERANCE);
+        assertEquals(4, e7.getBetweenness(), TOLERANCE);
+        assertEquals(4, e8.getBetweenness(), TOLERANCE);
+        assertEquals(0, e9.getBetweenness(), TOLERANCE);
+        assertEquals(4, e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
@@ -190,17 +220,16 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.10000000000
             }, graph);
         }
-
-        assertEquals(0, e1.getBetweenness(), 0);
-        assertEquals(8, e2.getBetweenness(), 0);
-        assertEquals(8, e3.getBetweenness(), 0);
-        assertEquals(3, e4.getBetweenness(), 0);
-        assertEquals(6, e5.getBetweenness(), 0);
-        assertEquals(3, e6.getBetweenness(), 0);
-        assertEquals(0, e7.getBetweenness(), 0);
-        assertEquals(4, e8.getBetweenness(), 0);
-        assertEquals(1, e9.getBetweenness(), 0);
-        assertEquals(5, e10.getBetweenness(), 0);
+        assertEquals(0, e1.getBetweenness(), TOLERANCE);
+        assertEquals(8, e2.getBetweenness(), TOLERANCE);
+        assertEquals(8, e3.getBetweenness(), TOLERANCE);
+        assertEquals(3, e4.getBetweenness(), TOLERANCE);
+        assertEquals(6, e5.getBetweenness(), TOLERANCE);
+        assertEquals(3, e6.getBetweenness(), TOLERANCE);
+        assertEquals(0, e7.getBetweenness(), TOLERANCE);
+        assertEquals(4, e8.getBetweenness(), TOLERANCE);
+        assertEquals(1, e9.getBetweenness(), TOLERANCE);
+        assertEquals(5, e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
@@ -223,6 +252,18 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.23529411765
             }, graph);
         }
+        // Note: These happen to be the same results as in weightedDirectedTest
+        // but this is not always true.
+        assertEquals(0, e1.getBetweenness(), TOLERANCE);
+        assertEquals(8, e2.getBetweenness(), TOLERANCE);
+        assertEquals(8, e3.getBetweenness(), TOLERANCE);
+        assertEquals(3, e4.getBetweenness(), TOLERANCE);
+        assertEquals(6, e5.getBetweenness(), TOLERANCE);
+        assertEquals(3, e6.getBetweenness(), TOLERANCE);
+        assertEquals(0, e7.getBetweenness(), TOLERANCE);
+        assertEquals(4, e8.getBetweenness(), TOLERANCE);
+        assertEquals(1, e9.getBetweenness(), TOLERANCE);
+        assertEquals(5, e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
@@ -245,6 +286,16 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.23529411765
             }, graph);
         }
+        assertEquals(0, e1.getBetweenness(), TOLERANCE);
+        assertEquals(8, e2.getBetweenness(), TOLERANCE);
+        assertEquals(2, e3.getBetweenness(), TOLERANCE);
+        assertEquals(10, e4.getBetweenness(), TOLERANCE);
+        assertEquals(0, e5.getBetweenness(), TOLERANCE);
+        assertEquals(6, e6.getBetweenness(), TOLERANCE);
+        assertEquals(0, e7.getBetweenness(), TOLERANCE);
+        assertEquals(2, e8.getBetweenness(), TOLERANCE);
+        assertEquals(0, e9.getBetweenness(), TOLERANCE);
+        assertEquals(6, e10.getBetweenness(), TOLERANCE);
     }
 
     @Override
