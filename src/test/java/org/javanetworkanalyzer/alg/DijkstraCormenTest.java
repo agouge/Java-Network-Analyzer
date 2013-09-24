@@ -359,6 +359,333 @@ public class DijkstraCormenTest {
         assertTrue(sPT.outDegreeOf(v5) == 3);
     }
 
+    @Test
+    public void testD() throws NoSuchMethodException {
+
+        dijkstra = new Dijkstra<VDijkstra, Edge>(
+                new AsUnweightedDirectedG<VDijkstra, Edge>(graph));
+
+        dijkstra.calculate(v1);
+        assertEquals(0, v1.getDistance(), TOLERANCE);
+        assertEquals(1, v2.getDistance(), TOLERANCE);
+        assertEquals(2, v3.getDistance(), TOLERANCE);
+        assertEquals(1, v4.getDistance(), TOLERANCE);
+        assertEquals(2, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v1));
+        assertTrue(sPT.edgeSet().size() == 5);
+        assertTrue(sPT.containsEdge(v1, v2));
+        assertTrue(sPT.containsEdge(v1, v4));
+        assertTrue(sPT.containsEdge(v2, v3));
+        assertTrue(sPT.containsEdge(v4, v3));
+        assertTrue(sPT.containsEdge(v4, v5));
+        assertTrue(sPT.outDegreeOf(v1) == 2);
+        assertTrue(sPT.outDegreeOf(v2) == 1);
+        assertTrue(sPT.outDegreeOf(v3) == 0);
+        assertTrue(sPT.outDegreeOf(v4) == 2);
+        assertTrue(sPT.outDegreeOf(v5) == 0);
+
+        dijkstra.calculate(v2);
+        assertEquals(3, v1.getDistance(), TOLERANCE);
+        assertEquals(0, v2.getDistance(), TOLERANCE);
+        assertEquals(1, v3.getDistance(), TOLERANCE);
+        assertEquals(1, v4.getDistance(), TOLERANCE);
+        assertEquals(2, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v2));
+        assertTrue(sPT.edgeSet().size() == 5);
+        assertTrue(sPT.containsEdge(v2, v3));
+        assertTrue(sPT.containsEdge(v2, v4));
+        assertTrue(sPT.containsEdge(v3, v5));
+        assertTrue(sPT.containsEdge(v4, v5));
+        assertTrue(sPT.containsEdge(v5, v1));
+        assertTrue(sPT.outDegreeOf(v1) == 0);
+        assertTrue(sPT.outDegreeOf(v2) == 2);
+        assertTrue(sPT.outDegreeOf(v3) == 1);
+        assertTrue(sPT.outDegreeOf(v4) == 1);
+        assertTrue(sPT.outDegreeOf(v5) == 1);
+
+        dijkstra.calculate(v3);
+        assertEquals(2, v1.getDistance(), TOLERANCE);
+        assertEquals(3, v2.getDistance(), TOLERANCE);
+        assertEquals(0, v3.getDistance(), TOLERANCE);
+        assertEquals(3, v4.getDistance(), TOLERANCE);
+        assertEquals(1, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v3));
+        assertTrue(sPT.edgeSet().size() == 4);
+        assertTrue(sPT.containsEdge(v3, v5));
+        assertTrue(sPT.containsEdge(v5, v1));
+        assertTrue(sPT.containsEdge(v1, v2));
+        assertTrue(sPT.containsEdge(v1, v4));
+        assertTrue(sPT.outDegreeOf(v1) == 2);
+        assertTrue(sPT.outDegreeOf(v2) == 0);
+        assertTrue(sPT.outDegreeOf(v3) == 1);
+        assertTrue(sPT.outDegreeOf(v4) == 0);
+        assertTrue(sPT.outDegreeOf(v5) == 1);
+
+        dijkstra.calculate(v4);
+        assertEquals(2, v1.getDistance(), TOLERANCE);
+        assertEquals(1, v2.getDistance(), TOLERANCE);
+        assertEquals(1, v3.getDistance(), TOLERANCE);
+        assertEquals(0, v4.getDistance(), TOLERANCE);
+        assertEquals(1, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v4));
+        assertTrue(sPT.edgeSet().size() == 4);
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.containsEdge(v4, v3));
+        assertTrue(sPT.containsEdge(v4, v5));
+        assertTrue(sPT.containsEdge(v5, v1));
+        assertTrue(sPT.outDegreeOf(v1) == 0);
+        assertTrue(sPT.outDegreeOf(v2) == 0);
+        assertTrue(sPT.outDegreeOf(v3) == 0);
+        assertTrue(sPT.outDegreeOf(v4) == 3);
+        assertTrue(sPT.outDegreeOf(v5) == 1);
+
+        dijkstra.calculate(v5);
+        assertEquals(1, v1.getDistance(), TOLERANCE);
+        assertEquals(2, v2.getDistance(), TOLERANCE);
+        assertEquals(1, v3.getDistance(), TOLERANCE);
+        assertEquals(2, v4.getDistance(), TOLERANCE);
+        assertEquals(0, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v5));
+        assertTrue(sPT.edgeSet().size() == 4);
+        assertTrue(sPT.containsEdge(v5, v1));
+        assertTrue(sPT.containsEdge(v1, v2));
+        assertTrue(sPT.containsEdge(v1, v4));
+        assertTrue(sPT.containsEdge(v5, v3));
+        assertTrue(sPT.outDegreeOf(v1) == 2);
+        assertTrue(sPT.outDegreeOf(v2) == 0);
+        assertTrue(sPT.outDegreeOf(v3) == 0);
+        assertTrue(sPT.outDegreeOf(v4) == 0);
+        assertTrue(sPT.outDegreeOf(v5) == 2);
+    }
+
+    @Test
+    public void testR() throws NoSuchMethodException {
+
+        dijkstra = new Dijkstra<VDijkstra, Edge>(
+                new EdgeReversedG<VDijkstra, Edge>(
+                        new AsUnweightedDirectedG<VDijkstra, Edge>(graph)));
+
+        dijkstra.calculate(v1);
+        assertEquals(0, v1.getDistance(), TOLERANCE);
+        assertEquals(3, v2.getDistance(), TOLERANCE);
+        assertEquals(2, v3.getDistance(), TOLERANCE);
+        assertEquals(2, v4.getDistance(), TOLERANCE);
+        assertEquals(1, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v1));
+        assertTrue(sPT.edgeSet().size() == 5);
+        assertTrue(sPT.containsEdge(v1, v5));
+        assertTrue(sPT.containsEdge(v5, v3));
+        assertTrue(sPT.containsEdge(v5, v4));
+        assertTrue(sPT.containsEdge(v3, v2));
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.outDegreeOf(v1) == 1);
+        assertTrue(sPT.outDegreeOf(v2) == 0);
+        assertTrue(sPT.outDegreeOf(v3) == 1);
+        assertTrue(sPT.outDegreeOf(v4) == 1);
+        assertTrue(sPT.outDegreeOf(v5) == 2);
+
+        dijkstra.calculate(v2);
+        assertEquals(1, v1.getDistance(), TOLERANCE);
+        assertEquals(0, v2.getDistance(), TOLERANCE);
+        assertEquals(3, v3.getDistance(), TOLERANCE);
+        assertEquals(1, v4.getDistance(), TOLERANCE);
+        assertEquals(2, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v2));
+        assertTrue(sPT.edgeSet().size() == 4);
+        assertTrue(sPT.containsEdge(v2, v1));
+        assertTrue(sPT.containsEdge(v2, v4));
+        assertTrue(sPT.containsEdge(v1, v5));
+        assertTrue(sPT.containsEdge(v5, v3));
+        assertTrue(sPT.outDegreeOf(v1) == 1);
+        assertTrue(sPT.outDegreeOf(v2) == 2);
+        assertTrue(sPT.outDegreeOf(v3) == 0);
+        assertTrue(sPT.outDegreeOf(v4) == 0);
+        assertTrue(sPT.outDegreeOf(v5) == 1);
+
+        dijkstra.calculate(v3);
+        assertEquals(2, v1.getDistance(), TOLERANCE);
+        assertEquals(1, v2.getDistance(), TOLERANCE);
+        assertEquals(0, v3.getDistance(), TOLERANCE);
+        assertEquals(1, v4.getDistance(), TOLERANCE);
+        assertEquals(1, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v3));
+        assertTrue(sPT.edgeSet().size() == 5);
+        assertTrue(sPT.containsEdge(v3, v2));
+        assertTrue(sPT.containsEdge(v3, v4));
+        assertTrue(sPT.containsEdge(v3, v5));
+        assertTrue(sPT.containsEdge(v2, v1));
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.outDegreeOf(v1) == 0);
+        assertTrue(sPT.outDegreeOf(v2) == 1);
+        assertTrue(sPT.outDegreeOf(v3) == 3);
+        assertTrue(sPT.outDegreeOf(v4) == 1);
+        assertTrue(sPT.outDegreeOf(v5) == 0);
+
+        dijkstra.calculate(v4);
+        assertEquals(1, v1.getDistance(), TOLERANCE);
+        assertEquals(1, v2.getDistance(), TOLERANCE);
+        assertEquals(3, v3.getDistance(), TOLERANCE);
+        assertEquals(0, v4.getDistance(), TOLERANCE);
+        assertEquals(2, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v4));
+        assertTrue(sPT.edgeSet().size() == 4);
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v1, v5));
+        assertTrue(sPT.containsEdge(v5, v3));
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.outDegreeOf(v1) == 1);
+        assertTrue(sPT.outDegreeOf(v2) == 0);
+        assertTrue(sPT.outDegreeOf(v3) == 0);
+        assertTrue(sPT.outDegreeOf(v4) == 2);
+        assertTrue(sPT.outDegreeOf(v5) == 1);
+
+        dijkstra.calculate(v5);
+        assertEquals(2, v1.getDistance(), TOLERANCE);
+        assertEquals(2, v2.getDistance(), TOLERANCE);
+        assertEquals(1, v3.getDistance(), TOLERANCE);
+        assertEquals(1, v4.getDistance(), TOLERANCE);
+        assertEquals(0, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v5));
+        assertTrue(sPT.edgeSet().size() == 5);
+        assertTrue(sPT.containsEdge(v5, v3));
+        assertTrue(sPT.containsEdge(v3, v2));
+        assertTrue(sPT.containsEdge(v5, v4));
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.outDegreeOf(v1) == 0);
+        assertTrue(sPT.outDegreeOf(v2) == 0);
+        assertTrue(sPT.outDegreeOf(v3) == 1);
+        assertTrue(sPT.outDegreeOf(v4) == 2);
+        assertTrue(sPT.outDegreeOf(v5) == 2);
+    }
+
+    @Test
+    public void testU() throws NoSuchMethodException {
+
+        dijkstra = new Dijkstra<VDijkstra, Edge>(
+                new AsUnweightedG<VDijkstra, Edge>(graph));
+
+        dijkstra.calculate(v1);
+        assertEquals(0, v1.getDistance(), TOLERANCE);
+        assertEquals(1, v2.getDistance(), TOLERANCE);
+        assertEquals(2, v3.getDistance(), TOLERANCE);
+        assertEquals(1, v4.getDistance(), TOLERANCE);
+        assertEquals(1, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v1));
+        assertTrue(sPT.edgeSet().size() == 7);
+        assertTrue(sPT.containsEdge(v1, v2));
+        assertTrue(sPT.containsEdge(v1, v4));
+        assertTrue(sPT.containsEdge(v1, v5));
+        assertTrue(sPT.containsEdge(v2, v3));
+        assertTrue(sPT.containsEdge(v4, v3));
+        assertTrue(sPT.containsEdge(v5, v3));
+        assertTrue(sPT.getAllEdges(v5, v3).size() == 2);
+        assertTrue(sPT.outDegreeOf(v1) == 3);
+        assertTrue(sPT.outDegreeOf(v2) == 1);
+        assertTrue(sPT.outDegreeOf(v3) == 0);
+        assertTrue(sPT.outDegreeOf(v4) == 1);
+        assertTrue(sPT.outDegreeOf(v5) == 2);
+
+        dijkstra.calculate(v2);
+        assertEquals(1, v1.getDistance(), TOLERANCE);
+        assertEquals(0, v2.getDistance(), TOLERANCE);
+        assertEquals(1, v3.getDistance(), TOLERANCE);
+        assertEquals(1, v4.getDistance(), TOLERANCE);
+        assertEquals(2, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v2));
+        assertTrue(sPT.edgeSet().size() == 8);
+        assertTrue(sPT.containsEdge(v2, v1));
+        assertTrue(sPT.containsEdge(v2, v3));
+        assertTrue(sPT.containsEdge(v2, v4));
+        assertTrue(sPT.getAllEdges(v2, v4).size() == 2);
+        assertTrue(sPT.containsEdge(v1, v5));
+        assertTrue(sPT.containsEdge(v3, v5));
+        assertTrue(sPT.getAllEdges(v3, v5).size() == 2);
+        assertTrue(sPT.containsEdge(v4, v5));
+        assertTrue(sPT.outDegreeOf(v1) == 1);
+        assertTrue(sPT.outDegreeOf(v2) == 4);
+        assertTrue(sPT.outDegreeOf(v3) == 2);
+        assertTrue(sPT.outDegreeOf(v4) == 1);
+        assertTrue(sPT.outDegreeOf(v5) == 0);
+
+        dijkstra.calculate(v3);
+        assertEquals(2, v1.getDistance(), TOLERANCE);
+        assertEquals(1, v2.getDistance(), TOLERANCE);
+        assertEquals(0, v3.getDistance(), TOLERANCE);
+        assertEquals(1, v4.getDistance(), TOLERANCE);
+        assertEquals(1, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v3));
+        assertTrue(sPT.edgeSet().size() == 7);
+        assertTrue(sPT.containsEdge(v3, v2));
+        assertTrue(sPT.containsEdge(v3, v4));
+        assertTrue(sPT.containsEdge(v3, v5));
+        assertTrue(sPT.getAllEdges(v3, v5).size() == 2);
+        assertTrue(sPT.containsEdge(v2, v1));
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v5, v1));
+        assertTrue(sPT.outDegreeOf(v1) == 0);
+        assertTrue(sPT.outDegreeOf(v2) == 1);
+        assertTrue(sPT.outDegreeOf(v3) == 4);
+        assertTrue(sPT.outDegreeOf(v4) == 1);
+        assertTrue(sPT.outDegreeOf(v5) == 1);
+
+        dijkstra.calculate(v4);
+        assertEquals(1, v1.getDistance(), TOLERANCE);
+        assertEquals(1, v2.getDistance(), TOLERANCE);
+        assertEquals(1, v3.getDistance(), TOLERANCE);
+        assertEquals(0, v4.getDistance(), TOLERANCE);
+        assertEquals(1, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v4));
+        assertTrue(sPT.edgeSet().size() == 5);
+        assertTrue(sPT.containsEdge(v4, v1));
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.getAllEdges(v4, v2).size() == 2);
+        assertTrue(sPT.containsEdge(v4, v3));
+        assertTrue(sPT.containsEdge(v4, v5));
+        assertTrue(sPT.outDegreeOf(v1) == 0);
+        assertTrue(sPT.outDegreeOf(v2) == 0);
+        assertTrue(sPT.outDegreeOf(v3) == 0);
+        assertTrue(sPT.outDegreeOf(v4) == 5);
+        assertTrue(sPT.outDegreeOf(v5) == 0);
+
+        dijkstra.calculate(v5);
+        assertEquals(1, v1.getDistance(), TOLERANCE);
+        assertEquals(2, v2.getDistance(), TOLERANCE);
+        assertEquals(1, v3.getDistance(), TOLERANCE);
+        assertEquals(1, v4.getDistance(), TOLERANCE);
+        assertEquals(0, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph();
+        assertTrue(sPT.getRoot().equals(v5));
+        assertTrue(sPT.edgeSet().size() == 8);
+        assertTrue(sPT.containsEdge(v5, v1));
+        assertTrue(sPT.containsEdge(v5, v3));
+        assertTrue(sPT.getAllEdges(v5, v3).size() == 2);
+        assertTrue(sPT.containsEdge(v5, v4));
+        assertTrue(sPT.containsEdge(v1, v2));
+        assertTrue(sPT.containsEdge(v3, v2));
+        assertTrue(sPT.containsEdge(v4, v2));
+        assertTrue(sPT.getAllEdges(v4, v2).size() == 2);
+        assertTrue(sPT.outDegreeOf(v1) == 1);
+        assertTrue(sPT.outDegreeOf(v2) == 0);
+        assertTrue(sPT.outDegreeOf(v3) == 1);
+        assertTrue(sPT.outDegreeOf(v4) == 2);
+        assertTrue(sPT.outDegreeOf(v5) == 4);
+    }
+
     @Before
     public void setUp() {
 
