@@ -31,8 +31,8 @@ package org.javanetworkanalyzer.data;
  *
  * @author Adam Gouge
  */
-public class VDijkstra<V extends VDijkstra>
-        extends VPred<V>
+public class VDijkstra<V extends VDijkstra, E>
+        extends VPredImpl<V, E>
         implements VDist<Double> {
 
     /**

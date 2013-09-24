@@ -25,48 +25,41 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDijkstra;
-import org.javanetworkanalyzer.graphcreators.CormenGraphPrep;
-import org.javanetworkanalyzer.graphcreators.GraphPrep;
 import org.javanetworkanalyzer.model.*;
+import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests {@link Dijkstra} on all possible configurations of the Cormen graph.
+ * Tests {@link Dijkstra} on the Cormen graph.
  *
  * @author Adam Gouge
  */
-public class DijkstraCormenTest extends DijkstraTest {
+public class DijkstraCormenTest {
 
-    private static final GraphPrep CORMEN = new CormenGraphPrep();
-
-    @Override
-    public GraphPrep getGraphPrep() {
-        return CORMEN;
-    }
-
-    private Edge getEdge(KeyedGraph<VDijkstra, Edge> g,
-                         int source, int target) {
-        return g.getEdge(g.getVertex(source), g.getVertex(target));
-    }
+    private DirectedWeightedPseudoG<VDijkstra, Edge> graph;
+    private Dijkstra<VDijkstra, Edge> dijkstra;
+    private TraversalGraph<VDijkstra, Edge> sPT;
+    private VDijkstra v1;
+    private VDijkstra v2;
+    private VDijkstra v3;
+    private VDijkstra v4;
+    private VDijkstra v5;
+    private static final double TOLERANCE = 0.0;
 
     @Test
-    public void testWDSPT() throws NoSuchMethodException {
+    public void testWD() throws NoSuchMethodException {
 
-        DirectedWeightedPseudoG<VDijkstra, Edge> g = CORMEN.weightedDirected();
-
-        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
-
-        TraversalGraph<VDijkstra, Edge> sPT;
-
-        VDijkstra v1 = g.getVertex(1);
-        VDijkstra v2 = g.getVertex(2);
-        VDijkstra v3 = g.getVertex(3);
-        VDijkstra v4 = g.getVertex(4);
-        VDijkstra v5 = g.getVertex(5);
+        dijkstra = new Dijkstra<VDijkstra, Edge>(graph);
 
         dijkstra.calculate(v1);
+        assertEquals(0, v1.getDistance(), TOLERANCE);
+        assertEquals(8, v2.getDistance(), TOLERANCE);
+        assertEquals(9, v3.getDistance(), TOLERANCE);
+        assertEquals(5, v4.getDistance(), TOLERANCE);
+        assertEquals(7, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v1));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -81,6 +74,11 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
         dijkstra.calculate(v2);
+        assertEquals(11, v1.getDistance(), TOLERANCE);
+        assertEquals(0, v2.getDistance(), TOLERANCE);
+        assertEquals(1, v3.getDistance(), TOLERANCE);
+        assertEquals(2, v4.getDistance(), TOLERANCE);
+        assertEquals(4, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v2));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -96,6 +94,11 @@ public class DijkstraCormenTest extends DijkstraTest {
 
 
         dijkstra.calculate(v3);
+        assertEquals(11, v1.getDistance(), TOLERANCE);
+        assertEquals(19, v2.getDistance(), TOLERANCE);
+        assertEquals(0, v3.getDistance(), TOLERANCE);
+        assertEquals(16, v4.getDistance(), TOLERANCE);
+        assertEquals(4, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v3));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -109,8 +112,12 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v4) == 1);
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
-
         dijkstra.calculate(v4);
+        assertEquals(9, v1.getDistance(), TOLERANCE);
+        assertEquals(3, v2.getDistance(), TOLERANCE);
+        assertEquals(4, v3.getDistance(), TOLERANCE);
+        assertEquals(0, v4.getDistance(), TOLERANCE);
+        assertEquals(2, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v4));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -125,6 +132,11 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
         dijkstra.calculate(v5);
+        assertEquals(7, v1.getDistance(), TOLERANCE);
+        assertEquals(15, v2.getDistance(), TOLERANCE);
+        assertEquals(6, v3.getDistance(), TOLERANCE);
+        assertEquals(12, v4.getDistance(), TOLERANCE);
+        assertEquals(0, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v5));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -140,21 +152,17 @@ public class DijkstraCormenTest extends DijkstraTest {
     }
 
     @Test
-    public void testWRSPT() throws Exception {
+    public void testWR() throws NoSuchMethodException {
 
-        WeightedEdgeReversedG<VDijkstra, Edge> g = CORMEN.weightedReversed();
-
-        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
-
-        TraversalGraph<VDijkstra, Edge> sPT;
-
-        VDijkstra v1 = g.getVertex(1);
-        VDijkstra v2 = g.getVertex(2);
-        VDijkstra v3 = g.getVertex(3);
-        VDijkstra v4 = g.getVertex(4);
-        VDijkstra v5 = g.getVertex(5);
+        dijkstra = new Dijkstra<VDijkstra, Edge>(
+                new WeightedEdgeReversedG<VDijkstra, Edge>(graph));
 
         dijkstra.calculate(v1);
+        assertEquals(0, v1.getDistance(), TOLERANCE);
+        assertEquals(11, v2.getDistance(), TOLERANCE);
+        assertEquals(11, v3.getDistance(), TOLERANCE);
+        assertEquals(9, v4.getDistance(), TOLERANCE);
+        assertEquals(7, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v1));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -169,6 +177,11 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 2);
 
         dijkstra.calculate(v2);
+        assertEquals(8, v1.getDistance(), TOLERANCE);
+        assertEquals(0, v2.getDistance(), TOLERANCE);
+        assertEquals(19, v3.getDistance(), TOLERANCE);
+        assertEquals(3, v4.getDistance(), TOLERANCE);
+        assertEquals(15, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v2));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -184,6 +197,11 @@ public class DijkstraCormenTest extends DijkstraTest {
 
 
         dijkstra.calculate(v3);
+        assertEquals(9, v1.getDistance(), TOLERANCE);
+        assertEquals(1, v2.getDistance(), TOLERANCE);
+        assertEquals(0, v3.getDistance(), TOLERANCE);
+        assertEquals(4, v4.getDistance(), TOLERANCE);
+        assertEquals(6, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v3));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -199,6 +217,11 @@ public class DijkstraCormenTest extends DijkstraTest {
 
 
         dijkstra.calculate(v4);
+        assertEquals(5, v1.getDistance(), TOLERANCE);
+        assertEquals(2, v2.getDistance(), TOLERANCE);
+        assertEquals(16, v3.getDistance(), TOLERANCE);
+        assertEquals(0, v4.getDistance(), TOLERANCE);
+        assertEquals(12, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v4));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -213,6 +236,11 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 1);
 
         dijkstra.calculate(v5);
+        assertEquals(7, v1.getDistance(), TOLERANCE);
+        assertEquals(4, v2.getDistance(), TOLERANCE);
+        assertEquals(4, v3.getDistance(), TOLERANCE);
+        assertEquals(2, v4.getDistance(), TOLERANCE);
+        assertEquals(0, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v5));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -228,21 +256,17 @@ public class DijkstraCormenTest extends DijkstraTest {
     }
 
     @Test
-    public void testWUSPT() throws Exception {
+    public void testWU() throws NoSuchMethodException {
 
-        UndirectedG<VDijkstra, Edge> g = CORMEN.weightedUndirected();
-
-        Dijkstra<VDijkstra, Edge> dijkstra = new Dijkstra<VDijkstra, Edge>(g);
-
-        TraversalGraph<VDijkstra, Edge> sPT;
-
-        VDijkstra v1 = g.getVertex(1);
-        VDijkstra v2 = g.getVertex(2);
-        VDijkstra v3 = g.getVertex(3);
-        VDijkstra v4 = g.getVertex(4);
-        VDijkstra v5 = g.getVertex(5);
+        dijkstra = new Dijkstra<VDijkstra, Edge>(
+                new AsUndirectedG<VDijkstra, Edge>(graph));
 
         dijkstra.calculate(v1);
+        assertEquals(0, v1.getDistance(), TOLERANCE);
+        assertEquals(7, v2.getDistance(), TOLERANCE);
+        assertEquals(8, v3.getDistance(), TOLERANCE);
+        assertEquals(5, v4.getDistance(), TOLERANCE);
+        assertEquals(7, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v1));
         assertTrue(sPT.edgeSet().size() == 5);
@@ -258,6 +282,11 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
         dijkstra.calculate(v2);
+        assertEquals(7, v1.getDistance(), TOLERANCE);
+        assertEquals(0, v2.getDistance(), TOLERANCE);
+        assertEquals(1, v3.getDistance(), TOLERANCE);
+        assertEquals(2, v4.getDistance(), TOLERANCE);
+        assertEquals(4, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v2));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -272,6 +301,11 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
         dijkstra.calculate(v3);
+        assertEquals(8, v1.getDistance(), TOLERANCE);
+        assertEquals(1, v2.getDistance(), TOLERANCE);
+        assertEquals(0, v3.getDistance(), TOLERANCE);
+        assertEquals(3, v4.getDistance(), TOLERANCE);
+        assertEquals(4, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v3));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -286,6 +320,11 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
         dijkstra.calculate(v4);
+        assertEquals(5, v1.getDistance(), TOLERANCE);
+        assertEquals(2, v2.getDistance(), TOLERANCE);
+        assertEquals(3, v3.getDistance(), TOLERANCE);
+        assertEquals(0, v4.getDistance(), TOLERANCE);
+        assertEquals(2, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v4));
         assertTrue(sPT.edgeSet().size() == 4);
@@ -300,6 +339,11 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v5) == 0);
 
         dijkstra.calculate(v5);
+        assertEquals(7, v1.getDistance(), TOLERANCE);
+        assertEquals(4, v2.getDistance(), TOLERANCE);
+        assertEquals(4, v3.getDistance(), TOLERANCE);
+        assertEquals(2, v4.getDistance(), TOLERANCE);
+        assertEquals(0, v5.getDistance(), TOLERANCE);
         sPT = dijkstra.reconstructTraversalGraph();
         assertTrue(sPT.getRoot().equals(v5));
         assertTrue(sPT.edgeSet().size() == 5);
@@ -313,5 +357,29 @@ public class DijkstraCormenTest extends DijkstraTest {
         assertTrue(sPT.outDegreeOf(v3) == 0);
         assertTrue(sPT.outDegreeOf(v4) == 2);
         assertTrue(sPT.outDegreeOf(v5) == 3);
+    }
+
+    @Before
+    public void setUp() {
+
+        graph = new DirectedWeightedPseudoG<VDijkstra, Edge>(
+                VDijkstra.class, Edge.class);
+
+        graph.addEdge(1, 2).setWeight(10);
+        graph.addEdge(1, 4).setWeight(5);
+        graph.addEdge(5, 1).setWeight(7);
+        graph.addEdge(2, 4).setWeight(2);
+        graph.addEdge(4, 2).setWeight(3);
+        graph.addEdge(3, 5).setWeight(4);
+        graph.addEdge(2, 3).setWeight(1);
+        graph.addEdge(4, 3).setWeight(9);
+        graph.addEdge(5, 3).setWeight(6);
+        graph.addEdge(4, 5).setWeight(2);
+
+        v1 = graph.getVertex(1);
+        v2 = graph.getVertex(2);
+        v3 = graph.getVertex(3);
+        v4 = graph.getVertex(4);
+        v5 = graph.getVertex(5);
     }
 }

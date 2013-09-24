@@ -29,7 +29,7 @@ package org.javanetworkanalyzer.data;
  *
  * @author Adam Gouge
  */
-public class VCentImpl extends VPred implements VCent {
+public class VCentImpl extends VPredImpl implements VCent {
 
     /**
      * Number of shortest paths leading to this node starting from a certain

@@ -54,11 +54,12 @@ public class DijkstraForAccessibility<E> extends Dijkstra<VAccess, E> {
      * @param u        Vertex u
      * @param v        Vertex v
      * @param uvWeight w(u,v)
+     * @param e        Edge e
      * @param queue    Queue
      */
     @Override
     protected void shortestPathSoFarUpdate(VAccess startNode, VAccess u, VAccess v,
-                                           Double uvWeight, PriorityQueue<VAccess> queue) {
+                                           Double uvWeight, E e, PriorityQueue<VAccess> queue) {
         // If the distance from the start node to v (so the distance *from* v
         // *to* the destination represented by the start node in a reversed
         // graph) is less than the distance to any previously found closest
@@ -68,6 +69,6 @@ public class DijkstraForAccessibility<E> extends Dijkstra<VAccess, E> {
             v.setDistanceToClosestDestination(distance);
             v.setClosestDestinationId(startNode.getID());
         }
-        super.shortestPathSoFarUpdate(startNode, u, v, uvWeight, queue);
+        super.shortestPathSoFarUpdate(startNode, u, v, uvWeight, e, queue);
     }
 }

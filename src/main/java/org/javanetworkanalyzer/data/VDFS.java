@@ -31,7 +31,7 @@ package org.javanetworkanalyzer.data;
  *
  * @author Adam Gouge
  */
-public class VDFS<V extends VDFS> extends VPred<V> {
+public class VDFS<V extends VDFS, E> extends VPredImpl<V, E> {
 
     /**
      * The time this node was discovered.

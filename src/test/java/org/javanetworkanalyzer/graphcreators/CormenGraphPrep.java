@@ -56,8 +56,7 @@ public class CormenGraphPrep extends GraphPrep<VAccess, Edge> {
     public DirectedWeightedPseudoG<VAccess, Edge> weightedDirected() throws
             NoSuchMethodException {
         DirectedWeightedPseudoG<VAccess, Edge> g =
-                new DirectedWeightedPseudoG<VAccess, Edge>(VAccess.class,
-                                                           Edge.class);
+                new DirectedWeightedPseudoG<VAccess, Edge>(VAccess.class, Edge.class);
         g.addEdge(1, 2).setWeight(10);
         g.addEdge(1, 4).setWeight(5);
         g.addEdge(5, 1).setWeight(7);

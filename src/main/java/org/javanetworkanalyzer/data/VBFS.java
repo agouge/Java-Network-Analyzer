@@ -31,7 +31,7 @@ package org.javanetworkanalyzer.data;
  *
  * @author Adam Gouge
  */
-public class VBFS<V extends VBFS> extends VPred<V> implements VDist<Integer> {
+public class VBFS<V extends VBFS, E> extends VPredImpl<V, E> implements VDist<Integer> {
 
     /**
      * The default distance assigned to all nodes at the beginning of the BFS

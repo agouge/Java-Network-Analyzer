@@ -92,6 +92,7 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
         for (V neighbor : successorListOf(node)) {
             if (neighbor.getDiscoveryTime() < 0) {
                 neighbor.addPredecessor(node);
+                neighbor.addPredecessorEdge(graph.getEdge(node, neighbor));
                 visit(neighbor);
             }
         }
