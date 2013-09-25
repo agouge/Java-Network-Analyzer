@@ -29,7 +29,7 @@ package org.javanetworkanalyzer.data;
  *
  * @author Adam Gouge
  */
-public class VAccess extends VDijkstra<VAccess> {
+public class VAccess<E> extends VDijkstra<VAccess, E> {
 
     /**
      * Closest destination id.

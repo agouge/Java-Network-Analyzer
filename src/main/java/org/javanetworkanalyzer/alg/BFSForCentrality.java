@@ -95,9 +95,9 @@ public class BFSForCentrality<E> extends BFS<VUCent, E> {
 
     @Override
     protected void shortestPathStep(VUCent current,
-                                    VUCent neighbor) {
+                                    VUCent neighbor, E e) {
         // Add currentNode to the set of predecessors of neighbor.
-        super.shortestPathStep(current, neighbor);
+        super.shortestPathStep(current, neighbor, e);
         // Update the number of shortest paths.
         neighbor.accumulateSPCount(current.getSPCount());
     }

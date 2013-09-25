@@ -29,7 +29,7 @@ package org.javanetworkanalyzer.data;
  *
  * @author Adam Gouge
  */
-public class VStrahler extends VDFS<VStrahler> {
+public class VStrahler<E> extends VDFS<VStrahler, E> {
 
     /**
      * The Strahler number of this node.

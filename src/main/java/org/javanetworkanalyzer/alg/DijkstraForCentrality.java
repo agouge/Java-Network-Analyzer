@@ -113,17 +113,17 @@ public class DijkstraForCentrality<E> extends Dijkstra<VWCent, E> {
     @Override
     protected void shortestPathSoFarUpdate(VWCent startNode, VWCent u, VWCent v,
                                            Double uvWeight,
-                                           PriorityQueue<VWCent> queue) {
+                                           E e, PriorityQueue<VWCent> queue) {
         // Reset the number of shortest paths
         v.setSPCount(u.getSPCount());
-        super.shortestPathSoFarUpdate(startNode, u, v, uvWeight, queue);
+        super.shortestPathSoFarUpdate(startNode, u, v, uvWeight, e, queue);
     }
 
     @Override
-    protected void multipleShortestPathUpdate(VWCent u, VWCent v) {
+    protected void multipleShortestPathUpdate(VWCent u, VWCent v, E e) {
         // Accumulate the number of shortest paths
         v.accumulateSPCount(u.getSPCount());
-        super.multipleShortestPathUpdate(u, v);
+        super.multipleShortestPathUpdate(u, v, e);
     }
 
     /**

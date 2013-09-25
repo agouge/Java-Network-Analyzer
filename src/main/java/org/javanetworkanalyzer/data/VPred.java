@@ -24,7 +24,6 @@
  */
 package org.javanetworkanalyzer.data;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -35,46 +34,38 @@ import java.util.Set;
  *
  * @author Adam Gouge
  */
-public class VPred<V extends VPred> extends VId {
-
-    /**
-     * List of the predecessors of this node.
-     *
-     * I.e., the nodes lying on the shortest path to this node
-     */
-    private Set<V> predecessors = new HashSet<V>();
-
-    /**
-     * Constructor: sets the id.
-     *
-     * @param id Id
-     */
-    public VPred(Integer id) {
-        super(id);
-    }
+public interface VPred<V extends VPred, E> {
 
     /**
      * Returns the predecessors.
      *
      * @return The predecessors.
      */
-    public Set<V> getPredecessors() {
-        return predecessors;
-    }
+    Set<V> getPredecessors();
 
     /**
      * Adds a predecessor to the predecessor list of this node
      *
      * @param pred Node to be added since it is a predecessor of this node
      */
-    public void addPredecessor(V pred) {
-        predecessors.add(pred);
-    }
+    void addPredecessor(V pred);
 
     /**
-     * Clears the predecessor list of this node.
+     * Returns the predecessor edges.
+     *
+     * @return The predecessor edges
      */
-    public void clear() {
-        predecessors.clear();
-    }
+    Set<E> getPredecessorEdges();
+
+    /**
+     * Adds a predecessor edge to the predecessor list of this node
+     *
+     * @param pred Node to be added since it is a predecessor of this node
+     */
+    public void addPredecessorEdge(E pred);
+
+    /**
+     * Clears the edge and vertex predecessors of this node.
+     */
+    void clear();
 }

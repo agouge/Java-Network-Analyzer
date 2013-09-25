@@ -29,7 +29,7 @@ package org.javanetworkanalyzer.data;
  *
  * @author Adam Gouge
  */
-public class VWCent extends VDijkstra<VWCent> implements VCent {
+public class VWCent<E> extends VDijkstra<VWCent, E> implements VCent<VWCent, E> {
 
     /**
      * Local helper vertex to which all centrality operations are delegated.
