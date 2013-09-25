@@ -50,14 +50,10 @@ import java.util.Stack;
 public abstract class GraphAnalyzer<V extends VCent, E extends EdgeCent, S extends PathLengthData>
         extends GeneralizedGraphAnalyzer<V, E> {
 
-    /**
-     * The maximum betweenness centrality value.
-     */
     private double maxBetweenness;
-    /**
-     * The minimum betweenness centrality value.
-     */
     private double minBetweenness;
+    private double maxEdgeBetweenness;
+    private double minEdgeBetweenness;
     /**
      * Progress monitor.
      */
@@ -89,6 +85,8 @@ public abstract class GraphAnalyzer<V extends VCent, E extends EdgeCent, S exten
         this.stack = new Stack<V>();
         this.maxBetweenness = Double.NEGATIVE_INFINITY;
         this.minBetweenness = Double.POSITIVE_INFINITY;
+        this.maxEdgeBetweenness = Double.NEGATIVE_INFINITY;
+        this.minEdgeBetweenness = Double.POSITIVE_INFINITY;
     }
 
     /**
@@ -275,7 +273,7 @@ public abstract class GraphAnalyzer<V extends VCent, E extends EdgeCent, S exten
 //            for (E edgeLeadingToLeaf : shortestPathTree.getAllEdges(predecessor, w)) {
 //                edgeLeadingToLeaf.accumulateDependency(1);
 //            }
-            sPTEdge.accumulateDependency(1);
+            sPTEdge.accumulateDependency(sigmaFactor);
         } // Otherwise accumulate the dependencies of the outgoing edges of w.
         else {
             double depSumFromOutgoing = 0.0;
@@ -301,14 +299,24 @@ public abstract class GraphAnalyzer<V extends VCent, E extends EdgeCent, S exten
     private void normalizeBetweenness() {
         long start = System.currentTimeMillis();
         findExtremeBetweennessValues();
-        final double denominator = maxBetweenness - minBetweenness;
-        if (denominator == 0.0) {
-            LOGGER.warn("All betweenness values are zero.");
+        final double vertexBetwRange = maxBetweenness - minBetweenness;
+        if (vertexBetwRange == 0.0) {
+            LOGGER.warn("All vertex betweenness values are zero.");
         } else {
             for (V node : nodeSet) {
                 final double normalizedBetweenness =
-                        (node.getBetweenness() - minBetweenness) / denominator;
+                        (node.getBetweenness() - minBetweenness) / vertexBetwRange;
                 node.setBetweenness(normalizedBetweenness);
+            }
+        }
+        final double edgeBetwRange = maxEdgeBetweenness - minEdgeBetweenness;
+        if (edgeBetwRange == 0.0) {
+            LOGGER.warn("All edge betweenness values are zero.");
+        } else {
+            for (E edge : graph.edgeSet()) {
+                final double normalizedBetweenness =
+                        (edge.getBetweenness() - minEdgeBetweenness) / edgeBetwRange;
+                edge.setBetweenness(normalizedBetweenness);
             }
         }
         long stop = System.currentTimeMillis();
@@ -329,8 +337,18 @@ public abstract class GraphAnalyzer<V extends VCent, E extends EdgeCent, S exten
                 minBetweenness = betweenness;
             }
         }
+        for (E edge : graph.edgeSet()) {
+            final double betweenness = edge.getBetweenness();
+            if (betweenness > maxEdgeBetweenness) {
+                maxEdgeBetweenness = betweenness;
+            }
+            if (betweenness < minEdgeBetweenness) {
+                minEdgeBetweenness = betweenness;
+            }
+        }
         long stop = System.currentTimeMillis();
-        LOGGER.info("({} ms) Extreme betweenness values ({}, {}).",
-                (stop - start), minBetweenness, maxBetweenness);
+        LOGGER.info("({} ms) Extreme betweenness values v({}, {}), e({}, {}).",
+                (stop - start), minBetweenness, maxBetweenness,
+                minEdgeBetweenness, maxEdgeBetweenness);
     }
 }
