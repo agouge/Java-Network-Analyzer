@@ -88,10 +88,19 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E> {
         TraversalGraph<V, E> traversalGraph = new TraversalGraph<V, E>(
                 graph.getEdgeFactory(), currentStartNode);
         for (V v : graph.vertexSet()) {
-            traversalGraph.addVertex(v);
-            for (V pred : (Set<V>) v.getPredecessors()) {
-                traversalGraph.addVertex(pred);
-                traversalGraph.addEdge(pred, v);
+            Set<E> predEdges = (Set<E>) v.getPredecessorEdges();
+            for (E e : predEdges) {
+                V source = graph.getEdgeSource(e);
+                V target = graph.getEdgeTarget(e);
+                traversalGraph.addVertex(source);
+                traversalGraph.addVertex(target);
+                if (v.equals(source)) {
+                    traversalGraph.addEdge(target, source);
+                } else if (v.equals(target)) {
+                    traversalGraph.addEdge(source, target);
+                } else {
+                    System.out.println("equals neither");
+                }
             }
         }
 

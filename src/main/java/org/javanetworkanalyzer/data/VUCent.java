@@ -29,7 +29,7 @@ package org.javanetworkanalyzer.data;
  *
  * @author Adam Gouge
  */
-public class VUCent extends VBFS<VUCent> implements VCent {
+public class VUCent<E> extends VBFS<VUCent, E> implements VCent<VUCent, E> {
 
     /**
      * Local helper vertex to which all centrality operations are delegated.

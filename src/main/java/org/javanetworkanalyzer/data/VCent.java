@@ -33,7 +33,7 @@ import java.util.Set;
  *
  * @author Adam Gouge
  */
-public interface VCent<V extends VCent> {
+public interface VCent<V extends VCent, E> extends VPred<V, E> {
 
     /**
      * Resets the shortest path count and dependency to zero.

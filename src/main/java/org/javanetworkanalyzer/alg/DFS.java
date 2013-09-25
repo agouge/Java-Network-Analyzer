@@ -56,7 +56,7 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
     public void calculate() {
         for (V node : graph.vertexSet()) {
             if (node.getDiscoveryTime() < 0) {
-                visit(node);
+                calculate(node);
             }
         }
     }
@@ -70,11 +70,6 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
     public void calculate(V startNode) {
         init(startNode);
         visit(startNode);
-    }
-
-    @Override
-    protected void init(V startNode) {
-        super.init(startNode);
     }
 
     /**
@@ -92,6 +87,7 @@ public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
         for (V neighbor : successorListOf(node)) {
             if (neighbor.getDiscoveryTime() < 0) {
                 neighbor.addPredecessor(node);
+                neighbor.addPredecessorEdge(graph.getEdge(node, neighbor));
                 visit(neighbor);
             }
         }

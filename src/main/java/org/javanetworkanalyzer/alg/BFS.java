@@ -26,8 +26,10 @@ package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VBFS;
 import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
 
 import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * Root Breadth First Search (BFS) class.
@@ -72,7 +74,9 @@ public class BFS<V extends VBFS, E>
             V current = dequeueStep(queue);
 
             // For every neighbor of the current node ...
-            for (final V neighbor : successorListOf(current)) {
+            Set<E> outgoingEdges = outgoingEdgesOf(current);
+            for (E e : outgoingEdges) {
+                V neighbor = Graphs.getOppositeVertex(graph, e, current);
                 // If this neighbor is found for the first time ...
                 if (neighbor.getDistance() < 0) {
                     enqueueAndUpdateDistance(current, neighbor, queue);
@@ -81,7 +85,7 @@ public class BFS<V extends VBFS, E>
                 // If this is a shortest path from startNode to neighbor
                 // via current ...
                 if (neighbor.getDistance() == current.getDistance() + 1) {
-                    shortestPathStep(current, neighbor);
+                    shortestPathStep(current, neighbor, e);
                 }
             }
         }
@@ -141,9 +145,11 @@ public class BFS<V extends VBFS, E>
      *
      * @param current  Current node
      * @param neighbor Neighbor node
+     * @param e        Edge (current, neighbor)
      */
-    protected void shortestPathStep(V current, V neighbor) {
+    protected void shortestPathStep(V current, V neighbor, E e) {
         // Set the predecessor.
         neighbor.addPredecessor(current);
+        neighbor.addPredecessorEdge(e);
     }
 }

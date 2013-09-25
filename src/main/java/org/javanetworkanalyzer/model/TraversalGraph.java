@@ -1,6 +1,7 @@
 package org.javanetworkanalyzer.model;
 
 import org.jgrapht.EdgeFactory;
+import org.jgrapht.graph.DirectedMultigraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 
 /**
@@ -11,7 +12,7 @@ import org.jgrapht.graph.SimpleDirectedGraph;
  *
  * @author Adam Gouge
  */
-public class TraversalGraph<V, E> extends SimpleDirectedGraph<V, E> {
+public class TraversalGraph<V, E> extends DirectedMultigraph<V, E> {
 
     private V root;
 
@@ -24,6 +25,7 @@ public class TraversalGraph<V, E> extends SimpleDirectedGraph<V, E> {
     public TraversalGraph(Class<? extends E> edgeClass, V root) {
         super(edgeClass);
         this.root = root;
+        addVertex(root);
     }
 
     /**
@@ -45,5 +47,4 @@ public class TraversalGraph<V, E> extends SimpleDirectedGraph<V, E> {
     public V getRoot() {
         return root;
     }
-
 }

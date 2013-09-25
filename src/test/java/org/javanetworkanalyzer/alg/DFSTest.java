@@ -54,7 +54,6 @@ public class DFSTest extends TestCase {
     @Test
     public void testDFSDirected() {
         dfs.calculate();
-
         assertTrue(v1.getDiscoveryTime() == 1);
         assertTrue(v1.getFinishingTime() == 8);
         assertTrue(v2.getDiscoveryTime() == 2);
@@ -71,13 +70,8 @@ public class DFSTest extends TestCase {
 
     @Test
     public void testDFSUndirected() throws NoSuchMethodException {
-
-        AsUndirectedG<VDFS, Edge> g =
-                new AsUndirectedG<VDFS, Edge>(graph);
-
-        new DFS<VDFS, Edge>(g).calculate();
-
-        // TODO: These vertex references for graph work for g!
+        dfs = new DFS<VDFS, Edge>(new AsUndirectedG<VDFS, Edge>(graph));
+        dfs.calculate();
         assertTrue(v1.getDiscoveryTime() == 1);
         assertTrue(v1.getFinishingTime() == 12);
         assertTrue(v2.getDiscoveryTime() == 2);
@@ -103,14 +97,12 @@ public class DFSTest extends TestCase {
         graph.addEdge(5, 4);
         graph.addEdge(5, 6);
         graph.addEdge(6, 6);
-
-        dfs = new DFS<VDFS, Edge>(graph);
-
         v1 = graph.getVertex(1);
         v2 = graph.getVertex(2);
         v3 = graph.getVertex(3);
         v4 = graph.getVertex(4);
         v5 = graph.getVertex(5);
         v6 = graph.getVertex(6);
+        dfs = new DFS<VDFS, Edge>(graph);
     }
 }
