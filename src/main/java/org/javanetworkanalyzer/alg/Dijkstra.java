@@ -25,6 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDijkstra;
+import org.javanetworkanalyzer.model.EdgeSPT;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -39,7 +40,7 @@ import java.util.*;
  * @param <E> Edges
  * @author Adam Gouge
  */
-public class Dijkstra<V extends VDijkstra, E>
+public class Dijkstra<V extends VDijkstra, E extends EdgeSPT>
         extends GraphSearchAlgorithm<V, E> {
 
     /**
@@ -64,11 +65,8 @@ public class Dijkstra<V extends VDijkstra, E>
 
     /**
      * Does a Dijkstra search from the given start node to all other nodes.
-     * The shortest path "tree" we return may contain multiple shortest paths.
-     *
      *
      * @param startNode Start node
-     * @return The SPT if {@link #returnSPT} is true; null otherwise.
      */
     @Override
     public void calculate(V startNode) {

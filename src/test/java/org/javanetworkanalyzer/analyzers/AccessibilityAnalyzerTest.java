@@ -28,12 +28,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.javanetworkanalyzer.data.VAccess;
 import org.javanetworkanalyzer.graphcreators.CormenGraphPrep;
-import org.javanetworkanalyzer.model.DirectedG;
-import org.javanetworkanalyzer.model.DirectedWeightedPseudoG;
-import org.javanetworkanalyzer.model.Edge;
-import org.javanetworkanalyzer.model.KeyedGraph;
-import org.javanetworkanalyzer.model.UndirectedG;
-import org.javanetworkanalyzer.model.WeightedEdgeReversedG;
+import org.javanetworkanalyzer.model.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -49,7 +44,7 @@ public class AccessibilityAnalyzerTest extends CormenGraphPrep {
 
     @Test
     public void testD() throws Exception {
-        DirectedG<VAccess, Edge> g = directed();
+        DirectedG<VAccess, EdgeCent> g = directed();
         test(g);
         assertEquals(4, g.getVertex(1).getClosestDestinationId());
         assertEquals(1.0, g.getVertex(1).getDistanceToClosestDestination(),
@@ -70,7 +65,7 @@ public class AccessibilityAnalyzerTest extends CormenGraphPrep {
 
     @Test
     public void testR() throws Exception {
-        DirectedG<VAccess, Edge> g = reversed();
+        DirectedG<VAccess, EdgeCent> g = reversed();
         test(g);
         assertEquals(5, g.getVertex(1).getClosestDestinationId());
         assertEquals(1.0, g.getVertex(1).getDistanceToClosestDestination(),
@@ -95,7 +90,7 @@ public class AccessibilityAnalyzerTest extends CormenGraphPrep {
 
     @Test
     public void testU() throws Exception {
-        UndirectedG<VAccess, Edge> g = undirected();
+        UndirectedG<VAccess, EdgeCent> g = undirected();
         test(g);
         // The closest destination could be either 4 or 5.
         if (g.getVertex(1).getClosestDestinationId() != 4
@@ -124,7 +119,7 @@ public class AccessibilityAnalyzerTest extends CormenGraphPrep {
 
     @Test
     public void testWD() throws Exception {
-        DirectedWeightedPseudoG<VAccess, Edge> g = weightedDirected();
+        DirectedWeightedPseudoG<VAccess, EdgeCent> g = weightedDirected();
         test(g);
         assertEquals(4, g.getVertex(1).getClosestDestinationId());
         assertEquals(5.0, g.getVertex(1).getDistanceToClosestDestination(),
@@ -145,7 +140,7 @@ public class AccessibilityAnalyzerTest extends CormenGraphPrep {
 
     @Test
     public void testWR() throws Exception {
-        WeightedEdgeReversedG<VAccess, Edge> g = weightedReversed();
+        WeightedEdgeReversedG<VAccess, EdgeCent> g = weightedReversed();
         test(g);
         assertEquals(5, g.getVertex(1).getClosestDestinationId());
         assertEquals(7.0, g.getVertex(1).getDistanceToClosestDestination(),
@@ -166,7 +161,7 @@ public class AccessibilityAnalyzerTest extends CormenGraphPrep {
 
     @Test
     public void testWU() throws Exception {
-        UndirectedG<VAccess, Edge> g = weightedUndirected();
+        UndirectedG<VAccess, EdgeCent> g = weightedUndirected();
         test(g);
         assertEquals(4, g.getVertex(1).getClosestDestinationId());
         assertEquals(5.0, g.getVertex(1).getDistanceToClosestDestination(),
@@ -185,12 +180,12 @@ public class AccessibilityAnalyzerTest extends CormenGraphPrep {
                      TOLERANCE);
     }
 
-    public void test(KeyedGraph<VAccess, Edge> g) throws Exception {
+    public void test(KeyedGraph<VAccess, EdgeCent> g) throws Exception {
         // Prepare the destinations.
         Set<VAccess> destinations = new HashSet<VAccess>();
         destinations.add(g.getVertex(5));
         destinations.add(g.getVertex(4));
         // Do accessibility analysis.
-        new AccessibilityAnalyzer<Edge>(g, destinations).compute();
+        new AccessibilityAnalyzer<EdgeCent>(g, destinations).compute();
     }
 }

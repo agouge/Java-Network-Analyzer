@@ -25,17 +25,18 @@
 package org.javanetworkanalyzer.analyzers.examples;
 
 import org.javanetworkanalyzer.analyzers.ManuallyCreatedGraphAnalyzerTest;
+import org.javanetworkanalyzer.analyzers.WeightedGraphAnalyzer;
 import org.javanetworkanalyzer.data.VCent;
 import org.javanetworkanalyzer.data.VUCent;
 import org.javanetworkanalyzer.data.VWCent;
-import org.javanetworkanalyzer.model.DirectedG;
-import org.javanetworkanalyzer.model.Edge;
-import org.javanetworkanalyzer.model.KeyedGraph;
-import org.javanetworkanalyzer.model.UndirectedG;
-import org.javanetworkanalyzer.model.WeightedKeyedGraph;
+import org.javanetworkanalyzer.graphcreators.GraphCreator;
+import org.javanetworkanalyzer.graphcreators.WeightedGraphCreator;
+import org.javanetworkanalyzer.model.*;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests graph analyzers on the example graph in Figure 24.6 of Introduction to
@@ -62,39 +63,52 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
     private static final boolean CHECK_RESULTS = true;
     private static final int NUMBER_OF_NODES = 5;
 
+    private EdgeCent e1;
+    private EdgeCent e2;
+    private EdgeCent e3;
+    private EdgeCent e4;
+    private EdgeCent e5;
+    private EdgeCent e6;
+    private EdgeCent e7;
+    private EdgeCent e8;
+    private EdgeCent e9;
+    private EdgeCent e10;
+    private double minEdgeBetw;
+    private double maxEdgeBetw;
+
     @Override
     protected void addEdges(
-            KeyedGraph<? extends VCent, Edge> graph) {
-        graph.addEdge(1, 2);
-        graph.addEdge(1, 4);
-        graph.addEdge(5, 1);
-        graph.addEdge(2, 4);
-        graph.addEdge(4, 2);
-        graph.addEdge(3, 5);
-        graph.addEdge(2, 3);
-        graph.addEdge(4, 3);
-        graph.addEdge(5, 3);
-        graph.addEdge(4, 5);
+            KeyedGraph<? extends VCent, EdgeCent> graph) {
+        e1 = graph.addEdge(1, 2);
+        e2 = graph.addEdge(1, 4);
+        e3 = graph.addEdge(5, 1);
+        e4 = graph.addEdge(2, 4);
+        e5 = graph.addEdge(4, 2);
+        e6 = graph.addEdge(2, 3);
+        e7 = graph.addEdge(4, 3);
+        e8 = graph.addEdge(3, 5);
+        e9 = graph.addEdge(5, 3);
+        e10 = graph.addEdge(4, 5);
     }
 
     @Override
     protected void addWeightedEdges(
-            WeightedKeyedGraph<? extends VCent, Edge> graph) {
-        graph.addEdge(1, 2).setWeight(10);
-        graph.addEdge(1, 4).setWeight(5);
-        graph.addEdge(5, 1).setWeight(7);
-        graph.addEdge(2, 4).setWeight(2);
-        graph.addEdge(4, 2).setWeight(3);
-        graph.addEdge(3, 5).setWeight(4);
-        graph.addEdge(2, 3).setWeight(1);
-        graph.addEdge(4, 3).setWeight(9);
-        graph.addEdge(5, 3).setWeight(6);
-        graph.addEdge(4, 5).setWeight(2);
+            WeightedKeyedGraph<? extends VCent, EdgeCent> graph) {
+        e1 = graph.addEdge(1, 2).setWeight(10);
+        e2 = graph.addEdge(1, 4).setWeight(5);
+        e3 = graph.addEdge(5, 1).setWeight(7);
+        e4 = graph.addEdge(2, 4).setWeight(2);
+        e5 = graph.addEdge(4, 2).setWeight(3);
+        e6 = graph.addEdge(2, 3).setWeight(1);
+        e7 = graph.addEdge(4, 3).setWeight(9);
+        e8 = graph.addEdge(3, 5).setWeight(4);
+        e9 = graph.addEdge(5, 3).setWeight(6);
+        e10 = graph.addEdge(4, 5).setWeight(2);
     }
 
     @Test
     public void unweightedDirectedTest() {
-        DirectedG<VUCent, Edge> graph =
+        DirectedG<VUCent, EdgeCent> graph =
                 super.unweightedDirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -111,11 +125,23 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.66666666667
             }, graph);
         }
+        minEdgeBetw = 1.0;
+        maxEdgeBetw = 8.0;
+        assertEquals((3.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e1.getBetweenness(), TOLERANCE);
+        assertEquals((4.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e2.getBetweenness(), TOLERANCE);
+        assertEquals((8.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e3.getBetweenness(), TOLERANCE);
+        assertEquals((2.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e4.getBetweenness(), TOLERANCE);
+        assertEquals((1.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e5.getBetweenness(), TOLERANCE);
+        assertEquals((2.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e6.getBetweenness(), TOLERANCE);
+        assertEquals((1.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e7.getBetweenness(), TOLERANCE);
+        assertEquals((5.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e8.getBetweenness(), TOLERANCE);
+        assertEquals((1.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e9.getBetweenness(), TOLERANCE);
+        assertEquals((4.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
     public void unweightedReversedTest() {
-        DirectedG<VUCent, Edge> graph =
+        DirectedG<VUCent, EdgeCent> graph =
                 super.unweightedReversedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -133,11 +159,23 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.66666666667
             }, graph);
         }
+        minEdgeBetw = 1.0;
+        maxEdgeBetw = 8.0;
+        assertEquals((3.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e1.getBetweenness(), TOLERANCE);
+        assertEquals((4.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e2.getBetweenness(), TOLERANCE);
+        assertEquals((8.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e3.getBetweenness(), TOLERANCE);
+        assertEquals((2.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e4.getBetweenness(), TOLERANCE);
+        assertEquals((1.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e5.getBetweenness(), TOLERANCE);
+        assertEquals((2.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e6.getBetweenness(), TOLERANCE);
+        assertEquals((1.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e7.getBetweenness(), TOLERANCE);
+        assertEquals((5.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e8.getBetweenness(), TOLERANCE);
+        assertEquals((1.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e9.getBetweenness(), TOLERANCE);
+        assertEquals((4.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
     public void unweightedUndirectedTest() {
-        UndirectedG<VUCent, Edge> graph =
+        UndirectedG<VUCent, EdgeCent> graph =
                 super.unweightedUndirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -155,12 +193,25 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.80000000000
             }, graph);
         }
+        minEdgeBetw = 1.4;
+        maxEdgeBetw = 3.4;
+        assertEquals((2.9 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e1.getBetweenness(), TOLERANCE);
+        assertEquals((2.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e2.getBetweenness(), TOLERANCE);
+        assertEquals((3.4 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e3.getBetweenness(), TOLERANCE);
+        assertEquals((1.4 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e4.getBetweenness(), TOLERANCE);
+        assertEquals((1.4 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e5.getBetweenness(), TOLERANCE);
+        assertEquals((3.3 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e6.getBetweenness(), TOLERANCE);
+        assertEquals((2.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e7.getBetweenness(), TOLERANCE);
+        assertEquals((1.9 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e8.getBetweenness(), TOLERANCE);
+        assertEquals((1.9 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e9.getBetweenness(), TOLERANCE);
+        assertEquals((2.8 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
-    public void weightedDirectedTest() {
-        DirectedG<VWCent, Edge> graph =
+    public void weightedDirectedTest() throws Exception {
+        DirectedG<VWCent, EdgeCent> graph =
                 super.weightedDirectedAnalysis();
+
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
                 4.0 / 7,
@@ -177,11 +228,21 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.10000000000
             }, graph);
         }
+        assertEquals(0.0 / 8, e1.getBetweenness(), TOLERANCE);
+        assertEquals(8.0 / 8, e2.getBetweenness(), TOLERANCE);
+        assertEquals(8.0 / 8, e3.getBetweenness(), TOLERANCE);
+        assertEquals(3.0 / 8, e4.getBetweenness(), TOLERANCE);
+        assertEquals(6.0 / 8, e5.getBetweenness(), TOLERANCE);
+        assertEquals(3.0 / 8, e6.getBetweenness(), TOLERANCE);
+        assertEquals(0.0 / 8, e7.getBetweenness(), TOLERANCE);
+        assertEquals(4.0 / 8, e8.getBetweenness(), TOLERANCE);
+        assertEquals(1.0 / 8, e9.getBetweenness(), TOLERANCE);
+        assertEquals(5.0 / 8, e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
     public void weightedReversedTest() {
-        DirectedG<VWCent, Edge> graph =
+        DirectedG<VWCent, EdgeCent> graph =
                 super.weightedReversedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -199,11 +260,21 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.23529411765
             }, graph);
         }
+        assertEquals(0.0 / 8, e1.getBetweenness(), TOLERANCE);
+        assertEquals(8.0 / 8, e2.getBetweenness(), TOLERANCE);
+        assertEquals(8.0 / 8, e3.getBetweenness(), TOLERANCE);
+        assertEquals(3.0 / 8, e4.getBetweenness(), TOLERANCE);
+        assertEquals(6.0 / 8, e5.getBetweenness(), TOLERANCE);
+        assertEquals(3.0 / 8, e6.getBetweenness(), TOLERANCE);
+        assertEquals(0.0 / 8, e7.getBetweenness(), TOLERANCE);
+        assertEquals(4.0 / 8, e8.getBetweenness(), TOLERANCE);
+        assertEquals(1.0 / 8, e9.getBetweenness(), TOLERANCE);
+        assertEquals(5.0 / 8, e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
     public void weightedUndirectedTest() {
-        UndirectedG<VWCent, Edge> graph =
+        UndirectedG<VWCent, EdgeCent> graph =
                 super.weightedUndirectedAnalysis();
         if (CHECK_RESULTS) {
             checkBetweenness(new double[]{
@@ -221,6 +292,16 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.23529411765
             }, graph);
         }
+        assertEquals(0.0 / 10, e1.getBetweenness(), TOLERANCE);
+        assertEquals(7.0 / 10, e2.getBetweenness(), TOLERANCE);
+        assertEquals(1.0 / 10, e3.getBetweenness(), TOLERANCE);
+        assertEquals(10.0 / 10, e4.getBetweenness(), TOLERANCE);
+        assertEquals(0.0 / 10, e5.getBetweenness(), TOLERANCE);
+        assertEquals(6.0 / 10, e6.getBetweenness(), TOLERANCE);
+        assertEquals(0.0 / 10, e7.getBetweenness(), TOLERANCE);
+        assertEquals(2.0 / 10, e8.getBetweenness(), TOLERANCE);
+        assertEquals(0.0 / 10, e9.getBetweenness(), TOLERANCE);
+        assertEquals(5.0 / 10, e10.getBetweenness(), TOLERANCE);
     }
 
     @Override
@@ -234,7 +315,7 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
     }
 
     @Override
-    protected String getName() {
+    public String getName() {
         return CORMEN_GRAPH;
     }
 

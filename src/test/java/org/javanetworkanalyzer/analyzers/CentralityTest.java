@@ -24,6 +24,7 @@
  */
 package org.javanetworkanalyzer.analyzers;
 
+import junit.framework.TestCase;
 import org.javanetworkanalyzer.data.VCent;
 import org.javanetworkanalyzer.model.Edge;
 import org.jgrapht.Graph;

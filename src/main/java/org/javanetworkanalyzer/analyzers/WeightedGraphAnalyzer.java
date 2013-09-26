@@ -25,8 +25,10 @@
 package org.javanetworkanalyzer.analyzers;
 
 import org.javanetworkanalyzer.alg.DijkstraForCentrality;
+import org.javanetworkanalyzer.alg.GraphSearchAlgorithm;
 import org.javanetworkanalyzer.data.VWCent;
 import org.javanetworkanalyzer.data.WeightedPathLengthData;
+import org.javanetworkanalyzer.model.EdgeCent;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
 import java.lang.reflect.InvocationTargetException;
@@ -38,7 +40,7 @@ import org.jgrapht.WeightedGraph;
  *
  * @author Adam Gouge
  */
-public class WeightedGraphAnalyzer<E>
+public class WeightedGraphAnalyzer<E extends EdgeCent>
         extends GraphAnalyzer<VWCent, E, WeightedPathLengthData> {
 
     private final DijkstraForCentrality<E> dijkstra;
@@ -78,7 +80,7 @@ public class WeightedGraphAnalyzer<E>
      * {@inheritDoc}
      */
     @Override
-    protected WeightedPathLengthData calculateShortestPathsFromNode(
+    protected DijkstraForCentrality<E> calculateShortestPathsFromNode(
             VWCent startNode) {
         // Need to compute all shortest paths from s=startNode.
         //
@@ -95,7 +97,7 @@ public class WeightedGraphAnalyzer<E>
         // the nodes are popped in order of non-increasing distance from s.
         // This is IMPORTANT.
         dijkstra.calculate(startNode);
-        return dijkstra.getPaths();
+        return dijkstra;
     }
 
     @Override

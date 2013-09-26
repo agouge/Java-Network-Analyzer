@@ -27,6 +27,7 @@ package org.javanetworkanalyzer.analyzers;
 import java.util.Set;
 import org.javanetworkanalyzer.alg.DijkstraForAccessibility;
 import org.javanetworkanalyzer.data.VAccess;
+import org.javanetworkanalyzer.model.EdgeSPT;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.EdgeReversedGraph;
@@ -37,7 +38,7 @@ import org.jgrapht.graph.EdgeReversedGraph;
  *
  * @author Adam Gouge
  */
-public class AccessibilityAnalyzer<E> extends GeneralizedGraphAnalyzer<VAccess, E> {
+public class AccessibilityAnalyzer<E extends EdgeSPT> extends GeneralizedGraphAnalyzer<VAccess, E> {
 
     /**
      * The set of destinations.

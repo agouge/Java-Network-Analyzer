@@ -25,6 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VBFS;
+import org.javanetworkanalyzer.model.EdgeSPT;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 
@@ -41,7 +42,7 @@ import java.util.Set;
  *            of BFS.
  * @author Adam Gouge
  */
-public class BFS<V extends VBFS, E>
+public class BFS<V extends VBFS, E extends EdgeSPT>
         extends GraphSearchAlgorithm<V, E> {
 
     /**

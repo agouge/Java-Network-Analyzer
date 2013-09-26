@@ -26,6 +26,7 @@ package org.javanetworkanalyzer.alg;
 
 import java.util.PriorityQueue;
 import org.javanetworkanalyzer.data.VAccess;
+import org.javanetworkanalyzer.model.EdgeSPT;
 import org.jgrapht.Graph;
 
 /**
@@ -36,7 +37,7 @@ import org.jgrapht.Graph;
  * @author Adam Gouge
  */
 // TODO: Enable **multiple** "closest" destinations within a given tolerance.
-public class DijkstraForAccessibility<E> extends Dijkstra<VAccess, E> {
+public class DijkstraForAccessibility<E extends EdgeSPT> extends Dijkstra<VAccess, E> {
 
     /**
      * Constructor: sets the graph.
