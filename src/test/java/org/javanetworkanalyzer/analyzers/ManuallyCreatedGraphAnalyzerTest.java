@@ -27,19 +27,9 @@ package org.javanetworkanalyzer.analyzers;
 import org.javanetworkanalyzer.data.VCent;
 import org.javanetworkanalyzer.data.VUCent;
 import org.javanetworkanalyzer.data.VWCent;
-import org.javanetworkanalyzer.model.Edge;
+import org.javanetworkanalyzer.model.*;
 import org.javanetworkanalyzer.graphcreators.GraphCreator;
 import static org.javanetworkanalyzer.graphcreators.GraphCreator.UNDIRECTED;
-import org.javanetworkanalyzer.model.DirectedG;
-import org.javanetworkanalyzer.model.DirectedPseudoG;
-import org.javanetworkanalyzer.model.DirectedWeightedPseudoG;
-import org.javanetworkanalyzer.model.EdgeReversedG;
-import org.javanetworkanalyzer.model.KeyedGraph;
-import org.javanetworkanalyzer.model.PseudoG;
-import org.javanetworkanalyzer.model.UndirectedG;
-import org.javanetworkanalyzer.model.WeightedEdgeReversedG;
-import org.javanetworkanalyzer.model.WeightedKeyedGraph;
-import org.javanetworkanalyzer.model.WeightedPseudoG;
 
 /**
  * Test helper for manually-entered graphs.
@@ -57,7 +47,7 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
      * @param graph The graph.
      */
     protected void addVertices(
-            KeyedGraph<? extends VCent, Edge> graph) {
+            KeyedGraph<? extends VCent, EdgeCent> graph) {
         for (int i = 1; i <= getNumberOfNodes(); i++) {
             graph.addVertex(i);
         }
@@ -69,7 +59,7 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
      * @param graph The graph.
      */
     protected abstract void addEdges(
-            KeyedGraph<? extends VCent, Edge> graph);
+            KeyedGraph<? extends VCent, EdgeCent> graph);
 
     /**
      * Manually adds weighted edges to the graph.
@@ -77,7 +67,7 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
      * @param graph The graph.
      */
     protected abstract void addWeightedEdges(
-            WeightedKeyedGraph<? extends VCent, Edge> graph);
+            WeightedKeyedGraph<? extends VCent, EdgeCent> graph);
 
     /**
      * Loads an unweighted graph with the given orientation.
@@ -88,9 +78,9 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
      *
      */
     @Override
-    protected KeyedGraph<VUCent, Edge> unweightedGraph(
+    protected KeyedGraph<VUCent, EdgeCent> unweightedGraph(
             int orientation) {
-        KeyedGraph<VUCent, Edge> graph;
+        KeyedGraph<VUCent, EdgeCent> graph;
         if (orientation == GraphCreator.DIRECTED) {
             graph = unweightedDirectedGraph();
         } else if (orientation == GraphCreator.REVERSED) {
@@ -112,9 +102,9 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
      *
      */
     @Override
-    protected WeightedKeyedGraph<VWCent, Edge> weightedGraph(
+    protected WeightedKeyedGraph<VWCent, EdgeCent> weightedGraph(
             int orientation) {
-        KeyedGraph<VWCent, Edge> graph;
+        KeyedGraph<VWCent, EdgeCent> graph;
         if (orientation == GraphCreator.DIRECTED) {
             graph = weightedDirectedGraph();
         } else if (orientation == GraphCreator.REVERSED) {
@@ -130,8 +120,8 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
     /**
      * Creates an unweighted directed graph.
      */
-    private DirectedG<VUCent, Edge> unweightedDirectedGraph() {
-        KeyedGraph<? extends VCent, Edge> graph = null;
+    private DirectedG<VUCent, EdgeCent> unweightedDirectedGraph() {
+        KeyedGraph<? extends VCent, EdgeCent> graph = null;
         try {
             graph = initializeUnweightedGraph(GraphCreator.DIRECTED);
             addVertices(graph);
@@ -144,10 +134,10 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
     /**
      * Creates an unweighted edge reversed graph.
      */
-    private DirectedG<VUCent, Edge> unweightedReversedGraph() {
-        EdgeReversedG<VUCent, Edge> graph = null;
+    private DirectedG<VUCent, EdgeCent> unweightedReversedGraph() {
+        EdgeReversedG<VUCent, EdgeCent> graph = null;
         try {
-            graph = new EdgeReversedG<VUCent, Edge>(
+            graph = new EdgeReversedG<VUCent, EdgeCent>(
                     unweightedDirectedGraph());
         } catch (NoSuchMethodException ex) {
         }
@@ -157,8 +147,8 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
     /**
      * Creates an unweighted undirected graph.
      */
-    private UndirectedG<VUCent, Edge> unweightedUndirectedGraph() {
-        KeyedGraph<? extends VCent, Edge> graph = null;
+    private UndirectedG<VUCent, EdgeCent> unweightedUndirectedGraph() {
+        KeyedGraph<? extends VCent, EdgeCent> graph = null;
         try {
             graph = initializeUnweightedGraph(GraphCreator.UNDIRECTED);
             addVertices(graph);
@@ -171,8 +161,8 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
     /**
      * Creates a weighted directed graph.
      */
-    private DirectedG<VWCent, Edge> weightedDirectedGraph() {
-        WeightedKeyedGraph<? extends VCent, Edge> graph = null;
+    private DirectedG<VWCent, EdgeCent> weightedDirectedGraph() {
+        WeightedKeyedGraph<? extends VCent, EdgeCent> graph = null;
         try {
             graph = initializeWeightedGraph(getWeightColumnName(),
                                             GraphCreator.DIRECTED);
@@ -186,10 +176,10 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
     /**
      * Creates a weighted edge reversed graph.
      */
-    private DirectedG<VWCent, Edge> weightedReversedGraph() {
-        WeightedKeyedGraph<VWCent, Edge> graph = null;
+    private DirectedG<VWCent, EdgeCent> weightedReversedGraph() {
+        WeightedKeyedGraph<VWCent, EdgeCent> graph = null;
         try {
-            graph = new WeightedEdgeReversedG<VWCent, Edge>(
+            graph = new WeightedEdgeReversedG<VWCent, EdgeCent>(
                     weightedDirectedGraph());
         } catch (NoSuchMethodException ex) {
         }
@@ -199,8 +189,8 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
     /**
      * Creates a weighted undirected graph.
      */
-    private UndirectedG<VWCent, Edge> weightedUndirectedGraph() {
-        WeightedKeyedGraph<? extends VCent, Edge> graph = null;
+    private UndirectedG<VWCent, EdgeCent> weightedUndirectedGraph() {
+        WeightedKeyedGraph<? extends VCent, EdgeCent> graph = null;
         try {
             graph = initializeWeightedGraph(getWeightColumnName(),
                                             GraphCreator.UNDIRECTED);
@@ -219,14 +209,14 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
      *
      * @return The newly initialized graph.
      */
-    private KeyedGraph<? extends VCent, Edge> initializeUnweightedGraph(
+    private KeyedGraph<? extends VCent, EdgeCent> initializeUnweightedGraph(
             int orientation) throws NoSuchMethodException {
         if (orientation != UNDIRECTED) {
-            return new DirectedPseudoG<VUCent, Edge>(
-                    VUCent.class, Edge.class);
+            return new DirectedPseudoG<VUCent, EdgeCent>(
+                    VUCent.class, EdgeCent.class);
         } else {
-            return new PseudoG<VUCent, Edge>(
-                    VUCent.class, Edge.class);
+            return new PseudoG<VUCent, EdgeCent>(
+                    VUCent.class, EdgeCent.class);
         }
     }
 
@@ -239,15 +229,15 @@ public abstract class ManuallyCreatedGraphAnalyzerTest extends GraphAnalyzerTest
      *
      * @return The newly initialized graph.
      */
-    private WeightedKeyedGraph<? extends VCent, Edge> initializeWeightedGraph(
+    private WeightedKeyedGraph<? extends VCent, EdgeCent> initializeWeightedGraph(
             String weightColumnName,
             int orientation) throws NoSuchMethodException {
         if (orientation != UNDIRECTED) {
-            return new DirectedWeightedPseudoG<VWCent, Edge>(
-                    VWCent.class, Edge.class);
+            return new DirectedWeightedPseudoG<VWCent, EdgeCent>(
+                    VWCent.class, EdgeCent.class);
         } else {
-            return new WeightedPseudoG<VWCent, Edge>(
-                    VWCent.class, Edge.class);
+            return new WeightedPseudoG<VWCent, EdgeCent>(
+                    VWCent.class, EdgeCent.class);
         }
     }
 

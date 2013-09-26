@@ -62,7 +62,7 @@ public interface VPred<V extends VPred, E> {
      *
      * @param pred Node to be added since it is a predecessor of this node
      */
-    public void addPredecessorEdge(E pred);
+    void addPredecessorEdge(E pred);
 
     /**
      * Clears the edge and vertex predecessors of this node.

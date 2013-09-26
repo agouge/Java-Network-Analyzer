@@ -25,6 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VStrahler;
+import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.StrahlerTree;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -53,9 +54,9 @@ public class StrahlerTest {
     @Test
     public void testStrahler() {
 
-        StrahlerTree<DefaultEdge> tree = prepareTree();
+        StrahlerTree<Edge> tree = prepareTree();
 
-        new DFSForStrahler<DefaultEdge>(tree)
+        new DFSForStrahler<Edge>(tree)
                 .calculate(tree.getRootVertex());
 
         // We know what the answers should be.
@@ -84,10 +85,10 @@ public class StrahlerTest {
      *
      * @return A tree with root node 1.
      */
-    protected StrahlerTree<DefaultEdge> prepareTree() {
+    protected StrahlerTree<Edge> prepareTree() {
 
-        StrahlerTree<DefaultEdge> graph =
-                new StrahlerTree<DefaultEdge>(DefaultEdge.class);
+        StrahlerTree<Edge> graph =
+                new StrahlerTree<Edge>(Edge.class);
 
         graph.addEdge(1, 2);
         graph.addEdge(1, 3);

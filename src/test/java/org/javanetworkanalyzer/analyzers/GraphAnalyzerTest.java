@@ -28,15 +28,13 @@ import static org.javanetworkanalyzer.analyzers.CentralityTest.TOLERANCE;
 import org.javanetworkanalyzer.data.VCent;
 import org.javanetworkanalyzer.data.VUCent;
 import org.javanetworkanalyzer.data.VWCent;
-import org.javanetworkanalyzer.model.Edge;
+import org.javanetworkanalyzer.model.*;
 import org.javanetworkanalyzer.graphcreators.GraphCreator;
 import org.javanetworkanalyzer.graphcreators.WeightedGraphCreator;
-import org.javanetworkanalyzer.model.DirectedG;
-import org.javanetworkanalyzer.model.KeyedGraph;
-import org.javanetworkanalyzer.model.UndirectedG;
-import org.javanetworkanalyzer.model.WeightedKeyedGraph;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
 import static org.junit.Assert.assertEquals;
+
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,8 +67,8 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    protected KeyedGraph<VUCent, Edge> doUnweightedAnalysis(
-            KeyedGraph<VUCent, Edge> graph,
+    protected KeyedGraph<VUCent, EdgeCent> doUnweightedAnalysis(
+            KeyedGraph<VUCent, EdgeCent> graph,
             String orientation) {
         try {
             doAnalysis(new UnweightedGraphAnalyzer(graph, progressMonitor()),
@@ -93,8 +91,8 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    protected WeightedKeyedGraph<VWCent, Edge> doWeightedAnalysis(
-            WeightedKeyedGraph<VWCent, Edge> graph,
+    protected WeightedKeyedGraph<VWCent, EdgeCent> doWeightedAnalysis(
+            WeightedKeyedGraph<VWCent, EdgeCent> graph,
             String orientation) {
         try {
             doAnalysis(new WeightedGraphAnalyzer(graph, progressMonitor()),
@@ -115,7 +113,7 @@ public abstract class GraphAnalyzerTest
      * @param analysisType Describes the type of analysis.
      */
     private void doAnalysis(
-            GraphAnalyzer<?, Edge, ?> analyzer,
+            GraphAnalyzer<?, ?, ?> analyzer,
             String analysisType) {
         long start = System.currentTimeMillis();
         try {
@@ -131,7 +129,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<VUCent, Edge> unweightedDirectedAnalysis() {
+    public DirectedG<VUCent, EdgeCent> unweightedDirectedAnalysis() {
         try {
             return (DirectedG) doUnweightedAnalysis(unweightedGraph(
                     GraphCreator.DIRECTED), DIRECTED);
@@ -146,7 +144,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<VUCent, Edge> unweightedReversedAnalysis() {
+    public DirectedG<VUCent, EdgeCent> unweightedReversedAnalysis() {
         try {
             return (DirectedG) doUnweightedAnalysis(unweightedGraph(
                     GraphCreator.REVERSED), REVERSED);
@@ -161,7 +159,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public UndirectedG<VUCent, Edge> unweightedUndirectedAnalysis() {
+    public UndirectedG<VUCent, EdgeCent> unweightedUndirectedAnalysis() {
         try {
             return (UndirectedG) doUnweightedAnalysis(unweightedGraph(
                     GraphCreator.UNDIRECTED), UNDIRECTED);
@@ -176,7 +174,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<VWCent, Edge> weightedDirectedAnalysis() {
+    public DirectedG<VWCent, EdgeCent> weightedDirectedAnalysis() {
         try {
             return (DirectedG) doWeightedAnalysis(weightedGraph(
                     GraphCreator.DIRECTED), DIRECTED);
@@ -191,7 +189,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public DirectedG<VWCent, Edge> weightedReversedAnalysis() {
+    public DirectedG<VWCent, EdgeCent> weightedReversedAnalysis() {
         try {
             return (DirectedG) doWeightedAnalysis(weightedGraph(
                     GraphCreator.REVERSED), REVERSED);
@@ -206,7 +204,7 @@ public abstract class GraphAnalyzerTest
      *
      * @return The graph.
      */
-    public UndirectedG<VWCent, Edge> weightedUndirectedAnalysis() {
+    public UndirectedG<VWCent, EdgeCent> weightedUndirectedAnalysis() {
         try {
             return (UndirectedG) doWeightedAnalysis(weightedGraph(
                     GraphCreator.UNDIRECTED), UNDIRECTED);
@@ -242,13 +240,13 @@ public abstract class GraphAnalyzerTest
      * @return The graph.
      *
      */
-    protected KeyedGraph<VUCent, Edge> unweightedGraph(
+    protected KeyedGraph<VUCent, EdgeCent> unweightedGraph(
             int orientation) {
         try {
             return new GraphCreator(getFilename(),
                                     orientation,
                                     VUCent.class,
-                                    Edge.class).loadGraph();
+                                    EdgeCent.class).loadGraph();
         } catch (Exception ex) {
         }
         return null;
@@ -263,13 +261,13 @@ public abstract class GraphAnalyzerTest
      * @return The graph.
      *
      */
-    protected WeightedKeyedGraph<VWCent, Edge> weightedGraph(
+    protected WeightedKeyedGraph<VWCent, EdgeCent> weightedGraph(
             int orientation) {
         try {
             return new WeightedGraphCreator(getFilename(),
                                             orientation,
                                             VWCent.class,
-                                            Edge.class,
+                                            EdgeCent.class,
                                             getWeightColumnName()).loadGraph();
         } catch (Exception ex) {
         }
@@ -285,7 +283,7 @@ public abstract class GraphAnalyzerTest
      */
     protected void checkBetweenness(
             double[] expectedBetweenness,
-            KeyedGraph<? extends VCent, Edge> graph) {
+            KeyedGraph<? extends VCent, ? extends DefaultWeightedEdge> graph) {
         if (graph != null) {
             VCent vertex;
             for (int i = 0; i < getNumberOfNodes(); i++) {
@@ -312,7 +310,7 @@ public abstract class GraphAnalyzerTest
      */
     protected void checkCloseness(
             double[] expectedCloseness,
-            KeyedGraph<? extends VCent, Edge> graph) {
+            KeyedGraph<? extends VCent, ? extends DefaultWeightedEdge> graph) {
         if (graph != null) {
             VCent vertex;
             for (int i = 0; i < getNumberOfNodes(); i++) {

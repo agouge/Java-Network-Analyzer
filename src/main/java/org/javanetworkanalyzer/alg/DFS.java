@@ -25,6 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDFS;
+import org.javanetworkanalyzer.model.EdgeSPT;
 import org.jgrapht.Graph;
 
 /**
@@ -34,7 +35,7 @@ import org.jgrapht.Graph;
  *            of DFS.
  * @author Adam Gouge
  */
-public class DFS<V extends VDFS, E> extends GraphSearchAlgorithm<V, E> {
+public class DFS<V extends VDFS, E extends EdgeSPT> extends GraphSearchAlgorithm<V, E> {
 
     /**
      * For discovery and finishing times.
