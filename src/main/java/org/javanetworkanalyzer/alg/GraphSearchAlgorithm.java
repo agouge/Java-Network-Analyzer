@@ -25,6 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VPred;
+import org.javanetworkanalyzer.model.EdgeSPT;
 import org.javanetworkanalyzer.model.TraversalGraph;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
@@ -42,7 +43,7 @@ import java.util.Set;
  * @param <E> Edges
  * @author Adam Gouge
  */
-public abstract class GraphSearchAlgorithm<V extends VPred, E>
+public abstract class GraphSearchAlgorithm<V extends VPred, E extends EdgeSPT>
         implements TraversalAlg<V, E> {
 
     /**
@@ -92,12 +93,14 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E>
                 traversalGraph.addVertex(source);
                 traversalGraph.addVertex(target);
                 if (v.equals(source)) {
-                    traversalGraph.addEdge(target, source);
+                    traversalGraph.addEdge(target, source).setBaseGraphEdge(e);
                 } else if (v.equals(target)) {
-                    traversalGraph.addEdge(source, target);
+                    traversalGraph.addEdge(source, target).setBaseGraphEdge(e);
                 } else {
-                    System.out.println("equals neither");
+                    throw new IllegalStateException("A vertex has a predecessor " +
+                            "edge not ending on itself.");
                 }
+
             }
         }
 

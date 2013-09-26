@@ -28,6 +28,8 @@ import org.javanetworkanalyzer.data.VWCent;
 import org.javanetworkanalyzer.data.WeightedPathLengthData;
 import java.util.PriorityQueue;
 import java.util.Stack;
+
+import org.javanetworkanalyzer.model.EdgeSPT;
 import org.jgrapht.Graph;
 
 /**
@@ -36,7 +38,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class DijkstraForCentrality<E> extends Dijkstra<VWCent, E>
+public class DijkstraForCentrality<E extends EdgeSPT> extends Dijkstra<VWCent, E>
         implements CentralityAlg<VWCent, E, WeightedPathLengthData> {
 
     /**

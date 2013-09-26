@@ -29,6 +29,7 @@ import org.javanetworkanalyzer.alg.GraphSearchAlgorithm;
 import org.javanetworkanalyzer.data.PathLengthData;
 import org.javanetworkanalyzer.data.VCent;
 import org.javanetworkanalyzer.data.VDist;
+import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.EdgeCent;
 import org.javanetworkanalyzer.model.TraversalGraph;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
@@ -264,31 +265,16 @@ public abstract class GraphAnalyzer<V extends VCent, E extends EdgeCent, S exten
             V w,
             double sigmaFactor,
             TraversalGraph<V, E> shortestPathTree) {
-
-        E sPTEdge = shortestPathTree.getEdge(predecessor, w);
-
-        // If w is "leaf" in the SP"T" (its outdegree is 0) ...
-        if (shortestPathTree.outDegreeOf(w) == 0) {
-            // TODO: We should allow for multiple (equal weight) edges (pred, w).
-//            for (E edgeLeadingToLeaf : shortestPathTree.getAllEdges(predecessor, w)) {
-//                edgeLeadingToLeaf.accumulateDependency(1);
-//            }
-            sPTEdge.accumulateDependency(sigmaFactor);
-        } // Otherwise accumulate the dependencies of the outgoing edges of w.
-        else {
+        for (E sPTEdge : shortestPathTree.getAllEdges(predecessor, w)) {
             double depSumFromOutgoing = 0.0;
             for (E outEdge : shortestPathTree.outgoingEdgesOf(w)) {
                 depSumFromOutgoing += outEdge.getDependency();
             }
             sPTEdge.accumulateDependency(sigmaFactor * (1 + depSumFromOutgoing));
+            // It's okay to accumulate dependencies in the SPT, but the
+            // betweenness values have to be accumulated to the base graph!
+            sPTEdge.getBaseGraphEdge().accumulateBetweenness(sPTEdge.getDependency());
         }
-
-        // This is an edge in the SPT, but we need to accumulate
-        // the dependency to the edge betweenness for the corresponding edge in
-        // the base graph. It's okay to accumulate dependencies in the SPT,
-        // but the betweenness values have to be accumulated to the base graph!
-        E baseEdge = graph.getEdge(predecessor, w);
-        baseEdge.accumulateBetweenness(sPTEdge.getDependency());
     }
 
     /**

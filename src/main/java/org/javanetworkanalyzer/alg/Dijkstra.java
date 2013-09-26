@@ -25,6 +25,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDijkstra;
+import org.javanetworkanalyzer.model.EdgeSPT;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -39,7 +40,7 @@ import java.util.*;
  * @param <E> Edges
  * @author Adam Gouge
  */
-public class Dijkstra<V extends VDijkstra, E>
+public class Dijkstra<V extends VDijkstra, E extends EdgeSPT>
         extends GraphSearchAlgorithm<V, E> {
 
     /**

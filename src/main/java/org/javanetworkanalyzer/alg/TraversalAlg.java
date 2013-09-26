@@ -1,6 +1,7 @@
 package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VPred;
+import org.javanetworkanalyzer.model.EdgeSPT;
 import org.javanetworkanalyzer.model.TraversalGraph;
 
 /**
@@ -8,7 +9,7 @@ import org.javanetworkanalyzer.model.TraversalGraph;
  *
  * @author Adam Gouge
  */
-public interface TraversalAlg<V extends VPred, E> {
+public interface TraversalAlg<V extends VPred, E extends EdgeSPT> {
 
     /**
      * Performs the graph search algorithm from the given start node.

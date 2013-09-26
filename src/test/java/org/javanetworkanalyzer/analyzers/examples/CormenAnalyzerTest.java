@@ -73,6 +73,8 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
     private EdgeCent e8;
     private EdgeCent e9;
     private EdgeCent e10;
+    private double minEdgeBetw;
+    private double maxEdgeBetw;
 
     @Override
     protected void addEdges(
@@ -123,16 +125,18 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.66666666667
             }, graph);
         }
-        assertEquals(((7.0 / 2) - 1) / (8 - 1), e1.getBetweenness(), TOLERANCE);
-        assertEquals(((9.0 / 2) - 1) / (8 - 1), e2.getBetweenness(), TOLERANCE);
-        assertEquals((8.0 - 1) / (8 - 1), e3.getBetweenness(), TOLERANCE);
-        assertEquals((2.0 - 1) / (8 - 1), e4.getBetweenness(), TOLERANCE);
-        assertEquals((1.0 - 1) / (8 - 1), e5.getBetweenness(), TOLERANCE);
-        assertEquals(((5.0 / 2) - 1) / (8 - 1), e6.getBetweenness(), TOLERANCE);
-        assertEquals(((3.0 / 2) - 1) / (8 - 1), e7.getBetweenness(), TOLERANCE);
-        assertEquals((5.0 - 1) / (8 - 1), e8.getBetweenness(), TOLERANCE);
-        assertEquals((1.0 - 1) / (8 - 1), e9.getBetweenness(), TOLERANCE);
-        assertEquals((4.0 - 1) / (8 - 1), e10.getBetweenness(), TOLERANCE);
+        minEdgeBetw = 1.0;
+        maxEdgeBetw = 8.0;
+        assertEquals((3.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e1.getBetweenness(), TOLERANCE);
+        assertEquals((4.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e2.getBetweenness(), TOLERANCE);
+        assertEquals((8.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e3.getBetweenness(), TOLERANCE);
+        assertEquals((2.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e4.getBetweenness(), TOLERANCE);
+        assertEquals((1.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e5.getBetweenness(), TOLERANCE);
+        assertEquals((2.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e6.getBetweenness(), TOLERANCE);
+        assertEquals((1.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e7.getBetweenness(), TOLERANCE);
+        assertEquals((5.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e8.getBetweenness(), TOLERANCE);
+        assertEquals((1.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e9.getBetweenness(), TOLERANCE);
+        assertEquals((4.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
@@ -155,16 +159,18 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.66666666667
             }, graph);
         }
-//        assertEquals(4.0 / 9, e1.getBetweenness(), TOLERANCE);
-//        assertEquals(5.0 / 9, e2.getBetweenness(), TOLERANCE);
-//        assertEquals(9.0 / 9, e3.getBetweenness(), TOLERANCE);
-//        assertEquals(3.0 / 9, e4.getBetweenness(), TOLERANCE);
-//        assertEquals(1.0 / 9, e5.getBetweenness(), TOLERANCE);
-//        assertEquals(4.0 / 9, e6.getBetweenness(), TOLERANCE);
-//        assertEquals(2.0 / 9, e7.getBetweenness(), TOLERANCE);
-//        assertEquals(6.0 / 9, e8.getBetweenness(), TOLERANCE);
-//        assertEquals(1.0 / 9, e9.getBetweenness(), TOLERANCE);
-//        assertEquals(5.0 / 9, e10.getBetweenness(), TOLERANCE);
+        minEdgeBetw = 1.0;
+        maxEdgeBetw = 8.0;
+        assertEquals((3.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e1.getBetweenness(), TOLERANCE);
+        assertEquals((4.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e2.getBetweenness(), TOLERANCE);
+        assertEquals((8.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e3.getBetweenness(), TOLERANCE);
+        assertEquals((2.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e4.getBetweenness(), TOLERANCE);
+        assertEquals((1.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e5.getBetweenness(), TOLERANCE);
+        assertEquals((2.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e6.getBetweenness(), TOLERANCE);
+        assertEquals((1.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e7.getBetweenness(), TOLERANCE);
+        assertEquals((5.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e8.getBetweenness(), TOLERANCE);
+        assertEquals((1.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e9.getBetweenness(), TOLERANCE);
+        assertEquals((4.0 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
@@ -187,16 +193,18 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.80000000000
             }, graph);
         }
-//        assertEquals(6.0 / 6, e1.getBetweenness(), TOLERANCE);
-//        assertEquals(4.0 / 6, e2.getBetweenness(), TOLERANCE);
-//        assertEquals(6.0 / 6, e3.getBetweenness(), TOLERANCE);
-//        assertEquals(3.0 / 6, e4.getBetweenness(), TOLERANCE);
-//        assertEquals(0.0 / 6, e5.getBetweenness(), TOLERANCE);
-//        assertEquals(6.0 / 6, e6.getBetweenness(), TOLERANCE);
-//        assertEquals(4.0 / 6, e7.getBetweenness(), TOLERANCE);
-//        assertEquals(4.0 / 6, e8.getBetweenness(), TOLERANCE);
-//        assertEquals(0.0 / 6, e9.getBetweenness(), TOLERANCE);
-//        assertEquals(4.0 / 6, e10.getBetweenness(), TOLERANCE);
+        minEdgeBetw = 1.4;
+        maxEdgeBetw = 3.4;
+        assertEquals((2.9 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e1.getBetweenness(), TOLERANCE);
+        assertEquals((2.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e2.getBetweenness(), TOLERANCE);
+        assertEquals((3.4 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e3.getBetweenness(), TOLERANCE);
+        assertEquals((1.4 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e4.getBetweenness(), TOLERANCE);
+        assertEquals((1.4 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e5.getBetweenness(), TOLERANCE);
+        assertEquals((3.3 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e6.getBetweenness(), TOLERANCE);
+        assertEquals((2.5 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e7.getBetweenness(), TOLERANCE);
+        assertEquals((1.9 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e8.getBetweenness(), TOLERANCE);
+        assertEquals((1.9 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e9.getBetweenness(), TOLERANCE);
+        assertEquals((2.8 - minEdgeBetw) / (maxEdgeBetw - minEdgeBetw), e10.getBetweenness(), TOLERANCE);
     }
 
     @Test
@@ -252,8 +260,6 @@ public class CormenAnalyzerTest extends ManuallyCreatedGraphAnalyzerTest {
                 0.23529411765
             }, graph);
         }
-        // Note: These happen to be the same results as in weightedDirectedTest
-        // but this is not always true.
         assertEquals(0.0 / 8, e1.getBetweenness(), TOLERANCE);
         assertEquals(8.0 / 8, e2.getBetweenness(), TOLERANCE);
         assertEquals(8.0 / 8, e3.getBetweenness(), TOLERANCE);

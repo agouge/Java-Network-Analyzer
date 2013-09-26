@@ -1,11 +1,11 @@
 package org.javanetworkanalyzer.model;
 
 /**
- * An Edge for calculating edge betweenness centrality.
+ * An {@link Edge} for calculating edge betweenness centrality.
  *
  * @author Adam Gouge
  */
-public class EdgeCent extends Edge {
+public class EdgeCent extends Edge<EdgeCent> {
 
     /**
      * Dependency of this node on any other vertex.

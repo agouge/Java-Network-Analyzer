@@ -28,13 +28,15 @@ import org.jgrapht.WeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 /**
- * Empty class.
+ * Weighted edge for use in {@link TraversalGraph}.
  *
  * @author Adam Gouge
  */
-public class Edge extends DefaultWeightedEdge {
+public class Edge<E extends Edge<E>> extends DefaultWeightedEdge
+        implements EdgeSPT<E> {
 
     private double weight = WeightedGraph.DEFAULT_EDGE_WEIGHT;
+    private E baseGraphEdge;
 
     /**
      * Sets the weight of this edge.
@@ -47,5 +49,15 @@ public class Edge extends DefaultWeightedEdge {
     @Override
     protected double getWeight() {
         return weight;
+    }
+
+    @Override
+    public E getBaseGraphEdge() {
+        return baseGraphEdge;
+    }
+
+    @Override
+    public void setBaseGraphEdge(E edgeCent) {
+        baseGraphEdge = edgeCent;
     }
 }

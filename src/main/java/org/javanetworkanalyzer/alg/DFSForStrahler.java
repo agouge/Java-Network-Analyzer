@@ -26,6 +26,8 @@ package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VStrahler;
 import java.util.List;
+
+import org.javanetworkanalyzer.model.EdgeSPT;
 import org.jgrapht.Graph;
 
 /**
@@ -42,7 +44,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public class DFSForStrahler<E> extends DFS<VStrahler, E> {
+public class DFSForStrahler<E extends EdgeSPT> extends DFS<VStrahler, E> {
 
     /**
      * Constructor.
