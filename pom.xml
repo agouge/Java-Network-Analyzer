@@ -4,7 +4,7 @@
 
     <groupId>org.javanetworkanalyzer</groupId>
     <artifactId>java-network-analyzer</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <packaging>bundle</packaging>
 
     <name>Java-Network-Analyzer</name>
