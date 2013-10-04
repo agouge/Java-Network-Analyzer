@@ -30,7 +30,7 @@ import org.javanetworkanalyzer.data.VId;
  *Provides an edge-reversed view of a weighted directed graph.
  * @author Adam Gouge
  */
-public class WeightedEdgeReversedG<V extends VId, E>
+public class WeightedEdgeReversedG<V extends VId, E extends EdgeID>
         extends EdgeReversedG<V, E> implements WeightedKeyedGraph<V, E> {
 
     public WeightedEdgeReversedG(

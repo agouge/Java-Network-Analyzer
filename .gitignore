@@ -17,5 +17,4 @@ src/test/java/com/graphhopper/sna/centrality/examples/NantesAnalyzerTest.java
 .project
 .settings/
 java-network-analyzer.iml
-src/main/java/org/javanetworkanalyzer/alg/Alg.ucls
-
+*.ucls

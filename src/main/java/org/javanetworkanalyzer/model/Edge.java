@@ -32,11 +32,13 @@ import org.jgrapht.graph.DefaultWeightedEdge;
  *
  * @author Adam Gouge
  */
-public class Edge<E extends Edge<E>> extends DefaultWeightedEdge
-        implements EdgeSPT<E> {
+public class Edge<E extends Edge> extends DefaultWeightedEdge
+        implements EdgeSPT<E>, EdgeID {
 
     private double weight = WeightedGraph.DEFAULT_EDGE_WEIGHT;
     private E baseGraphEdge;
+    private int id;
+    private boolean setID = false;
 
     /**
      * Sets the weight of this edge.
@@ -59,5 +61,20 @@ public class Edge<E extends Edge<E>> extends DefaultWeightedEdge
     @Override
     public void setBaseGraphEdge(E edgeCent) {
         baseGraphEdge = edgeCent;
+    }
+
+    @Override
+    public int getID() {
+        return id;
+    }
+
+    @Override
+    public void setID(int id) {
+        if (!setID) {
+            this.id = id;
+            setID = true;
+        } else {
+            throw new IllegalStateException("Cannot set the edge id more than once.");
+        }
     }
 }

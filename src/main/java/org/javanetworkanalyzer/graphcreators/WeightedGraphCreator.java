@@ -26,11 +26,9 @@ package org.javanetworkanalyzer.graphcreators;
 
 import org.javanetworkanalyzer.data.VId;
 import static org.javanetworkanalyzer.graphcreators.GraphCreator.UNDIRECTED;
-import org.javanetworkanalyzer.model.DirectedWeightedPseudoG;
-import org.javanetworkanalyzer.model.Edge;
-import org.javanetworkanalyzer.model.KeyedGraph;
-import org.javanetworkanalyzer.model.WeightedKeyedGraph;
-import org.javanetworkanalyzer.model.WeightedPseudoG;
+
+import org.javanetworkanalyzer.model.*;
+
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 

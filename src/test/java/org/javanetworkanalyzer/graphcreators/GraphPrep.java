@@ -46,7 +46,7 @@ import org.jgrapht.GraphPath;
  *
  * @author Adam Gouge
  */
-public abstract class GraphPrep<V extends VId, E extends Edge> {
+public abstract class GraphPrep<V extends VId, E extends Edge<E>> {
 
     /**
      * Gets the number of vertices contained in this graph.

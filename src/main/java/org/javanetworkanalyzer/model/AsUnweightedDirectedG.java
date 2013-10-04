@@ -31,7 +31,7 @@ import org.jgrapht.graph.AsUnweightedDirectedGraph;
  *
  * @author Adam Gouge
  */
-public class AsUnweightedDirectedG<V extends VId, E>
+public class AsUnweightedDirectedG<V extends VId, E extends EdgeID>
         //    extends GraphDelegator<V, E>
         //    implements Serializable, DirectedGraph<V, E>
         extends AsUnweightedDirectedGraph<V, E>
@@ -52,7 +52,7 @@ public class AsUnweightedDirectedG<V extends VId, E>
     public boolean addVertex(int id) {
         throw new UnsupportedOperationException(
                 "Adding vertices to an as-unweighted-undirected graph is not "
-                + "currently supported.");
+                + "supported.");
     }
 
     @Override
@@ -64,6 +64,13 @@ public class AsUnweightedDirectedG<V extends VId, E>
     public E addEdge(int source, int target) {
         throw new UnsupportedOperationException(
                 "Adding edges to an as-unweighted-undirected graph is not "
-                + "currently supported.");
+                + "supported.");
+    }
+
+    @Override
+    public E addEdge(int source, int target, int edgeID) {
+        throw new UnsupportedOperationException(
+                "Adding edges to an as-unweighted-undirected graph is not "
+                        + "supported.");
     }
 }

@@ -33,7 +33,7 @@ import org.jgrapht.graph.AsUndirectedGraph;
  *
  * @author Adam Gouge
  */
-public class AsUndirectedG<V extends VId, E>
+public class AsUndirectedG<V extends VId, E extends EdgeID>
         //    extends GraphDelegator<V, E>
         //    implements Serializable,
         //        UndirectedGraph<V, E>
@@ -54,7 +54,7 @@ public class AsUndirectedG<V extends VId, E>
     @Override
     public boolean addVertex(int id) {
         throw new UnsupportedOperationException("Adding vertices to "
-                                                + " an as-undirected graph is not currently supported.");
+                + " an as-undirected graph is not supported.");
     }
 
     @Override
@@ -65,6 +65,12 @@ public class AsUndirectedG<V extends VId, E>
     @Override
     public E addEdge(int source, int target) {
         throw new UnsupportedOperationException("Adding edges to "
-                                                + " an as-undirected graph is not currently supported.");
+                + " an as-undirected graph is not supported.");
+    }
+
+    @Override
+    public E addEdge(int source, int target, int edgeID) {
+        throw new UnsupportedOperationException("Adding edges to "
+                + " an as-undirected graph is not supported.");
     }
 }
