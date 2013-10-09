@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Adam Gouge
  */
-public class DirectedPseudoG<V extends VId, E>
+public class DirectedPseudoG<V extends VId, E extends EdgeID>
         extends DirectedPseudograph<V, E>
         implements DirectedG<V, E> {
 
@@ -107,13 +107,20 @@ public class DirectedPseudoG<V extends VId, E>
     }
 
     @Override
-    public E addEdge(int source, int target) {
+    public E addEdge(int source, int target, int edgeID) {
         if (!containsVertex(getVertex(source))) {
             addVertex(source);
         }
         if (!containsVertex(getVertex(target))) {
             addVertex(target);
         }
-        return addEdge(getVertex(source), getVertex(target));
+        final E e = addEdge(getVertex(source), getVertex(target));
+        e.setID(edgeID);
+        return e;
+    }
+
+    @Override
+    public E addEdge(int source, int target) {
+        return addEdge(source, target, -1);
     }
 }

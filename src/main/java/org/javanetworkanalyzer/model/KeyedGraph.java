@@ -31,7 +31,7 @@ import org.jgrapht.Graph;
  *
  * @author Adam Gouge
  */
-public interface KeyedGraph<V, E> extends Graph<V, E> {
+public interface KeyedGraph<V, E extends EdgeID> extends Graph<V, E> {
 
     /**
      * Add a vertex with the given id.
@@ -60,4 +60,16 @@ public interface KeyedGraph<V, E> extends Graph<V, E> {
      * @return The newly added edge, or null if it was not added.
      */
     E addEdge(int source, int target);
+
+    /**
+     * Add an edge from the vertex with id source to the vertex with id target
+     * and set the edge id.
+     *
+     * @param source Source id.
+     * @param target Target id.
+     * @param edgeID Edge id.
+     *
+     * @return The newly added edge, or null if it was not added.
+     */
+    E addEdge(int source, int target, int edgeID);
 }

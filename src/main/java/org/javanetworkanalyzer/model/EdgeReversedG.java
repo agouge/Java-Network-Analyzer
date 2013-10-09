@@ -32,7 +32,7 @@ import org.jgrapht.graph.EdgeReversedGraph;
  *
  * @author Adam Gouge
  */
-public class EdgeReversedG<V extends VId, E>
+public class EdgeReversedG<V extends VId, E extends EdgeID>
         //        extends GraphDelegator<V, E>
         //        implements DirectedG<V, E> {
         extends EdgeReversedGraph<V, E>
@@ -52,7 +52,7 @@ public class EdgeReversedG<V extends VId, E>
     @Override
     public boolean addVertex(int id) {
         throw new UnsupportedOperationException("Adding vertices to "
-                + " an edge-reversed graph is not currently supported.");
+                + " an edge-reversed graph is not supported.");
     }
 
     @Override
@@ -63,6 +63,12 @@ public class EdgeReversedG<V extends VId, E>
     @Override
     public E addEdge(int source, int target) {
         throw new UnsupportedOperationException("Adding edges to "
-                + " an edge-reversed graph is not currently supported.");
+                + " an edge-reversed graph is not supported.");
+    }
+
+    @Override
+    public E addEdge(int source, int target, int edgeID) {
+        throw new UnsupportedOperationException("Adding edges to "
+                + " an edge-reversed graph is not supported.");
     }
 }

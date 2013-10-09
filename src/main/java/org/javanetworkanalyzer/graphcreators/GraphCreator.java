@@ -25,10 +25,8 @@
 package org.javanetworkanalyzer.graphcreators;
 
 import org.javanetworkanalyzer.data.VId;
-import org.javanetworkanalyzer.model.DirectedPseudoG;
-import org.javanetworkanalyzer.model.Edge;
-import org.javanetworkanalyzer.model.KeyedGraph;
-import org.javanetworkanalyzer.model.PseudoG;
+import org.javanetworkanalyzer.model.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,7 +43,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Adam Gouge
  */
-public class GraphCreator<V extends VId, E extends Edge> {
+public class GraphCreator<V extends VId, E extends EdgeID> {
 
     /**
      * Start node column name.
@@ -107,7 +105,6 @@ public class GraphCreator<V extends VId, E extends Edge> {
      * Initializes a new {@link GraphCreator}.
      *
      * @param csvFile     CSV file containing the edge information.
-     * @param weightField The weight column name.
      * @param orientation The desired graph orientation.
      * @param vertexClass The vertex class
      * @param edgeClass   The edge class
