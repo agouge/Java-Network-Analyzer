@@ -33,7 +33,7 @@ import org.jgrapht.graph.AsUnweightedGraph;
  *
  * @author Adam Gouge
  */
-public class AsUnweightedG<V extends VId, E>
+public class AsUnweightedG<V extends VId, E extends EdgeID>
         //        extends GraphDelegator<V, E>
         //        implements Serializable 
         extends AsUnweightedGraph<V, E>
@@ -54,7 +54,7 @@ public class AsUnweightedG<V extends VId, E>
     public boolean addVertex(int id) {
         throw new UnsupportedOperationException(
                 "Adding vertices to an as-unweighted graph is not "
-                + "currently supported.");
+                + "supported.");
     }
 
     @Override
@@ -66,6 +66,13 @@ public class AsUnweightedG<V extends VId, E>
     public E addEdge(int source, int target) {
         throw new UnsupportedOperationException(
                 "Adding edges to an as-unweighted graph is not "
-                + "currently supported.");
+                + "supported.");
+    }
+
+    @Override
+    public E addEdge(int source, int target, int edgeID) {
+        throw new UnsupportedOperationException(
+                "Adding edges to an as-unweighted graph is not "
+                        + "supported.");
     }
 }

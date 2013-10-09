@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Adam Gouge
  */
-public class PseudoG<V extends VId, E> extends Pseudograph<V, E>
+public class PseudoG<V extends VId, E extends EdgeID> extends Pseudograph<V, E>
         implements UndirectedG<V, E> {
 
     /**
@@ -50,7 +50,6 @@ public class PseudoG<V extends VId, E> extends Pseudograph<V, E>
      * Constructor for {@link V} objects.
      */
     private Constructor<? extends V> vConstructor;
-        protected final static int ALLOCATE_GRAPH_SPACE = 10;
     /**
      * A logger.
      */
@@ -108,12 +107,19 @@ public class PseudoG<V extends VId, E> extends Pseudograph<V, E>
 
     @Override
     public E addEdge(int source, int target) {
+        return addEdge(source, target, -1);
+    }
+
+    @Override
+    public E addEdge(int source, int target, int edgeID) {
         if (!containsVertex(getVertex(source))) {
             addVertex(source);
         }
         if (!containsVertex(getVertex(target))) {
             addVertex(target);
         }
-        return addEdge(getVertex(source), getVertex(target));
+        final E e = addEdge(getVertex(source), getVertex(target));
+        e.setID(edgeID);
+        return e;
     }
 }

@@ -31,5 +31,5 @@ import org.jgrapht.DirectedGraph;
  *
  * @author Adam Gouge
  */
-public interface DirectedG<V, E> extends DirectedGraph<V, E>, KeyedGraph<V, E> {
+public interface DirectedG<V, E extends EdgeID> extends DirectedGraph<V, E>, KeyedGraph<V, E> {
 }

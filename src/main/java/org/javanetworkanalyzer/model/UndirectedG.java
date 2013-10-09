@@ -31,5 +31,5 @@ import org.jgrapht.UndirectedGraph;
  *
  * @author adam
  */
-public interface UndirectedG<V, E> extends UndirectedGraph<V, E>, KeyedGraph<V, E> {
+public interface UndirectedG<V, E extends EdgeID> extends UndirectedGraph<V, E>, KeyedGraph<V, E> {
 }
