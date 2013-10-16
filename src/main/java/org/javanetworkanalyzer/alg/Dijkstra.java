@@ -210,11 +210,17 @@ public class Dijkstra<V extends VDijkstra, E extends EdgeSPT>
      * limited by the given radius. The shortest path "tree" we return may
      * contain multiple shortest paths.
      *
+     * Note: {@link GraphSearchAlgorithm#reconstructTraversalGraph()} should not
+     * be used when limiting by radius as it will include edges to vertices with
+     * a distance greater than the radius.
+     *
      * @param radius The radius to limit by
      * @return The SPT/traversal graph from the last start node {@link #calculate}
      *         was called on
      */
-    public TraversalGraph<V, E> reconstructTraversalGraphLimitedByRadius(double radius) {
+    // TODO: Make {@link GraphSearchAlgorithm#reconstructTraversalGraph()} call
+    // this method with an argument of Double.POSITIVE_INFINITY.
+    public TraversalGraph<V, E> reconstructTraversalGraph(double radius) {
 
         if (currentStartNode == null) {
             throw new IllegalStateException("You must call #calculate before " +
