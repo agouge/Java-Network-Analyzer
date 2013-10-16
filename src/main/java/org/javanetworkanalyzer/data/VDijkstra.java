@@ -44,7 +44,7 @@ public class VDijkstra<V extends VDijkstra, E>
      * Length of a shortest path starting from a certain source leading to this
      * node (Dijkstra).
      */
-    private double distance;
+    private double distance = DEFAULT_DISTANCE;
 
     /**
      * Constructor: Sets the id.

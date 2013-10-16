@@ -26,6 +26,7 @@ package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.VDijkstra;
 import org.javanetworkanalyzer.model.EdgeSPT;
+import org.javanetworkanalyzer.model.TraversalGraph;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -52,6 +53,11 @@ public class Dijkstra<V extends VDijkstra, E extends EdgeSPT>
      * have the same length.
      */
     protected static final double TOLERANCE = 0.000000001;
+    /**
+     * Distance of the node furthest away in the shortest path tree thus far.
+     */
+    private double largestDistanceSoFar = 0.0;
+
 
     /**
      * Constructor.
@@ -70,10 +76,20 @@ public class Dijkstra<V extends VDijkstra, E extends EdgeSPT>
      */
     @Override
     public void calculate(V startNode) {
+        calculate(startNode, Double.POSITIVE_INFINITY);
+    }
 
+    /**
+     * Does a Dijkstra search from the given start node to all other nodes,
+     * limiting the search by the given radius.
+     *
+     * @param startNode Start node
+     * @param radius    Radius by which to limit the search
+     */
+    public void calculate(V startNode, double radius) {
         init(startNode);
 
-        while (!queue.isEmpty()) {
+        while (!queue.isEmpty() && largestDistanceSoFar < radius) {
             // Extract the minimum element.
             V u = queue.poll();
             // Do any pre-relax step.
@@ -150,6 +166,7 @@ public class Dijkstra<V extends VDijkstra, E extends EdgeSPT>
         v.addPredecessorEdge(e);
         // Set the distance
         v.setDistance(u.getDistance() + uvWeight);
+        largestDistanceSoFar = v.getDistance();
         // Update the queue.
         queue.remove(v);
         queue.add(v);
@@ -186,6 +203,52 @@ public class Dijkstra<V extends VDijkstra, E extends EdgeSPT>
                                 v2.getDistance());
                     }
                 });
+    }
+
+    /**
+     * Returns the SPT from the last start node {@link #calculate} was called on,
+     * limited by the given radius. The shortest path "tree" we return may
+     * contain multiple shortest paths.
+     *
+     * Note: {@link GraphSearchAlgorithm#reconstructTraversalGraph()} should not
+     * be used when limiting by radius as it will include edges to vertices with
+     * a distance greater than the radius.
+     *
+     * @param radius The radius to limit by
+     * @return The SPT/traversal graph from the last start node {@link #calculate}
+     *         was called on
+     */
+    // TODO: Make {@link GraphSearchAlgorithm#reconstructTraversalGraph()} call
+    // this method with an argument of Double.POSITIVE_INFINITY.
+    public TraversalGraph<V, E> reconstructTraversalGraph(double radius) {
+
+        if (currentStartNode == null) {
+            throw new IllegalStateException("You must call #calculate before " +
+                    "reconstructing the traversal graph.");
+        }
+
+        TraversalGraph<V, E> traversalGraph = new TraversalGraph<V, E>(
+                graph.getEdgeFactory(), currentStartNode);
+        for (V v : graph.vertexSet()) {
+            Set<E> predEdges = (Set<E>) v.getPredecessorEdges();
+            for (E e : predEdges) {
+                V source = graph.getEdgeSource(e);
+                V target = graph.getEdgeTarget(e);
+                if (source.getDistance() < radius && target.getDistance() < radius) {
+                    traversalGraph.addVertex(source);
+                    traversalGraph.addVertex(target);
+                    if (v.equals(source)) {
+                        traversalGraph.addEdge(target, source).setBaseGraphEdge(e);
+                    } else if (v.equals(target)) {
+                        traversalGraph.addEdge(source, target).setBaseGraphEdge(e);
+                    } else {
+                        throw new IllegalStateException("A vertex has a predecessor " +
+                                "edge not ending on itself.");
+                    }
+                }
+            }
+        }
+        return traversalGraph;
     }
 
     /**

@@ -50,6 +50,23 @@ public class DijkstraCormenTest {
     private static final double TOLERANCE = 0.0;
 
     @Test
+    public void testWDLimitedByRadius() throws NoSuchMethodException {
+        dijkstra = new Dijkstra<VDijkstra, Edge>(graph);
+        final double radius = 12.0;
+        dijkstra.calculate(v3, radius);
+        assertEquals(11, v1.getDistance(), TOLERANCE);
+        assertTrue(v2.getDistance() > radius);
+        assertEquals(0, v3.getDistance(), TOLERANCE);
+        assertTrue(v2.getDistance() > radius);
+        assertEquals(4, v5.getDistance(), TOLERANCE);
+        sPT = dijkstra.reconstructTraversalGraph(radius);
+        assertTrue(sPT.getRoot().equals(v3));
+        assertTrue(sPT.edgeSet().size() == 2);
+        assertTrue(sPT.containsEdge(v3, v5));
+        assertTrue(sPT.containsEdge(v5, v1));
+    }
+
+    @Test
     public void testWD() throws NoSuchMethodException {
 
         dijkstra = new Dijkstra<VDijkstra, Edge>(graph);
