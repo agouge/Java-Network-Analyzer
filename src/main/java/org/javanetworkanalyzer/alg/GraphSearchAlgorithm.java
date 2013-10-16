@@ -53,7 +53,7 @@ public abstract class GraphSearchAlgorithm<V extends VPred, E extends EdgeSPT>
     /**
      * Current start node
      */
-    private V currentStartNode;
+    protected V currentStartNode;
 
     /**
      * Constructor. The user can specify whether SPTs/traversal graphs are
