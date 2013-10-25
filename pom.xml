@@ -52,6 +52,7 @@
                         <Bundle-Vendor>IRSTV - FR CNRS 2488</Bundle-Vendor>
                         <Export-Package>org.javanetworkanalyzer.*</Export-Package>
                         <Bundle-Category>Network Analysis</Bundle-Category>
+                        <Bundle-Icon>icon.png;size=32</Bundle-Icon>
                     </instructions>
                 </configuration>
             </plugin>
