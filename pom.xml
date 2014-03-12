@@ -4,7 +4,7 @@
 
     <groupId>org.orbisgis</groupId>
     <artifactId>java-network-analyzer</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
     <packaging>bundle</packaging>
     <name>Java-Network-Analyzer</name>
     <url>https://github.com/agouge/Java-Network-Analyzer</url>
@@ -54,6 +54,7 @@
                         <Export-Package>org.javanetworkanalyzer.*</Export-Package>
                         <Bundle-Category>Network Analysis</Bundle-Category>
                         <Bundle-Icon>icon.png;size=32</Bundle-Icon>
+                        <Import-Package>org.slf4j;version="[1.6.0,1.7.5]",*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
