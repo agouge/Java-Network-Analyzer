@@ -7,7 +7,7 @@
     <version>0.1.5</version>
     <packaging>bundle</packaging>
     <name>Java-Network-Analyzer</name>
-    <url>https://github.com/agouge/Java-Network-Analyzer</url>
+    <url>https://github.com/irstv/Java-Network-Analyzer</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
