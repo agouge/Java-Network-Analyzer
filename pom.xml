@@ -112,4 +112,9 @@
             <organization>IRSTV CNRS-FR-2488</organization>
         </developer>
     </developers>
+    <scm>
+        <connection>scm:git:git@github.com:irstv/Java-Network-Analyzer.git</connection>
+        <developerConnection>scm:git:git@github.com:irstv/Java-Network-Analyzer.git</developerConnection>
+        <url>git@github.com:irstv/Java-Network-Analyzer.git</url>
+    </scm>
 </project>
