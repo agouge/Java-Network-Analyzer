@@ -5,7 +5,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 
     <groupId>org.orbisgis</groupId>
     <artifactId>java-network-analyzer</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.6-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Graph theory and social network analysis algorithms
