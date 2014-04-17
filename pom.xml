@@ -1,13 +1,33 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.orbisgis</groupId>
     <artifactId>java-network-analyzer</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.6-SNAPSHOT</version>
     <packaging>bundle</packaging>
-    <name>Java-Network-Analyzer</name>
-    <url>https://github.com/agouge/Java-Network-Analyzer</url>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Graph theory and social network analysis algorithms
+        implemented on JGraphT graphs.</description>
+    <url>https://github.com/irstv/Java-Network-Analyzer</url>
+    <licenses>
+        <license>
+            <name>GNU General Public License (GPLV3+)</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Adam Gouge</name>
+            <organization>IRSTV CNRS-FR-2488</organization>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git@github.com:irstv/Java-Network-Analyzer.git</connection>
+        <developerConnection>scm:git:git@github.com:irstv/Java-Network-Analyzer.git</developerConnection>
+        <url>git@github.com:irstv/Java-Network-Analyzer.git</url>
+    </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
