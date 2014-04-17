@@ -3,7 +3,7 @@
 
     <groupId>org.orbisgis</groupId>
     <artifactId>java-network-analyzer</artifactId>
-    <version>0.1.6</version>
+    <version>0.1.7-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Graph theory and social network analysis algorithms
