@@ -6,7 +6,7 @@
     <artifactId>java-network-analyzer</artifactId>
     <version>0.1.5</version>
     <packaging>bundle</packaging>
-    <name>Java-Network-Analyzer</name>
+    <name>${project.groupId}:${project.artifactId}</name>
     <description>Graph theory and social network analysis algorithms
         implemented on JGraphT graphs.</description>
     <url>https://github.com/irstv/Java-Network-Analyzer</url>
