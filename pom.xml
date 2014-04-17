@@ -106,4 +106,10 @@
             </plugin>
         </plugins>
     </build>
+    <developers>
+        <developer>
+            <name>Adam Gouge</name>
+            <organization>IRSTV CNRS-FR-2488</organization>
+        </developer>
+    </developers>
 </project>
