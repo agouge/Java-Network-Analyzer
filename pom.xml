@@ -10,6 +10,12 @@
     <description>Graph theory and social network analysis algorithms
         implemented on JGraphT graphs.</description>
     <url>https://github.com/irstv/Java-Network-Analyzer</url>
+    <licenses>
+        <license>
+            <name>GNU General Public License (GPLV3+)</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+        </license>
+    </licenses>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
