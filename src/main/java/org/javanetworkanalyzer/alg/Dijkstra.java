@@ -112,7 +112,7 @@ public class Dijkstra<V extends VDijkstra, E extends EdgeSPT>
         }
         startNode.setSource();
         queue.clear();
-        queue.add(startNode);
+        queue.addAll(graph.vertexSet());
     }
 
     /**
