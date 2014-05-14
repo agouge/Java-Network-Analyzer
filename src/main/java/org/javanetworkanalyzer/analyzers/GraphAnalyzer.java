@@ -31,6 +31,7 @@ import org.javanetworkanalyzer.data.VCent;
 import org.javanetworkanalyzer.data.VDist;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.EdgeCent;
+import org.javanetworkanalyzer.model.KeyedGraph;
 import org.javanetworkanalyzer.model.TraversalGraph;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
 import org.javanetworkanalyzer.progress.ProgressMonitor;
@@ -233,7 +234,8 @@ public abstract class GraphAnalyzer<V extends VCent, E extends EdgeCent, S exten
                 // on w to the dependency of startNode on v.
                 final double sigmaFactor = ((double) predecessor.getSPCount()
                         / w.getSPCount());
-                final double depContribution = sigmaFactor * (1 + w.getDependency());
+                final double depContribution = countShortestPathEdges(predecessor, w) *
+                        sigmaFactor * (1 + w.getDependency());
                 predecessor.accumulateDependency(depContribution);
 
                 // EDGE BETWEENNESS
@@ -250,6 +252,21 @@ public abstract class GraphAnalyzer<V extends VCent, E extends EdgeCent, S exten
                 w.accumulateBetweenness(w.getDependency());
             }
         } // ***** END STAGE 3, Stack iteration  **************
+    }
+
+    private int countShortestPathEdges(V predecessor, V w) {
+        // Count number of shortest-path edges from predecessor to w.
+        double previousWeight = Double.POSITIVE_INFINITY;
+        int count = 0;
+        for (E e : graph.getAllEdges(predecessor, w)) {
+            count++;
+            final double weight = graph.getEdgeWeight(e);
+            if (weight < previousWeight) {
+                previousWeight = weight;
+                count = 1;
+            }
+        }
+        return count;
     }
 
     /**
