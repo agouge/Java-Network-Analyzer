@@ -1,4 +1,4 @@
-# Java Network Analyzer [![Build Status](https://travis-ci.org/irstv/Java-Network-Analyzer.png)](https://travis-ci.org/irstv/Java-Network-Analyzer)
+# Java Network Analyzer [![Build Status](https://travis-ci.org/orbisgis/java-network-analyzer.png)](https://travis-ci.org/orbisgis/java-network-analyzer)
 
 Java Network Analyzer provides a collection of [graph
 theory](http://en.wikipedia.org/wiki/Graph_theory) and [social network
