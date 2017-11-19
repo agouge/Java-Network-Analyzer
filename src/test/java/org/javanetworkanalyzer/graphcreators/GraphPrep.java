@@ -33,7 +33,6 @@ import org.javanetworkanalyzer.model.DirectedWeightedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.UndirectedG;
 import org.javanetworkanalyzer.model.WeightedEdgeReversedG;
-import org.jgrapht.GraphPath;
 
 /**
  * Creates (un)weighted (un)directed/reversed graphs from a single weighted
@@ -45,6 +44,9 @@ import org.jgrapht.GraphPath;
  * matrices for the (un)weighted undirected graphs.
  *
  * @author Adam Gouge
+ * @author Erwan Bocher
+ * @param <V> vertex
+ * @param <E> edge
  */
 public abstract class GraphPrep<V extends VId, E extends Edge<E>> {
 
@@ -205,9 +207,9 @@ public abstract class GraphPrep<V extends VId, E extends Edge<E>> {
      */
     public Double[][] zeroMatrix() {
         Double[][] d = new Double[getNumberOfVertices()][getNumberOfVertices()];
-        for (int i = 0; i < d.length; i++) {
+        for (Double[] d1 : d) {
             for (int j = 0; j < d.length; j++) {
-                d[i][j] = 0.0;
+                d1[j] = 0.0;
             }
         }
         return d;

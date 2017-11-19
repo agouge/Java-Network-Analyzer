@@ -41,6 +41,7 @@ import java.util.Set;
  * @param <V> The data structure to hold node information during the execution
  *            of BFS.
  * @author Adam Gouge
+ * @param <E> edge
  */
 public class BFS<V extends VBFS, E extends EdgeSPT>
         extends GraphSearchAlgorithm<V, E> {

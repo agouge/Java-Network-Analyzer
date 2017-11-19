@@ -28,8 +28,6 @@ import org.javanetworkanalyzer.alg.CentralityAlg;
 import org.javanetworkanalyzer.alg.GraphSearchAlgorithm;
 import org.javanetworkanalyzer.data.PathLengthData;
 import org.javanetworkanalyzer.data.VCent;
-import org.javanetworkanalyzer.data.VDist;
-import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.EdgeCent;
 import org.javanetworkanalyzer.model.TraversalGraph;
 import org.javanetworkanalyzer.progress.NullProgressMonitor;
@@ -47,6 +45,9 @@ import java.util.Stack;
  * connected</b>.
  *
  * @author Adam Gouge
+ * @param <V> vertex
+ * @param <E> edge
+ * @param <S> path
  */
 public abstract class GraphAnalyzer<V extends VCent, E extends EdgeCent, S extends PathLengthData>
         extends GeneralizedGraphAnalyzer<V, E> {

@@ -37,6 +37,7 @@ import org.jgrapht.graph.EdgeReversedGraph;
  * several possible destinations.
  *
  * @author Adam Gouge
+ * @param <E> edge
  */
 public class AccessibilityAnalyzer<E extends EdgeSPT> extends GeneralizedGraphAnalyzer<VAccess, E> {
 
@@ -49,6 +50,7 @@ public class AccessibilityAnalyzer<E extends EdgeSPT> extends GeneralizedGraphAn
      * Constructor: sets the graph.
      *
      * @param graph Graph
+     * @param destinations
      */
     public AccessibilityAnalyzer(Graph<VAccess, E> graph,
                                  Set<VAccess> destinations) {

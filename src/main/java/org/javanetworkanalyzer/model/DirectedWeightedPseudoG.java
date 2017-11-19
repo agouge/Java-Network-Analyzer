@@ -27,7 +27,6 @@ package org.javanetworkanalyzer.model;
 import org.javanetworkanalyzer.data.VId;
 import org.jgrapht.EdgeFactory;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 /**
  * A keyed directed weighted pseudograph.

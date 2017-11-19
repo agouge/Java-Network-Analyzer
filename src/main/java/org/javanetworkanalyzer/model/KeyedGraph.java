@@ -30,6 +30,8 @@ import org.jgrapht.Graph;
  * An interface for adding V vertices to a graph keyed by int ids.
  *
  * @author Adam Gouge
+ * @param <V> vertex
+ * @param <E> edge
  */
 public interface KeyedGraph<V, E extends EdgeID> extends Graph<V, E> {
 

@@ -25,7 +25,6 @@
 package org.javanetworkanalyzer.analyzers;
 
 import org.javanetworkanalyzer.alg.DijkstraForCentrality;
-import org.javanetworkanalyzer.alg.GraphSearchAlgorithm;
 import org.javanetworkanalyzer.data.VWCent;
 import org.javanetworkanalyzer.data.WeightedPathLengthData;
 import org.javanetworkanalyzer.model.EdgeCent;
@@ -39,6 +38,7 @@ import org.jgrapht.WeightedGraph;
  * <b>assumed to be connected</b>.
  *
  * @author Adam Gouge
+ * @param <E> edge
  */
 public class WeightedGraphAnalyzer<E extends EdgeCent>
         extends GraphAnalyzer<VWCent, E, WeightedPathLengthData> {

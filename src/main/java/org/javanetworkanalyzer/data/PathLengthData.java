@@ -29,6 +29,7 @@ package org.javanetworkanalyzer.data;
  * nodes in the network.
  *
  * @author Adam Gouge
+ * @param <T>
  */
 public abstract class PathLengthData<T extends Number> {
 

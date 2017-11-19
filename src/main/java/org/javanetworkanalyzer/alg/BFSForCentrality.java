@@ -35,6 +35,7 @@ import org.jgrapht.Graph;
  * Uses BFS to do graph analysis (calculating betweenness centrality, etc.).
  *
  * @author Adam Gouge
+ * @param <E> edge
  */
 public class BFSForCentrality<E extends EdgeSPT> extends BFS<VUCent, E>
         implements CentralityAlg<VUCent, E, UnweightedPathLengthData> {

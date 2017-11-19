@@ -8,6 +8,8 @@ import org.javanetworkanalyzer.model.TraversalGraph;
  * Interface for algorithms that traverse a graph.
  *
  * @author Adam Gouge
+ * @param <V> vertex
+ * @param <E> edge
  */
 public interface TraversalAlg<V extends VPred, E extends EdgeSPT> {
 

@@ -37,6 +37,7 @@ import org.jgrapht.Graph;
  * betweenness and closeness in a {@link GraphAnalyzer}.
  *
  * @author Adam Gouge
+ * @param <E> edge
  */
 public class DijkstraForCentrality<E extends EdgeSPT> extends Dijkstra<VWCent, E>
         implements CentralityAlg<VWCent, E, WeightedPathLengthData> {
@@ -77,7 +78,9 @@ public class DijkstraForCentrality<E extends EdgeSPT> extends Dijkstra<VWCent, E
      * Before relaxing the outgoing edges of u, we push it to the stack and
      * record its shortest path length.
      *
+     * @param startNode
      * @param u Vertex u.
+     * @return 
      */
     @Override
     protected boolean preRelaxStep(VWCent startNode, VWCent u) {

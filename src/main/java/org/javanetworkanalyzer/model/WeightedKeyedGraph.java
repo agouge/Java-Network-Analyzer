@@ -25,7 +25,6 @@
 package org.javanetworkanalyzer.model;
 
 import org.jgrapht.WeightedGraph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 /**
  * A weighted keyed graph.

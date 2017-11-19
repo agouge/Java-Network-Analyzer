@@ -34,6 +34,7 @@ import org.jgrapht.Graph;
  * @param <V> The data structure to hold node information during the execution
  *            of DFS.
  * @author Adam Gouge
+ * @param <E> edge
  */
 public class DFS<V extends VDFS, E extends EdgeSPT> extends GraphSearchAlgorithm<V, E> {
 

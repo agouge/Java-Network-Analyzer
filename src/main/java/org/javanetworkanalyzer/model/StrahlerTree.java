@@ -28,7 +28,6 @@ import org.javanetworkanalyzer.data.VStrahler;
 import java.util.HashMap;
 import java.util.Map;
 import org.jgrapht.EdgeFactory;
-import org.jgrapht.graph.DirectedPseudograph;
 import org.jgrapht.graph.SimpleGraph;
 
 /**

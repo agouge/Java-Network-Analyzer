@@ -25,7 +25,6 @@
 package org.javanetworkanalyzer.analyzers;
 
 import org.javanetworkanalyzer.alg.BFSForCentrality;
-import org.javanetworkanalyzer.alg.GraphSearchAlgorithm;
 import org.javanetworkanalyzer.data.VUCent;
 import org.javanetworkanalyzer.data.UnweightedPathLengthData;
 import org.javanetworkanalyzer.model.EdgeCent;
@@ -40,6 +39,7 @@ import org.jgrapht.Graph;
  * shortest paths.
  *
  * @author Adam Gouge
+ * @param <E> edge
  */
 public class UnweightedGraphAnalyzer<E extends EdgeCent>
         extends GraphAnalyzer<VUCent, E, UnweightedPathLengthData> {

@@ -137,7 +137,7 @@ public class Dijkstra<V extends VDijkstra, E extends EdgeSPT>
         // Get the target vertex.
         V v = Graphs.getOppositeVertex(graph, e, u);
         // Get the weight.
-        double uvWeight = graph.getEdgeWeight(e);
+        double uvWeight = graph.getEdgeWeight(e);        
         // If a smaller distance estimate is available, make the necessary
         // updates.
         if (v.getDistance() > u.getDistance() + uvWeight) {

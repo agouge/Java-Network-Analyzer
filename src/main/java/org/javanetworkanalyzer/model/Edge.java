@@ -31,6 +31,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
  * Weighted edge for use in {@link TraversalGraph}.
  *
  * @author Adam Gouge
+ * @param <E>
  */
 public class Edge<E extends Edge> extends DefaultWeightedEdge
         implements EdgeSPT<E>, EdgeID {
@@ -39,9 +40,12 @@ public class Edge<E extends Edge> extends DefaultWeightedEdge
     private E baseGraphEdge;
     private int id;
     private boolean setID = false;
+    private double descriptor;
 
     /**
      * Sets the weight of this edge.
+     * @param newWeight
+     * @return 
      */
     public Edge setWeight(double newWeight) {
         weight = newWeight;
@@ -52,6 +56,15 @@ public class Edge<E extends Edge> extends DefaultWeightedEdge
     protected double getWeight() {
         return weight;
     }
+    
+    public double getDescriptor(){
+        return descriptor;
+    }
+
+    public void setDescriptor(double descriptor) {
+        this.descriptor = descriptor;
+    }    
+    
 
     @Override
     public E getBaseGraphEdge() {

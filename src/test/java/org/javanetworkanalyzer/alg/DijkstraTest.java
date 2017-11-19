@@ -26,7 +26,6 @@ package org.javanetworkanalyzer.alg;
 
 import java.util.Arrays;
 
-import junit.framework.TestCase;
 import org.javanetworkanalyzer.data.VDijkstra;
 import org.javanetworkanalyzer.graphcreators.GraphPrep;
 import org.javanetworkanalyzer.model.DirectedG;

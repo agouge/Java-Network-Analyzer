@@ -40,6 +40,7 @@ import org.jgrapht.Graph;
  * {@link #calculate(org.javanetworkanalyzer.data.VDFS)} on the tree's root
  * node.
  *
+ * @param <E> edge
  * @see http://en.wikipedia.org/wiki/Strahler_number
  *
  * @author Adam Gouge

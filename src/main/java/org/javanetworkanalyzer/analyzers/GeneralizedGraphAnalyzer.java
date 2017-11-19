@@ -33,6 +33,8 @@ import org.jgrapht.Graph;
  * (centrality, connectedness, etc.).
  *
  * @author Adam Gouge
+ * @param <V> vertex
+ * @param <E> edge
  */
 public abstract class GeneralizedGraphAnalyzer<V, E> {
 
@@ -54,7 +56,6 @@ public abstract class GeneralizedGraphAnalyzer<V, E> {
      * {@link ProgressMonitor}.
      *
      * @param graph The graph to be analyzed.
-     * @param pm    The {@link ProgressMonitor} to be used.
      */
     public GeneralizedGraphAnalyzer(Graph<V, E> graph) {
         this.graph = graph;

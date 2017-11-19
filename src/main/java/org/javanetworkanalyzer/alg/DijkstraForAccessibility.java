@@ -35,6 +35,7 @@ import org.jgrapht.Graph;
  * destinations in an {@link AccessibilityAnalyzer}.
  *
  * @author Adam Gouge
+ * @param <E> edge
  */
 // TODO: Enable **multiple** "closest" destinations within a given tolerance.
 public class DijkstraForAccessibility<E extends EdgeSPT> extends Dijkstra<VAccess, E> {
@@ -52,6 +53,7 @@ public class DijkstraForAccessibility<E extends EdgeSPT> extends Dijkstra<VAcces
      * Updates the distance to the neighbor and updates the distance to the
      * closest destination if necessary.
      *
+     * @param startNode the start vertex
      * @param u        Vertex u
      * @param v        Vertex v
      * @param uvWeight w(u,v)

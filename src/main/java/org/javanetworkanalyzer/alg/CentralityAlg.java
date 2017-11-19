@@ -2,7 +2,6 @@ package org.javanetworkanalyzer.alg;
 
 import org.javanetworkanalyzer.data.PathLengthData;
 import org.javanetworkanalyzer.data.VCent;
-import org.javanetworkanalyzer.data.VPred;
 import org.javanetworkanalyzer.model.EdgeSPT;
 
 /**
@@ -10,6 +9,9 @@ import org.javanetworkanalyzer.model.EdgeSPT;
  * calculations.
  *
  * @author Adam Gouge
+ * @param <V> vertex
+ * @param <E> edge
+ * @param <S> paths
  */
 public interface CentralityAlg<V extends VCent, E extends EdgeSPT, S extends PathLengthData>
         extends TraversalAlg<V, E> {
