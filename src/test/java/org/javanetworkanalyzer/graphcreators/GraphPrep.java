@@ -3,11 +3,22 @@
  * network analysis algorithms implemented on mathematical graphs using the
  * <a href="http://www.jgrapht.org/">JGraphT</a> library.
  *
- * Java Network Analyzer is distributed under the GPL 3 license. It is produced
- * by the "Atelier SIG" team of the <a href="http://www.irstv.fr">IRSTV
- * Institute</a>, CNRS FR 2488.
+ * Java Network Analyzer is developed by the GIS group of the DECIDE team of the 
+ * Lab-STICC CNRS laboratory, see <http://www.lab-sticc.fr/>.
+ * It is part of the OrbisGIS tool ecosystem.
  *
- * Copyright 2013 IRSTV (CNRS FR 2488).
+ * The GIS group of the DECIDE team is located at :
+ *
+ * Laboratoire Lab-STICC – CNRS UMR 6285
+ * Equipe DECIDE
+ * UNIVERSITÉ DE BRETAGNE-SUD
+ * Institut Universitaire de Technologie de Vannes
+ * 8, Rue Montaigne - BP 561 56017 Vannes Cedex
+ * 
+ * Java Network Analyzer is distributed under GPL 3 license.
+ *
+ * Copyright (C) 2012-2014 CNRS (IRSTV CNRS FR 2488)
+ * Copyright (C) 2015-2017 CNRS (Lab-STICC CNRS UMR 6285)
  *
  * Java Network Analyzer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by the Free
@@ -21,6 +32,10 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * Java Network Analyzer. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * For more information, please consult: <http://www.orbisgis.org/>
+ * or contact directly:
+ * info_at_ orbisgis.org
  */
 package org.javanetworkanalyzer.graphcreators;
 
@@ -33,7 +48,6 @@ import org.javanetworkanalyzer.model.DirectedWeightedPseudoG;
 import org.javanetworkanalyzer.model.Edge;
 import org.javanetworkanalyzer.model.UndirectedG;
 import org.javanetworkanalyzer.model.WeightedEdgeReversedG;
-import org.jgrapht.GraphPath;
 
 /**
  * Creates (un)weighted (un)directed/reversed graphs from a single weighted
@@ -45,6 +59,9 @@ import org.jgrapht.GraphPath;
  * matrices for the (un)weighted undirected graphs.
  *
  * @author Adam Gouge
+ * @author Erwan Bocher
+ * @param <V> vertex
+ * @param <E> edge
  */
 public abstract class GraphPrep<V extends VId, E extends Edge<E>> {
 
@@ -205,9 +222,9 @@ public abstract class GraphPrep<V extends VId, E extends Edge<E>> {
      */
     public Double[][] zeroMatrix() {
         Double[][] d = new Double[getNumberOfVertices()][getNumberOfVertices()];
-        for (int i = 0; i < d.length; i++) {
+        for (Double[] d1 : d) {
             for (int j = 0; j < d.length; j++) {
-                d[i][j] = 0.0;
+                d1[j] = 0.0;
             }
         }
         return d;
