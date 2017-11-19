@@ -8,7 +8,11 @@
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Graph theory and social network analysis algorithms
         implemented on JGraphT graphs.</description>
-    <url>https://github.com/irstv/Java-Network-Analyzer</url>
+    <organization>
+        <name>Lab-STICC - CNRS UMR 6285</name>
+        <url>http://www.labsticc.fr/</url>
+    </organization>
+    <url>http://www.orbisgis.org</url>
     <licenses>
         <license>
             <name>GNU General Public License (GPLV3+)</name>
@@ -17,14 +21,18 @@
     </licenses>
     <developers>
         <developer>
+            <name>Erwan Bocher</name>
+            <organization>Lab-STICC - CNRS UMR 6285</organization>
+        </developer>
+        <developer>
             <name>Adam Gouge</name>
-            <organization>IRSTV CNRS-FR-2488</organization>
+            <organization>IRSTV CNRS-FR-2488 (2012-2014)</organization>
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git@github.com:irstv/Java-Network-Analyzer.git</connection>
-        <developerConnection>scm:git:git@github.com:irstv/Java-Network-Analyzer.git</developerConnection>
-        <url>git@github.com:irstv/Java-Network-Analyzer.git</url>
+        <connection>scm:git:git@github.com:orbisgis/Java-Network-Analyzer.git</connection>
+        <developerConnection>scm:git:git@github.com:orbisgis/Java-Network-Analyzer.git</developerConnection>
+        <url>git@github.com:orbisgis/Java-Network-Analyzer.git</url>
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,7 +40,7 @@
     <parent>
         <groupId>org.orbisgis</groupId>
         <artifactId>orbisgis-nexus</artifactId>
-        <version>1</version>
+        <version>3</version>
     </parent>
 
     <dependencies>
@@ -68,7 +76,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Vendor>IRSTV - FR CNRS 2488</Bundle-Vendor>
+                        <Bundle-Vendor>Lab-STICC - CNRS UMR 6285</Bundle-Vendor>
                         <Export-Package>org.javanetworkanalyzer.*</Export-Package>
                         <Bundle-Category>Network Analysis</Bundle-Category>
                         <Bundle-Icon>icon.png;size=32</Bundle-Icon>
